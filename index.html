@@ -352,6 +352,261 @@ td:has(.money),th.month-head,.total-col{white-space:nowrap!important;overflow-wr
   .tx-dedicated-filters .select,.tx-dedicated-filters .tx-reset-filter{width:100%}
 }
 
+
+
+/* v30 - otimização mobile de cabeçalho e lançamentos */
+.tx-forecast-table,.tx-realized-table,.tx-rem-table{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-gutter:stable both-edges}
+.tx-forecast-table table{min-width:0!important;width:100%!important;table-layout:fixed!important}
+.tx-forecast-table th:first-child,.tx-forecast-table td:first-child{width:46%!important}
+.tx-forecast-table th:nth-child(2),.tx-forecast-table td:nth-child(2),.tx-forecast-table th:nth-child(3),.tx-forecast-table td:nth-child(3),.tx-forecast-table th:nth-child(4),.tx-forecast-table td:nth-child(4){width:18%!important;text-align:right!important;white-space:nowrap!important}
+.tx-forecast-table .money{font-size:inherit!important}
+.tx-balance-cell{justify-content:flex-end!important;gap:0!important}
+.tx-balance-cell b{display:inline-block;min-width:0}
+.tx-panel .section-title h3{line-height:1.08}
+.tx-panel .section-title span{font-size:11px}
+
+@media(max-width:760px){
+  .header{position:static!important;backdrop-filter:none!important}
+  .header-in{display:grid!important;grid-template-columns:auto 1fr!important;grid-template-areas:'brand brand' 'nav nav'!important;gap:8px!important;padding:10px 12px!important}
+  .brand{grid-area:brand;min-width:0!important;gap:10px!important}
+  .brand h1{font-size:12px!important;line-height:1.12!important}
+  .mark{width:34px!important;height:34px!important;border-radius:11px!important}
+  .nav{grid-area:nav;justify-content:flex-start!important;gap:5px!important;padding:0!important}
+  .nav button{padding:8px 10px!important;font-size:12px!important;border-radius:10px!important}
+  .right{display:none!important}
+  .main{padding:10px 10px 34px!important}
+  .head{margin-bottom:12px!important}
+  .tx-head h2{font-size:22px!important}
+  .tx-head p{font-size:12px!important}
+  .tx-summary{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important}
+  .tx-summary-card{padding:10px 10px!important;gap:6px!important;flex-direction:column;align-items:flex-start!important}
+  .tx-summary-card span{font-size:9px!important}
+  .tx-summary-card strong{font-size:14px!important}
+  .tx-tabs{margin:10px 0!important;padding:4px!important;border-radius:13px!important}
+  .tx-tabs button{padding:8px 9px!important;font-size:11px!important;gap:6px!important}
+  .tx-tabs button b{min-width:18px!important;height:18px!important;font-size:9px!important}
+  .tx-panel{padding:10px!important}
+  .tx-filter-card{padding:11px!important}
+  .tx-dedicated-filters{padding:10px!important;margin-bottom:12px!important}
+  .tx-filterbar{gap:6px!important}
+  .tx-forecast-table table{table-layout:fixed!important}
+  .tx-forecast-table th,.tx-forecast-table td{padding:6px 5px!important;font-size:10.5px!important}
+  .tx-forecast-table th:first-child,.tx-forecast-table td:first-child{width:43%!important}
+  .tx-forecast-table th:nth-child(2),.tx-forecast-table td:nth-child(2),.tx-forecast-table th:nth-child(3),.tx-forecast-table td:nth-child(3),.tx-forecast-table th:nth-child(4),.tx-forecast-table td:nth-child(4){width:19%!important}
+  .tx-row-main strong{font-size:11px!important;line-height:1.12!important}
+  .tx-row-main small{font-size:9.5px!important;line-height:1.15!important}
+  .tx-realized-table table{min-width:0!important;width:100%!important;table-layout:fixed!important}
+  .tx-realized-table th,.tx-realized-table td{padding:6px 5px!important;font-size:10.5px!important}
+  .tx-realized-table th:nth-child(1),.tx-realized-table td:nth-child(1){width:16%!important}
+  .tx-realized-table th:nth-child(2),.tx-realized-table td:nth-child(2){width:31%!important}
+  .tx-realized-table th:nth-child(3),.tx-realized-table td:nth-child(3){width:22%!important}
+  .tx-realized-table th:nth-child(4),.tx-realized-table td:nth-child(4){width:17%!important}
+  .tx-realized-table th:nth-child(5),.tx-realized-table td:nth-child(5){display:none!important}
+  .tx-realized-table th:last-child,.tx-realized-table td:last-child{width:14%!important}
+  .tx-rem-table table{min-width:640px!important}
+}
+
+@media(max-width:520px){
+  .tx-summary{grid-template-columns:1fr!important}
+  .tx-forecast-table th,.tx-forecast-table td,.tx-realized-table th,.tx-realized-table td{font-size:10px!important;padding:6px 4px!important}
+  .tx-forecast-table th:first-child,.tx-forecast-table td:first-child{width:41%!important}
+  .tx-forecast-table th:nth-child(2),.tx-forecast-table td:nth-child(2),.tx-forecast-table th:nth-child(3),.tx-forecast-table td:nth-child(3),.tx-forecast-table th:nth-child(4),.tx-forecast-table td:nth-child(4){width:19.66%!important}
+}
+
+
+
+/* v31 - modo mobile real: cards, navegação inferior e cabeçalho mínimo */
+@media(max-width:760px){
+  body{background:#F5F7FB}
+  .shell{padding-bottom:74px}
+  .header{position:static!important;background:#fff!important;border-bottom:1px solid #E4E7EC!important}
+  .header-in{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;grid-template-areas:'brand right'!important;gap:8px!important;align-items:center!important;padding:8px 10px!important}
+  .brand{grid-area:brand!important;min-width:0!important;gap:8px!important}
+  .mark{width:30px!important;height:30px!important;border-radius:10px!important;font-size:10px!important;box-shadow:none!important}
+  .brand h1{font-size:11.5px!important;line-height:1.12!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+  .right{grid-area:right!important;display:flex!important;width:auto!important;justify-content:flex-end!important}
+  .cloud-status{font-size:0!important;width:24px!important;height:24px!important;padding:0!important;display:grid!important;place-items:center!important;border-radius:999px!important;border:1px solid #D0D5DD!important;background:#fff!important}
+  .cloud-status:before{width:8px!important;height:8px!important;margin:0!important}
+  .nav{position:fixed!important;left:0!important;right:0!important;bottom:0!important;z-index:100!important;display:flex!important;justify-content:flex-start!important;gap:4px!important;padding:7px 8px calc(7px + env(safe-area-inset-bottom))!important;background:rgba(255,255,255,.97)!important;border-top:1px solid #DDE3EC!important;box-shadow:0 -10px 28px rgba(16,24,40,.10)!important;overflow-x:auto!important;scroll-snap-type:x proximity!important;-webkit-overflow-scrolling:touch!important}
+  .nav::-webkit-scrollbar{display:none}
+  .nav button{flex:0 0 auto!important;min-width:82px!important;padding:8px 9px!important;font-size:10.5px!important;border-radius:10px!important;scroll-snap-align:center!important}
+  .nav button.active{box-shadow:none!important}
+  .main{padding:10px 8px 28px!important}
+
+  .tx-head{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;margin-bottom:8px!important}
+  .tx-head h2{font-size:20px!important}
+  .tx-head p{display:none!important}
+  .tx-head .actions{width:auto!important;display:block!important}
+  .tx-head .actions .btn{width:auto!important;padding:9px 11px!important;font-size:11px!important;white-space:nowrap!important}
+
+  .tx-period-card{padding:9px!important;border-radius:14px!important}
+  .tx-period-card .section-title{display:none!important}
+  .tx-period-controls{margin:0!important}
+  .tx-period-controls .filterbar{display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important;overflow:visible!important}
+  .tx-period-controls .select,.tx-period-controls button{width:100%!important;min-width:0!important}
+
+  .tx-summary{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important;margin-top:8px!important}
+  .tx-summary-card{padding:8px!important;border-radius:12px!important;gap:3px!important;display:block!important}
+  .tx-summary-card span{display:block!important;font-size:8px!important;margin-bottom:3px!important}
+  .tx-summary-card strong{font-size:12px!important;letter-spacing:-.04em!important}
+
+  .tx-tabs{margin:8px 0!important;border-radius:13px!important;padding:4px!important;gap:4px!important;overflow-x:auto!important}
+  .tx-tabs button{padding:7px 8px!important;font-size:10.5px!important;gap:5px!important}
+  .tx-tabs button b{min-width:18px!important;height:18px!important;font-size:8.5px!important}
+
+  .tx-panel{padding:9px!important;border-radius:16px!important}
+  .tx-panel>.section-title{margin-bottom:8px!important}
+  .tx-panel>.section-title h3{font-size:14px!important}
+  .tx-panel>.section-title span{font-size:9.5px!important;line-height:1.2!important}
+  .tx-dedicated-filters{margin:0 0 9px!important;padding:8px!important;border-radius:13px!important}
+  .tx-filter-label{margin-bottom:6px!important}
+  .tx-filter-label span{display:none!important}
+  .tx-dedicated-filters .tx-filterbar{display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important;overflow:visible!important}
+  .tx-dedicated-filters .select,.tx-dedicated-filters .tx-reset-filter{width:100%!important;min-width:0!important;font-size:10.5px!important;padding:8px!important}
+
+  /* Acompanhamento em cards */
+  .tx-forecast-table{overflow:visible!important}
+  .tx-forecast-table table,.tx-forecast-table tbody{display:block!important;width:100%!important;min-width:0!important}
+  .tx-forecast-table thead{display:none!important}
+  .tx-forecast-table tr{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:0!important;margin:0 0 8px!important;padding:10px!important;border:1px solid color-mix(in srgb,var(--cat-color) 24%,#DDE3EC)!important;border-left:5px solid var(--cat-color)!important;border-radius:14px!important;background:linear-gradient(135deg,var(--cat-soft),#fff 62%)!important;box-shadow:0 5px 14px rgba(16,24,40,.05)!important}
+  .tx-forecast-table td{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:flex-start!important;width:auto!important;min-width:0!important;padding:7px 6px 0!important;border:0!important;background:transparent!important;border-radius:0!important;text-align:left!important;white-space:normal!important}
+  .tx-forecast-table td:first-child{grid-column:1/-1!important;padding:0 2px 8px!important;border-bottom:1px solid color-mix(in srgb,var(--cat-color) 16%,#E4E7EC)!important}
+  .tx-forecast-table td:not(:first-child):before{content:attr(data-label);display:block;margin-bottom:4px;font-size:8px;text-transform:uppercase;letter-spacing:.05em;font-weight:900;color:#667085}
+  .tx-forecast-table td:not(:first-child){text-align:left!important}
+  .tx-forecast-table td:not(:first-child) .money,.tx-forecast-table .tx-balance-cell{font-size:12px!important;font-weight:900!important;justify-content:flex-start!important}
+  .tx-forecast-table .tx-row-main strong{font-size:12px!important}
+  .tx-forecast-table .tx-row-main small{font-size:9.5px!important}
+
+  /* Realizados em cards */
+  .tx-realized-table{overflow:visible!important}
+  .tx-realized-table table,.tx-realized-table tbody{display:block!important;width:100%!important;min-width:0!important}
+  .tx-realized-table thead{display:none!important}
+  .tx-realized-table tr{display:grid!important;grid-template-columns:1fr 1fr!important;gap:0!important;margin:0 0 8px!important;padding:10px!important;border:1px solid color-mix(in srgb,var(--cat-color) 24%,#DDE3EC)!important;border-left:5px solid var(--cat-color)!important;border-radius:14px!important;background:linear-gradient(135deg,var(--cat-soft),#fff 62%)!important;box-shadow:0 5px 14px rgba(16,24,40,.05)!important}
+  .tx-realized-table td{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:flex-start!important;width:auto!important;min-width:0!important;padding:6px 5px 0!important;border:0!important;background:transparent!important;border-radius:0!important;white-space:normal!important;text-align:left!important}
+  .tx-realized-table td:before{content:attr(data-label);display:block;margin-bottom:3px;font-size:8px;text-transform:uppercase;letter-spacing:.05em;font-weight:900;color:#667085}
+  .tx-realized-table td:nth-child(2){grid-column:1/-1!important;grid-row:1!important;padding:0 2px 8px!important;border-bottom:1px solid color-mix(in srgb,var(--cat-color) 16%,#E4E7EC)!important}
+  .tx-realized-table td:nth-child(2):before{display:none!important}
+  .tx-realized-table td:nth-child(3){grid-column:1/-1!important;grid-row:2!important;padding-left:2px!important}
+  .tx-realized-table td:nth-child(1){grid-column:1!important;grid-row:3!important}
+  .tx-realized-table td:nth-child(4){grid-column:2!important;grid-row:3!important}
+  .tx-realized-table td:nth-child(5){display:none!important}
+  .tx-realized-table td:nth-child(6){grid-column:1/-1!important;grid-row:4!important;display:flex!important;flex-direction:row!important;justify-content:space-between!important;align-items:center!important;margin-top:5px!important;padding:8px 5px 0!important;border-top:1px solid color-mix(in srgb,var(--cat-color) 16%,#E4E7EC)!important}
+  .tx-realized-table td:nth-child(6):before{margin:0!important}
+  .tx-realized-table td:nth-child(6) .money{font-size:13px!important;font-weight:950!important}
+  .tx-realized-table .cat-tag{font-size:9.5px!important}
+  .tx-realized-table .tx-person{white-space:normal!important;gap:5px!important}
+
+  .tx-rem-table{overflow-x:auto!important}
+  .tx-rem-table table{min-width:620px!important}
+}
+
+@media(max-width:420px){
+  .brand h1{font-size:10.5px!important}
+  .nav button{min-width:76px!important;font-size:10px!important}
+  .tx-summary-card strong{font-size:11px!important}
+  .tx-dedicated-filters .tx-filterbar{grid-template-columns:1fr!important}
+  .tx-period-controls .filterbar{grid-template-columns:1fr!important}
+}
+
+
+
+/* v32 - organização específica para notebook e desktop */
+@media(min-width:761px){
+  body{background:linear-gradient(180deg,#F6F8FC 0,#F3F6FA 100%)}
+  .header{background:rgba(248,250,252,.96)!important;border-bottom:1px solid #DDE3EC!important;box-shadow:0 6px 18px rgba(16,24,40,.04)}
+  .header-in{width:min(100%,1440px);margin:0 auto;padding:10px 20px!important;grid-template-columns:minmax(215px,.8fr) minmax(520px,2fr) auto!important;gap:12px!important}
+  .brand{min-width:0!important;gap:10px!important}
+  .mark{width:36px!important;height:36px!important;border-radius:12px!important;box-shadow:0 8px 18px rgba(29,78,216,.16)!important}
+  .brand h1{font-size:13.5px!important;white-space:nowrap!important}
+  .nav{justify-content:center!important;gap:3px!important;overflow-x:auto!important}
+  .nav button{padding:8px 10px!important;font-size:11.5px!important;border-radius:10px!important}
+  .right{min-width:112px!important;justify-content:flex-end!important}
+  .cloud-status{padding:6px 9px!important;font-size:10px!important}
+  .main{width:min(100%,1440px);margin:0 auto;padding:18px 20px 44px!important}
+  .head{align-items:center!important;margin-bottom:13px!important;gap:12px!important}
+  .head h2{font-size:24px!important;letter-spacing:-.045em!important}
+  .head p{font-size:12px!important;margin-top:5px!important;max-width:820px}
+  .btn{padding:9px 12px!important;font-size:12px!important;border-radius:10px!important}
+  .card,.strategy-card{padding:15px!important;border-radius:16px!important;box-shadow:0 7px 22px rgba(16,24,40,.045)!important}
+  .grid{gap:12px!important}
+  .metric{min-height:98px!important}
+  .metric .value{font-size:21px!important;margin-top:8px!important}
+  .metric .subtxt{font-size:11px!important;margin-top:6px!important}
+  .section-title{margin-bottom:10px!important}
+  .section-title h3{font-size:15px!important}
+  .section-title span{font-size:11px!important}
+  .filterbar{gap:6px!important}
+  .filterbar button,.filterbar .select{padding:7px 9px!important;font-size:11px!important;border-radius:10px!important}
+  .table-wrap{border-radius:14px!important}
+  table{border-spacing:0 5px!important}
+  th{font-size:9.5px!important;padding:0 7px!important}
+  td{font-size:11.5px!important;padding:8px 7px!important;line-height:1.18!important}
+  td:first-child{border-radius:10px 0 0 10px!important}
+  td:last-child{border-radius:0 10px 10px 0!important}
+  .table-wrap.sticky-months{max-height:57vh!important}
+  .expense-enhanced{max-height:58vh!important}
+  .summary-colorized{max-height:52vh!important}
+  .manager-table{max-height:56vh!important}
+  .view-config .table-wrap{max-height:48vh!important}
+  .view-config .grid.cols2{gap:12px!important}
+  .view-config .card[style*="margin-top"]{margin-top:12px!important}
+
+  .tx-overview-grid{display:grid!important;grid-template-columns:minmax(265px,.72fr) minmax(0,1.55fr)!important;gap:12px!important;align-items:stretch!important}
+  .tx-overview-grid .tx-period-card{height:100%!important;margin:0!important}
+  .tx-overview-grid .tx-summary{margin:0!important;height:100%!important}
+  .tx-overview-grid .tx-summary-card{min-height:100%!important;padding:12px 13px!important;border-radius:14px!important}
+  .tx-tabs{margin:12px 0!important;padding:4px!important;border-radius:13px!important}
+  .tx-tabs button{padding:8px 11px!important;font-size:11.5px!important}
+  .tx-panel{padding:13px!important}
+  .tx-dedicated-filters{display:grid!important;grid-template-columns:minmax(185px,.42fr) minmax(0,1.58fr)!important;gap:12px!important;align-items:center!important;padding:11px 12px!important;margin:2px 0 12px!important}
+  .tx-filter-label{margin:0!important;display:block!important}
+  .tx-filter-label span{margin-top:3px!important;display:block!important}
+  .tx-dedicated-filters .tx-filterbar{justify-content:flex-end!important;flex-wrap:nowrap!important;overflow-x:auto!important}
+  .tx-forecast-table,.tx-realized-table{max-height:55vh!important}
+  .tx-forecast-table table,.tx-realized-table table{width:100%!important}
+  .tx-clean-row td{padding-top:9px!important;padding-bottom:9px!important}
+  .tx-row-main strong{font-size:11.5px!important}
+  .tx-row-main small{font-size:10px!important}
+
+  .view-estrategia .executive-kpis{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important;margin-top:12px!important}
+  .view-estrategia .exec-card{min-height:94px!important;padding:13px!important;border-radius:15px!important}
+  .view-estrategia .exec-card strong{font-size:18px!important;margin-top:8px!important}
+  .view-estrategia .exec-card small{font-size:10.5px!important;margin-top:5px!important}
+  .view-estrategia .executive-grid{grid-template-columns:minmax(0,1.2fr) minmax(360px,.8fr)!important;gap:12px!important;margin-top:12px!important}
+  .view-estrategia .strategy-grid{gap:12px!important;margin-top:12px!important}
+  .view-estrategia .chart-card{padding:15px!important}
+  .view-estrategia .executive-chart{min-height:285px!important;padding-top:10px!important}
+  .view-estrategia .executive-chart .compare-bars{height:215px!important}
+  .view-estrategia .executive-row{grid-template-columns:minmax(110px,155px) 1fr minmax(110px,auto)!important;padding:7px!important}
+  .view-estrategia .manager-table table{min-width:760px!important}
+
+  .view-rxd .rxd-detail-table{max-height:58vh!important;overflow:auto!important}
+  .view-rxd .rxd-detail-table table{min-width:640px!important}
+  .view-receitas .table-wrap{max-height:60vh!important}
+  .view-receitas .table-wrap thead th,
+  .view-rxd .table-wrap thead th,
+  .view-config .table-wrap thead th{position:sticky!important;top:0!important;z-index:10!important;background:#F8FAFC!important;padding-top:7px!important;padding-bottom:7px!important}
+}
+
+@media(min-width:761px) and (max-width:1180px){
+  .header-in{grid-template-columns:1fr!important;grid-template-areas:'brand right' 'nav nav'!important;gap:7px!important;padding:9px 14px!important}
+  .brand{grid-area:brand!important}
+  .nav{grid-area:nav!important;justify-content:flex-start!important}
+  .right{grid-area:right!important}
+  .main{padding:14px 14px 38px!important}
+  .cols4{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .view-estrategia .executive-grid,.view-estrategia .strategy-grid{grid-template-columns:1fr!important}
+  .view-estrategia .executive-kpis{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  .tx-overview-grid{grid-template-columns:minmax(230px,.8fr) minmax(0,1.35fr)!important}
+  .tx-dedicated-filters{grid-template-columns:1fr!important}
+  .tx-dedicated-filters .tx-filterbar{justify-content:flex-start!important}
+  .expense-enhanced table{min-width:1050px!important}
+}
+
+@media(max-width:760px){
+  .tx-overview-grid{display:block!important}
+}
+
 </style></head><body><div id="app"></div><div id="modal" class="modal"></div><script>
 const storeKey='despesas-casal-profissional-v12';
 const SUPABASE_URL='https://fpcwnjlneaaarzeevgpl.supabase.co';
@@ -363,7 +618,7 @@ const baseData={"currentUser": null, "month": "2026-07", "months": [{"id": "2026
 let state=load(), view='rxd', periodMode='ano', revenueScope='ano', expenseScope='ano', rxdScope='ano', txScope='mes', txPanel='acompanhamento', selectedExpenseCat=null, editTxId=null, editRevenueMonth=null, editBudgetMonth=null, expenseFilters={cat:'todos',owner:'todos',city:'todos'}, txForecastFilters={cat:'todos',owner:'todos',city:'todos',balance:'todos'}, txRealizedFilters={cat:'todos',owner:'todos',city:'todos'};
 function clone(x){return JSON.parse(JSON.stringify(x))}function load(){try{const saved=JSON.parse(localStorage.getItem(storeKey)||'null');return saved?merge(clone(baseData),saved):clone(baseData)}catch(e){return clone(baseData)}}function merge(base,saved){return {...base,...saved,months:(saved.months&&saved.months.length?saved.months:base.months),categories:(saved.categories&&saved.categories.length?saved.categories:base.categories),subs:{...base.subs,...(saved.subs||{})},revenues:{...base.revenues,...(saved.revenues||{})},budgets:{...base.budgets,...(saved.budgets||{})},transactions:{...base.transactions,...(saved.transactions||{})},reallocations:{...base.reallocations,...(saved.reallocations||{})},history:[...(saved.history||[])]}}function save(){localStorage.setItem(storeKey,JSON.stringify(state)); if(cloudReady) scheduleCloudSave()} 
 function cloudHeaders(){return {'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'}}
-function setCloudStatus(txt){lastCloudStatus=txt;const el=document.getElementById('cloudStatus');if(el)el.textContent=txt}
+function setCloudStatus(txt){lastCloudStatus=txt;const el=document.getElementById('cloudStatus');if(el){el.textContent=txt;el.title=txt;el.dataset.status=txt}}
 function scheduleCloudSave(){clearTimeout(cloudSaveTimer);cloudSaveTimer=setTimeout(saveToCloud,650)}
 async function saveToCloud(){if(cloudSaving)return scheduleCloudSave();cloudSaving=true;setCloudStatus('Salvando...');try{const res=await fetch(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}?on_conflict=id`,{method:'POST',headers:cloudHeaders(),body:JSON.stringify({id:SUPABASE_ROW_ID,data:state,updated_at:new Date().toISOString()})});if(!res.ok)throw new Error(await res.text());setCloudStatus('Nuvem salva')}catch(err){console.error('Erro ao salvar no Supabase',err);setCloudStatus('Erro na nuvem')}finally{cloudSaving=false}}
 async function loadFromCloud(){setCloudStatus('Carregando nuvem...');try{const res=await fetch(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}?id=eq.${encodeURIComponent(SUPABASE_ROW_ID)}&select=data,updated_at`,{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}});if(!res.ok)throw new Error(await res.text());const rows=await res.json();if(rows&&rows.length&&rows[0].data){state=merge(clone(baseData),rows[0].data);localStorage.setItem(storeKey,JSON.stringify(state));setCloudStatus('Nuvem carregada');render()}else{setCloudStatus('Criando nuvem...');await saveToCloud();}}catch(err){console.error('Erro ao carregar do Supabase',err);setCloudStatus('Modo local')}}
@@ -379,7 +634,7 @@ function years(){return [...new Set(months().map(m=>m.slice(0,4)))].sort()} func
 function txForecastFilterControls(){return `<div class="tx-dedicated-filters"><div class="tx-filter-label"><strong>Filtros das previsões</strong><span>Afetam somente o acompanhamento</span></div><div class="filterbar tx-filterbar"><select class="select" onchange="txForecastFilters.cat=this.value;render()">${categoryFilterOptions(txForecastFilters.cat)}</select><select class="select" onchange="txForecastFilters.owner=this.value;render()">${ownerOptions(txForecastFilters.owner)}</select><select class="select" onchange="txForecastFilters.city=this.value;render()">${cityOptions(txForecastFilters.city)}</select><select class="select" onchange="txForecastFilters.balance=this.value;render()"><option value="todos" ${txForecastFilters.balance==='todos'?'selected':''}>Todos os saldos</option><option value="com_saldo" ${txForecastFilters.balance==='com_saldo'?'selected':''}>Com saldo</option><option value="sem_saldo" ${txForecastFilters.balance==='sem_saldo'?'selected':''}>Sem saldo</option><option value="negativo" ${txForecastFilters.balance==='negativo'?'selected':''}>Saldo negativo</option></select><button class="tiny tx-reset-filter" onclick="txForecastFilters={cat:'todos',owner:'todos',city:'todos',balance:'todos'};render()">Limpar</button></div></div>`}
 function txRealizedFilterControls(){return `<div class="tx-dedicated-filters realized"><div class="tx-filter-label"><strong>Filtros dos realizados</strong><span>Afetam somente os lançamentos realizados</span></div><div class="filterbar tx-filterbar"><select class="select" onchange="txRealizedFilters.cat=this.value;render()">${categoryFilterOptions(txRealizedFilters.cat)}</select><select class="select" onchange="txRealizedFilters.owner=this.value;render()">${ownerOptions(txRealizedFilters.owner)}</select><select class="select" onchange="txRealizedFilters.city=this.value;render()">${cityOptions(txRealizedFilters.city)}</select><button class="tiny tx-reset-filter" onclick="txRealizedFilters={cat:'todos',owner:'todos',city:'todos'};render()">Limpar</button></div></div>`}
 function budgetMeta(b){const city=b.city||cityOf(b.sub||'');return {city,owner:ownerOf(city),name:cleanName(b.sub||cat(b.cat).name),cat:b.cat}} function budgetMatches(b,filters=expenseFilters){const meta=budgetMeta(b);return (filters.cat==='todos'||b.cat===filters.cat)&&(filters.owner==='todos'||meta.owner===filters.owner)&&(filters.city==='todos'||meta.city===filters.city)} function txMatches(t,filters=txRealizedFilters){return (filters.cat==='todos'||t.cat===filters.cat)&&(filters.owner==='todos'||t.responsible===filters.owner)&&(filters.city==='todos'||t.city===filters.city)} function monthNameFull(n){return ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'][n-1]} function monthShort(n){return ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'][n-1]} function periodMonths(){const m=state.month,list=months(),year=m.slice(0,4),mm=Number(m.slice(5,7));if(periodMode==='mes')return[m];if(periodMode==='tri'){const q=Math.floor((mm-1)/3);return list.filter(x=>x.startsWith(year)&&Number(x.slice(5,7))>=q*3+1&&Number(x.slice(5,7))<=q*3+3)}if(periodMode==='sem'){const start=mm<=6?1:7,end=mm<=6?6:12;return list.filter(x=>x.startsWith(year)&&Number(x.slice(5,7))>=start&&Number(x.slice(5,7))<=end)}if(periodMode==='ano')return list.filter(x=>x.startsWith(year));if(periodMode==='aa'){const prev=(Number(year)-1)+'-'+String(mm).padStart(2,'0');return[prev,m].filter(x=>list.includes(x))}return[m]} function periodLabel(){const p=metricMonths();if(view==='estrategia'&&periodMode==='aa')return 'Mesmo mês do ano anterior';if(p.length===1)return labelMonth(p[0]);return labelMonth(p[0])+' a '+labelMonth(p[p.length-1])} function metricMonths(){if(view==='receitas')return monthYearList(revenueScope);if(view==='despesas')return monthYearList(expenseScope);if(view==='rxd')return monthYearList(rxdScope);if(view==='estrategia')return periodMonths();return[state.month]} function scopeRevenue(){return metricMonths().reduce((s,m)=>s+revenueTotal(m),0)} function plannedExpenseTotal(m){return state.categories.reduce((s,c)=>s+budgetAdjusted(m,c.id),0)} function scopeExpense(){return metricMonths().reduce((s,m)=>s+plannedExpenseTotal(m),0)} function scopeRealized(){return metricMonths().reduce((s,m)=>s+expenseTotal(m),0)} function scopeBudget(){return metricMonths().reduce((s,m)=>s+state.categories.reduce((a,c)=>a+budgetAdjusted(m,c.id),0),0)}
-const viewLabels={receitas:'Receitas',despesas:'Despesas',rxd:'R x D',lancamentos:'Lançamentos',estrategia:'Visão Gerencial',config:'Configurações'}; function nav(){return Object.keys(viewLabels).map(v=>`<button class="${view===v?'active':''}" onclick="setView('${v}')">${viewLabels[v]}</button>`).join('')} function compareControls(){return `<div class="compare">${[['mes','Mês'],['tri','Trimestre'],['sem','Semestre'],['ano','Ano'],['aa','Mesmo mês A.A.']].map(([id,lb])=>`<button class="${periodMode===id?'active':''}" onclick="periodMode='${id}';render()">${lb}</button>`).join('')}</div>`} function layout(content){document.getElementById('app').innerHTML=`<div class="shell"><header class="header"><div class="header-in"><div class="brand"><div class="mark">CN</div><div><h1>Despesas Casal - Controle Financeiro</h1></div></div><nav class="nav">${nav()}</nav><div class="right"><span id="cloudStatus" class="cloud-status">${lastCloudStatus}</span></div></div></header><main class="main">${content}</main></div>`}
+const viewLabels={receitas:'Receitas',despesas:'Despesas',rxd:'R x D',lancamentos:'Lançamentos',estrategia:'Visão Gerencial',config:'Configurações'}; function nav(){return Object.keys(viewLabels).map(v=>`<button class="${view===v?'active':''}" onclick="setView('${v}')">${viewLabels[v]}</button>`).join('')} function compareControls(){return `<div class="compare">${[['mes','Mês'],['tri','Trimestre'],['sem','Semestre'],['ano','Ano'],['aa','Mesmo mês A.A.']].map(([id,lb])=>`<button class="${periodMode===id?'active':''}" onclick="periodMode='${id}';render()">${lb}</button>`).join('')}</div>`} function layout(content){document.getElementById('app').innerHTML=`<div class="shell view-${view}"><header class="header"><div class="header-in"><div class="brand"><div class="mark">CN</div><div><h1>Despesas Casal - Controle Financeiro</h1></div></div><nav class="nav">${nav()}</nav><div class="right"><span id="cloudStatus" class="cloud-status">${lastCloudStatus}</span></div></div></header><main class="main">${content}</main></div>`}
 function kpis(){const rec=scopeRevenue(), exp=scopeExpense(), bal=rec-exp;return `<div class="grid cols3"><div class="card metric"><div class="label">Receita</div><div class="value">${fmt(rec)}</div><div class="subtxt">${periodLabel()}</div></div><div class="card metric"><div class="label">Despesas</div><div class="value neg">${fmt(exp)}</div><div class="subtxt">${pct(exp,rec)} da receita</div></div><div class="card metric"><div class="label">Saldo</div><div class="value ${bal>=0?'pos':'neg'}">${fmt(bal)}</div><div class="subtxt">${pct(bal,rec)} da receita</div></div></div>`}
 function revenueKpis(){const list=monthYearList(revenueScope);const totals=list.reduce((a,m)=>{const r=revObj(m);a.cicero+=(+r.cicero||0);a.nilce+=(+r.nilce||0);a.reserva+=(+r.reserva||0);return a},{cicero:0,nilce:0,reserva:0});const total=totals.cicero+totals.nilce+totals.reserva;return `<div class="grid cols3"><div class="card metric cicero"><div class="label">Cícero</div><div class="value">${fmt(totals.cicero)}</div><div class="subtxt">${pct(totals.cicero,total)} do total</div></div><div class="card metric nilce"><div class="label">Nilce</div><div class="value">${fmt(totals.nilce)}</div><div class="subtxt">${pct(totals.nilce,total)} do total</div></div><div class="card metric reserva"><div class="label">Resgate reserva</div><div class="value">${fmt(totals.reserva)}</div><div class="subtxt">${pct(totals.reserva,total)} do total</div></div></div>`}
 function renderReceitas(){const list=monthYearList(revenueScope);const rows=list.map(m=>{const r=revObj(m), total=revenueTotal(m);return `<tr class="clickable" onclick="openRevenue('${m}')"><td>${labelMonth(m)}</td><td class="rev-cicero">${fmt(r.cicero)}</td><td class="rev-cicero">${pct(r.cicero,total)}</td><td class="rev-nilce">${fmt(r.nilce)}</td><td class="rev-nilce">${pct(r.nilce,total)}</td><td class="rev-reserva">${fmt(r.reserva)}</td><td class="rev-reserva">${pct(r.reserva,total)}</td><td><b>${fmt(total)}</b></td><td>100,0%</td></tr>`}).join('');layout(`<div class="head"><div><h2>Receitas</h2><p>Resumo do valor total de cada mês, com participação percentual e edição direta.</p></div><div class="actions"><button class="btn secondary" onclick="openFillRevenues()">Preencher receitas</button></div></div><div class="card"><div class="section-title"><h3>Filtros</h3><span>Ano ou mês selecionado</span></div>${simpleControls('receita')}</div><div style="margin-top:16px">${revenueKpis()}</div><div class="card" style="margin-top:16px"><div class="section-title"><h3>Resumo do Período de Receitas</h3><span>Azul = Cícero · rosa = Nilce · verde = Resgate Reserva</span></div><div class="table-wrap"><table><thead><tr><th>Mês</th><th>Cícero</th><th>%</th><th>Nilce</th><th>%</th><th>Resgate Reserva</th><th>%</th><th>Total</th><th>%</th></tr></thead><tbody>${rows}</tbody></table></div></div>`)}
@@ -430,17 +685,17 @@ function renderLancamentos(){
   const withBalance=allBudgets.filter(b=>b.balance>.005).length;
   const noBalance=allBudgets.filter(b=>Math.abs(b.balance)<=.005).length;
   const negativeCount=allBudgets.filter(b=>b.balance<-.005).length;
-  const forecastRows=budgets.map(b=>{const status=balanceStatus(b.balance),statusLabel=status==='com_saldo'?'Com saldo':status==='sem_saldo'?'Sem saldo':'Negativo';return `<tr class="clickable category-tinted tx-clean-row" style="--cat-color:${cat(b.cat).color};--cat-soft:${cat(b.cat).color}10" onclick="${txScope==='mes'?`openBudgetItem('${b.id}','${state.month}')`:`alert('Para editar, filtre por mês selecionado.')`}"><td><div class="tx-row-main"><strong><span class="row-accent" style="background:${cat(b.cat).color}"></span>${b.name}</strong><small><span class="category-text" style="color:${cat(b.cat).color}">${cat(b.cat).name}</span> · ${shortLabel(b.owner)} / ${shortLabel(b.city)}</small></div></td><td>${fmt(b.planned)}</td><td>${fmt(b.used)}</td><td><div class="tx-balance-cell"><span class="tx-status ${status}">${statusLabel}</span><b class="${b.balance<0?'neg':b.balance===0?'muted':'pos'}">${fmt(b.balance)}</b></div></td></tr>`}).join('');
-  const rows=txList.map(t=>`<tr class="clickable category-tinted tx-clean-row" style="--cat-color:${cat(t.cat).color};--cat-soft:${cat(t.cat).color}10" onclick="openTx('${t.id}')"><td>${fmtDate(t.date)}</td><td><div class="tx-row-main"><strong>${cleanName(t.description)}</strong><small>${cleanName(t.sub||'')}</small></div></td><td><span class="cat-tag" style="background:${cat(t.cat).color}18;color:${cat(t.cat).color}"><span class="row-accent" style="background:${cat(t.cat).color}"></span>${cat(t.cat).name}</span></td><td><div class="tx-person"><span class="owner-pill compact-label">${shortLabel(t.responsible)}</span><small>${shortLabel(t.city)}</small></div></td><td>${cardOf(t.card)}</td><td class="tx-amount">${fmt(t.amount)}</td></tr>`).join('');
+  const forecastRows=budgets.map(b=>{return `<tr class="clickable category-tinted tx-clean-row" style="--cat-color:${cat(b.cat).color};--cat-soft:${cat(b.cat).color}10" onclick="${txScope==='mes'?`openBudgetItem('${b.id}','${state.month}')`:`alert('Para editar, filtre por mês selecionado.')`}"><td data-label="Despesa"><div class="tx-row-main"><strong><span class="row-accent" style="background:${cat(b.cat).color}"></span>${b.name}</strong><small><span class="category-text" style="color:${cat(b.cat).color}">${cat(b.cat).name}</span> · ${shortLabel(b.owner)} / ${shortLabel(b.city)}</small></div></td><td data-label="Previsto">${fmt(b.planned)}</td><td data-label="Utilizado">${fmt(b.used)}</td><td data-label="Saldo"><div class="tx-balance-cell"><b class="${b.balance<0?'neg':Math.abs(b.balance)<=.005?'muted':'pos'}">${fmt(b.balance)}</b></div></td></tr>`}).join('');
+  const rows=txList.map(t=>`<tr class="clickable category-tinted tx-clean-row" style="--cat-color:${cat(t.cat).color};--cat-soft:${cat(t.cat).color}10" onclick="openTx('${t.id}')"><td data-label="Data">${fmtDate(t.date)}</td><td data-label="Descrição"><div class="tx-row-main"><strong>${cleanName(t.description)}</strong><small>${cleanName(t.sub||'')}</small></div></td><td data-label="Categoria"><span class="cat-tag" style="background:${cat(t.cat).color}18;color:${cat(t.cat).color}"><span class="row-accent" style="background:${cat(t.cat).color}"></span>${cat(t.cat).name}</span></td><td data-label="Responsável/local"><div class="tx-person"><span class="owner-pill compact-label">${shortLabel(t.responsible)}</span><small>${shortLabel(t.city)}</small></div></td><td data-label="Cartão">${cardOf(t.card)}</td><td data-label="Valor" class="tx-amount">${fmt(t.amount)}</td></tr>`).join('');
   const remMonths=txScope==='ano'?selectedMonths:[state.month];
   const remEntries=remMonths.flatMap(m=>(state.reallocations[m]||[]).map(r=>({m,r})));
   const rem=remEntries.map(({m,r})=>{const fromB=(state.budgets[m]||[]).find(b=>b.id===r.fromBudgetId),toB=(state.budgets[m]||[]).find(b=>b.id===r.toBudgetId);const fromLabel=fromB?`${cleanName(fromB.sub)} · ${shortLabel(fromB.city||cityOf(fromB.sub))}`:cat(r.from).name;const toLabel=toB?`${cleanName(toB.sub)} · ${shortLabel(toB.city||cityOf(toB.sub))}`:cat(r.to).name;return `<tr><td>${txScope==='ano'?labelMonth(m):''}</td><td>${fromLabel}</td><td>${toLabel}</td><td>${fmt(r.amount)}</td><td>${r.note||''}</td><td><button class="tiny danger" onclick="event.stopPropagation();deleteRealloc('${r.id}','${m}')">Excluir</button></td></tr>`}).join('');
   const tabs=`<div class="tx-tabs"><button class="${txPanel==='acompanhamento'?'active':''}" onclick="txPanel='acompanhamento';render()"><span>Acompanhamento</span><b>${budgets.length}</b></button><button class="${txPanel==='realizados'?'active':''}" onclick="txPanel='realizados';render()"><span>Realizados</span><b>${txList.length}</b></button><button class="${txPanel==='remanejamentos'?'active':''}" onclick="txPanel='remanejamentos';render()"><span>Remanejamentos</span><b>${remEntries.length}</b></button></div>`;
   let panel='';
-  if(txPanel==='acompanhamento')panel=`<div class="card tx-panel"><div class="section-title"><div><h3>Acompanhamento — ${periodTitle}</h3><span>${budgets.length} item(ns) exibido(s) · ${withBalance} com saldo · ${noBalance} esgotado(s)${negativeCount?' · '+negativeCount+' negativo(s)':''}</span></div></div>${txForecastFilterControls()}<div class="table-wrap tx-forecast-table"><table><thead><tr><th>Despesa</th><th>Previsto</th><th>Utilizado</th><th>Saldo</th></tr></thead><tbody>${forecastRows||'<tr><td colspan="4">Nenhuma previsão encontrada para os filtros atuais.</td></tr>'}</tbody></table></div></div>`;
+  if(txPanel==='acompanhamento')panel=`<div class="card tx-panel"><div class="section-title"><div><h3>Acompanhamento — ${periodTitle}</h3><span>${budgets.length} item(ns) exibido(s) · ${withBalance} em aberto · ${noBalance} zerado(s)${negativeCount?' · '+negativeCount+' negativo(s)':''}</span></div></div>${txForecastFilterControls()}<div class="table-wrap tx-forecast-table"><table><thead><tr><th>Despesa</th><th>Previsto</th><th>Utilizado</th><th>Saldo</th></tr></thead><tbody>${forecastRows||'<tr><td colspan="4">Nenhuma previsão encontrada para os filtros atuais.</td></tr>'}</tbody></table></div></div>`;
   if(txPanel==='realizados')panel=`<div class="card tx-panel"><div class="section-title"><div><h3>Lançamentos realizados — ${periodTitle}</h3><span>${txList.length} item(ns) exibido(s) · ordem de inclusão preservada</span></div></div>${txRealizedFilterControls()}<div class="table-wrap tx-realized-table"><table><thead><tr><th>Data</th><th>Descrição</th><th>Categoria</th><th>Responsável/local</th><th>Cartão</th><th>Valor</th></tr></thead><tbody>${rows||'<tr><td colspan="6">Sem lançamentos realizados para os filtros atuais.</td></tr>'}</tbody></table></div></div>`;
   if(txPanel==='remanejamentos')panel=`<div class="card tx-panel"><div class="section-title"><div><h3>Remanejamentos — ${periodTitle}</h3><span>Transfira saldo entre despesas sem deixar a origem negativa.</span></div><button class="btn secondary" onclick="openRealloc()">Novo remanejamento</button></div><div class="table-wrap tx-rem-table"><table><thead><tr>${txScope==='ano'?'<th>Mês</th>':''}<th>Origem</th><th>Destino</th><th>Valor</th><th>Observação</th><th></th></tr></thead><tbody>${rem||'<tr><td colspan="6">Sem remanejamentos.</td></tr>'}</tbody></table></div></div>`;
-  layout(`<div class="head tx-head"><div><h2>Lançamentos</h2><p>Previsões e realizados possuem filtros próprios e independentes.</p></div><div class="actions"><button class="btn" onclick="openTx()">Novo lançamento</button></div></div><div class="card tx-filter-card tx-period-card"><div class="section-title"><h3>Período</h3><span>A tela abre automaticamente no mês atual</span></div>${txPeriodControls()}</div><div class="tx-summary"><div class="tx-summary-card planned"><span>Previsto</span><strong>${fmt(plannedTotal)}</strong></div><div class="tx-summary-card used"><span>Utilizado</span><strong>${fmt(usedTotal)}</strong></div><div class="tx-summary-card balance"><span>Saldo</span><strong class="${openTotal<0?'neg':'pos'}">${fmt(openTotal)}</strong></div></div>${tabs}${panel}`)
+  layout(`<div class="head tx-head"><div><h2>Lançamentos</h2><p>Previsões e realizados possuem filtros próprios e independentes.</p></div><div class="actions"><button class="btn" onclick="openTx()">Novo lançamento</button></div></div><div class="tx-overview-grid"><div class="card tx-filter-card tx-period-card"><div class="section-title"><h3>Período</h3><span>A tela abre automaticamente no mês atual</span></div>${txPeriodControls()}</div><div class="tx-summary"><div class="tx-summary-card planned"><span>Previsto</span><strong>${fmt(plannedTotal)}</strong></div><div class="tx-summary-card used"><span>Utilizado</span><strong>${fmt(usedTotal)}</strong></div><div class="tx-summary-card balance"><span>Saldo</span><strong class="${openTotal<0?'neg':'pos'}">${fmt(openTotal)}</strong></div></div></div>${tabs}${panel}`)
 }
 function renderEstrategia(){
   const list=periodMonths();
