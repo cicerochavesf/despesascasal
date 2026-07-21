@@ -1,0 +1,22 @@
+PACOTE PWA V59 — ARQUIVOS NA RAIZ
+
+Este pacote foi preparado para a estrutura que já aparece no seu GitHub.
+Todos os arquivos devem ficar diretamente na raiz do repositório, sem pasta icons.
+
+Estrutura correta:
+.nojekyll
+index.html
+manifest.webmanifest
+sw.js
+icon-192.png
+icon-512.png
+maskable-512.png
+
+IMPORTANTE:
+1. Apague o arquivo Index.html (I maiúsculo).
+2. Deixe somente index.html (i minúsculo).
+3. Substitua index.html, manifest.webmanifest e sw.js pelos arquivos deste pacote.
+4. Os três PNG podem permanecer na raiz, como já estão.
+5. Aguarde o deployment do GitHub Pages ficar verde.
+6. Abra https://cicerochavesf.github.io/despesascasal/
+7. Limpe os dados/cache do site no Chrome antes de testar a instalação.
