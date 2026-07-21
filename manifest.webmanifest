@@ -4,11 +4,11 @@
   "short_name": "Finanças CN",
   "description": "Controle financeiro compartilhado de Cícero e Nilce",
   "lang": "pt-BR",
-  "start_url": "./index.html",
+  "dir": "ltr",
+  "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "display_override": [
-    "window-controls-overlay",
     "standalone",
     "minimal-ui"
   ],
@@ -19,6 +19,7 @@
     "finance",
     "productivity"
   ],
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "./icons/icon-192.png",

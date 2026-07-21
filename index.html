@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão v55 -->
+<!-- Despesas Casal - Controle Financeiro | versão v58 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -6,6 +6,8 @@
 <title>Despesas Casal - Controle Financeiro</title>
 <meta name="description" content="Controle financeiro compartilhado de Cícero e Nilce">
 <link rel="manifest" href="./manifest.webmanifest">
+<meta name="application-name" content="Finanças Cícero & Nilce">
+<meta name="apple-mobile-web-app-title" content="Finanças CN">
 <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
 <link rel="apple-touch-icon" href="./icons/icon-192.png">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -2058,7 +2060,7 @@ const SUPABASE_TABLE='app_state';
 const SUPABASE_ROW_ID='despesas-casal';
 const AUTH_STORAGE_KEY='despesas-casal-auth-v1';
 const THEME_STORAGE_KEY='despesas-casal-theme-v1';
-const PWA_VERSION='v57';
+const PWA_VERSION='v58';
 const PWA_SW_URL='./sw.js';
 const PUBLIC_SIGNUP_ENABLED=false;
 const BACKUP_PREFIX='estado_backup_';
@@ -2570,7 +2572,7 @@ function slugify(txt){return String(txt||'').normalize('NFD').replace(/[\u0300-\
 function openSubcategory(catId,enc=''){const old=enc?decodeURIComponent(enc):'';modal(`<div class="sheet-head"><h3>${old?'Editar':'Nova'} subcategoria</h3><button class="close" onclick="closeModal()">×</button></div><form class="form" onsubmit="saveSubcategory(event,'${catId}','${encodeURIComponent(old)}')"><div class="form two"><div class="field"><label>Categoria</label><select name="cat">${catOptions(catId)}</select></div><div class="field"><label>Subcategoria</label><input name="sub" value="${old.replaceAll('"','&quot;')}" required></div></div><label class="envelope-toggle"><input type="checkbox" name="envelope" ${old&&isEnvelopeEnabled(catId,old)?'checked':''}> Controle por envelope semanal</label><div class="note">Quando ativo, os lançamentos desta subcategoria são distribuídos automaticamente por semanas de domingo a sábado.</div><div class="actions">${old?'<button class="btn danger" type="button" onclick="deleteSubcategory(\''+catId+'\',\''+encodeURIComponent(old)+'\')">Excluir</button>':''}<button class="btn secondary" type="button" onclick="closeModal()">Cancelar</button><button class="btn">Salvar</button></div></form>`)} function saveSubcategory(e,catId,encOld){e.preventDefault();const f=new FormData(e.target),newCat=f.get('cat'),sub=String(f.get('sub')||'').trim(),old=decodeURIComponent(encOld||''),enabled=f.get('envelope')==='on';if(!sub)return;if(!state.subs[newCat])state.subs[newCat]=[];if(old&&state.subs[catId])state.subs[catId]=state.subs[catId].filter(x=>x!==old);if(old)deleteEnvelopeSetting(catId,old);if(!state.subs[newCat].includes(sub))state.subs[newCat].push(sub);setEnvelopeEnabled(newCat,sub,enabled);save();closeModal();render()} function deleteSubcategory(catId,enc){const old=decodeURIComponent(enc);if(!confirm('Excluir subcategoria?'))return;state.subs[catId]=(state.subs[catId]||[]).filter(x=>x!==old);deleteEnvelopeSetting(catId,old);save();closeModal();render()}
 function downloadJSONFile(content,filename){const blob=new Blob([JSON.stringify(content,null,2)],{type:'application/json'});const a=document.createElement('a');const url=URL.createObjectURL(blob);a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1200)}
 function safeFileStamp(){const d=new Date(),pad=n=>String(n).padStart(2,'0');return `${localDateId(d)}_${pad(d.getHours())}-${pad(d.getMinutes())}`}
-function exportJSON(){if(!cloudSynced)return alert('Aguarde a sincronização da nuvem.');downloadJSONFile({app:'Finanças Cícero & Nilce',version:'v57',exportedAt:new Date().toISOString(),source:'estado-sincronizado-da-nuvem',state:clone(state)},`backup-completo-financas-cicero-nilce-${safeFileStamp()}.json`)}
+function exportJSON(){if(!cloudSynced)return alert('Aguarde a sincronização da nuvem.');downloadJSONFile({app:'Finanças Cícero & Nilce',version:'v58',exportedAt:new Date().toISOString(),source:'estado-sincronizado-da-nuvem',state:clone(state)},`backup-completo-financas-cicero-nilce-${safeFileStamp()}.json`)}
 function importJSON(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=async()=>{try{const parsed=JSON.parse(reader.result),payload=parsed&&parsed.state?parsed.state:parsed,next=merge(clone(baseData),payload);if(!confirm('Importar este backup e substituir o estado atual na nuvem?'))return;setCloudStatus('Importando backup...','loading');await writeCloudRow(SUPABASE_ROW_ID,next);state=next;cacheCloudState();setCloudStatus('Backup importado','ok');closeModal();render();alert('Backup importado e salvo na nuvem.')}catch(err){console.error(err);setCloudStatus('Erro na importação','error');alert('Arquivo inválido ou não foi possível salvar na nuvem.')}};reader.readAsText(file);e.target.value=''}
 async function resetData(){if(!confirm('Restaurar a base inicial? Isso substituirá também o estado principal da nuvem.'))return;setCloudStatus('Restaurando base...','loading');try{const next=clone(baseData);await writeCloudRow(SUPABASE_ROW_ID,next);state=next;cacheCloudState();setCloudStatus('Base restaurada','ok');render()}catch(err){setCloudStatus('Erro ao restaurar','error');alert('Não foi possível restaurar a base na nuvem.')}}
 
@@ -2586,8 +2588,41 @@ async function initPwa(){
   pwaInstalled=isStandalonePwa();
   window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();deferredInstallPrompt=event});
   window.addEventListener('appinstalled',()=>{pwaInstalled=true;deferredInstallPrompt=null;if(document.getElementById('modal')?.classList.contains('open'))openMoreMenu()});
-  if('serviceWorker'in navigator&&pwaSupportedHost())try{pwaRegistration=await navigator.serviceWorker.register(PWA_SW_URL,{scope:'./'});await navigator.serviceWorker.ready}catch(err){console.warn('Service worker não registrado',err)}
+  if('serviceWorker'in navigator&&pwaSupportedHost())try{
+    pwaRegistration=await navigator.serviceWorker.register(new URL(PWA_SW_URL,document.baseURI),{scope:new URL('./',document.baseURI).pathname,updateViaCache:'none'});
+    await pwaRegistration.update();
+    await navigator.serviceWorker.ready;
+  }catch(err){console.warn('Service worker não registrado',err)}
   const media=window.matchMedia('(max-width:760px)');const listener=()=>{if(cloudSynced)render()};if(media.addEventListener)media.addEventListener('change',listener);else if(media.addListener)media.addListener(listener);
+}
+async function getPwaDiagnostic(){
+  const checks=[];const add=(name,ok,detail)=>checks.push({name,ok,detail});
+  add('Conexão segura',pwaSupportedHost(),location.protocol+'//'+location.host);
+  const manifestLink=document.querySelector('link[rel="manifest"]');
+  add('Link do manifesto',!!manifestLink,manifestLink?.href||'Não encontrado no HTML');
+  let manifest=null;
+  if(manifestLink){try{const response=await fetch(manifestLink.href,{cache:'no-store'});add('Arquivo manifest.webmanifest',response.ok,`HTTP ${response.status} · ${response.headers.get('content-type')||'tipo não informado'}`);if(response.ok)manifest=await response.json()}catch(err){add('Arquivo manifest.webmanifest',false,err.message)}}
+  if(manifest){
+    add('Nome do aplicativo',!!(manifest.name||manifest.short_name),manifest.name||manifest.short_name||'Ausente');
+    add('Modo standalone',['standalone','fullscreen','minimal-ui'].includes(manifest.display),manifest.display||'Ausente');
+    add('Endereço inicial',!!manifest.start_url,manifest.start_url||'Ausente');
+    const icon192=(manifest.icons||[]).find(i=>String(i.sizes||'').split(/\s+/).includes('192x192'));
+    const icon512=(manifest.icons||[]).find(i=>String(i.sizes||'').split(/\s+/).includes('512x512'));
+    add('Ícone 192 × 192',!!icon192,icon192?.src||'Ausente');
+    add('Ícone 512 × 512',!!icon512,icon512?.src||'Ausente');
+    for(const [label,icon] of [['Arquivo do ícone 192',icon192],['Arquivo do ícone 512',icon512]])if(icon){try{const u=new URL(icon.src,manifestLink.href),r=await fetch(u,{cache:'no-store'});add(label,r.ok,`${u.pathname} · HTTP ${r.status}`)}catch(err){add(label,false,err.message)}}
+  }
+  add('Suporte a Service Worker','serviceWorker'in navigator,'serviceWorker' in navigator?'Disponível':'Não disponível');
+  if('serviceWorker'in navigator){try{const reg=await navigator.serviceWorker.getRegistration(new URL('./',document.baseURI));add('Service Worker registrado',!!reg,reg?.scope||'Nenhum registro encontrado');add('Service Worker ativo',!!reg?.active,reg?.active?.state||'Não ativo')}catch(err){add('Service Worker registrado',false,err.message)}}
+  add('Evento de instalação liberado',!!deferredInstallPrompt,deferredInstallPrompt?'Pronto para instalar':'Ainda não liberado pelo Chrome');
+  add('Executando como aplicativo',isStandalonePwa(),isStandalonePwa()?'Sim':'Não');
+  return checks;
+}
+async function openPwaDiagnostic(){
+  modal(`<div class="sheet-head"><h3>Verificando instalação PWA...</h3><button class="close" onclick="closeModal()">×</button></div><div class="note">Aguarde alguns segundos.</div>`);
+  const checks=await getPwaDiagnostic(),failures=checks.filter(c=>!c.ok);
+  const rows=checks.map(c=>`<div class="integrity-item ${c.ok?'success':'error'}"><strong>${c.ok?'✓':'!'} ${escapeHtml(c.name)}</strong><span>${escapeHtml(c.detail)}</span></div>`).join('');
+  modal(`<div class="sheet-head"><div><h3>Diagnóstico da instalação</h3><p class="muted" style="margin-top:4px;font-weight:750">${failures.length?failures.length+' verificação(ões) precisam de atenção':'Estrutura PWA reconhecida'}</p></div><button class="close" onclick="closeModal()">×</button></div><div class="integrity-list">${rows}</div><div class="note" style="margin-top:12px">Se todos os arquivos estiverem corretos e o Chrome ainda mostrar “Criar atalho”, remova o atalho antigo, limpe os dados deste site no Chrome e abra a página novamente.</div><div class="actions"><button class="btn secondary" onclick="openMoreMenu()">Voltar</button><button class="btn" onclick="closeModal();location.reload()">Recarregar</button></div>`)
 }
 async function openInstallApp(){
   const status=pwaInstallState();
@@ -2595,7 +2630,7 @@ async function openInstallApp(){
   if(status==='needs_https')return modal(`<div class="sheet-head"><h3>Instalar aplicativo</h3><button class="close" onclick="closeModal()">×</button></div><div class="note">A instalação PWA só é liberada quando o app está publicado em HTTPS. Envie todos os arquivos do pacote para o GitHub Pages ou outro servidor HTTPS; abrir somente o HTML baixado não ativa a instalação.</div><div class="actions"><button class="btn secondary" onclick="openMoreMenu()">Voltar</button></div>`);
   if(deferredInstallPrompt){const prompt=deferredInstallPrompt;deferredInstallPrompt=null;await prompt.prompt();const choice=await prompt.userChoice;if(choice.outcome!=='accepted')deferredInstallPrompt=prompt;return}
   const instruction=isIosDevice()?'No Safari, toque em Compartilhar e depois em “Adicionar à Tela de Início”.':'Abra o menu do navegador e escolha “Instalar aplicativo” ou “Adicionar à tela inicial”. No Chrome, o ícone de instalação também pode aparecer na barra de endereço.';
-  modal(`<div class="sheet-head"><h3>Instalar aplicativo</h3><button class="close" onclick="closeModal()">×</button></div><div class="note">${instruction}</div><div class="pwa-status-note">O manifesto e o service worker estão configurados. O navegador pode demorar alguns segundos após a primeira abertura para liberar a instalação.</div><div class="actions"><button class="btn secondary" onclick="openMoreMenu()">Voltar</button></div>`)
+  modal(`<div class="sheet-head"><h3>Instalar aplicativo</h3><button class="close" onclick="closeModal()">×</button></div><div class="note">${instruction}</div><div class="pwa-status-note">O Chrome ainda não liberou o instalador nativo. Use o diagnóstico abaixo para verificar se manifesto, ícones e service worker estão publicados no mesmo endereço do app.</div><div class="actions"><button class="btn secondary" onclick="openMoreMenu()">Voltar</button><button class="btn" onclick="openPwaDiagnostic()">Verificar PWA</button></div>`)
 }
 function pwaInstallMenuItem(){const status=pwaInstallState(),installed=status==='installed';const detail=installed?'Já instalado neste dispositivo.':status==='ready'?'Instala o app neste dispositivo.':status==='needs_https'?'Requer publicação em HTTPS.':'Abre as instruções de instalação do navegador.';return `<button class="more-menu-item" ${installed?'disabled':''} onclick="openInstallApp()">${moreIcon(installed?'✓':'⬇')}<span class="more-menu-copy"><strong>${installed?'Aplicativo instalado':'Instalar aplicativo'}</strong><small>${detail}</small></span></button>`}
 function currentTheme(){return localStorage.getItem(THEME_STORAGE_KEY)==='dark'?'dark':'light'}
@@ -2604,7 +2639,7 @@ function setAppTheme(theme){localStorage.setItem(THEME_STORAGE_KEY,theme==='dark
 function moreIcon(symbol){return `<span class="more-menu-icon" aria-hidden="true">${symbol}</span>`}
 function openMoreMenu(){
   const theme=currentTheme();
-  modal(`<div class="sheet-head"><div><h3>Mais...</h3><p class="muted" style="margin-top:4px;font-weight:750">Ferramentas, segurança e preferências</p></div><button class="close" onclick="closeModal()">×</button></div><div class="more-menu-grid"><button class="more-menu-item" onclick="goToConfigFromMore()">${moreIcon('⚙')}<span class="more-menu-copy"><strong>Configurações</strong><small>Cartões, categorias, anos, colunas e envelopes.</small></span></button>${pwaInstallMenuItem()}<button class="more-menu-item" onclick="openIntegrityCheck()">${moreIcon('✓')}<span class="more-menu-copy"><strong>Verificar integridade</strong><small>Analisa estrutura, vínculos, valores e possíveis inconsistências.</small></span></button><button class="more-menu-item" onclick="openExportOptions()">${moreIcon('⇩')}<span class="more-menu-copy"><strong>Exportações</strong><small>Backup completo e relatórios em CSV.</small></span></button><button class="more-menu-item" onclick="openBackupManagerFromMore()">${moreIcon('↺')}<span class="more-menu-copy"><strong>Gestão dos backups</strong><small>Snapshots automáticos, restauração e importação.</small></span></button><button class="more-menu-item" onclick="openCalculator()">${moreIcon('⌗')}<span class="more-menu-copy"><strong>Calculadora</strong><small>Faça contas sem sair do app.</small></span></button><button class="more-menu-item danger" onclick="logoutUser()">${moreIcon('↪')}<span class="more-menu-copy"><strong>Sair</strong><small>Encerra a sessão neste aparelho.</small></span></button></div><div class="more-theme-panel"><strong>Aparência</strong><div class="theme-choice"><button class="${theme==='light'?'active':''}" onclick="setAppTheme('light')">☀ Modo claro</button><button class="${theme==='dark'?'active':''}" onclick="setAppTheme('dark')">☾ Modo escuro</button></div></div>`)
+  modal(`<div class="sheet-head"><div><h3>Mais...</h3><p class="muted" style="margin-top:4px;font-weight:750">Ferramentas, segurança e preferências</p></div><button class="close" onclick="closeModal()">×</button></div><div class="more-menu-grid"><button class="more-menu-item" onclick="goToConfigFromMore()">${moreIcon('⚙')}<span class="more-menu-copy"><strong>Configurações</strong><small>Cartões, categorias, anos, colunas e envelopes.</small></span></button>${pwaInstallMenuItem()}<button class="more-menu-item" onclick="openPwaDiagnostic()">${moreIcon('◉')}<span class="more-menu-copy"><strong>Diagnóstico PWA</strong><small>Confere manifesto, ícones, service worker e instalação.</small></span></button><button class="more-menu-item" onclick="openIntegrityCheck()">${moreIcon('✓')}<span class="more-menu-copy"><strong>Verificar integridade</strong><small>Analisa estrutura, vínculos, valores e possíveis inconsistências.</small></span></button><button class="more-menu-item" onclick="openExportOptions()">${moreIcon('⇩')}<span class="more-menu-copy"><strong>Exportações</strong><small>Backup completo e relatórios em CSV.</small></span></button><button class="more-menu-item" onclick="openBackupManagerFromMore()">${moreIcon('↺')}<span class="more-menu-copy"><strong>Gestão dos backups</strong><small>Snapshots automáticos, restauração e importação.</small></span></button><button class="more-menu-item" onclick="openCalculator()">${moreIcon('⌗')}<span class="more-menu-copy"><strong>Calculadora</strong><small>Faça contas sem sair do app.</small></span></button><button class="more-menu-item danger" onclick="logoutUser()">${moreIcon('↪')}<span class="more-menu-copy"><strong>Sair</strong><small>Encerra a sessão neste aparelho.</small></span></button></div><div class="more-theme-panel"><strong>Aparência</strong><div class="theme-choice"><button class="${theme==='light'?'active':''}" onclick="setAppTheme('light')">☀ Modo claro</button><button class="${theme==='dark'?'active':''}" onclick="setAppTheme('dark')">☾ Modo escuro</button></div></div>`)
 }
 function goToConfigFromMore(){closeModal();setView('config')}
 function addIntegrityIssue(list,level,title,detail){list.push({level,title,detail})}
