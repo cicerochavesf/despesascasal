@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão v29 -->
+<!-- Despesas Casal - Controle Financeiro | versão v38 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -510,101 +510,1217 @@ td:has(.money),th.month-head,.total-col{white-space:nowrap!important;overflow-wr
 
 
 
-/* v32 - organização específica para notebook e desktop */
+/* v33 — revisão visual inspirada em apps financeiros modernos.
+   Notebook/desktop sem elementos congelados; mobile usa listas compactas e roláveis. */
 @media(min-width:761px){
-  body{background:linear-gradient(180deg,#F6F8FC 0,#F3F6FA 100%)}
-  .header{background:rgba(248,250,252,.96)!important;border-bottom:1px solid #DDE3EC!important;box-shadow:0 6px 18px rgba(16,24,40,.04)}
-  .header-in{width:min(100%,1440px);margin:0 auto;padding:10px 20px!important;grid-template-columns:minmax(215px,.8fr) minmax(520px,2fr) auto!important;gap:12px!important}
+  :root{
+    --premium-bg:#F4F6F9;
+    --premium-panel:#FFFFFF;
+    --premium-border:#E7EAF0;
+    --premium-text:#172033;
+    --premium-muted:#697386;
+    --premium-blue:#3559E0;
+    --premium-blue-soft:#EEF2FF;
+    --premium-shadow:0 12px 34px rgba(16,24,40,.055);
+  }
+  html{scroll-behavior:smooth}
+  body{background:var(--premium-bg)!important;color:var(--premium-text)!important}
+  .shell{min-height:100vh}
+
+  /* Cabeçalho compacto, estático e sem sobreposição */
+  .header{
+    position:static!important;
+    top:auto!important;
+    z-index:auto!important;
+    background:transparent!important;
+    border:0!important;
+    box-shadow:none!important;
+    backdrop-filter:none!important;
+    padding:18px 20px 0!important;
+  }
+  .header-in{
+    width:min(100%,1320px)!important;
+    min-height:64px!important;
+    margin:0 auto!important;
+    padding:10px 12px!important;
+    display:grid!important;
+    grid-template-columns:minmax(235px,.78fr) minmax(520px,1.72fr) auto!important;
+    gap:14px!important;
+    align-items:center!important;
+    background:#FFFFFF!important;
+    border:1px solid var(--premium-border)!important;
+    border-radius:20px!important;
+    box-shadow:var(--premium-shadow)!important;
+  }
   .brand{min-width:0!important;gap:10px!important}
-  .mark{width:36px!important;height:36px!important;border-radius:12px!important;box-shadow:0 8px 18px rgba(29,78,216,.16)!important}
-  .brand h1{font-size:13.5px!important;white-space:nowrap!important}
-  .nav{justify-content:center!important;gap:3px!important;overflow-x:auto!important}
-  .nav button{padding:8px 10px!important;font-size:11.5px!important;border-radius:10px!important}
-  .right{min-width:112px!important;justify-content:flex-end!important}
-  .cloud-status{padding:6px 9px!important;font-size:10px!important}
-  .main{width:min(100%,1440px);margin:0 auto;padding:18px 20px 44px!important}
-  .head{align-items:center!important;margin-bottom:13px!important;gap:12px!important}
-  .head h2{font-size:24px!important;letter-spacing:-.045em!important}
-  .head p{font-size:12px!important;margin-top:5px!important;max-width:820px}
-  .btn{padding:9px 12px!important;font-size:12px!important;border-radius:10px!important}
-  .card,.strategy-card{padding:15px!important;border-radius:16px!important;box-shadow:0 7px 22px rgba(16,24,40,.045)!important}
-  .grid{gap:12px!important}
-  .metric{min-height:98px!important}
-  .metric .value{font-size:21px!important;margin-top:8px!important}
-  .metric .subtxt{font-size:11px!important;margin-top:6px!important}
-  .section-title{margin-bottom:10px!important}
-  .section-title h3{font-size:15px!important}
-  .section-title span{font-size:11px!important}
-  .filterbar{gap:6px!important}
-  .filterbar button,.filterbar .select{padding:7px 9px!important;font-size:11px!important;border-radius:10px!important}
-  .table-wrap{border-radius:14px!important}
-  table{border-spacing:0 5px!important}
-  th{font-size:9.5px!important;padding:0 7px!important}
-  td{font-size:11.5px!important;padding:8px 7px!important;line-height:1.18!important}
-  td:first-child{border-radius:10px 0 0 10px!important}
-  td:last-child{border-radius:0 10px 10px 0!important}
-  .table-wrap.sticky-months{max-height:57vh!important}
-  .expense-enhanced{max-height:58vh!important}
-  .summary-colorized{max-height:52vh!important}
-  .manager-table{max-height:56vh!important}
-  .view-config .table-wrap{max-height:48vh!important}
-  .view-config .grid.cols2{gap:12px!important}
-  .view-config .card[style*="margin-top"]{margin-top:12px!important}
+  .mark{
+    width:38px!important;height:38px!important;border-radius:13px!important;
+    background:linear-gradient(145deg,#172033,#3559E0)!important;
+    box-shadow:0 8px 20px rgba(53,89,224,.18)!important;
+  }
+  .brand h1{font-size:13.5px!important;line-height:1.2!important;letter-spacing:-.025em!important;white-space:nowrap!important}
+  .nav{
+    justify-content:center!important;
+    gap:3px!important;
+    padding:4px!important;
+    overflow-x:auto!important;
+    background:#F5F7FA!important;
+    border:1px solid #EDF0F4!important;
+    border-radius:15px!important;
+    scrollbar-width:none!important;
+  }
+  .nav::-webkit-scrollbar{display:none}
+  .nav button{
+    padding:9px 11px!important;
+    border:1px solid transparent!important;
+    border-radius:11px!important;
+    color:#667085!important;
+    font-size:11.5px!important;
+    font-weight:800!important;
+    box-shadow:none!important;
+  }
+  .nav button:hover:not(.active){background:#FFFFFF!important;color:#344054!important}
+  .nav button.active{
+    background:#FFFFFF!important;
+    color:#172033!important;
+    border-color:#E2E6EC!important;
+    box-shadow:0 4px 12px rgba(16,24,40,.08)!important;
+  }
+  .right{justify-content:flex-end!important;min-width:100px!important}
+  .cloud-status{
+    padding:7px 10px!important;
+    border:0!important;
+    background:#ECFDF3!important;
+    color:#067647!important;
+    font-size:10.5px!important;
+    box-shadow:inset 0 0 0 1px #D1FADF!important;
+  }
 
-  .tx-overview-grid{display:grid!important;grid-template-columns:minmax(265px,.72fr) minmax(0,1.55fr)!important;gap:12px!important;align-items:stretch!important}
-  .tx-overview-grid .tx-period-card{height:100%!important;margin:0!important}
-  .tx-overview-grid .tx-summary{margin:0!important;height:100%!important}
-  .tx-overview-grid .tx-summary-card{min-height:100%!important;padding:12px 13px!important;border-radius:14px!important}
-  .tx-tabs{margin:12px 0!important;padding:4px!important;border-radius:13px!important}
-  .tx-tabs button{padding:8px 11px!important;font-size:11.5px!important}
-  .tx-panel{padding:13px!important}
-  .tx-dedicated-filters{display:grid!important;grid-template-columns:minmax(185px,.42fr) minmax(0,1.58fr)!important;gap:12px!important;align-items:center!important;padding:11px 12px!important;margin:2px 0 12px!important}
-  .tx-filter-label{margin:0!important;display:block!important}
-  .tx-filter-label span{margin-top:3px!important;display:block!important}
-  .tx-dedicated-filters .tx-filterbar{justify-content:flex-end!important;flex-wrap:nowrap!important;overflow-x:auto!important}
-  .tx-forecast-table,.tx-realized-table{max-height:55vh!important}
-  .tx-forecast-table table,.tx-realized-table table{width:100%!important}
-  .tx-clean-row td{padding-top:9px!important;padding-bottom:9px!important}
-  .tx-row-main strong{font-size:11.5px!important}
-  .tx-row-main small{font-size:10px!important}
+  /* Área principal */
+  .main{
+    width:min(100%,1320px)!important;
+    margin:0 auto!important;
+    padding:24px 20px 64px!important;
+  }
+  .head{align-items:center!important;margin-bottom:16px!important;gap:16px!important}
+  .head h2{font-size:27px!important;line-height:1.08!important;letter-spacing:-.05em!important;color:#172033!important}
+  .head p{font-size:12.5px!important;line-height:1.45!important;color:var(--premium-muted)!important;margin-top:6px!important}
+  .actions{gap:8px!important}
+  .btn{
+    padding:10px 14px!important;
+    border-radius:12px!important;
+    background:#172033!important;
+    font-size:12px!important;
+    box-shadow:0 8px 18px rgba(23,32,51,.13)!important;
+  }
+  .btn:hover{transform:translateY(-1px)}
+  .btn.secondary{background:#FFFFFF!important;color:#344054!important;border:1px solid #DDE2E9!important;box-shadow:none!important}
+  .btn.danger{background:#B42318!important}
 
-  .view-estrategia .executive-kpis{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:12px!important;margin-top:12px!important}
-  .view-estrategia .exec-card{min-height:94px!important;padding:13px!important;border-radius:15px!important}
-  .view-estrategia .exec-card strong{font-size:18px!important;margin-top:8px!important}
-  .view-estrategia .exec-card small{font-size:10.5px!important;margin-top:5px!important}
-  .view-estrategia .executive-grid{grid-template-columns:minmax(0,1.2fr) minmax(360px,.8fr)!important;gap:12px!important;margin-top:12px!important}
-  .view-estrategia .strategy-grid{gap:12px!important;margin-top:12px!important}
-  .view-estrategia .chart-card{padding:15px!important}
-  .view-estrategia .executive-chart{min-height:285px!important;padding-top:10px!important}
-  .view-estrategia .executive-chart .compare-bars{height:215px!important}
-  .view-estrategia .executive-row{grid-template-columns:minmax(110px,155px) 1fr minmax(110px,auto)!important;padding:7px!important}
-  .view-estrategia .manager-table table{min-width:760px!important}
+  /* Cartões com hierarquia clara */
+  .card,.strategy-card{
+    padding:18px!important;
+    border:1px solid var(--premium-border)!important;
+    border-radius:20px!important;
+    background:var(--premium-panel)!important;
+    box-shadow:var(--premium-shadow)!important;
+  }
+  .grid{gap:14px!important}
+  .section-title{margin-bottom:13px!important;gap:12px!important}
+  .section-title h3{font-size:15.5px!important;line-height:1.2!important;letter-spacing:-.025em!important;color:#253044!important}
+  .section-title span{font-size:11px!important;line-height:1.35!important;color:#7A8496!important}
 
-  .view-rxd .rxd-detail-table{max-height:58vh!important;overflow:auto!important}
-  .view-rxd .rxd-detail-table table{min-width:640px!important}
-  .view-receitas .table-wrap{max-height:60vh!important}
-  .view-receitas .table-wrap thead th,
-  .view-rxd .table-wrap thead th,
-  .view-config .table-wrap thead th{position:sticky!important;top:0!important;z-index:10!important;background:#F8FAFC!important;padding-top:7px!important;padding-bottom:7px!important}
+  /* KPIs: leitura rápida, com pouco ruído */
+  .metric{
+    position:relative!important;
+    min-height:116px!important;
+    overflow:hidden!important;
+    padding:18px 18px 16px!important;
+  }
+  .metric:after{
+    content:"";position:absolute;right:-28px;top:-34px;width:96px;height:96px;border-radius:50%;
+    background:radial-gradient(circle,rgba(53,89,224,.12),rgba(53,89,224,0) 70%);pointer-events:none;
+  }
+  .metric .label{font-size:10.5px!important;letter-spacing:.08em!important;color:#7A8496!important}
+  .metric .value{font-size:25px!important;line-height:1.05!important;margin-top:13px!important;color:#172033!important}
+  .metric .subtxt{font-size:10.5px!important;color:#8A93A3!important;margin-top:8px!important}
+  .metric.cicero,.metric.nilce,.metric.reserva{background:#FFFFFF!important}
+  .metric.cicero{border-top:4px solid #3B82F6!important}
+  .metric.nilce{border-top:4px solid #EC4899!important}
+  .metric.reserva{border-top:4px solid #10B981!important}
+  .metric.cicero .label,.metric.cicero .value{color:#1D4ED8!important}
+  .metric.nilce .label,.metric.nilce .value{color:#BE185D!important}
+  .metric.reserva .label,.metric.reserva .value{color:#047857!important}
+
+  /* Filtros em uma única barra calma */
+  .filterbar{
+    display:flex!important;
+    align-items:center!important;
+    gap:7px!important;
+    flex-wrap:wrap!important;
+    padding:6px!important;
+    border:1px solid #E8EBF0!important;
+    border-radius:15px!important;
+    background:#F8F9FB!important;
+  }
+  .filterbar .select,.filterbar button,.compare button{
+    min-height:36px!important;
+    padding:8px 10px!important;
+    border-radius:10px!important;
+    border:1px solid #E1E5EA!important;
+    background:#FFFFFF!important;
+    color:#475467!important;
+    font-size:11px!important;
+    font-weight:800!important;
+    box-shadow:none!important;
+  }
+  .filterbar button.active,.compare button.active{background:#172033!important;color:#FFFFFF!important;border-color:#172033!important}
+
+  /* Tabelas: nenhum cabeçalho ou coluna congelada */
+  .table-wrap,
+  .table-wrap.sticky-months,
+  .table-wrap.freeze-cat,
+  .table-wrap.freeze-detail{
+    position:relative!important;
+    max-height:none!important;
+    overflow-x:auto!important;
+    overflow-y:visible!important;
+    scrollbar-gutter:auto!important;
+    border:1px solid #E9ECF1!important;
+    border-radius:16px!important;
+    background:#FFFFFF!important;
+    box-shadow:none!important;
+  }
+  .table-wrap thead th,
+  .table-wrap.sticky-months thead th,
+  .table-wrap.freeze-cat th,
+  .table-wrap.freeze-detail th,
+  .table-wrap.freeze-cat td,
+  .table-wrap.freeze-detail td{
+    position:static!important;
+    top:auto!important;
+    left:auto!important;
+    right:auto!important;
+    z-index:auto!important;
+    box-shadow:none!important;
+  }
+  table{width:100%!important;border-spacing:0!important;border-collapse:separate!important;table-layout:auto!important}
+  th{
+    padding:12px 13px!important;
+    background:#F8F9FB!important;
+    color:#7A8496!important;
+    border-bottom:1px solid #E9ECF1!important;
+    font-size:9.5px!important;
+    line-height:1.2!important;
+    letter-spacing:.055em!important;
+    white-space:nowrap!important;
+    text-transform:uppercase!important;
+  }
+  td{
+    padding:12px 13px!important;
+    background:#FFFFFF!important;
+    border-top:0!important;
+    border-bottom:1px solid #EFF1F4!important;
+    font-size:11.5px!important;
+    line-height:1.3!important;
+    color:#344054!important;
+  }
+  tbody tr:last-child td{border-bottom:0!important}
+  tbody tr:hover td{background:#FAFBFD!important}
+  td:first-child,td:last-child{border-radius:0!important}
+  .money{letter-spacing:-.025em!important;font-variant-numeric:tabular-nums!important}
+  .muted-cell{color:#98A2B3!important}
+
+  /* Cores de categoria como apoio, não como poluição visual */
+  .category-tinted td,.tx-clean-row td{
+    background:#FFFFFF!important;
+    color:#344054!important;
+    border-color:#EFF1F4!important;
+  }
+  .category-tinted td:first-child,.tx-clean-row td:first-child{border-left:4px solid var(--cat-color)!important}
+  .category-tinted:hover td,.tx-clean-row:hover td{background:color-mix(in srgb,var(--cat-color) 5%,#FFFFFF)!important}
+  .category-tinted .month-value{background:#FFFFFF!important}
+  .category-tinted .total-highlight,.total-highlight{
+    background:#F4F6FA!important;
+    color:#1D2939!important;
+    border-left:1px solid #E6E9EF!important;
+  }
+  .cat-tag{padding:5px 8px!important;border-radius:9px!important;white-space:nowrap!important}
+  .row-accent{width:4px!important;height:15px!important}
+
+  /* Larguras seguras: rolagem horizontal sem sobreposição */
+  .summary-colorized table{min-width:900px!important}
+  .expense-enhanced table{min-width:1180px!important}
+  .rxd-detail-table table{min-width:620px!important}
+  .tx-forecast-table table{min-width:760px!important}
+  .tx-realized-table table{min-width:980px!important}
+  .tx-rem-table table{min-width:760px!important}
+  .manager-table table{min-width:860px!important}
+
+  /* Receita x despesa e gráficos */
+  .barwrap{height:270px!important;padding:22px 18px 8px!important;border-radius:16px!important;background:linear-gradient(180deg,#F8FAFD,#FFFFFF)!important;border:1px solid #ECF0F5!important}
+  .bar{border-radius:8px 8px 3px 3px!important;box-shadow:none!important}
+  .rxd-detail-table{display:block!important}
+  .rxd-detail-table table{margin:0!important}
+
+  /* Lançamentos */
+  .tx-filter-card{background:#FFFFFF!important}
+  .tx-summary{gap:12px!important;margin-top:14px!important}
+  .tx-summary-card{
+    min-height:78px!important;
+    border:1px solid #E7EAF0!important;
+    border-radius:16px!important;
+    padding:14px 15px!important;
+    background:#FFFFFF!important;
+    box-shadow:none!important;
+  }
+  .tx-summary-card span{font-size:9.5px!important;color:#7A8496!important}
+  .tx-summary-card strong{font-size:18px!important;color:#172033!important}
+  .tx-tabs{padding:5px!important;margin:14px 0!important;border:1px solid #E7EAF0!important;background:#F4F6F9!important;border-radius:15px!important}
+  .tx-tabs button{padding:9px 12px!important;border-radius:11px!important;font-size:11.5px!important}
+  .tx-tabs button.active{background:#FFFFFF!important;color:#172033!important;box-shadow:0 4px 12px rgba(16,24,40,.08)!important}
+  .tx-tabs button.active b{background:#EEF2FF!important;color:#3559E0!important}
+  .tx-dedicated-filters{border:1px solid #E8EBF0!important;background:#F8F9FB!important;border-radius:15px!important;padding:12px!important}
+  .tx-panel{padding:17px!important}
+  .tx-status{display:none!important}
+  .tx-balance-cell{gap:0!important}
+
+  /* Visão gerencial com mais respiro e leitura executiva */
+  .executive-kpis{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:14px!important}
+  .exec-card{
+    min-height:110px!important;
+    padding:17px!important;
+    border:1px solid var(--premium-border)!important;
+    border-radius:18px!important;
+    background:#FFFFFF!important;
+    box-shadow:var(--premium-shadow)!important;
+  }
+  .exec-card strong{font-size:21px!important;margin-top:11px!important}
+  .exec-card span{font-size:10px!important;letter-spacing:.065em!important;color:#7A8496!important}
+  .exec-card small{font-size:10px!important;color:#8A93A3!important}
+  .executive-grid{grid-template-columns:minmax(0,1.18fr) minmax(360px,.82fr)!important;gap:14px!important;margin-top:14px!important}
+  .strategy-grid{grid-template-columns:1fr 1fr!important;gap:14px!important;margin-top:14px!important}
+  .chart-card{padding:18px!important}
+  .executive-row{padding:8px 0!important;border-bottom:1px solid #EFF1F4!important}
+  .executive-row:last-child{border-bottom:0!important}
+  .split-card{border:1px solid #E7EAF0!important;border-radius:16px!important;box-shadow:none!important}
+
+  /* Configurações */
+  .view-config .grid.cols2{gap:14px!important}
+  .view-config .table-wrap{overflow-x:auto!important}
+
+  /* Modais sem cabeçalho preso atrás do topo */
+  .sheet-head{position:static!important;top:auto!important;z-index:auto!important;background:#FFFFFF!important}
 }
 
-@media(min-width:761px) and (max-width:1180px){
-  .header-in{grid-template-columns:1fr!important;grid-template-areas:'brand right' 'nav nav'!important;gap:7px!important;padding:9px 14px!important}
-  .brand{grid-area:brand!important}
-  .nav{grid-area:nav!important;justify-content:flex-start!important}
-  .right{grid-area:right!important}
-  .main{padding:14px 14px 38px!important}
+/* Notebook menor: mantém o desenho, reduz apenas a escala. */
+@media(min-width:761px) and (max-width:1120px){
+  .header{padding:12px 14px 0!important}
+  .header-in{grid-template-columns:minmax(205px,.75fr) minmax(0,1.5fr) auto!important;gap:9px!important;border-radius:17px!important}
+  .brand h1{font-size:12px!important}
+  .nav button{padding:8px 9px!important;font-size:10.5px!important}
+  .cloud-status{font-size:0!important;width:28px!important;height:28px!important;padding:0!important;display:grid!important;place-items:center!important}
+  .main{padding:18px 14px 48px!important}
+  .head h2{font-size:24px!important}
+  .card,.strategy-card{padding:15px!important;border-radius:17px!important}
   .cols4{grid-template-columns:repeat(2,minmax(0,1fr))!important}
-  .view-estrategia .executive-grid,.view-estrategia .strategy-grid{grid-template-columns:1fr!important}
-  .view-estrategia .executive-kpis{grid-template-columns:repeat(3,minmax(0,1fr))!important}
-  .tx-overview-grid{grid-template-columns:minmax(230px,.8fr) minmax(0,1.35fr)!important}
-  .tx-dedicated-filters{grid-template-columns:1fr!important}
-  .tx-dedicated-filters .tx-filterbar{justify-content:flex-start!important}
-  .expense-enhanced table{min-width:1050px!important}
+  .executive-grid,.strategy-grid{grid-template-columns:1fr!important}
+  .executive-kpis{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  .filterbar{flex-wrap:nowrap!important;overflow-x:auto!important}
+  .filterbar>*{flex:0 0 auto!important}
+  .expense-enhanced table{min-width:1100px!important}
+}
+
+
+
+/* v34 — mobile novamente em lista, sem blocos/cartões por item */
+@media(max-width:760px){
+  /* Nenhuma tabela ou coluna fica congelada no celular */
+  .table-wrap thead th,
+  .table-wrap th,
+  .table-wrap td,
+  .table-wrap.freeze-cat th,
+  .table-wrap.freeze-cat td,
+  .table-wrap.freeze-detail th,
+  .table-wrap.freeze-detail td,
+  .table-wrap.sticky-months thead th{
+    position:static!important;
+    left:auto!important;
+    top:auto!important;
+    z-index:auto!important;
+  }
+
+  /* Acompanhamento como lista tabular compacta */
+  .tx-forecast-table{
+    overflow-x:auto!important;
+    -webkit-overflow-scrolling:touch!important;
+    border:1px solid #E6EAF0!important;
+    border-radius:13px!important;
+    background:#fff!important;
+  }
+  .tx-forecast-table table{
+    display:table!important;
+    width:100%!important;
+    min-width:540px!important;
+    table-layout:fixed!important;
+    border-collapse:separate!important;
+    border-spacing:0!important;
+  }
+  .tx-forecast-table thead{
+    display:table-header-group!important;
+  }
+  .tx-forecast-table tbody{
+    display:table-row-group!important;
+  }
+  .tx-forecast-table tr{
+    display:table-row!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+  }
+  .tx-forecast-table th,
+  .tx-forecast-table td{
+    display:table-cell!important;
+    width:auto!important;
+    min-width:0!important;
+    padding:9px 8px!important;
+    border:0!important;
+    border-bottom:1px solid #EEF1F5!important;
+    border-radius:0!important;
+    background:#fff!important;
+    vertical-align:middle!important;
+    white-space:nowrap!important;
+    text-align:right!important;
+  }
+  .tx-forecast-table th{
+    background:#F7F8FA!important;
+    color:#667085!important;
+    font-size:9px!important;
+    font-weight:900!important;
+    text-transform:uppercase!important;
+    letter-spacing:.04em!important;
+  }
+  .tx-forecast-table th:first-child,
+  .tx-forecast-table td:first-child{
+    width:45%!important;
+    text-align:left!important;
+    white-space:normal!important;
+    border-left:4px solid var(--cat-color,#D0D5DD)!important;
+  }
+  .tx-forecast-table th:first-child{border-left:0!important}
+  .tx-forecast-table th:nth-child(2),
+  .tx-forecast-table td:nth-child(2),
+  .tx-forecast-table th:nth-child(3),
+  .tx-forecast-table td:nth-child(3),
+  .tx-forecast-table th:nth-child(4),
+  .tx-forecast-table td:nth-child(4){width:18.33%!important}
+  .tx-forecast-table td:before{display:none!important;content:none!important}
+  .tx-forecast-table .tx-row-main{gap:2px!important}
+  .tx-forecast-table .tx-row-main strong{font-size:11px!important;line-height:1.12!important}
+  .tx-forecast-table .tx-row-main small{font-size:9px!important;line-height:1.15!important}
+  .tx-forecast-table .tx-balance-cell{justify-content:flex-end!important}
+  .tx-forecast-table .money{font-size:10.5px!important;font-weight:850!important}
+  .tx-forecast-table tbody tr:last-child td{border-bottom:0!important}
+
+  /* Realizados como lista tabular, não cards */
+  .tx-realized-table{
+    overflow-x:auto!important;
+    -webkit-overflow-scrolling:touch!important;
+    border:1px solid #E6EAF0!important;
+    border-radius:13px!important;
+    background:#fff!important;
+  }
+  .tx-realized-table table{
+    display:table!important;
+    width:100%!important;
+    min-width:680px!important;
+    table-layout:fixed!important;
+    border-collapse:separate!important;
+    border-spacing:0!important;
+  }
+  .tx-realized-table thead{display:table-header-group!important}
+  .tx-realized-table tbody{display:table-row-group!important}
+  .tx-realized-table tr{
+    display:table-row!important;
+    margin:0!important;
+    padding:0!important;
+    border:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+  }
+  .tx-realized-table th,
+  .tx-realized-table td{
+    display:table-cell!important;
+    width:auto!important;
+    min-width:0!important;
+    padding:9px 8px!important;
+    border:0!important;
+    border-bottom:1px solid #EEF1F5!important;
+    border-radius:0!important;
+    background:#fff!important;
+    vertical-align:middle!important;
+    text-align:left!important;
+    white-space:normal!important;
+  }
+  .tx-realized-table th{
+    background:#F7F8FA!important;
+    color:#667085!important;
+    font-size:9px!important;
+    font-weight:900!important;
+    text-transform:uppercase!important;
+    letter-spacing:.04em!important;
+    white-space:nowrap!important;
+  }
+  .tx-realized-table td:before{display:none!important;content:none!important}
+  .tx-realized-table th:nth-child(1),.tx-realized-table td:nth-child(1){width:88px!important;white-space:nowrap!important}
+  .tx-realized-table th:nth-child(2),.tx-realized-table td:nth-child(2){width:210px!important}
+  .tx-realized-table th:nth-child(3),.tx-realized-table td:nth-child(3){width:150px!important}
+  .tx-realized-table th:nth-child(4),.tx-realized-table td:nth-child(4){width:140px!important}
+  .tx-realized-table th:nth-child(5),.tx-realized-table td:nth-child(5){display:none!important}
+  .tx-realized-table th:nth-child(6),.tx-realized-table td:nth-child(6){width:92px!important;text-align:right!important;white-space:nowrap!important}
+  .tx-realized-table td:first-child{border-left:4px solid var(--cat-color,#D0D5DD)!important}
+  .tx-realized-table tbody tr:last-child td{border-bottom:0!important}
+  .tx-realized-table .tx-row-main{gap:2px!important}
+  .tx-realized-table .tx-row-main strong{font-size:11px!important;line-height:1.12!important}
+  .tx-realized-table .tx-row-main small{font-size:9px!important;line-height:1.15!important}
+  .tx-realized-table .cat-tag{font-size:9.5px!important;padding:3px 5px!important}
+  .tx-realized-table .tx-person{display:flex!important;gap:5px!important;white-space:normal!important}
+  .tx-realized-table .money{font-size:10.5px!important;font-weight:900!important}
+
+  /* Lista mais limpa: sem cartões individuais e sem sombras por linha */
+  .tx-clean-row td{
+    box-shadow:none!important;
+    background:#fff!important;
+  }
+  .tx-clean-row:hover td{background:#F8FAFC!important}
+}
+
+
+
+/* v35 — despesas agrupadas como na visão de lançamentos */
+.expense-grouped table{min-width:900px!important;table-layout:auto!important}
+.expense-grouped th:first-child,.expense-grouped td:first-child{min-width:260px!important;width:32%!important;text-align:left!important;white-space:normal!important}
+.expense-grouped th:not(:first-child),.expense-grouped td:not(:first-child){text-align:right!important;white-space:nowrap!important}
+.expense-item-main{display:flex;flex-direction:column;gap:4px;min-width:0}
+.expense-item-main strong{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:900;line-height:1.18;color:#253044}
+.expense-item-main small{font-size:10px;line-height:1.25;color:#667085;font-weight:750}
+.expense-item-main .category-text{font-weight:950}
+.owner-inline{font-weight:900}
+.owner-inline.cicero{color:#1D4ED8}.owner-inline.nilce{color:#BE185D}.owner-inline.compartilhado{color:#475569}
+.expense-grouped .month-value{min-width:80px!important}
+.expense-grouped .total-col{min-width:104px!important}
+@media(max-width:1120px){
+  .expense-grouped table{min-width:860px!important}
+  .expense-grouped th:first-child,.expense-grouped td:first-child{min-width:230px!important;width:30%!important}
+}
+@media(max-width:760px){
+  .expense-grouped{overflow-x:auto!important;-webkit-overflow-scrolling:touch!important}
+  .expense-grouped table{min-width:760px!important;display:table!important;table-layout:auto!important}
+  .expense-grouped thead{display:table-header-group!important}.expense-grouped tbody{display:table-row-group!important}.expense-grouped tr{display:table-row!important}
+  .expense-grouped th,.expense-grouped td{display:table-cell!important;padding:9px 8px!important;border-radius:0!important}
+  .expense-grouped th:first-child,.expense-grouped td:first-child{min-width:210px!important;width:210px!important}
+  .expense-grouped .month-value{min-width:72px!important}
+  .expense-item-main strong{font-size:11px!important}.expense-item-main small{font-size:9px!important}
+}
+
+
+
+/* v36 — realizados agrupados e revisão responsiva global das tabelas */
+.table-wrap,
+.table-wrap.wide,
+.table-wrap.expanded,
+.table-wrap.compact,
+.table-wrap.sticky-months,
+.table-wrap.freeze-cat,
+.table-wrap.freeze-detail{
+  width:100%!important;
+  max-width:100%!important;
+  overflow-x:auto!important;
+  overflow-y:visible!important;
+  -webkit-overflow-scrolling:touch!important;
+  scrollbar-gutter:auto!important;
+}
+.table-wrap thead th,
+.table-wrap tbody td,
+.table-wrap.sticky-months thead th,
+.table-wrap.freeze-cat th,
+.table-wrap.freeze-cat td,
+.table-wrap.freeze-detail th,
+.table-wrap.freeze-detail td{
+  position:static!important;
+  top:auto!important;
+  left:auto!important;
+  right:auto!important;
+  z-index:auto!important;
+  box-shadow:none!important;
+}
+.table-wrap table{width:100%!important;max-width:100%!important;border-spacing:0!important}
+.table-wrap th,.table-wrap td{vertical-align:middle!important}
+.table-wrap th{white-space:nowrap!important}
+.table-wrap td{overflow-wrap:break-word!important;word-break:normal!important}
+.table-wrap td:has(.money),.table-wrap .money{white-space:nowrap!important}
+
+/* Realizados: uma coluna descritiva concentra grupo, subgrupo, pessoa e localização */
+.tx-realized-grouped table{min-width:0!important;width:100%!important;table-layout:fixed!important}
+.tx-realized-grouped th:nth-child(1),.tx-realized-grouped td:nth-child(1){width:112px!important;text-align:left!important;white-space:nowrap!important}
+.tx-realized-grouped th:nth-child(2),.tx-realized-grouped td:nth-child(2){width:auto!important;text-align:left!important;white-space:normal!important}
+.tx-realized-grouped th:nth-child(3),.tx-realized-grouped td:nth-child(3){width:130px!important;text-align:left!important}
+.tx-realized-grouped th:nth-child(4),.tx-realized-grouped td:nth-child(4){width:125px!important;text-align:right!important;white-space:nowrap!important}
+.tx-realized-main{gap:5px!important}
+.tx-realized-main strong{font-size:12px!important;color:#253044!important}
+.tx-realized-main small{font-size:10px!important;line-height:1.3!important;color:#667085!important}
+.tx-date{font-variant-numeric:tabular-nums!important;color:#475467!important;font-weight:800!important}
+.tx-payment{font-size:11px!important;color:#475467!important}
+.tx-amount{text-align:right!important;font-weight:900!important}
+
+/* Tabelas curtas se ajustam à largura; tabelas extensas rolam apenas quando necessário */
+.tx-forecast-table table{min-width:0!important;width:100%!important;table-layout:fixed!important}
+.rxd-detail-table table{min-width:560px!important;width:100%!important;table-layout:auto!important}
+.tx-rem-table table{min-width:680px!important;width:100%!important}
+.summary-colorized table{min-width:760px!important;width:100%!important}
+.expense-grouped table{min-width:820px!important;width:100%!important}
+.strategy-card .table-wrap table,.form .table-wrap table{width:100%!important}
+
+@media(min-width:761px) and (max-width:1180px){
+  .main,.header-in{max-width:100%!important}
+  .table-wrap th{padding-left:10px!important;padding-right:10px!important}
+  .table-wrap td{padding-left:10px!important;padding-right:10px!important}
+  .expense-grouped table{min-width:780px!important}
+  .summary-colorized table{min-width:720px!important}
+  .tx-realized-grouped th:nth-child(1),.tx-realized-grouped td:nth-child(1){width:102px!important}
+  .tx-realized-grouped th:nth-child(3),.tx-realized-grouped td:nth-child(3){width:115px!important}
+  .tx-realized-grouped th:nth-child(4),.tx-realized-grouped td:nth-child(4){width:112px!important}
 }
 
 @media(max-width:760px){
-  .tx-overview-grid{display:block!important}
+  .table-wrap{border-radius:13px!important}
+  .table-wrap table{display:table!important}
+  .table-wrap thead{display:table-header-group!important}
+  .table-wrap tbody{display:table-row-group!important}
+  .table-wrap tr{display:table-row!important}
+  .table-wrap th,.table-wrap td{display:table-cell!important;border-radius:0!important}
+
+  .tx-realized-grouped{overflow-x:hidden!important}
+  .tx-realized-grouped table{min-width:0!important;width:100%!important;table-layout:fixed!important}
+  .tx-realized-grouped th,.tx-realized-grouped td{padding:8px 5px!important;font-size:10px!important}
+  .tx-realized-grouped th:nth-child(1),.tx-realized-grouped td:nth-child(1){width:21%!important;white-space:normal!important}
+  .tx-realized-grouped th:nth-child(2),.tx-realized-grouped td:nth-child(2){width:49%!important}
+  .tx-realized-grouped th:nth-child(3),.tx-realized-grouped td:nth-child(3){width:12%!important;text-align:center!important;overflow-wrap:anywhere!important}
+  .tx-realized-grouped th:nth-child(4),.tx-realized-grouped td:nth-child(4){width:18%!important;text-align:right!important}
+  .tx-realized-main strong{font-size:10.5px!important;line-height:1.15!important}
+  .tx-realized-main small{font-size:8.8px!important;line-height:1.22!important}
+  .tx-payment{font-size:9px!important;line-height:1.15!important}
+  .tx-realized-grouped .money{font-size:9.5px!important;letter-spacing:-.04em!important}
+
+  .tx-forecast-table table{min-width:500px!important}
+  .rxd-detail-table table{min-width:520px!important}
+  .tx-rem-table table{min-width:620px!important}
+  .summary-colorized table{min-width:700px!important}
+  .expense-grouped table{min-width:720px!important}
+
+  /* Formulários e tabelas simples cabem sem criar largura desnecessária */
+  .form .table-wrap table:not(:has(th:nth-child(6))){min-width:0!important;table-layout:fixed!important}
+}
+
+@media(max-width:430px){
+  .tx-realized-grouped th,.tx-realized-grouped td{padding:7px 4px!important}
+  .tx-realized-grouped th:nth-child(1),.tx-realized-grouped td:nth-child(1){width:22%!important}
+  .tx-realized-grouped th:nth-child(2),.tx-realized-grouped td:nth-child(2){width:50%!important}
+  .tx-realized-grouped th:nth-child(3),.tx-realized-grouped td:nth-child(3){width:10%!important}
+  .tx-realized-grouped th:nth-child(4),.tx-realized-grouped td:nth-child(4){width:18%!important}
+  .tx-realized-main strong{font-size:10px!important}
+  .tx-realized-main small{font-size:8.2px!important}
+  .tx-payment{font-size:8.5px!important}
+  .tx-realized-grouped .money{font-size:9px!important}
+}
+
+
+/* v37 - ao acessar Lançamentos, sempre abre o mês atual sem trocar a subvisão selecionada */
+
+
+/* v38 — correção global de largura e revisão responsiva de todas as abas */
+html,body{
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  background:#F5F7FB!important;
+  overflow-x:hidden!important;
+}
+body{margin:0!important}
+.shell{
+  width:100%!important;
+  max-width:none!important;
+  min-width:0!important;
+  margin:0!important;
+  background:#F5F7FB!important;
+  box-shadow:none!important;
+  overflow:visible!important;
+}
+.header{width:100%!important;max-width:none!important}
+.header-in,.main{
+  width:100%!important;
+  max-width:1440px!important;
+  min-width:0!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+.main{overflow-x:hidden!important}
+.grid,.card,.strategy-card,.executive-grid,.strategy-grid,.table-wrap{
+  min-width:0!important;
+  max-width:100%!important;
+}
+.table-wrap{
+  width:100%!important;
+  overflow-x:auto!important;
+  overflow-y:visible!important;
+  -webkit-overflow-scrolling:touch!important;
+}
+.table-wrap table{max-width:none!important}
+.nav{max-width:100vw!important}
+
+@media(max-width:760px){
+  html,body,.shell,.header,.header-in,.main{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    margin-left:0!important;
+    margin-right:0!important;
+  }
+  .shell{padding-bottom:68px!important}
+  .header{padding:0!important;background:#FFFFFF!important}
+  .header-in{padding:8px 10px!important}
+  .main{padding:10px 9px 28px!important;overflow-x:hidden!important}
+  .brand h1{font-size:11.5px!important}
+  .nav{
+    left:0!important;
+    right:0!important;
+    width:100vw!important;
+    max-width:100vw!important;
+    box-sizing:border-box!important;
+  }
+
+  /* Indicadores em uma faixa compacta, sem ocupar uma tela inteira */
+  .kpi-strip{
+    width:100%!important;
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:6px!important;
+    overflow:visible!important;
+  }
+  .kpi-strip .metric{
+    min-height:88px!important;
+    padding:10px 8px!important;
+    border-radius:14px!important;
+  }
+  .kpi-strip .label{
+    font-size:8.5px!important;
+    letter-spacing:.045em!important;
+    line-height:1.1!important;
+  }
+  .kpi-strip .value{
+    margin-top:7px!important;
+    font-size:14px!important;
+    line-height:1.08!important;
+    white-space:nowrap!important;
+    letter-spacing:-.05em!important;
+  }
+  .kpi-strip .subtxt{
+    margin-top:6px!important;
+    font-size:8.5px!important;
+    line-height:1.15!important;
+  }
+
+  .cols2,.cols3,.cols4,
+  .executive-grid,.strategy-grid,.split-wrap{
+    width:100%!important;
+    max-width:100%!important;
+  }
+  .cols2{grid-template-columns:1fr!important}
+  .cols4{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .executive-grid,.strategy-grid,.split-wrap{grid-template-columns:1fr!important}
+
+  .card,.strategy-card{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    padding:12px!important;
+    border-radius:16px!important;
+  }
+  .head{width:100%!important;max-width:100%!important}
+  .head h2{font-size:22px!important}
+  .head p{font-size:11.5px!important;line-height:1.35!important}
+  .section-title{max-width:100%!important;flex-wrap:wrap!important}
+  .section-title h3{font-size:14px!important}
+  .section-title span{font-size:10px!important}
+
+  /* Filtros podem quebrar linha e nunca alargam a página */
+  .filterbar,.actions{
+    width:100%!important;
+    max-width:100%!important;
+    flex-wrap:wrap!important;
+    overflow:visible!important;
+  }
+  .filterbar .select,.filterbar button{
+    min-width:0!important;
+    max-width:100%!important;
+  }
+
+  /* Tabelas: somente o próprio quadro rola horizontalmente */
+  .table-wrap,
+  .rxd-detail-table,
+  .expense-grouped,
+  .tx-forecast-table,
+  .tx-realized-table,
+  .tx-realized-grouped,
+  .tx-rem-table{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    overflow-x:auto!important;
+    overflow-y:visible!important;
+    -webkit-overflow-scrolling:touch!important;
+    overscroll-behavior-inline:contain!important;
+  }
+  .table-wrap table,
+  .rxd-detail-table table,
+  .expense-grouped table,
+  .tx-forecast-table table,
+  .tx-realized-table table,
+  .tx-realized-grouped table,
+  .tx-rem-table table{
+    max-width:none!important;
+  }
+  .table-wrap th,.table-wrap td{
+    position:static!important;
+    left:auto!important;
+    right:auto!important;
+    top:auto!important;
+    z-index:auto!important;
+  }
+
+  /* Tabelas curtas se ajustam; tabelas largas rolam dentro do cartão */
+  .tx-forecast-table table,
+  .tx-realized-grouped table{
+    width:100%!important;
+    min-width:0!important;
+    table-layout:fixed!important;
+  }
+  .rxd-detail-table table{width:100%!important;min-width:560px!important}
+  .expense-grouped table{width:max-content!important;min-width:760px!important}
+  .table-wrap.sticky-months table{width:max-content!important;min-width:760px!important}
+
+  /* Gráficos e visão gerencial não ultrapassam a tela */
+  .barwrap,.mini-trend,.hbar-list,.executive-kpis{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+  }
+  .barwrap{height:190px!important;padding-left:0!important;padding-right:0!important}
+  .hbar-row{grid-template-columns:minmax(82px,120px) minmax(70px,1fr) auto!important;gap:7px!important}
+  .hbar-name,.hbar-value{font-size:10px!important}
+
+  /* Configurações e formulários */
+  .form.two,.form.three{grid-template-columns:1fr!important}
+  input,select,textarea,button{max-width:100%!important}
+}
+
+@media(max-width:390px){
+  .main{padding-left:7px!important;padding-right:7px!important}
+  .kpi-strip{gap:4px!important}
+  .kpi-strip .metric{padding:9px 6px!important}
+  .kpi-strip .value{font-size:12.5px!important}
+  .kpi-strip .subtxt{font-size:8px!important}
+  .nav button{min-width:76px!important;padding-left:7px!important;padding-right:7px!important}
+}
+
+/* v39 - período simplificado: somente ano e mês */
+.period-filterbar{display:flex!important;align-items:center!important;gap:10px!important;flex-wrap:wrap!important}
+.period-filterbar .period-select{min-width:132px!important}
+@media(max-width:720px){
+  .period-filterbar{display:grid!important;grid-template-columns:1fr 1fr!important;width:100%!important;gap:8px!important}
+  .period-filterbar .period-select{width:100%!important;min-width:0!important}
+}
+
+
+
+/* v40 — correção de sobreposição entre colunas monetárias */
+.tx-forecast-table{
+  width:100%!important;
+  max-width:100%!important;
+  overflow-x:auto!important;
+  overflow-y:visible!important;
+  -webkit-overflow-scrolling:touch!important;
+  overscroll-behavior-inline:contain!important;
+}
+.tx-forecast-table table{
+  width:100%!important;
+  min-width:720px!important;
+  table-layout:fixed!important;
+}
+.tx-forecast-table th:first-child,
+.tx-forecast-table td:first-child{
+  width:46%!important;
+  min-width:280px!important;
+}
+.tx-forecast-table th:nth-child(2),
+.tx-forecast-table td:nth-child(2),
+.tx-forecast-table th:nth-child(3),
+.tx-forecast-table td:nth-child(3),
+.tx-forecast-table th:nth-child(4),
+.tx-forecast-table td:nth-child(4){
+  width:18%!important;
+  min-width:120px!important;
+  text-align:right!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+}
+.tx-forecast-table td:nth-child(2),
+.tx-forecast-table td:nth-child(3),
+.tx-forecast-table td:nth-child(4){
+  border-left:1px solid rgba(208,213,221,.55)!important;
+}
+.tx-forecast-table .money{
+  display:block!important;
+  width:100%!important;
+  white-space:nowrap!important;
+  text-align:right!important;
+  overflow:visible!important;
+  font-variant-numeric:tabular-nums!important;
+}
+
+@media(max-width:760px){
+  .tx-forecast-table table{
+    width:640px!important;
+    min-width:640px!important;
+  }
+  .tx-forecast-table th:first-child,
+  .tx-forecast-table td:first-child{
+    width:250px!important;
+    min-width:250px!important;
+  }
+  .tx-forecast-table th:nth-child(2),
+  .tx-forecast-table td:nth-child(2),
+  .tx-forecast-table th:nth-child(3),
+  .tx-forecast-table td:nth-child(3),
+  .tx-forecast-table th:nth-child(4),
+  .tx-forecast-table td:nth-child(4){
+    width:130px!important;
+    min-width:130px!important;
+    max-width:130px!important;
+    padding-left:8px!important;
+    padding-right:8px!important;
+  }
+  .tx-forecast-table .money{
+    font-size:11px!important;
+    letter-spacing:-.025em!important;
+  }
+
+  /* Nas demais tabelas, valores nunca invadem a coluna vizinha. */
+  .table-wrap td:has(.money){
+    min-width:96px!important;
+    white-space:nowrap!important;
+  }
+}
+
+@media(max-width:430px){
+  .tx-forecast-table table{
+    width:620px!important;
+    min-width:620px!important;
+  }
+  .tx-forecast-table th:first-child,
+  .tx-forecast-table td:first-child{
+    width:230px!important;
+    min-width:230px!important;
+  }
+}
+
+
+
+/* v41 - meses fixos na visão expandida de Despesas */
+.expense-grouped.sticky-months{
+  position:relative!important;
+  max-height:min(70vh,760px)!important;
+  overflow:auto!important;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-gutter:stable;
+  border:1px solid #E4E7EC;
+  border-radius:14px;
+  background:#fff;
+}
+.expense-grouped.sticky-months thead th{
+  position:sticky!important;
+  top:0!important;
+  z-index:25!important;
+  background:linear-gradient(180deg,#F8FBFF,#EEF4FF)!important;
+  box-shadow:0 2px 0 #C9D6E8,0 8px 14px rgba(16,24,40,.08)!important;
+}
+.expense-grouped.sticky-months thead th:first-child{
+  z-index:26!important;
+}
+/* Nesta tabela somente os meses ficam fixos; nenhuma coluna lateral congela. */
+.expense-grouped.sticky-months tbody td,
+.expense-grouped.sticky-months tbody th,
+.expense-grouped.sticky-months thead th:last-child{
+  left:auto!important;
+  right:auto!important;
+}
+.expense-grouped.sticky-months tbody td:last-child,
+.expense-grouped.sticky-months tbody th:last-child{
+  position:static!important;
+  box-shadow:none!important;
+}
+.expense-grouped.sticky-months thead th:last-child{
+  position:sticky!important;
+  top:0!important;
+  box-shadow:0 2px 0 #C9D6E8,0 8px 14px rgba(16,24,40,.08)!important;
+}
+@media(max-width:760px){
+  .expense-grouped.sticky-months{
+    max-height:68dvh!important;
+    border-radius:12px;
+  }
+  .expense-grouped.sticky-months thead th{
+    top:0!important;
+    font-size:10px!important;
+  }
+}
+
+
+
+/* v43 — cabeçalho superior discreto com ícones e colunas de itens congeladas */
+.shell{padding-bottom:0!important}
+.header{
+  position:sticky!important;
+  top:0!important;
+  z-index:60!important;
+  background:rgba(255,255,255,.96)!important;
+  backdrop-filter:blur(14px)!important;
+  border-bottom:1px solid #E7EAF0!important;
+  box-shadow:0 4px 16px rgba(16,24,40,.055)!important;
+}
+.header-in{
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr) auto!important;
+  grid-template-areas:'brand nav right'!important;
+  align-items:center!important;
+  gap:12px!important;
+  min-height:54px!important;
+  padding:7px 16px!important;
+}
+.brand{grid-area:brand!important;min-width:0!important;gap:9px!important}
+.mark{width:34px!important;height:34px!important;border-radius:11px!important;box-shadow:none!important}
+.brand h1{font-size:12.5px!important;white-space:nowrap!important}
+.nav{
+  grid-area:nav!important;
+  position:static!important;
+  inset:auto!important;
+  width:auto!important;
+  max-width:100%!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:4px!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  scrollbar-width:none!important;
+}
+.nav::-webkit-scrollbar{display:none!important}
+.nav button{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:6px!important;
+  flex:0 0 auto!important;
+  min-width:0!important;
+  padding:7px 9px!important;
+  border-radius:10px!important;
+  font-size:11px!important;
+  line-height:1!important;
+  color:#586174!important;
+  box-shadow:none!important;
+}
+.nav button.active{background:#111827!important;color:#fff!important}
+.nav-icon{width:17px;height:17px;flex:0 0 17px}
+.nav-short{display:none}
+.right{grid-area:right!important;display:flex!important;width:auto!important}
+.cloud-status{font-size:0!important;width:27px!important;height:27px!important;padding:0!important;display:grid!important;place-items:center!important}
+.cloud-status:before{width:8px!important;height:8px!important;margin:0!important}
+
+/* Congelamento horizontal da coluna identificadora sem sobrepor cabeçalhos. */
+.table-wrap.freeze-item-column{position:relative!important;isolation:isolate!important;overflow-x:auto!important}
+.table-wrap.freeze-item-column th:first-child,
+.table-wrap.freeze-item-column td:first-child{
+  position:sticky!important;
+  left:0!important;
+  z-index:12!important;
+  min-width:var(--freeze-col-1,110px)!important;
+  background:#FFFFFF!important;
+  box-shadow:8px 0 12px -10px rgba(15,23,42,.55)!important;
+}
+.table-wrap.freeze-item-column thead th:first-child{
+  z-index:32!important;
+  background:#F5F8FC!important;
+}
+.table-wrap.freeze-item-column .category-tinted td:first-child,
+.table-wrap.freeze-item-column .tx-clean-row td:first-child{
+  background:linear-gradient(90deg,var(--cat-soft,#fff),#fff 88%)!important;
+}
+.table-wrap.freeze-item-column.freeze-item-two th:nth-child(2),
+.table-wrap.freeze-item-column.freeze-item-two td:nth-child(2){
+  position:sticky!important;
+  left:var(--freeze-col-1,110px)!important;
+  z-index:11!important;
+  background:#FFFFFF!important;
+  box-shadow:8px 0 12px -10px rgba(15,23,42,.45)!important;
+}
+.table-wrap.freeze-item-column.freeze-item-two thead th:nth-child(2){
+  z-index:31!important;
+  background:#F5F8FC!important;
+}
+.table-wrap.freeze-item-column.freeze-item-two .category-tinted td:nth-child(2),
+.table-wrap.freeze-item-column.freeze-item-two .tx-clean-row td:nth-child(2){
+  background:linear-gradient(90deg,var(--cat-soft,#fff),#fff 92%)!important;
+}
+/* A tabela expandida mantém meses no topo e agora também fixa os itens à esquerda. */
+.expense-grouped.sticky-months th:first-child,
+.expense-grouped.sticky-months td:first-child{
+  position:sticky!important;
+  left:0!important;
+}
+.expense-grouped.sticky-months thead th:first-child{z-index:45!important}
+.expense-grouped.sticky-months tbody td:first-child{z-index:20!important}
+
+@media(max-width:760px){
+  .shell{padding-bottom:0!important}
+  .header-in{
+    grid-template-columns:auto minmax(0,1fr) auto!important;
+    grid-template-areas:'brand nav right'!important;
+    gap:5px!important;
+    min-height:48px!important;
+    padding:5px 7px!important;
+  }
+  .brand{gap:0!important}
+  .brand>div:last-child{display:none!important}
+  .mark{width:31px!important;height:31px!important;border-radius:10px!important}
+  .nav{justify-content:flex-start!important;gap:2px!important;padding:0 1px!important}
+  .nav button{
+    min-width:48px!important;
+    height:37px!important;
+    padding:4px 7px!important;
+    gap:4px!important;
+    border-radius:9px!important;
+    font-size:9px!important;
+  }
+  .nav-icon{width:15px!important;height:15px!important;flex-basis:15px!important}
+  .nav-label{display:none!important}
+  .nav-short{display:inline!important;white-space:nowrap!important}
+  .right{display:flex!important}
+  .cloud-status{width:23px!important;height:23px!important;border-color:#D8DEE8!important}
+  .main{padding-top:10px!important;padding-bottom:24px!important}
+
+  .table-wrap.freeze-item-column th:first-child,
+  .table-wrap.freeze-item-column td:first-child{
+    max-width:220px!important;
+  }
+  .expense-grouped.freeze-item-column th:first-child,
+  .expense-grouped.freeze-item-column td:first-child,
+  .tx-forecast-table.freeze-item-column th:first-child,
+  .tx-forecast-table.freeze-item-column td:first-child{
+    min-width:210px!important;
+    width:210px!important;
+  }
+  .summary-colorized.freeze-item-column th:first-child,
+  .summary-colorized.freeze-item-column td:first-child,
+  .rxd-detail-table.freeze-item-column th:first-child,
+  .rxd-detail-table.freeze-item-column td:first-child{
+    min-width:82px!important;
+    width:82px!important;
+  }
+  .tx-realized-grouped.freeze-item-column th:first-child,
+  .tx-realized-grouped.freeze-item-column td:first-child{
+    min-width:76px!important;
+    width:76px!important;
+  }
+  .tx-realized-grouped.freeze-item-column.freeze-item-two th:nth-child(2),
+  .tx-realized-grouped.freeze-item-column.freeze-item-two td:nth-child(2){
+    min-width:210px!important;
+    width:210px!important;
+  }
+  .modal{z-index:120!important}
+}
+
+
+
+/* v44 — colunas congeladas opacas, sem conteúdo aparecendo por trás */
+.table-wrap.freeze-item-column th:first-child,
+.table-wrap.freeze-item-column td:first-child{
+  background-color:#FFFFFF!important;
+  background-image:none!important;
+  background-clip:padding-box!important;
+  border-right:2px solid #DCE3EC!important;
+  box-shadow:10px 0 16px -13px rgba(15,23,42,.78)!important;
+  overflow:hidden!important;
+}
+.table-wrap.freeze-item-column thead th:first-child{
+  background-color:#F4F7FB!important;
+  background-image:none!important;
+}
+.table-wrap.freeze-item-column .category-tinted td:first-child,
+.table-wrap.freeze-item-column .tx-clean-row td:first-child{
+  background-color:color-mix(in srgb,var(--cat-color,#64748B) 9%,#FFFFFF)!important;
+  background-image:none!important;
+}
+.table-wrap.freeze-item-column.freeze-item-two th:nth-child(2),
+.table-wrap.freeze-item-column.freeze-item-two td:nth-child(2){
+  background-color:#FFFFFF!important;
+  background-image:none!important;
+  background-clip:padding-box!important;
+  border-right:2px solid #DCE3EC!important;
+  box-shadow:10px 0 16px -13px rgba(15,23,42,.72)!important;
+  overflow:hidden!important;
+}
+.table-wrap.freeze-item-column.freeze-item-two thead th:nth-child(2){
+  background-color:#F4F7FB!important;
+  background-image:none!important;
+}
+.table-wrap.freeze-item-column.freeze-item-two .category-tinted td:nth-child(2),
+.table-wrap.freeze-item-column.freeze-item-two .tx-clean-row td:nth-child(2){
+  background-color:color-mix(in srgb,var(--cat-color,#64748B) 8%,#FFFFFF)!important;
+  background-image:none!important;
+}
+.table-wrap.freeze-item-column td:first-child > *,
+.table-wrap.freeze-item-column.freeze-item-two td:nth-child(2) > *{
+  position:relative!important;
+  z-index:2!important;
+  max-width:100%!important;
+}
+.table-wrap.freeze-item-column td:first-child .money,
+.table-wrap.freeze-item-column.freeze-item-two td:nth-child(2) .money{
+  max-width:100%!important;
+}
+@supports not (color:color-mix(in srgb,red,white)){
+  .table-wrap.freeze-item-column .category-tinted td:first-child,
+  .table-wrap.freeze-item-column .tx-clean-row td:first-child,
+  .table-wrap.freeze-item-column.freeze-item-two .category-tinted td:nth-child(2),
+  .table-wrap.freeze-item-column.freeze-item-two .tx-clean-row td:nth-child(2){background-color:#F8FAFC!important}
+}
+@media(max-width:760px){
+  .table-wrap.freeze-item-column th:first-child,
+  .table-wrap.freeze-item-column td:first-child,
+  .table-wrap.freeze-item-column.freeze-item-two th:nth-child(2),
+  .table-wrap.freeze-item-column.freeze-item-two td:nth-child(2){
+    box-shadow:8px 0 14px -11px rgba(15,23,42,.82)!important;
+  }
 }
 
 </style></head><body><div id="app"></div><div id="modal" class="modal"></div><script>
@@ -615,7 +1731,7 @@ const SUPABASE_TABLE='app_state';
 const SUPABASE_ROW_ID='despesas-casal';
 let cloudReady=false, cloudSaving=false, cloudSaveTimer=null, lastCloudStatus='Local';
 const baseData={"currentUser": null, "month": "2026-07", "months": [{"id": "2026-07", "label": "Julho", "short": "Jul"}, {"id": "2026-08", "label": "Agosto", "short": "Ago"}, {"id": "2026-09", "label": "Setembro", "short": "Set"}, {"id": "2026-10", "label": "Outubro", "short": "Out"}, {"id": "2026-11", "label": "Novembro", "short": "Nov"}, {"id": "2026-12", "label": "Dezembro", "short": "Dez"}], "categories": [{"id": "moradia", "name": "Moradia", "icon": "Casa", "color": "#2563EB"}, {"id": "transporte", "name": "Transporte", "icon": "Carro", "color": "#4F46E5"}, {"id": "pets", "name": "PETs", "icon": "Pets", "color": "#B45309"}, {"id": "restaurantes", "name": "Restaurantes e Delivery", "icon": "Mesa", "color": "#DC2626"}, {"id": "saude", "name": "Saúde", "icon": "Saúde", "color": "#BE185D"}, {"id": "investimentos", "name": "Investimentos", "icon": "Reserva", "color": "#059669"}, {"id": "diversos", "name": "Diversos", "icon": "Outros", "color": "#475569"}], "subs": {"moradia": ["Diarista - Fortaleza", "Energia - Brasília", "Energia - Fortaleza", "Gás - Fortaleza", "IPTU - Fortaleza", "Internet - Brasília", "Internet - Fortaleza", "Lavanderia - Brasília", "Manutenção Casa - Fortaleza", "Parcela Casa / Aluguel - Brasília", "Parcela Casa / Aluguel - Compartilhado", "Parcela Casa / Aluguel - Fortaleza", "Produtos de Higiene Pessoal - Brasília", "Produtos de Higiene Pessoal - Fortaleza", "Supermercado - Brasília", "Supermercado - Fortaleza", "Vigilante - Fortaleza", "Água Encanada - Brasília", "Água Encanada - Fortaleza", "Água Garrafão - Brasília", "Água Garrafão - Fortaleza"], "transporte": ["Combustível - Fortaleza", "Locação/Parcela Carro - Fortaleza", "Outras Despesas c/ Transporte - Brasília"], "pets": ["Alimentação - Compartilhado", "Higiene - Compartilhado", "Vacinas - Compartilhado", "Veterinário e Medicações - Compartilhado"], "restaurantes": ["Jantar Aniversário Nilce - Compartilhado", "Jantar Aniversário de Casamento - Compartilhado", "Refeições no Trabalho - Brasília", "Refeições no Trabalho - Fortaleza", "Restaurantes_Bares_Delivery - Brasília", "Restaurantes_Bares_Delivery - Fortaleza"], "saude": ["Co-participação Planos - Compartilhado", "Enzimas/Remédios - Brasília", "Enzimas/Remédios - Fortaleza", "Plano de Saúde Cícero - Compartilhado", "Plano de Saúde Nilce - Compartilhado"], "investimentos": ["Reserva de Emergência - Compartilhado"], "diversos": ["Assinatura Noh - Compartilhado", "Despesas Fim de Ano - Compartilhado", "Mesada Cícero - Fortaleza", "Mesada Nilce - Brasília", "Passagens Aéreas - Brasília", "Passagens Aéreas - Compartilhado", "Presente Aniversário Bernardo - Compartilhado", "Presente Aniversário D. Antônia - Compartilhado", "Presente Aniversário Sr. Cícero - Compartilhado", "Presente Dia dos Pais - Compartilhado", "Presentes Dia das Crianças - Compartilhado", "Streaming | Youtube - Compartilhado", "Ajuste de base da planilha"]}, "revenues": {"2026-07": {"cicero": 10595.47, "nilce": 0.0, "reserva": 2635.7}, "2026-08": {"cicero": 10506.87, "nilce": 8484.0, "reserva": 194.17}, "2026-09": {"cicero": 10654.52, "nilce": 7292.0, "reserva": 287.5}, "2026-10": {"cicero": 10384.94, "nilce": 7292.0, "reserva": 287.5}, "2026-11": {"cicero": 10458.74, "nilce": 7292.0, "reserva": 287.5}, "2026-12": {"cicero": 11436.89, "nilce": 10342.0, "reserva": 287.5}}, "budgets": {"2026-07": [{"id": "b_2026-07_1", "cat": "moradia", "sub": "Água Encanada - Fortaleza", "planned": 94.04, "baselineSpent": 94.04, "baselineBalance": 0.0, "city": "Fortaleza"}, {"id": "b_2026-07_2", "cat": "moradia", "sub": "Água Garrafão - Fortaleza", "planned": 30.0, "baselineSpent": 0.0, "baselineBalance": 30.0, "city": "Fortaleza"}, {"id": "b_2026-07_3", "cat": "moradia", "sub": "Diarista - Fortaleza", "planned": 366.0, "baselineSpent": 36.0, "baselineBalance": 330.0, "city": "Fortaleza"}, {"id": "b_2026-07_4", "cat": "moradia", "sub": "Energia - Fortaleza", "planned": 398.62, "baselineSpent": 398.62, "baselineBalance": 0.0, "city": "Fortaleza"}, {"id": "b_2026-07_5", "cat": "moradia", "sub": "Internet - Fortaleza", "planned": 84.99, "baselineSpent": 84.99, "baselineBalance": 0.0, "city": "Fortaleza"}, {"id": "b_2026-07_6", "cat": "moradia", "sub": "IPTU - Fortaleza", "planned": 87.75, "baselineSpent": 87.75, "baselineBalance": 0.0, "city": "Fortaleza"}, {"id": "b_2026-07_7", "cat": "moradia", "sub": "Parcela Casa / Aluguel - Fortaleza", "planned": 939.73, "baselineSpent": 0.0, "baselineBalance": 939.73, "city": "Fortaleza"}, {"id": "b_2026-07_8", "cat": "moradia", "sub": "Parcela Casa / Aluguel - Compartilhado", "planned": 605.02, "baselineSpent": 605.02, "baselineBalance": 0.0, "city": "Compartilhado"}, {"id": "b_2026-07_9", "cat": "moradia", "sub": "Produtos de Higiene Pessoal - Fortaleza", "planned": 26.63, "baselineSpent": 26.63, "baselineBalance": 0.0, "city": "Fortaleza"}, {"id": "b_2026-07_10", "cat": "moradia", "sub": "Produtos de Higiene Pessoal - Brasília", "planned": 30.0, "baselineSpent": 30.0, "baselineBalance": 0.0, "city": "Brasília"}, {"id": "b_2026-07_11", "cat": "moradia", "sub": "Supermercado - Fortaleza", "planned": 550.0, "baselineSpent": 420.86, "baselineBalance": 129.14, "city": "Fortaleza"}, {"id": "b_2026-07_12", "cat": "moradia", "sub": "Supermercado - Brasília", "planned": 500.0, "baselineSpent": 500.0, "baselineBalance": 0.0, "city": "Brasília"}, {"id": "b_2026-07_13", "cat": "moradia", "sub": "Vigilante - Fortaleza", "planned": 40.0, "baselineSpent": 40.0, "baselineBalance": 0.0, "city": "Fortaleza"}, {"id": "b_2026-07_14", "cat": "transporte", "sub": "Combustível - Fortaleza", "planned": 400.0, "baselineSpent": 200.0, "baselineBalance": 200.0, "city": "Fortaleza"}, {"id": "b_2026-07_15", "cat": "transporte", "sub": "Locação/Parcela Carro - Fortaleza", "planned": 2277.26, "baselineSpent": 2277.26, "baselineBalance": 0.0, "city": "Fortaleza"}, {"id": "b_2026-07_16", "cat": "transporte", "sub": "Outras Despesas c/ Transporte - Brasília", "planned": 500.0, "baselineSpent": 500.0, "baselineBalance": 0.0, "city": "Brasília"}, {"id": "b_2026-07_17", "cat": "pets", "sub": "Alimentação - Compartilhado", "planned": 164.01, "baselineSpent": 164.01, "baselineBalance": 0.0, "city": "Compartilhado"}, {"id": "b_2026-07_18", "cat": "pets", "sub": "Higiene - Compartilhado", "planned": 58.0, "baselineSpent": 58.0, "baselineBalance": 0.0, "city": "Compartilhado"}, {"id": "b_2026-07_19", "cat": "pets", "sub": "Veterinário e Medicações - Compartilhado", "planned": 376.93, "baselineSpent": 376.93, "baselineBalance": 0.0, "city": "Compartilhado"}, {"id": "b_2026-07_20", "cat": "restaurantes", "sub": "Refeições no Trabalho - Fortaleza", "planned": 399.03, "baselineSpent": 399.03, "baselineBalance": 0.0, "city": "Fortaleza"}, {"id": "b_2026-07_21", "cat": "restaurantes", "sub": "Refeições no Trabalho - Brasília", "planned": 500.0, "baselineSpent": 500.0, "baselineBalance": 0.0, "city": "Brasília"}, {"id": "b_2026-07_22", "cat": "restaurantes", "sub": "Restaurantes_Bares_Delivery - Fortaleza", "planned": 248.12, "baselineSpent": 131.52, "baselineBalance": 116.6, "city": "Fortaleza"}, {"id": "b_2026-07_23", "cat": "restaurantes", "sub": "Restaurantes_Bares_Delivery - Brasília", "planned": 300.0, "baselineSpent": 153.79, "baselineBalance": 146.21, "city": "Brasília"}, {"id": "b_2026-07_24", "cat": "saude", "sub": "Enzimas/Remédios - Fortaleza", "planned": 16.09, "baselineSpent": 16.09, "baselineBalance": 0.0, "city": "Fortaleza"}, {"id": "b_2026-07_25", "cat": "saude", "sub": "Enzimas/Remédios - Brasília", "planned": 40.0, "baselineSpent": 40.0, "baselineBalance": 0.0, "city": "Brasília"}, {"id": "b_2026-07_26", "cat": "saude", "sub": "Plano de Saúde Nilce - Compartilhado", "planned": 455.39, "baselineSpent": 0.0, "baselineBalance": 455.39, "city": "Compartilhado"}, {"id": "b_2026-07_27", "cat": "saude", "sub": "Plano de Saúde Cícero - Compartilhado", "planned": 163.87, "baselineSpent": 163.87, "baselineBalance": 0.0, "city": "Compartilhado"}, {"id": "b_2026-07_28", "cat": "saude", "sub": "Co-participação Planos - Compartilhado", "planned": 75.0, "baselineSpent": 0.0, "baselineBalance": 75.0, "city": "Compartilhado"}, {"id": "b_2026-07_29", "cat": "investimentos", "sub": "Reserva de Emergência - Compartilhado", "planned": 123.07, "baselineSpent": 123.07, "baselineBalance": 0.0, "city": "Compartilhado"}, {"id": "b_2026-07_30", "cat": "diversos", "sub": "Assinatura Noh - Compartilhado", "planned": 24.0, "baselineSpent": 0.0, "baselineBalance": 24.0, "city": "Compartilhado"}, {"id": "b_2026-07_31", "cat": "diversos", "sub": "Mesada Cícero - Fortaleza", "planned": 2100.0, "baselineSpent": 2100.0, "baselineBalance": 0.0, "city": "Fortaleza"}, {"id": "b_2026-07_32", "cat": "diversos", "sub": "Mesada Nilce - Brasília", "planned": 1100.0, "baselineSpent": 1100.0, "baselineBalance": 0.0, "city": "Brasília"}, {"id": "b_2026-07_33", "cat": "diversos", "sub": "Passagens Aéreas - Compartilhado", "planned": 139.65, "baselineSpent": 139.65, "baselineBalance": 0.0, "city": "Compartilhado"}, {"id": "b_2026-07_34", "cat": "diversos", "sub": "Streaming | Youtube - Compartilhado", "planned": 17.97, "baselineSpent": 17.97, "baselineBalance": 0.0, "city": "Compartilhado"}, {"id": "b_2026-07_ajuste_planilha", "cat": "diversos", "sub": "Ajuste de base da planilha", "planned": 100.97, "baselineSpent": 0, "baselineBalance": 100.97, "city": "Compartilhado"}], "2026-08": [{"id": "b_2026-08_1", "cat": "moradia", "sub": "Água Encanada - Fortaleza", "planned": 100.0, "baselineSpent": 0.0, "baselineBalance": 100.0, "city": "Fortaleza"}, {"id": "b_2026-08_2", "cat": "moradia", "sub": "Água Garrafão - Fortaleza", "planned": 40.5, "baselineSpent": 0.0, "baselineBalance": 40.5, "city": "Fortaleza"}, {"id": "b_2026-08_3", "cat": "moradia", "sub": "Água Garrafão - Brasília", "planned": 40.5, "baselineSpent": 0.0, "baselineBalance": 40.5, "city": "Brasília"}, {"id": "b_2026-08_4", "cat": "moradia", "sub": "Diarista - Fortaleza", "planned": 366.0, "baselineSpent": 0.0, "baselineBalance": 366.0, "city": "Fortaleza"}, {"id": "b_2026-08_5", "cat": "moradia", "sub": "Energia - Fortaleza", "planned": 300.0, "baselineSpent": 0.0, "baselineBalance": 300.0, "city": "Fortaleza"}, {"id": "b_2026-08_6", "cat": "moradia", "sub": "Gás - Fortaleza", "planned": 100.0, "baselineSpent": 0.0, "baselineBalance": 100.0, "city": "Fortaleza"}, {"id": "b_2026-08_7", "cat": "moradia", "sub": "Internet - Fortaleza", "planned": 84.99, "baselineSpent": 0.0, "baselineBalance": 84.99, "city": "Fortaleza"}, {"id": "b_2026-08_8", "cat": "moradia", "sub": "IPTU - Fortaleza", "planned": 87.76, "baselineSpent": 0.0, "baselineBalance": 87.76, "city": "Fortaleza"}, {"id": "b_2026-08_9", "cat": "moradia", "sub": "Lavanderia - Brasília", "planned": 200.0, "baselineSpent": 0.0, "baselineBalance": 200.0, "city": "Brasília"}, {"id": "b_2026-08_10", "cat": "moradia", "sub": "Parcela Casa / Aluguel - Fortaleza", "planned": 939.73, "baselineSpent": 0.0, "baselineBalance": 939.73, "city": "Fortaleza"}, {"id": "b_2026-08_11", "cat": "moradia", "sub": "Parcela Casa / Aluguel - Brasília", "planned": 2000.0, "baselineSpent": 0.0, "baselineBalance": 2000.0, "city": "Brasília"}, {"id": "b_2026-08_12", "cat": "moradia", "sub": "Parcela Casa / Aluguel - Compartilhado", "planned": 605.02, "baselineSpent": 0.0, "baselineBalance": 605.02, "city": "Compartilhado"}, {"id": "b_2026-08_13", "cat": "moradia", "sub": "Produtos de Higiene Pessoal - Fortaleza", "planned": 33.76, "baselineSpent": 33.76, "baselineBalance": 0.0, "city": "Fortaleza"}, {"id": "b_2026-08_14", "cat": "moradia", "sub": "Produtos de Higiene Pessoal - Brasília", "planned": 33.76, "baselineSpent": 33.76, "baselineBalance": 0.0, "city": "Brasília"}, {"id": "b_2026-08_15", "cat": "moradia", "sub": "Supermercado - Fortaleza", "planned": 550.0, "baselineSpent": 0.0, "baselineBalance": 550.0, "city": "Fortaleza"}, {"id": "b_2026-08_16", "cat": "moradia", "sub": "Supermercado - Brasília", "planned": 750.0, "baselineSpent": 0.0, "baselineBalance": 750.0, "city": "Brasília"}, {"id": "b_2026-08_17", "cat": "moradia", "sub": "Vigilante - Fortaleza", "planned": 40.0, "baselineSpent": 0.0, "baselineBalance": 40.0, "city": "Fortaleza"}, {"id": "b_2026-08_18", "cat": "transporte", "sub": "Combustível - Fortaleza", "planned": 450.0, "baselineSpent": 0.0, "baselineBalance": 450.0, "city": "Fortaleza"}, {"id": "b_2026-08_19", "cat": "transporte", "sub": "Locação/Parcela Carro - Fortaleza", "planned": 2277.26, "baselineSpent": 2277.26, "baselineBalance": 0.0, "city": "Fortaleza"}, {"id": "b_2026-08_20", "cat": "transporte", "sub": "Outras Despesas c/ Transporte - Brasília", "planned": 300.0, "baselineSpent": 0.0, "baselineBalance": 300.0, "city": "Brasília"}, {"id": "b_2026-08_21", "cat": "pets", "sub": "Alimentação - Compartilhado", "planned": 152.03, "baselineSpent": 0.0, "baselineBalance": 152.03, "city": "Compartilhado"}, {"id": "b_2026-08_22", "cat": "pets", "sub": "Higiene - Compartilhado", "planned": 65.0, "baselineSpent": 0.0, "baselineBalance": 65.0, "city": "Compartilhado"}, {"id": "b_2026-08_23", "cat": "pets", "sub": "Veterinário e Medicações - Compartilhado", "planned": 305.83, "baselineSpent": 0.0, "baselineBalance": 305.83, "city": "Compartilhado"}, {"id": "b_2026-08_24", "cat": "restaurantes", "sub": "Refeições no Trabalho - Fortaleza", "planned": 500.0, "baselineSpent": 0.0, "baselineBalance": 500.0, "city": "Fortaleza"}, {"id": "b_2026-08_25", "cat": "restaurantes", "sub": "Refeições no Trabalho - Brasília", "planned": 500.0, "baselineSpent": 0.0, "baselineBalance": 500.0, "city": "Brasília"}, {"id": "b_2026-08_26", "cat": "restaurantes", "sub": "Restaurantes_Bares_Delivery - Fortaleza", "planned": 350.0, "baselineSpent": 0.0, "baselineBalance": 350.0, "city": "Fortaleza"}, {"id": "b_2026-08_27", "cat": "restaurantes", "sub": "Restaurantes_Bares_Delivery - Brasília", "planned": 350.0, "baselineSpent": 0.0, "baselineBalance": 350.0, "city": "Brasília"}, {"id": "b_2026-08_28", "cat": "saude", "sub": "Enzimas/Remédios - Fortaleza", "planned": 40.22, "baselineSpent": 40.22, "baselineBalance": 0.0, "city": "Fortaleza"}, {"id": "b_2026-08_29", "cat": "saude", "sub": "Enzimas/Remédios - Brasília", "planned": 40.22, "baselineSpent": 40.22, "baselineBalance": 0.0, "city": "Brasília"}, {"id": "b_2026-08_30", "cat": "saude", "sub": "Plano de Saúde Nilce - Compartilhado", "planned": 455.39, "baselineSpent": 0.0, "baselineBalance": 455.39, "city": "Compartilhado"}, {"id": "b_2026-08_31", "cat": "saude", "sub": "Plano de Saúde Cícero - Compartilhado", "planned": 163.87, "baselineSpent": 0.0, "baselineBalance": 163.87, "city": "Compartilhado"}, {"id": "b_2026-08_32", "cat": "saude", "sub": "Co-participação Planos - Compartilhado", "planned": 75.0, "baselineSpent": 0.0, "baselineBalance": 75.0, "city": "Compartilhado"}, {"id": "b_2026-08_33", "cat": "investimentos", "sub": "Reserva de Emergência - Compartilhado", "planned": 194.17, "baselineSpent": 0.0, "baselineBalance": 194.17, "city": "Compartilhado"}, {"id": "b_2026-08_34", "cat": "diversos", "sub": "Assinatura Noh - Compartilhado", "planned": 24.0, "baselineSpent": 0.0, "baselineBalance": 24.0, "city": "Compartilhado"}, {"id": "b_2026-08_35", "cat": "diversos", "sub": "Mesada Cícero - Fortaleza", "planned": 1500.0, "baselineSpent": 0.0, "baselineBalance": 1500.0, "city": "Fortaleza"}, {"id": "b_2026-08_36", "cat": "diversos", "sub": "Mesada Nilce - Brasília", "planned": 1100.0, "baselineSpent": 0.0, "baselineBalance": 1100.0, "city": "Brasília"}, {"id": "b_2026-08_37", "cat": "diversos", "sub": "Passagens Aéreas - Brasília", "planned": 2500.0, "baselineSpent": 2043.01, "baselineBalance": 456.99, "city": "Brasília"}, {"id": "b_2026-08_38", "cat": "diversos", "sub": "Passagens Aéreas - Compartilhado", "planned": 139.65, "baselineSpent": 0.0, "baselineBalance": 139.65, "city": "Compartilhado"}, {"id": "b_2026-08_39", "cat": "diversos", "sub": "Presente Dia dos Pais - Compartilhado", "planned": 200.0, "baselineSpent": 0.0, "baselineBalance": 200.0, "city": "Compartilhado"}, {"id": "b_2026-08_40", "cat": "diversos", "sub": "Streaming | Youtube - Compartilhado", "planned": 17.97, "baselineSpent": 17.97, "baselineBalance": 0.0, "city": "Compartilhado"}, {"id": "b_2026-08_ajuste_planilha", "cat": "diversos", "sub": "Ajuste de base da planilha", "planned": 0.01, "baselineSpent": 0, "baselineBalance": 0.01, "city": "Compartilhado"}], "2026-09": [{"id": "b_2026-09_1", "cat": "moradia", "sub": "Água Encanada - Fortaleza", "planned": 100.0, "baselineSpent": 0.0, "baselineBalance": 100.0, "city": "Fortaleza"}, {"id": "b_2026-09_2", "cat": "moradia", "sub": "Água Encanada - Brasília", "planned": 100.0, "baselineSpent": 0.0, "baselineBalance": 100.0, "city": "Brasília"}, {"id": "b_2026-09_3", "cat": "moradia", "sub": "Água Garrafão - Fortaleza", "planned": 40.5, "baselineSpent": 0.0, "baselineBalance": 40.5, "city": "Fortaleza"}, {"id": "b_2026-09_4", "cat": "moradia", "sub": "Água Garrafão - Brasília", "planned": 40.5, "baselineSpent": 0.0, "baselineBalance": 40.5, "city": "Brasília"}, {"id": "b_2026-09_5", "cat": "moradia", "sub": "Diarista - Fortaleza", "planned": 366.0, "baselineSpent": 0.0, "baselineBalance": 366.0, "city": "Fortaleza"}, {"id": "b_2026-09_6", "cat": "moradia", "sub": "Energia - Fortaleza", "planned": 300.0, "baselineSpent": 0.0, "baselineBalance": 300.0, "city": "Fortaleza"}, {"id": "b_2026-09_7", "cat": "moradia", "sub": "Energia - Brasília", "planned": 200.0, "baselineSpent": 0.0, "baselineBalance": 200.0, "city": "Brasília"}, {"id": "b_2026-09_8", "cat": "moradia", "sub": "Internet - Fortaleza", "planned": 84.99, "baselineSpent": 0.0, "baselineBalance": 84.99, "city": "Fortaleza"}, {"id": "b_2026-09_9", "cat": "moradia", "sub": "Internet - Brasília", "planned": 100.0, "baselineSpent": 0.0, "baselineBalance": 100.0, "city": "Brasília"}, {"id": "b_2026-09_10", "cat": "moradia", "sub": "IPTU - Fortaleza", "planned": 87.76, "baselineSpent": 0.0, "baselineBalance": 87.76, "city": "Fortaleza"}, {"id": "b_2026-09_11", "cat": "moradia", "sub": "Lavanderia - Brasília", "planned": 200.0, "baselineSpent": 0.0, "baselineBalance": 200.0, "city": "Brasília"}, {"id": "b_2026-09_12", "cat": "moradia", "sub": "Manutenção Casa - Fortaleza", "planned": 350.0, "baselineSpent": 0.0, "baselineBalance": 350.0, "city": "Fortaleza"}, {"id": "b_2026-09_13", "cat": "moradia", "sub": "Parcela Casa / Aluguel - Fortaleza", "planned": 939.73, "baselineSpent": 0.0, "baselineBalance": 939.73, "city": "Fortaleza"}, {"id": "b_2026-09_14", "cat": "moradia", "sub": "Parcela Casa / Aluguel - Brasília", "planned": 2000.0, "baselineSpent": 0.0, "baselineBalance": 2000.0, "city": "Brasília"}, {"id": "b_2026-09_15", "cat": "moradia", "sub": "Parcela Casa / Aluguel - Compartilhado", "planned": 605.02, "baselineSpent": 0.0, "baselineBalance": 605.02, "city": "Compartilhado"}, {"id": "b_2026-09_16", "cat": "moradia", "sub": "Produtos de Higiene Pessoal - Fortaleza", "planned": 30.0, "baselineSpent": 33.76, "baselineBalance": -3.76, "city": "Fortaleza"}, {"id": "b_2026-09_17", "cat": "moradia", "sub": "Produtos de Higiene Pessoal - Brasília", "planned": 30.0, "baselineSpent": 33.76, "baselineBalance": -3.76, "city": "Brasília"}, {"id": "b_2026-09_18", "cat": "moradia", "sub": "Supermercado - Fortaleza", "planned": 500.0, "baselineSpent": 0.0, "baselineBalance": 500.0, "city": "Fortaleza"}, {"id": "b_2026-09_19", "cat": "moradia", "sub": "Supermercado - Brasília", "planned": 700.0, "baselineSpent": 0.0, "baselineBalance": 700.0, "city": "Brasília"}, {"id": "b_2026-09_20", "cat": "moradia", "sub": "Vigilante - Fortaleza", "planned": 40.0, "baselineSpent": 0.0, "baselineBalance": 40.0, "city": "Fortaleza"}, {"id": "b_2026-09_21", "cat": "transporte", "sub": "Combustível - Fortaleza", "planned": 400.0, "baselineSpent": 0.0, "baselineBalance": 400.0, "city": "Fortaleza"}, {"id": "b_2026-09_22", "cat": "transporte", "sub": "Locação/Parcela Carro - Fortaleza", "planned": 2277.26, "baselineSpent": 0.0, "baselineBalance": 2277.26, "city": "Fortaleza"}, {"id": "b_2026-09_23", "cat": "transporte", "sub": "Outras Despesas c/ Transporte - Brasília", "planned": 300.0, "baselineSpent": 0.0, "baselineBalance": 300.0, "city": "Brasília"}, {"id": "b_2026-09_24", "cat": "pets", "sub": "Alimentação - Compartilhado", "planned": 160.0, "baselineSpent": 0.0, "baselineBalance": 160.0, "city": "Compartilhado"}, {"id": "b_2026-09_25", "cat": "pets", "sub": "Higiene - Compartilhado", "planned": 65.0, "baselineSpent": 0.0, "baselineBalance": 65.0, "city": "Compartilhado"}, {"id": "b_2026-09_26", "cat": "pets", "sub": "Veterinário e Medicações - Compartilhado", "planned": 212.5, "baselineSpent": 0.0, "baselineBalance": 212.5, "city": "Compartilhado"}, {"id": "b_2026-09_27", "cat": "restaurantes", "sub": "Refeições no Trabalho - Fortaleza", "planned": 500.0, "baselineSpent": 0.0, "baselineBalance": 500.0, "city": "Fortaleza"}, {"id": "b_2026-09_28", "cat": "restaurantes", "sub": "Refeições no Trabalho - Brasília", "planned": 500.0, "baselineSpent": 0.0, "baselineBalance": 500.0, "city": "Brasília"}, {"id": "b_2026-09_29", "cat": "restaurantes", "sub": "Restaurantes_Bares_Delivery - Fortaleza", "planned": 300.0, "baselineSpent": 0.0, "baselineBalance": 300.0, "city": "Fortaleza"}, {"id": "b_2026-09_30", "cat": "restaurantes", "sub": "Restaurantes_Bares_Delivery - Brasília", "planned": 300.0, "baselineSpent": 0.0, "baselineBalance": 300.0, "city": "Brasília"}, {"id": "b_2026-09_31", "cat": "restaurantes", "sub": "Jantar Aniversário de Casamento - Compartilhado", "planned": 200.0, "baselineSpent": 0.0, "baselineBalance": 200.0, "city": "Compartilhado"}, {"id": "b_2026-09_32", "cat": "saude", "sub": "Enzimas/Remédios - Fortaleza", "planned": 40.0, "baselineSpent": 16.09, "baselineBalance": 23.91, "city": "Fortaleza"}, {"id": "b_2026-09_33", "cat": "saude", "sub": "Enzimas/Remédios - Brasília", "planned": 40.0, "baselineSpent": 16.09, "baselineBalance": 23.91, "city": "Brasília"}, {"id": "b_2026-09_34", "cat": "saude", "sub": "Plano de Saúde Nilce - Compartilhado", "planned": 405.71, "baselineSpent": 0.0, "baselineBalance": 405.71, "city": "Compartilhado"}, {"id": "b_2026-09_35", "cat": "saude", "sub": "Plano de Saúde Cícero - Compartilhado", "planned": 405.71, "baselineSpent": 0.0, "baselineBalance": 405.71, "city": "Compartilhado"}, {"id": "b_2026-09_36", "cat": "saude", "sub": "Co-participação Planos - Compartilhado", "planned": 75.0, "baselineSpent": 0.0, "baselineBalance": 75.0, "city": "Compartilhado"}, {"id": "b_2026-09_37", "cat": "investimentos", "sub": "Reserva de Emergência - Compartilhado", "planned": 287.5, "baselineSpent": 0.0, "baselineBalance": 287.5, "city": "Compartilhado"}, {"id": "b_2026-09_38", "cat": "diversos", "sub": "Assinatura Noh - Compartilhado", "planned": 24.0, "baselineSpent": 0.0, "baselineBalance": 24.0, "city": "Compartilhado"}, {"id": "b_2026-09_39", "cat": "diversos", "sub": "Mesada Cícero - Fortaleza", "planned": 1500.0, "baselineSpent": 0.0, "baselineBalance": 1500.0, "city": "Fortaleza"}, {"id": "b_2026-09_40", "cat": "diversos", "sub": "Mesada Nilce - Brasília", "planned": 1100.0, "baselineSpent": 0.0, "baselineBalance": 1100.0, "city": "Brasília"}, {"id": "b_2026-09_41", "cat": "diversos", "sub": "Passagens Aéreas - Brasília", "planned": 2500.0, "baselineSpent": 1920.46, "baselineBalance": 579.54, "city": "Brasília"}, {"id": "b_2026-09_42", "cat": "diversos", "sub": "Passagens Aéreas - Compartilhado", "planned": 139.65, "baselineSpent": 0.0, "baselineBalance": 139.65, "city": "Compartilhado"}, {"id": "b_2026-09_43", "cat": "diversos", "sub": "Streaming | Youtube - Compartilhado", "planned": 17.97, "baselineSpent": 0.0, "baselineBalance": 17.97, "city": "Compartilhado"}], "2026-10": [{"id": "b_2026-10_1", "cat": "moradia", "sub": "Água Encanada - Fortaleza", "planned": 100.0, "baselineSpent": 0.0, "baselineBalance": 100.0, "city": "Fortaleza"}, {"id": "b_2026-10_2", "cat": "moradia", "sub": "Água Encanada - Brasília", "planned": 100.0, "baselineSpent": 0.0, "baselineBalance": 100.0, "city": "Brasília"}, {"id": "b_2026-10_3", "cat": "moradia", "sub": "Água Garrafão - Fortaleza", "planned": 40.5, "baselineSpent": 0.0, "baselineBalance": 40.5, "city": "Fortaleza"}, {"id": "b_2026-10_4", "cat": "moradia", "sub": "Água Garrafão - Brasília", "planned": 40.5, "baselineSpent": 0.0, "baselineBalance": 40.5, "city": "Brasília"}, {"id": "b_2026-10_5", "cat": "moradia", "sub": "Diarista - Fortaleza", "planned": 366.0, "baselineSpent": 0.0, "baselineBalance": 366.0, "city": "Fortaleza"}, {"id": "b_2026-10_6", "cat": "moradia", "sub": "Energia - Fortaleza", "planned": 300.0, "baselineSpent": 0.0, "baselineBalance": 300.0, "city": "Fortaleza"}, {"id": "b_2026-10_7", "cat": "moradia", "sub": "Energia - Brasília", "planned": 200.0, "baselineSpent": 0.0, "baselineBalance": 200.0, "city": "Brasília"}, {"id": "b_2026-10_8", "cat": "moradia", "sub": "Internet - Fortaleza", "planned": 84.99, "baselineSpent": 0.0, "baselineBalance": 84.99, "city": "Fortaleza"}, {"id": "b_2026-10_9", "cat": "moradia", "sub": "Internet - Brasília", "planned": 100.0, "baselineSpent": 0.0, "baselineBalance": 100.0, "city": "Brasília"}, {"id": "b_2026-10_10", "cat": "moradia", "sub": "IPTU - Fortaleza", "planned": 87.76, "baselineSpent": 0.0, "baselineBalance": 87.76, "city": "Fortaleza"}, {"id": "b_2026-10_11", "cat": "moradia", "sub": "Lavanderia - Brasília", "planned": 200.0, "baselineSpent": 0.0, "baselineBalance": 200.0, "city": "Brasília"}, {"id": "b_2026-10_12", "cat": "moradia", "sub": "Parcela Casa / Aluguel - Fortaleza", "planned": 939.73, "baselineSpent": 0.0, "baselineBalance": 939.73, "city": "Fortaleza"}, {"id": "b_2026-10_13", "cat": "moradia", "sub": "Parcela Casa / Aluguel - Brasília", "planned": 2000.0, "baselineSpent": 0.0, "baselineBalance": 2000.0, "city": "Brasília"}, {"id": "b_2026-10_14", "cat": "moradia", "sub": "Parcela Casa / Aluguel - Compartilhado", "planned": 605.02, "baselineSpent": 0.0, "baselineBalance": 605.02, "city": "Compartilhado"}, {"id": "b_2026-10_15", "cat": "moradia", "sub": "Produtos de Higiene Pessoal - Fortaleza", "planned": 30.0, "baselineSpent": 0.0, "baselineBalance": 30.0, "city": "Fortaleza"}, {"id": "b_2026-10_16", "cat": "moradia", "sub": "Produtos de Higiene Pessoal - Brasília", "planned": 30.0, "baselineSpent": 0.0, "baselineBalance": 30.0, "city": "Brasília"}, {"id": "b_2026-10_17", "cat": "moradia", "sub": "Supermercado - Fortaleza", "planned": 500.0, "baselineSpent": 0.0, "baselineBalance": 500.0, "city": "Fortaleza"}, {"id": "b_2026-10_18", "cat": "moradia", "sub": "Supermercado - Brasília", "planned": 700.0, "baselineSpent": 0.0, "baselineBalance": 700.0, "city": "Brasília"}, {"id": "b_2026-10_19", "cat": "moradia", "sub": "Vigilante - Fortaleza", "planned": 40.0, "baselineSpent": 0.0, "baselineBalance": 40.0, "city": "Fortaleza"}, {"id": "b_2026-10_20", "cat": "transporte", "sub": "Combustível - Fortaleza", "planned": 400.0, "baselineSpent": 0.0, "baselineBalance": 400.0, "city": "Fortaleza"}, {"id": "b_2026-10_21", "cat": "transporte", "sub": "Locação/Parcela Carro - Fortaleza", "planned": 2277.26, "baselineSpent": 0.0, "baselineBalance": 2277.26, "city": "Fortaleza"}, {"id": "b_2026-10_22", "cat": "transporte", "sub": "Outras Despesas c/ Transporte - Brasília", "planned": 300.0, "baselineSpent": 0.0, "baselineBalance": 300.0, "city": "Brasília"}, {"id": "b_2026-10_23", "cat": "pets", "sub": "Alimentação - Compartilhado", "planned": 160.0, "baselineSpent": 0.0, "baselineBalance": 160.0, "city": "Compartilhado"}, {"id": "b_2026-10_24", "cat": "pets", "sub": "Higiene - Compartilhado", "planned": 65.0, "baselineSpent": 0.0, "baselineBalance": 65.0, "city": "Compartilhado"}, {"id": "b_2026-10_25", "cat": "pets", "sub": "Veterinário e Medicações - Compartilhado", "planned": 212.5, "baselineSpent": 0.0, "baselineBalance": 212.5, "city": "Compartilhado"}, {"id": "b_2026-10_26", "cat": "restaurantes", "sub": "Refeições no Trabalho - Fortaleza", "planned": 500.0, "baselineSpent": 0.0, "baselineBalance": 500.0, "city": "Fortaleza"}, {"id": "b_2026-10_27", "cat": "restaurantes", "sub": "Refeições no Trabalho - Brasília", "planned": 500.0, "baselineSpent": 0.0, "baselineBalance": 500.0, "city": "Brasília"}, {"id": "b_2026-10_28", "cat": "restaurantes", "sub": "Restaurantes_Bares_Delivery - Fortaleza", "planned": 300.0, "baselineSpent": 0.0, "baselineBalance": 300.0, "city": "Fortaleza"}, {"id": "b_2026-10_29", "cat": "restaurantes", "sub": "Restaurantes_Bares_Delivery - Brasília", "planned": 300.0, "baselineSpent": 0.0, "baselineBalance": 300.0, "city": "Brasília"}, {"id": "b_2026-10_30", "cat": "saude", "sub": "Enzimas/Remédios - Fortaleza", "planned": 40.0, "baselineSpent": 0.0, "baselineBalance": 40.0, "city": "Fortaleza"}, {"id": "b_2026-10_31", "cat": "saude", "sub": "Enzimas/Remédios - Brasília", "planned": 40.0, "baselineSpent": 0.0, "baselineBalance": 40.0, "city": "Brasília"}, {"id": "b_2026-10_32", "cat": "saude", "sub": "Plano de Saúde Nilce - Compartilhado", "planned": 405.71, "baselineSpent": 0.0, "baselineBalance": 405.71, "city": "Compartilhado"}, {"id": "b_2026-10_33", "cat": "saude", "sub": "Plano de Saúde Cícero - Compartilhado", "planned": 405.71, "baselineSpent": 0.0, "baselineBalance": 405.71, "city": "Compartilhado"}, {"id": "b_2026-10_34", "cat": "saude", "sub": "Co-participação Planos - Compartilhado", "planned": 75.0, "baselineSpent": 0.0, "baselineBalance": 75.0, "city": "Compartilhado"}, {"id": "b_2026-10_35", "cat": "investimentos", "sub": "Reserva de Emergência - Compartilhado", "planned": 287.5, "baselineSpent": 0.0, "baselineBalance": 287.5, "city": "Compartilhado"}, {"id": "b_2026-10_36", "cat": "diversos", "sub": "Assinatura Noh - Compartilhado", "planned": 24.0, "baselineSpent": 0.0, "baselineBalance": 24.0, "city": "Compartilhado"}, {"id": "b_2026-10_37", "cat": "diversos", "sub": "Mesada Cícero - Fortaleza", "planned": 1500.0, "baselineSpent": 0.0, "baselineBalance": 1500.0, "city": "Fortaleza"}, {"id": "b_2026-10_38", "cat": "diversos", "sub": "Mesada Nilce - Brasília", "planned": 1100.0, "baselineSpent": 0.0, "baselineBalance": 1100.0, "city": "Brasília"}, {"id": "b_2026-10_39", "cat": "diversos", "sub": "Passagens Aéreas - Brasília", "planned": 2500.0, "baselineSpent": 0.0, "baselineBalance": 2500.0, "city": "Brasília"}, {"id": "b_2026-10_40", "cat": "diversos", "sub": "Passagens Aéreas - Compartilhado", "planned": 139.65, "baselineSpent": 0.0, "baselineBalance": 139.65, "city": "Compartilhado"}, {"id": "b_2026-10_41", "cat": "diversos", "sub": "Presente Aniversário Sr. Cícero - Compartilhado", "planned": 100.0, "baselineSpent": 0.0, "baselineBalance": 100.0, "city": "Compartilhado"}, {"id": "b_2026-10_42", "cat": "diversos", "sub": "Presente Aniversário Bernardo - Compartilhado", "planned": 100.0, "baselineSpent": 0.0, "baselineBalance": 100.0, "city": "Compartilhado"}, {"id": "b_2026-10_43", "cat": "diversos", "sub": "Presentes Dia das Crianças - Compartilhado", "planned": 200.0, "baselineSpent": 0.0, "baselineBalance": 200.0, "city": "Compartilhado"}, {"id": "b_2026-10_44", "cat": "diversos", "sub": "Streaming | Youtube - Compartilhado", "planned": 17.97, "baselineSpent": 0.0, "baselineBalance": 17.97, "city": "Compartilhado"}], "2026-11": [{"id": "b_2026-11_1", "cat": "moradia", "sub": "Água Encanada - Fortaleza", "planned": 100.0, "baselineSpent": 0.0, "baselineBalance": 100.0, "city": "Fortaleza"}, {"id": "b_2026-11_2", "cat": "moradia", "sub": "Água Encanada - Brasília", "planned": 100.0, "baselineSpent": 0.0, "baselineBalance": 100.0, "city": "Brasília"}, {"id": "b_2026-11_3", "cat": "moradia", "sub": "Água Garrafão - Fortaleza", "planned": 40.5, "baselineSpent": 0.0, "baselineBalance": 40.5, "city": "Fortaleza"}, {"id": "b_2026-11_4", "cat": "moradia", "sub": "Água Garrafão - Brasília", "planned": 40.5, "baselineSpent": 0.0, "baselineBalance": 40.5, "city": "Brasília"}, {"id": "b_2026-11_5", "cat": "moradia", "sub": "Diarista - Fortaleza", "planned": 366.0, "baselineSpent": 0.0, "baselineBalance": 366.0, "city": "Fortaleza"}, {"id": "b_2026-11_6", "cat": "moradia", "sub": "Energia - Fortaleza", "planned": 300.0, "baselineSpent": 0.0, "baselineBalance": 300.0, "city": "Fortaleza"}, {"id": "b_2026-11_7", "cat": "moradia", "sub": "Energia - Brasília", "planned": 200.0, "baselineSpent": 0.0, "baselineBalance": 200.0, "city": "Brasília"}, {"id": "b_2026-11_8", "cat": "moradia", "sub": "Internet - Fortaleza", "planned": 84.99, "baselineSpent": 0.0, "baselineBalance": 84.99, "city": "Fortaleza"}, {"id": "b_2026-11_9", "cat": "moradia", "sub": "Internet - Brasília", "planned": 100.0, "baselineSpent": 0.0, "baselineBalance": 100.0, "city": "Brasília"}, {"id": "b_2026-11_10", "cat": "moradia", "sub": "Lavanderia - Brasília", "planned": 200.0, "baselineSpent": 0.0, "baselineBalance": 200.0, "city": "Brasília"}, {"id": "b_2026-11_11", "cat": "moradia", "sub": "Parcela Casa / Aluguel - Fortaleza", "planned": 939.73, "baselineSpent": 0.0, "baselineBalance": 939.73, "city": "Fortaleza"}, {"id": "b_2026-11_12", "cat": "moradia", "sub": "Parcela Casa / Aluguel - Brasília", "planned": 2000.0, "baselineSpent": 0.0, "baselineBalance": 2000.0, "city": "Brasília"}, {"id": "b_2026-11_13", "cat": "moradia", "sub": "Parcela Casa / Aluguel - Compartilhado", "planned": 605.02, "baselineSpent": 0.0, "baselineBalance": 605.02, "city": "Compartilhado"}, {"id": "b_2026-11_14", "cat": "moradia", "sub": "Produtos de Higiene Pessoal - Fortaleza", "planned": 30.0, "baselineSpent": 0.0, "baselineBalance": 30.0, "city": "Fortaleza"}, {"id": "b_2026-11_15", "cat": "moradia", "sub": "Produtos de Higiene Pessoal - Brasília", "planned": 30.0, "baselineSpent": 0.0, "baselineBalance": 30.0, "city": "Brasília"}, {"id": "b_2026-11_16", "cat": "moradia", "sub": "Supermercado - Fortaleza", "planned": 550.0, "baselineSpent": 0.0, "baselineBalance": 550.0, "city": "Fortaleza"}, {"id": "b_2026-11_17", "cat": "moradia", "sub": "Supermercado - Brasília", "planned": 750.0, "baselineSpent": 0.0, "baselineBalance": 750.0, "city": "Brasília"}, {"id": "b_2026-11_18", "cat": "moradia", "sub": "Vigilante - Fortaleza", "planned": 40.0, "baselineSpent": 0.0, "baselineBalance": 40.0, "city": "Fortaleza"}, {"id": "b_2026-11_19", "cat": "transporte", "sub": "Combustível - Fortaleza", "planned": 450.0, "baselineSpent": 0.0, "baselineBalance": 450.0, "city": "Fortaleza"}, {"id": "b_2026-11_20", "cat": "transporte", "sub": "Locação/Parcela Carro - Fortaleza", "planned": 2277.26, "baselineSpent": 0.0, "baselineBalance": 2277.26, "city": "Fortaleza"}, {"id": "b_2026-11_21", "cat": "transporte", "sub": "Outras Despesas c/ Transporte - Brasília", "planned": 300.0, "baselineSpent": 0.0, "baselineBalance": 300.0, "city": "Brasília"}, {"id": "b_2026-11_22", "cat": "pets", "sub": "Alimentação - Compartilhado", "planned": 160.0, "baselineSpent": 0.0, "baselineBalance": 160.0, "city": "Compartilhado"}, {"id": "b_2026-11_23", "cat": "pets", "sub": "Higiene - Compartilhado", "planned": 65.0, "baselineSpent": 0.0, "baselineBalance": 65.0, "city": "Compartilhado"}, {"id": "b_2026-11_24", "cat": "pets", "sub": "Veterinário e Medicações - Compartilhado", "planned": 212.5, "baselineSpent": 0.0, "baselineBalance": 212.5, "city": "Compartilhado"}, {"id": "b_2026-11_25", "cat": "restaurantes", "sub": "Refeições no Trabalho - Fortaleza", "planned": 500.0, "baselineSpent": 0.0, "baselineBalance": 500.0, "city": "Fortaleza"}, {"id": "b_2026-11_26", "cat": "restaurantes", "sub": "Refeições no Trabalho - Brasília", "planned": 500.0, "baselineSpent": 0.0, "baselineBalance": 500.0, "city": "Brasília"}, {"id": "b_2026-11_27", "cat": "restaurantes", "sub": "Restaurantes_Bares_Delivery - Fortaleza", "planned": 350.0, "baselineSpent": 0.0, "baselineBalance": 350.0, "city": "Fortaleza"}, {"id": "b_2026-11_28", "cat": "restaurantes", "sub": "Restaurantes_Bares_Delivery - Brasília", "planned": 350.0, "baselineSpent": 0.0, "baselineBalance": 350.0, "city": "Brasília"}, {"id": "b_2026-11_29", "cat": "restaurantes", "sub": "Jantar Aniversário Nilce - Compartilhado", "planned": 200.0, "baselineSpent": 0.0, "baselineBalance": 200.0, "city": "Compartilhado"}, {"id": "b_2026-11_30", "cat": "saude", "sub": "Enzimas/Remédios - Fortaleza", "planned": 40.0, "baselineSpent": 0.0, "baselineBalance": 40.0, "city": "Fortaleza"}, {"id": "b_2026-11_31", "cat": "saude", "sub": "Enzimas/Remédios - Brasília", "planned": 40.0, "baselineSpent": 0.0, "baselineBalance": 40.0, "city": "Brasília"}, {"id": "b_2026-11_32", "cat": "saude", "sub": "Plano de Saúde Nilce - Compartilhado", "planned": 405.71, "baselineSpent": 0.0, "baselineBalance": 405.71, "city": "Compartilhado"}, {"id": "b_2026-11_33", "cat": "saude", "sub": "Plano de Saúde Cícero - Compartilhado", "planned": 405.71, "baselineSpent": 0.0, "baselineBalance": 405.71, "city": "Compartilhado"}, {"id": "b_2026-11_34", "cat": "saude", "sub": "Co-participação Planos - Compartilhado", "planned": 75.0, "baselineSpent": 0.0, "baselineBalance": 75.0, "city": "Compartilhado"}, {"id": "b_2026-11_35", "cat": "investimentos", "sub": "Reserva de Emergência - Compartilhado", "planned": 287.5, "baselineSpent": 0.0, "baselineBalance": 287.5, "city": "Compartilhado"}, {"id": "b_2026-11_36", "cat": "diversos", "sub": "Assinatura Noh - Compartilhado", "planned": 24.0, "baselineSpent": 0.0, "baselineBalance": 24.0, "city": "Compartilhado"}, {"id": "b_2026-11_37", "cat": "diversos", "sub": "Mesada Cícero - Fortaleza", "planned": 1500.0, "baselineSpent": 0.0, "baselineBalance": 1500.0, "city": "Fortaleza"}, {"id": "b_2026-11_38", "cat": "diversos", "sub": "Mesada Nilce - Brasília", "planned": 1100.0, "baselineSpent": 0.0, "baselineBalance": 1100.0, "city": "Brasília"}, {"id": "b_2026-11_39", "cat": "diversos", "sub": "Passagens Aéreas - Brasília", "planned": 2500.0, "baselineSpent": 0.0, "baselineBalance": 2500.0, "city": "Brasília"}, {"id": "b_2026-11_40", "cat": "diversos", "sub": "Passagens Aéreas - Compartilhado", "planned": 139.65, "baselineSpent": 0.0, "baselineBalance": 139.65, "city": "Compartilhado"}, {"id": "b_2026-11_41", "cat": "diversos", "sub": "Presente Aniversário D. Antônia - Compartilhado", "planned": 100.0, "baselineSpent": 0.0, "baselineBalance": 100.0, "city": "Compartilhado"}, {"id": "b_2026-11_42", "cat": "diversos", "sub": "Streaming | Youtube - Compartilhado", "planned": 17.97, "baselineSpent": 0.0, "baselineBalance": 17.97, "city": "Compartilhado"}], "2026-12": [{"id": "b_2026-12_1", "cat": "moradia", "sub": "Água Encanada - Fortaleza", "planned": 100.0, "baselineSpent": 0.0, "baselineBalance": 100.0, "city": "Fortaleza"}, {"id": "b_2026-12_2", "cat": "moradia", "sub": "Água Encanada - Brasília", "planned": 100.0, "baselineSpent": 0.0, "baselineBalance": 100.0, "city": "Brasília"}, {"id": "b_2026-12_3", "cat": "moradia", "sub": "Água Garrafão - Fortaleza", "planned": 40.5, "baselineSpent": 0.0, "baselineBalance": 40.5, "city": "Fortaleza"}, {"id": "b_2026-12_4", "cat": "moradia", "sub": "Água Garrafão - Brasília", "planned": 40.5, "baselineSpent": 0.0, "baselineBalance": 40.5, "city": "Brasília"}, {"id": "b_2026-12_5", "cat": "moradia", "sub": "Diarista - Fortaleza", "planned": 366.0, "baselineSpent": 0.0, "baselineBalance": 366.0, "city": "Fortaleza"}, {"id": "b_2026-12_6", "cat": "moradia", "sub": "Energia - Fortaleza", "planned": 300.0, "baselineSpent": 0.0, "baselineBalance": 300.0, "city": "Fortaleza"}, {"id": "b_2026-12_7", "cat": "moradia", "sub": "Energia - Brasília", "planned": 200.0, "baselineSpent": 0.0, "baselineBalance": 200.0, "city": "Brasília"}, {"id": "b_2026-12_8", "cat": "moradia", "sub": "Internet - Fortaleza", "planned": 84.99, "baselineSpent": 0.0, "baselineBalance": 84.99, "city": "Fortaleza"}, {"id": "b_2026-12_9", "cat": "moradia", "sub": "Internet - Brasília", "planned": 100.0, "baselineSpent": 0.0, "baselineBalance": 100.0, "city": "Brasília"}, {"id": "b_2026-12_10", "cat": "moradia", "sub": "Lavanderia - Brasília", "planned": 200.0, "baselineSpent": 0.0, "baselineBalance": 200.0, "city": "Brasília"}, {"id": "b_2026-12_11", "cat": "moradia", "sub": "Parcela Casa / Aluguel - Fortaleza", "planned": 1823.17, "baselineSpent": 0.0, "baselineBalance": 1823.17, "city": "Fortaleza"}, {"id": "b_2026-12_12", "cat": "moradia", "sub": "Parcela Casa / Aluguel - Brasília", "planned": 2000.0, "baselineSpent": 0.0, "baselineBalance": 2000.0, "city": "Brasília"}, {"id": "b_2026-12_13", "cat": "moradia", "sub": "Produtos de Higiene Pessoal - Fortaleza", "planned": 30.0, "baselineSpent": 0.0, "baselineBalance": 30.0, "city": "Fortaleza"}, {"id": "b_2026-12_14", "cat": "moradia", "sub": "Produtos de Higiene Pessoal - Brasília", "planned": 30.0, "baselineSpent": 0.0, "baselineBalance": 30.0, "city": "Brasília"}, {"id": "b_2026-12_15", "cat": "moradia", "sub": "Supermercado - Fortaleza", "planned": 500.0, "baselineSpent": 0.0, "baselineBalance": 500.0, "city": "Fortaleza"}, {"id": "b_2026-12_16", "cat": "moradia", "sub": "Supermercado - Brasília", "planned": 700.0, "baselineSpent": 0.0, "baselineBalance": 700.0, "city": "Brasília"}, {"id": "b_2026-12_17", "cat": "moradia", "sub": "Vigilante - Fortaleza", "planned": 80.0, "baselineSpent": 0.0, "baselineBalance": 80.0, "city": "Fortaleza"}, {"id": "b_2026-12_18", "cat": "transporte", "sub": "Combustível - Fortaleza", "planned": 400.0, "baselineSpent": 0.0, "baselineBalance": 400.0, "city": "Fortaleza"}, {"id": "b_2026-12_19", "cat": "transporte", "sub": "Locação/Parcela Carro - Fortaleza", "planned": 2277.26, "baselineSpent": 0.0, "baselineBalance": 2277.26, "city": "Fortaleza"}, {"id": "b_2026-12_20", "cat": "transporte", "sub": "Outras Despesas c/ Transporte - Brasília", "planned": 300.0, "baselineSpent": 0.0, "baselineBalance": 300.0, "city": "Brasília"}, {"id": "b_2026-12_21", "cat": "pets", "sub": "Alimentação - Compartilhado", "planned": 160.0, "baselineSpent": 0.0, "baselineBalance": 160.0, "city": "Compartilhado"}, {"id": "b_2026-12_22", "cat": "pets", "sub": "Higiene - Compartilhado", "planned": 65.0, "baselineSpent": 0.0, "baselineBalance": 65.0, "city": "Compartilhado"}, {"id": "b_2026-12_23", "cat": "pets", "sub": "Veterinário e Medicações - Compartilhado", "planned": 212.5, "baselineSpent": 0.0, "baselineBalance": 212.5, "city": "Compartilhado"}, {"id": "b_2026-12_24", "cat": "pets", "sub": "Vacinas - Compartilhado", "planned": 160.0, "baselineSpent": 0.0, "baselineBalance": 160.0, "city": "Compartilhado"}, {"id": "b_2026-12_25", "cat": "restaurantes", "sub": "Refeições no Trabalho - Fortaleza", "planned": 500.0, "baselineSpent": 0.0, "baselineBalance": 500.0, "city": "Fortaleza"}, {"id": "b_2026-12_26", "cat": "restaurantes", "sub": "Refeições no Trabalho - Brasília", "planned": 500.0, "baselineSpent": 0.0, "baselineBalance": 500.0, "city": "Brasília"}, {"id": "b_2026-12_27", "cat": "restaurantes", "sub": "Restaurantes_Bares_Delivery - Fortaleza", "planned": 300.0, "baselineSpent": 0.0, "baselineBalance": 300.0, "city": "Fortaleza"}, {"id": "b_2026-12_28", "cat": "restaurantes", "sub": "Restaurantes_Bares_Delivery - Brasília", "planned": 300.0, "baselineSpent": 0.0, "baselineBalance": 300.0, "city": "Brasília"}, {"id": "b_2026-12_29", "cat": "saude", "sub": "Enzimas/Remédios - Fortaleza", "planned": 40.0, "baselineSpent": 0.0, "baselineBalance": 40.0, "city": "Fortaleza"}, {"id": "b_2026-12_30", "cat": "saude", "sub": "Enzimas/Remédios - Brasília", "planned": 40.0, "baselineSpent": 0.0, "baselineBalance": 40.0, "city": "Brasília"}, {"id": "b_2026-12_31", "cat": "saude", "sub": "Plano de Saúde Nilce - Compartilhado", "planned": 405.71, "baselineSpent": 0.0, "baselineBalance": 405.71, "city": "Compartilhado"}, {"id": "b_2026-12_32", "cat": "saude", "sub": "Plano de Saúde Cícero - Compartilhado", "planned": 405.71, "baselineSpent": 0.0, "baselineBalance": 405.71, "city": "Compartilhado"}, {"id": "b_2026-12_33", "cat": "saude", "sub": "Co-participação Planos - Compartilhado", "planned": 75.0, "baselineSpent": 0.0, "baselineBalance": 75.0, "city": "Compartilhado"}, {"id": "b_2026-12_34", "cat": "investimentos", "sub": "Reserva de Emergência - Compartilhado", "planned": 287.5, "baselineSpent": 0.0, "baselineBalance": 287.5, "city": "Compartilhado"}, {"id": "b_2026-12_35", "cat": "diversos", "sub": "Assinatura Noh - Compartilhado", "planned": 24.0, "baselineSpent": 0.0, "baselineBalance": 24.0, "city": "Compartilhado"}, {"id": "b_2026-12_36", "cat": "diversos", "sub": "Despesas Fim de Ano - Compartilhado", "planned": 500.0, "baselineSpent": 0.0, "baselineBalance": 500.0, "city": "Compartilhado"}, {"id": "b_2026-12_37", "cat": "diversos", "sub": "Mesada Cícero - Fortaleza", "planned": 1500.0, "baselineSpent": 0.0, "baselineBalance": 1500.0, "city": "Fortaleza"}, {"id": "b_2026-12_38", "cat": "diversos", "sub": "Mesada Nilce - Brasília", "planned": 1100.0, "baselineSpent": 0.0, "baselineBalance": 1100.0, "city": "Brasília"}, {"id": "b_2026-12_39", "cat": "diversos", "sub": "Passagens Aéreas - Brasília", "planned": 2500.0, "baselineSpent": 0.0, "baselineBalance": 2500.0, "city": "Brasília"}, {"id": "b_2026-12_40", "cat": "diversos", "sub": "Streaming | Youtube - Compartilhado", "planned": 17.97, "baselineSpent": 0.0, "baselineBalance": 17.97, "city": "Compartilhado"}]}, "transactions": {"2026-07": [{"id": "t_2026-07_1", "date": "2026-07-05", "desc": "Locação Carro", "cat": "transporte", "sub": "Locação/Parcela Carro - Fortaleza", "payer": "Cícero", "amount": 2277.26, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.430696", "city": "Fortaleza", "card": "Não informado", "responsible": "Cícero", "description": "Locação Carro"}, {"id": "t_2026-07_2", "date": "2026-07-05", "desc": "Streaming | Youtube", "cat": "diversos", "sub": "Streaming | Youtube - Compartilhado", "payer": "Cícero", "amount": 17.97, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.430817", "city": "Compartilhado", "card": "Não informado", "responsible": "Cícero", "description": "Streaming | Youtube"}, {"id": "t_2026-07_3", "date": "2026-07-05", "desc": "Enzimas - 01/03", "cat": "saude", "sub": "Enzimas/Remédios - Brasília", "payer": "Cícero", "amount": 16.09, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.430895", "city": "Brasília", "card": "Não informado", "responsible": "Cícero", "description": "Enzimas - 01/03"}, {"id": "t_2026-07_4", "date": "2026-07-05", "desc": "Enzimas - 01/03", "cat": "saude", "sub": "Enzimas/Remédios - Fortaleza", "payer": "Cícero", "amount": 16.09, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.430971", "city": "Fortaleza", "card": "Não informado", "responsible": "Cícero", "description": "Enzimas - 01/03"}, {"id": "t_2026-07_5", "date": "2026-07-05", "desc": "Plano Cicero", "cat": "saude", "sub": "Plano de Saúde Cícero - Compartilhado", "payer": "Cícero", "amount": 163.87, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.431030", "city": "Compartilhado", "card": "Não informado", "responsible": "Cícero", "description": "Plano Cicero"}, {"id": "t_2026-07_6", "date": "2026-07-05", "desc": "Passagem BSB Jun", "cat": "diversos", "sub": "Passagens Aéreas - Compartilhado", "payer": "Cícero", "amount": 139.65, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.431136", "city": "Compartilhado", "card": "Não informado", "responsible": "Cícero", "description": "Passagem BSB Jun"}, {"id": "t_2026-07_7", "date": "2026-07-05", "desc": "AirBNB", "cat": "moradia", "sub": "Parcela Casa / Aluguel - Compartilhado", "payer": "Cícero", "amount": 605.02, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.431213", "city": "Compartilhado", "card": "Não informado", "responsible": "Cícero", "description": "AirBNB"}, {"id": "t_2026-07_8", "date": "2026-07-05", "desc": "Mesada Cicero Julho", "cat": "diversos", "sub": "Mesada Cícero - Fortaleza", "payer": "Cícero", "amount": 2100.0, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.432126", "city": "Fortaleza", "card": "Não informado", "responsible": "Cícero", "description": "Mesada Cicero Julho"}, {"id": "t_2026-07_9", "date": "2026-07-05", "desc": "Retorno Reserva no Mes", "cat": "investimentos", "sub": "Reserva de Emergência - Compartilhado", "payer": "Cícero", "amount": 123.07, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.432191", "city": "Compartilhado", "card": "Não informado", "responsible": "Cícero", "description": "Retorno Reserva no Mes"}, {"id": "t_2026-07_10", "date": "2026-07-05", "desc": "Desodorantes1 - 02/02", "cat": "moradia", "sub": "Produtos de Higiene Pessoal - Fortaleza", "payer": "Nilce", "amount": 26.63, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.432243", "city": "Fortaleza", "card": "Não informado", "responsible": "Nilce", "description": "Desodorantes1 - 02/02"}, {"id": "t_2026-07_11", "date": "2026-07-05", "desc": "Procedimentos Estrelinha", "cat": "pets", "sub": "Veterinário e Medicações - Compartilhado", "payer": "Nilce", "amount": 376.93, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.432309", "city": "Compartilhado", "card": "Não informado", "responsible": "Nilce", "description": "Procedimentos Estrelinha"}, {"id": "t_2026-07_12", "date": "2026-07-05", "desc": "Energia", "cat": "moradia", "sub": "Energia - Fortaleza", "payer": "Cícero", "amount": 398.62, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.432370", "city": "Fortaleza", "card": "Não informado", "responsible": "Cícero", "description": "Energia"}, {"id": "t_2026-07_13", "date": "2026-07-05", "desc": "IPTU", "cat": "moradia", "sub": "IPTU - Fortaleza", "payer": "Cícero", "amount": 87.75, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.432429", "city": "Fortaleza", "card": "Não informado", "responsible": "Cícero", "description": "IPTU"}, {"id": "t_2026-07_14", "date": "2026-07-05", "desc": "Internet", "cat": "moradia", "sub": "Internet - Fortaleza", "payer": "Cícero", "amount": 84.99, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.432488", "city": "Fortaleza", "card": "Não informado", "responsible": "Cícero", "description": "Internet"}, {"id": "t_2026-07_15", "date": "2026-07-05", "desc": "Higiene Nilce", "cat": "moradia", "sub": "Produtos de Higiene Pessoal - Brasília", "payer": "Nilce", "amount": 30.0, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.432541", "city": "Brasília", "card": "Não informado", "responsible": "Nilce", "description": "Higiene Nilce"}, {"id": "t_2026-07_16", "date": "2026-07-05", "desc": "Transporte Nilce", "cat": "transporte", "sub": "Outras Despesas c/ Transporte - Brasília", "payer": "Nilce", "amount": 500.0, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.432605", "city": "Brasília", "card": "Não informado", "responsible": "Nilce", "description": "Transporte Nilce"}, {"id": "t_2026-07_17", "date": "2026-07-05", "desc": "Refeições Trabalho Nilce", "cat": "restaurantes", "sub": "Refeições no Trabalho - Brasília", "payer": "Nilce", "amount": 500.0, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.433607", "city": "Brasília", "card": "Não informado", "responsible": "Nilce", "description": "Refeições Trabalho Nilce"}, {"id": "t_2026-07_18", "date": "2026-07-05", "desc": "Enzimas/Remédios Nilce", "cat": "saude", "sub": "Enzimas/Remédios - Brasília", "payer": "Nilce", "amount": 23.91, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.433694", "city": "Brasília", "card": "Não informado", "responsible": "Nilce", "description": "Enzimas/Remédios Nilce"}, {"id": "t_2026-07_19", "date": "2026-07-05", "desc": "Mesada Nilce", "cat": "diversos", "sub": "Mesada Nilce - Brasília", "payer": "Nilce", "amount": 1100.0, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.433759", "city": "Brasília", "card": "Não informado", "responsible": "Nilce", "description": "Mesada Nilce"}, {"id": "t_2026-07_20", "date": "2026-07-05", "desc": "Sachês gatas", "cat": "pets", "sub": "Alimentação - Compartilhado", "payer": "Nilce", "amount": 76.03, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.433809", "city": "Compartilhado", "card": "Não informado", "responsible": "Nilce", "description": "Sachês gatas"}, {"id": "t_2026-07_21", "date": "2026-07-05", "desc": "Ração gatas", "cat": "pets", "sub": "Alimentação - Compartilhado", "payer": "Cícero", "amount": 87.98, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.433857", "city": "Compartilhado", "card": "Não informado", "responsible": "Cícero", "description": "Ração gatas"}, {"id": "t_2026-07_22", "date": "2026-07-05", "desc": "Sabão Lava Louças", "cat": "moradia", "sub": "Supermercado - Fortaleza", "payer": "Cícero", "amount": 47.91, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.433905", "city": "Fortaleza", "card": "Não informado", "responsible": "Cícero", "description": "Sabão Lava Louças"}, {"id": "t_2026-07_23", "date": "2026-07-05", "desc": "Carrefour", "cat": "moradia", "sub": "Supermercado - Brasília", "payer": "Nilce", "amount": 110.6, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.433953", "city": "Brasília", "card": "Não informado", "responsible": "Nilce", "description": "Carrefour"}, {"id": "t_2026-07_24", "date": "2026-07-05", "desc": "LAG", "cat": "moradia", "sub": "Supermercado - Fortaleza", "payer": "Cícero", "amount": 256.85, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.434001", "city": "Fortaleza", "card": "Não informado", "responsible": "Cícero", "description": "LAG"}, {"id": "t_2026-07_25", "date": "2026-07-05", "desc": "Almoço", "cat": "restaurantes", "sub": "Restaurantes_Bares_Delivery - Brasília", "payer": "Nilce", "amount": 46.89, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.434064", "city": "Brasília", "card": "Não informado", "responsible": "Nilce", "description": "Almoço"}, {"id": "t_2026-07_26", "date": "2026-07-08", "desc": "Gasolina", "cat": "transporte", "sub": "Combustível - Fortaleza", "payer": "Cícero", "amount": 100.0, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.434112", "city": "Fortaleza", "card": "Não informado", "responsible": "Cícero", "description": "Gasolina"}, {"id": "t_2026-07_27", "date": "2026-07-08", "desc": "Ifood", "cat": "restaurantes", "sub": "Restaurantes_Bares_Delivery - Brasília", "payer": "Nilce", "amount": 20.83, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.434174", "city": "Brasília", "card": "Não informado", "responsible": "Nilce", "description": "Ifood"}, {"id": "t_2026-07_28", "date": "2026-07-09", "desc": "Sanduiche", "cat": "restaurantes", "sub": "Restaurantes_Bares_Delivery - Fortaleza", "payer": "Cícero", "amount": 21.0, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.434231", "city": "Fortaleza", "card": "Não informado", "responsible": "Cícero", "description": "Sanduiche"}, {"id": "t_2026-07_29", "date": "2026-07-10", "desc": "Vigilante", "cat": "moradia", "sub": "Vigilante - Fortaleza", "payer": "Cícero", "amount": 40.0, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.434303", "city": "Fortaleza", "card": "Não informado", "responsible": "Cícero", "description": "Vigilante"}, {"id": "t_2026-07_30", "date": "2026-07-10", "desc": "Espetinho", "cat": "restaurantes", "sub": "Restaurantes_Bares_Delivery - Fortaleza", "payer": "Cícero", "amount": 33.9, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.434318", "city": "Fortaleza", "card": "Não informado", "responsible": "Cícero", "description": "Espetinho"}, {"id": "t_2026-07_31", "date": "2026-07-11", "desc": "Areia Gatas", "cat": "pets", "sub": "Higiene - Compartilhado", "payer": "Cícero", "amount": 58.0, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.434336", "city": "Compartilhado", "card": "Não informado", "responsible": "Cícero", "description": "Areia Gatas"}, {"id": "t_2026-07_32", "date": "2026-07-11", "desc": "Salgado", "cat": "restaurantes", "sub": "Restaurantes_Bares_Delivery - Fortaleza", "payer": "Cícero", "amount": 14.0, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.434357", "city": "Fortaleza", "card": "Não informado", "responsible": "Cícero", "description": "Salgado"}, {"id": "t_2026-07_33", "date": "2026-07-11", "desc": "Refeições Trabalho Cícero", "cat": "restaurantes", "sub": "Refeições no Trabalho - Fortaleza", "payer": "Cícero", "amount": 399.03, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.434371", "city": "Fortaleza", "card": "Não informado", "responsible": "Cícero", "description": "Refeições Trabalho Cícero"}, {"id": "t_2026-07_34", "date": "2026-07-11", "desc": "Ifood", "cat": "restaurantes", "sub": "Restaurantes_Bares_Delivery - Brasília", "payer": "Nilce", "amount": 25.98, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.434385", "city": "Brasília", "card": "Não informado", "responsible": "Nilce", "description": "Ifood"}, {"id": "t_2026-07_35", "date": "2026-07-12", "desc": "Carrefour", "cat": "moradia", "sub": "Supermercado - Brasília", "payer": "Nilce", "amount": 74.59, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.434418", "city": "Brasília", "card": "Não informado", "responsible": "Nilce", "description": "Carrefour"}, {"id": "t_2026-07_36", "date": "2026-07-12", "desc": "Nidobox", "cat": "moradia", "sub": "Supermercado - Fortaleza", "payer": "Cícero", "amount": 116.1, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.434433", "city": "Fortaleza", "card": "Não informado", "responsible": "Cícero", "description": "Nidobox"}, {"id": "t_2026-07_37", "date": "2026-07-12", "desc": "GME Comercio", "cat": "restaurantes", "sub": "Restaurantes_Bares_Delivery - Brasília", "payer": "Nilce", "amount": 19.2, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.434447", "city": "Brasília", "card": "Não informado", "responsible": "Nilce", "description": "GME Comercio"}, {"id": "t_2026-07_38", "date": "2026-07-14", "desc": "Gasolina", "cat": "transporte", "sub": "Combustível - Fortaleza", "payer": "Cícero", "amount": 100.0, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.435039", "city": "Fortaleza", "card": "Não informado", "responsible": "Cícero", "description": "Gasolina"}, {"id": "t_2026-07_39", "date": "2026-07-15", "desc": "Ifood", "cat": "restaurantes", "sub": "Restaurantes_Bares_Delivery - Brasília", "payer": "Nilce", "amount": 40.89, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.435061", "city": "Brasília", "card": "Não informado", "responsible": "Nilce", "description": "Ifood"}, {"id": "t_2026-07_40", "date": "2026-07-16", "desc": "Ifood Pastel", "cat": "restaurantes", "sub": "Restaurantes_Bares_Delivery - Fortaleza", "payer": "Cícero", "amount": 17.89, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.435082", "city": "Fortaleza", "card": "Não informado", "responsible": "Cícero", "description": "Ifood Pastel"}, {"id": "t_2026-07_41", "date": "2026-07-16", "desc": "Cagece", "cat": "moradia", "sub": "Água Encanada - Fortaleza", "payer": "Nilce", "amount": 94.04, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.435101", "city": "Fortaleza", "card": "Não informado", "responsible": "Nilce", "description": "Cagece"}, {"id": "t_2026-07_42", "date": "2026-07-18", "desc": "Padaria", "cat": "restaurantes", "sub": "Restaurantes_Bares_Delivery - Fortaleza", "payer": "Cícero", "amount": 9.0, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.435127", "city": "Fortaleza", "card": "Não informado", "responsible": "Cícero", "description": "Padaria"}, {"id": "t_2026-07_43", "date": "2026-07-18", "desc": "Açaí", "cat": "restaurantes", "sub": "Restaurantes_Bares_Delivery - Fortaleza", "payer": "Cícero", "amount": 11.73, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.435142", "city": "Fortaleza", "card": "Não informado", "responsible": "Cícero", "description": "Açaí"}, {"id": "t_2026-07_44", "date": "2026-07-19", "desc": "Padaria", "cat": "restaurantes", "sub": "Restaurantes_Bares_Delivery - Fortaleza", "payer": "Cícero", "amount": 6.0, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.435156", "city": "Fortaleza", "card": "Não informado", "responsible": "Cícero", "description": "Padaria"}, {"id": "t_2026-07_45", "date": "2026-07-19", "desc": "Almoco", "cat": "restaurantes", "sub": "Restaurantes_Bares_Delivery - Fortaleza", "payer": "Cícero", "amount": 18.0, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.435169", "city": "Fortaleza", "card": "Não informado", "responsible": "Cícero", "description": "Almoco"}, {"id": "t_2026-07_46", "date": "2026-07-19", "desc": "Almoço Diarista", "cat": "moradia", "sub": "Diarista - Fortaleza", "payer": "Cícero", "amount": 36.0, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.435183", "city": "Fortaleza", "card": "Não informado", "responsible": "Cícero", "description": "Almoço Diarista"}, {"id": "t_2026-07_47", "date": "2026-07-19", "desc": "Carrefour", "cat": "moradia", "sub": "Supermercado - Brasília", "payer": "Nilce", "amount": 314.81, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.435203", "city": "Brasília", "card": "Não informado", "responsible": "Nilce", "description": "Carrefour"}], "2026-08": [{"id": "t_2026-08_1", "date": "2026-08-02", "desc": "Locação Carro", "cat": "transporte", "sub": "Locação/Parcela Carro - Fortaleza", "payer": "Cícero", "amount": 2277.26, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.503658", "city": "Fortaleza", "card": "Não informado", "responsible": "Cícero", "description": "Locação Carro"}, {"id": "t_2026-08_2", "date": "2026-08-02", "desc": "Streaming | Youtube", "cat": "diversos", "sub": "Streaming | Youtube - Compartilhado", "payer": "Cícero", "amount": 17.97, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.503740", "city": "Compartilhado", "card": "Não informado", "responsible": "Cícero", "description": "Streaming | Youtube"}, {"id": "t_2026-08_3", "date": "2026-08-02", "desc": "Enzimas - 01/01", "cat": "saude", "sub": "Enzimas/Remédios - Brasília", "payer": "Cícero", "amount": 24.13, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.504830", "city": "Brasília", "card": "Não informado", "responsible": "Cícero", "description": "Enzimas - 01/01"}, {"id": "t_2026-08_4", "date": "2026-08-02", "desc": "Enzimas - 01/01", "cat": "saude", "sub": "Enzimas/Remédios - Fortaleza", "payer": "Cícero", "amount": 24.13, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.504937", "city": "Fortaleza", "card": "Não informado", "responsible": "Cícero", "description": "Enzimas - 01/01"}, {"id": "t_2026-08_5", "date": "2026-08-02", "desc": "Enzimas - 02/03", "cat": "saude", "sub": "Enzimas/Remédios - Brasília", "payer": "Cícero", "amount": 16.09, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.505027", "city": "Brasília", "card": "Não informado", "responsible": "Cícero", "description": "Enzimas - 02/03"}, {"id": "t_2026-08_6", "date": "2026-08-02", "desc": "Enzimas - 02/03", "cat": "saude", "sub": "Enzimas/Remédios - Fortaleza", "payer": "Cícero", "amount": 16.09, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.505138", "city": "Fortaleza", "card": "Não informado", "responsible": "Cícero", "description": "Enzimas - 02/03"}, {"id": "t_2026-08_7", "date": "2026-08-02", "desc": "Passagem1 Nilce Agosto - 01/02", "cat": "diversos", "sub": "Passagens Aéreas - Brasília", "payer": "Cícero", "amount": 527.37, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.505215", "city": "Brasília", "card": "Não informado", "responsible": "Cícero", "description": "Passagem1 Nilce Agosto - 01/02"}, {"id": "t_2026-08_8", "date": "2026-08-02", "desc": "Passagem2 Nilce Agosto - 02/02", "cat": "diversos", "sub": "Passagens Aéreas - Brasília", "payer": "Cícero", "amount": 464.5, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.505306", "city": "Brasília", "card": "Não informado", "responsible": "Cícero", "description": "Passagem2 Nilce Agosto - 02/02"}, {"id": "t_2026-08_9", "date": "2026-08-02", "desc": "Desodorantes2 - 01/02", "cat": "moradia", "sub": "Produtos de Higiene Pessoal - Fortaleza", "payer": "Nilce", "amount": 33.76, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.505407", "city": "Fortaleza", "card": "Não informado", "responsible": "Nilce", "description": "Desodorantes2 - 01/02"}, {"id": "t_2026-08_10", "date": "2026-08-02", "desc": "Desodorantes2 - 01/02", "cat": "moradia", "sub": "Produtos de Higiene Pessoal - Brasília", "payer": "Nilce", "amount": 33.76, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.505513", "city": "Brasília", "card": "Não informado", "responsible": "Nilce", "description": "Desodorantes2 - 01/02"}, {"id": "t_2026-08_11", "date": "2026-08-02", "desc": "Passagem Nilce Setembro", "cat": "diversos", "sub": "Passagens Aéreas - Brasília", "payer": "Cícero", "amount": 1051.14, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.505585", "city": "Brasília", "card": "Não informado", "responsible": "Cícero", "description": "Passagem Nilce Setembro"}], "2026-09": [{"id": "t_2026-09_1", "date": "2026-09-01", "desc": "Desodorantes2 - 02/02", "cat": "moradia", "sub": "Produtos de Higiene Pessoal - Fortaleza", "payer": "Nilce", "amount": 33.76, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.519769", "city": "Fortaleza", "card": "Não informado", "responsible": "Nilce", "description": "Desodorantes2 - 02/02"}, {"id": "t_2026-09_2", "date": "2026-09-01", "desc": "Desodorantes2 - 02/02", "cat": "moradia", "sub": "Produtos de Higiene Pessoal - Brasília", "payer": "Nilce", "amount": 33.76, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.520651", "city": "Brasília", "card": "Não informado", "responsible": "Nilce", "description": "Desodorantes2 - 02/02"}, {"id": "t_2026-09_3", "date": "2026-09-01", "desc": "Passagem1 Nilce Agosto - 02/02", "cat": "diversos", "sub": "Passagens Aéreas - Brasília", "payer": "Cícero", "amount": 494.57, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.520735", "city": "Brasília", "card": "Não informado", "responsible": "Cícero", "description": "Passagem1 Nilce Agosto - 02/02"}, {"id": "t_2026-09_4", "date": "2026-09-01", "desc": "Passagem2 Nilce Agosto - 02/02", "cat": "diversos", "sub": "Passagens Aéreas - Brasília", "payer": "Cícero", "amount": 464.5, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.520799", "city": "Brasília", "card": "Não informado", "responsible": "Cícero", "description": "Passagem2 Nilce Agosto - 02/02"}, {"id": "t_2026-09_5", "date": "2026-09-01", "desc": "Enzimas - 03/03", "cat": "saude", "sub": "Enzimas/Remédios - Brasília", "payer": "Cícero", "amount": 16.09, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.520854", "city": "Brasília", "card": "Não informado", "responsible": "Cícero", "description": "Enzimas - 03/03"}, {"id": "t_2026-09_6", "date": "2026-09-01", "desc": "Enzimas - 03/03", "cat": "saude", "sub": "Enzimas/Remédios - Fortaleza", "payer": "Cícero", "amount": 16.09, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.520921", "city": "Fortaleza", "card": "Não informado", "responsible": "Cícero", "description": "Enzimas - 03/03"}, {"id": "t_2026-09_7", "date": "2026-09-01", "desc": "Passagem Nilce Setembro", "cat": "diversos", "sub": "Passagens Aéreas - Brasília", "payer": "Cícero", "amount": 961.39, "createdBy": "Planilha base", "updatedAt": "2026-07-20T13:06:05.520981", "city": "Brasília", "card": "Não informado", "responsible": "Cícero", "description": "Passagem Nilce Setembro"}], "2026-10": [], "2026-11": [], "2026-12": []}, "reallocations": {"2026-07": [], "2026-08": [], "2026-09": [], "2026-10": [], "2026-11": [], "2026-12": []}, "history": []};
-let state=load(), view='rxd', periodMode='ano', revenueScope='ano', expenseScope='ano', rxdScope='ano', txScope='mes', txPanel='acompanhamento', selectedExpenseCat=null, editTxId=null, editRevenueMonth=null, editBudgetMonth=null, expenseFilters={cat:'todos',owner:'todos',city:'todos'}, txForecastFilters={cat:'todos',owner:'todos',city:'todos',balance:'todos'}, txRealizedFilters={cat:'todos',owner:'todos',city:'todos'};
+let state=load(), view='rxd', periodMode='ano', revenueScope='ano', expenseScope='ano', rxdScope='ano', txScope='ano', txPanel='acompanhamento', selectedExpenseCat=null, editTxId=null, editRevenueMonth=null, editBudgetMonth=null, expenseFilters={cat:'todos',owner:'todos',city:'todos'}, txForecastFilters={cat:'todos',owner:'todos',city:'todos',balance:'todos'}, txRealizedFilters={cat:'todos',owner:'todos',city:'todos'};
 function clone(x){return JSON.parse(JSON.stringify(x))}function load(){try{const saved=JSON.parse(localStorage.getItem(storeKey)||'null');return saved?merge(clone(baseData),saved):clone(baseData)}catch(e){return clone(baseData)}}function merge(base,saved){return {...base,...saved,months:(saved.months&&saved.months.length?saved.months:base.months),categories:(saved.categories&&saved.categories.length?saved.categories:base.categories),subs:{...base.subs,...(saved.subs||{})},revenues:{...base.revenues,...(saved.revenues||{})},budgets:{...base.budgets,...(saved.budgets||{})},transactions:{...base.transactions,...(saved.transactions||{})},reallocations:{...base.reallocations,...(saved.reallocations||{})},history:[...(saved.history||[])]}}function save(){localStorage.setItem(storeKey,JSON.stringify(state)); if(cloudReady) scheduleCloudSave()} 
 function cloudHeaders(){return {'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY,'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'}}
 function setCloudStatus(txt){lastCloudStatus=txt;const el=document.getElementById('cloudStatus');if(el){el.textContent=txt;el.title=txt;el.dataset.status=txt}}
@@ -623,22 +1739,61 @@ function scheduleCloudSave(){clearTimeout(cloudSaveTimer);cloudSaveTimer=setTime
 async function saveToCloud(){if(cloudSaving)return scheduleCloudSave();cloudSaving=true;setCloudStatus('Salvando...');try{const res=await fetch(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}?on_conflict=id`,{method:'POST',headers:cloudHeaders(),body:JSON.stringify({id:SUPABASE_ROW_ID,data:state,updated_at:new Date().toISOString()})});if(!res.ok)throw new Error(await res.text());setCloudStatus('Nuvem salva')}catch(err){console.error('Erro ao salvar no Supabase',err);setCloudStatus('Erro na nuvem')}finally{cloudSaving=false}}
 async function loadFromCloud(){setCloudStatus('Carregando nuvem...');try{const res=await fetch(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}?id=eq.${encodeURIComponent(SUPABASE_ROW_ID)}&select=data,updated_at`,{headers:{'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY}});if(!res.ok)throw new Error(await res.text());const rows=await res.json();if(rows&&rows.length&&rows[0].data){state=merge(clone(baseData),rows[0].data);localStorage.setItem(storeKey,JSON.stringify(state));setCloudStatus('Nuvem carregada');render()}else{setCloudStatus('Criando nuvem...');await saveToCloud();}}catch(err){console.error('Erro ao carregar do Supabase',err);setCloudStatus('Modo local')}}
 function initCloud(){cloudReady=true;loadFromCloud()}
-const months=()=>state.months.map(m=>m.id); const fmt=v=>`<span class="money">${(Number(v)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>`; const pct=(v,t)=>!t?'0,0%':((Number(v||0)/Number(t||0))*100).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})+'%'; const fmtDate=d=>{const s=String(d||'');const m=s.match(/^(\d{4})-(\d{2})-(\d{2})/);return m?`${m[3]}/${m[2]}/${m[1]}`:s}; const labelMonth=id=>(state.months.find(m=>m.id===id)||{label:id}).label; function setView(v){view=v;selectedExpenseCat=null;revenueScope='ano';expenseScope='ano';rxdScope='ano';periodMode='ano';if(v==='lancamentos'){state.month=validMonth(currentMonthId());txScope='mes';txPanel='acompanhamento';txForecastFilters={cat:'todos',owner:'todos',city:'todos',balance:'todos'};txRealizedFilters={cat:'todos',owner:'todos',city:'todos'};save()}else{txScope='ano'}render()} function currentMonthId(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')} function validMonth(m){if(months().includes(m))return m;const y=String(m||'').slice(0,4);return months().find(x=>x.startsWith(y))||months()[0]||m} function setMonth(m){state.month=validMonth(m);save();render()} state.month=validMonth(currentMonthId()); save(); function cat(id){return state.categories.find(c=>c.id===id)||{id,name:id,color:'#667085'}} function cityOf(sub=''){return String(sub||'').includes('Bras')?'Brasília':String(sub||'').includes('Fortaleza')?'Fortaleza':'Compartilhado'} function ownerOf(city=''){return city==='Fortaleza'?'Cícero':city==='Brasília'?'Nilce':'Compartilhado'} function cleanName(txt=''){return String(txt||'').replace(/\s+-\s+(Fortaleza|Brasília|Brasilia|Compartilhado)$/i,'').trim()} function norm(txt=''){return String(txt||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim()} function textCmp(a,b){return norm(a).localeCompare(norm(b),'pt-BR',{sensitivity:'base'})} function expenseSortMeta(x){const catId=x.catId||x.cat||'';const sub=cleanName(x.sub||x.name||x.description||x.desc||'');const desc=cleanName(x.description||x.desc||x.name||x.sub||'');const value=Number(x.total??x.planned??x.amount??0)||0;return{cat:cat(catId).name,sub,desc,value}} function compareExpenseItems(a,b){const A=expenseSortMeta(a),B=expenseSortMeta(b);return textCmp(A.cat,B.cat)||textCmp(A.sub,B.sub)||textCmp(A.desc,B.desc)||(B.value-A.value)} function cardOf(v){const x=String(v||'').trim();return (!x||x==='Não informado'||x==='Não se aplica')?'-':x} function shortLabel(v){return String(v||'').replace('Compartilhado','Compartil.').replace('Restaurantes e Delivery','Rest. e Delivery')} function txs(m=state.month){return (state.transactions[m]||[]).map(t=>{const city=t.city||cityOf(t.sub||t.description||t.desc||'');return {...t,description:cleanName(t.description||t.desc||''),responsible:ownerOf(city),city,card:cardOf(t.card),sub:cleanName(t.sub||'')}})} function revObj(m){return state.revenues[m]||{cicero:0,nilce:0,reserva:0}} function revenueTotal(m){const r=revObj(m);return Number(r.cicero||0)+Number(r.nilce||0)+Number(r.reserva||0)} function expenseTotal(m){return txs(m).reduce((s,t)=>s+Number(t.amount||0),0)} function budgetBase(m,catId){return (state.budgets[m]||[]).filter(b=>!catId||b.cat===catId).reduce((s,b)=>s+Number(b.planned||0),0)} function reallocDelta(m,catId){return (state.reallocations[m]||[]).reduce((s,r)=>s+(r.to===catId?Number(r.amount||0):0)-(r.from===catId?Number(r.amount||0):0),0)} function budgetAdjusted(m,catId){return budgetBase(m,catId)+reallocDelta(m,catId)}
+const months=()=>state.months.map(m=>m.id); const fmt=v=>`<span class="money">${(Number(v)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>`; const pct=(v,t)=>!t?'0,0%':((Number(v||0)/Number(t||0))*100).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})+'%'; const fmtDate=d=>{const s=String(d||'');const m=s.match(/^(\d{4})-(\d{2})-(\d{2})/);return m?`${m[3]}/${m[2]}/${m[1]}`:s}; const labelMonth=id=>(state.months.find(m=>m.id===id)||{label:id}).label; function setView(v){view=v;selectedExpenseCat=null;revenueScope='ano';expenseScope='ano';rxdScope='ano';txScope='ano';periodMode='ano';if(v==='lancamentos'&&!['acompanhamento','realizados','remanejamentos'].includes(txPanel))txPanel='acompanhamento';render()} function currentMonthId(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')} function validMonth(m){if(months().includes(m))return m;const y=String(m||'').slice(0,4);return months().find(x=>x.startsWith(y))||months()[0]||m} function setMonth(m){state.month=validMonth(m);save();render()} state.month=validMonth(currentMonthId()); save(); function cat(id){return state.categories.find(c=>c.id===id)||{id,name:id,color:'#667085'}} function cityOf(sub=''){return String(sub||'').includes('Bras')?'Brasília':String(sub||'').includes('Fortaleza')?'Fortaleza':'Compartilhado'} function ownerOf(city=''){return city==='Fortaleza'?'Cícero':city==='Brasília'?'Nilce':'Compartilhado'} function cleanName(txt=''){return String(txt||'').replace(/\s+-\s+(Fortaleza|Brasília|Brasilia|Compartilhado)$/i,'').trim()} function norm(txt=''){return String(txt||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim()} function textCmp(a,b){return norm(a).localeCompare(norm(b),'pt-BR',{sensitivity:'base'})} function expenseSortMeta(x){const catId=x.catId||x.cat||'';const sub=cleanName(x.sub||x.name||x.description||x.desc||'');const desc=cleanName(x.description||x.desc||x.name||x.sub||'');const value=Number(x.total??x.planned??x.amount??0)||0;return{cat:cat(catId).name,sub,desc,value}} function compareExpenseItems(a,b){const A=expenseSortMeta(a),B=expenseSortMeta(b);return textCmp(A.cat,B.cat)||textCmp(A.sub,B.sub)||textCmp(A.desc,B.desc)||(B.value-A.value)} function cardOf(v){const x=String(v||'').trim();return (!x||x==='Não informado'||x==='Não se aplica')?'-':x} function shortLabel(v){return String(v||'').replace('Compartilhado','Compartil.').replace('Restaurantes e Delivery','Rest. e Delivery')} function txs(m=state.month){return (state.transactions[m]||[]).map(t=>{const city=t.city||cityOf(t.sub||t.description||t.desc||'');return {...t,description:cleanName(t.description||t.desc||''),responsible:ownerOf(city),city,card:cardOf(t.card),sub:cleanName(t.sub||'')}})} function revObj(m){return state.revenues[m]||{cicero:0,nilce:0,reserva:0}} function revenueTotal(m){const r=revObj(m);return Number(r.cicero||0)+Number(r.nilce||0)+Number(r.reserva||0)} function expenseTotal(m){return txs(m).reduce((s,t)=>s+Number(t.amount||0),0)} function budgetBase(m,catId){return (state.budgets[m]||[]).filter(b=>!catId||b.cat===catId).reduce((s,b)=>s+Number(b.planned||0),0)} function reallocDelta(m,catId){return (state.reallocations[m]||[]).reduce((s,r)=>s+(r.to===catId?Number(r.amount||0):0)-(r.from===catId?Number(r.amount||0):0),0)} function budgetAdjusted(m,catId){return budgetBase(m,catId)+reallocDelta(m,catId)}
 function budgetLineDelta(m,budgetId){return (state.reallocations[m]||[]).reduce((s,r)=>s+(r.toBudgetId===budgetId?Number(r.amount||0):0)-(r.fromBudgetId===budgetId?Number(r.amount||0):0),0)}
 function budgetLineAdjusted(m,b){return Number(b&&b.planned||0)+budgetLineDelta(m,b&&b.id)}
 function sameBudgetTarget(item,catId,sub,city){const itemCity=item.city||cityOf(item.sub||item.description||item.desc||'');return item.cat===catId&&norm(cleanName(item.sub||''))===norm(cleanName(sub||''))&&itemCity===city}
 function txBudgetSnapshot(m,catId,sub,city,excludeId=null){const lines=(state.budgets[m]||[]).filter(b=>sameBudgetTarget(b,catId,sub,city));const planned=lines.reduce((s,b)=>s+budgetLineAdjusted(m,b),0);const used=(state.transactions[m]||[]).filter(t=>t.id!==excludeId&&sameBudgetTarget(t,catId,sub,city)).reduce((s,t)=>s+Number(t.amount||0),0);return{lines,planned,used,balance:planned-used}}
 function budgetLineUsed(m,b,excludeId=null){const city=b.city||cityOf(b.sub||'');return (state.transactions[m]||[]).filter(t=>t.id!==excludeId&&sameBudgetTarget(t,b.cat,b.sub,city)).reduce((s,t)=>s+Number(t.amount||0),0)}
 function balanceStatus(v){return v<-.005?'negativo':Math.abs(v)<=.005?'sem_saldo':'com_saldo'}
-function years(){return [...new Set(months().map(m=>m.slice(0,4)))].sort()} function monthYearList(scope){const year=state.month.slice(0,4);return scope==='mes'?[state.month]:months().filter(x=>x.startsWith(year))} function yearSelectHTML(){return `<select class="select" onchange="setMonth(this.value+'-'+state.month.slice(5,7))">${years().map(y=>`<option value="${y}" ${state.month.startsWith(y)?'selected':''}>${y}</option>`).join('')}</select>`} function monthSelectHTML(){return `<select class="select" onchange="setMonth(this.value)">${months().filter(m=>m.startsWith(state.month.slice(0,4))).map(m=>`<option value="${m}" ${m===state.month?'selected':''}>${labelMonth(m)}</option>`).join('')}</select>`} function simpleControls(kind){const scope=kind==='receita'?revenueScope:kind==='despesa'?expenseScope:rxdScope,scopeVar=kind==='receita'?'revenueScope':kind==='despesa'?'expenseScope':'rxdScope';return `<div class="filterbar"><button class="${scope==='ano'?'active':''}" onclick="${scopeVar}='ano';render()">Ano todo</button><button class="${scope==='mes'?'active':''}" onclick="${scopeVar}='mes';render()">Mês selecionado</button>${yearSelectHTML()}${monthSelectHTML()}</div>`} function ownerOptions(sel){return ['todos','Compartilhado','Cícero','Nilce'].map(v=>`<option value="${v}" ${sel===v?'selected':''}>${v==='todos'?'Todos responsáveis':v}</option>`).join('')} function cityOptions(sel){return ['todos','Brasília','Compartilhado','Fortaleza'].map(v=>`<option value="${v}" ${sel===v?'selected':''}>${v==='todos'?'Todas cidades':v}</option>`).join('')} function categoryFilterOptions(sel){return `<option value="todos" ${sel==='todos'?'selected':''}>Todas categorias</option>`+state.categories.slice().sort((a,b)=>textCmp(a.name,b.name)).map(c=>`<option value="${c.id}" ${sel===c.id?'selected':''}>${c.name}</option>`).join('')} function expenseFilterControls(){return `<div class="filterbar">${simpleControls('despesa')}<select class="select" onchange="expenseFilters.cat=this.value;selectedExpenseCat=null;render()">${categoryFilterOptions(expenseFilters.cat)}</select><select class="select" onchange="expenseFilters.owner=this.value;render()">${ownerOptions(expenseFilters.owner)}</select><select class="select" onchange="expenseFilters.city=this.value;render()">${cityOptions(expenseFilters.city)}</select></div>`} function txPeriodControls(){return `<div class="filterbar tx-filterbar tx-period-controls"><button class="${txScope==='ano'?'active':''}" onclick="txScope='ano';render()">Ano todo</button><button class="${txScope==='mes'?'active':''}" onclick="txScope='mes';render()">Mês selecionado</button>${yearSelectHTML()}${monthSelectHTML()}</div>`}
+function years(){return [...new Set(months().map(m=>m.slice(0,4)))].sort()}
+function monthYearList(scope){const year=state.month.slice(0,4);return scope==='mes'?[state.month]:months().filter(x=>x.startsWith(year))}
+function setYear(y){const sameMonth=String(state.month||'').slice(5,7);const available=months().filter(m=>m.startsWith(String(y)+'-'));state.month=available.find(m=>m.slice(5,7)===sameMonth)||available[0]||state.month;save();render()}
+function setPeriodSelection(scopeVar,value){const annual=value==='ano';if(!annual)state.month=validMonth(value);if(scopeVar==='revenueScope')revenueScope=annual?'ano':'mes';else if(scopeVar==='expenseScope')expenseScope=annual?'ano':'mes';else if(scopeVar==='rxdScope')rxdScope=annual?'ano':'mes';else if(scopeVar==='txScope')txScope=annual?'ano':'mes';else if(scopeVar==='periodMode')periodMode=annual?'ano':'mes';save();render()}
+function yearSelectHTML(){return `<select class="select period-select" aria-label="Ano" title="Ano" onchange="setYear(this.value)">${years().map(y=>`<option value="${y}" ${state.month.startsWith(y)?'selected':''}>${y}</option>`).join('')}</select>`}
+function monthPeriodSelectHTML(scopeVar,scope){const currentYear=state.month.slice(0,4);const options=months().filter(m=>m.startsWith(currentYear)).map(m=>`<option value="${m}" ${scope==='mes'&&m===state.month?'selected':''}>${labelMonth(m)}</option>`).join('');return `<select class="select period-select" aria-label="Mês" title="Mês" onchange="setPeriodSelection('${scopeVar}',this.value)"><option value="ano" ${scope==='ano'?'selected':''}>Todos os meses</option>${options}</select>`}
+function periodSelectFields(scopeVar,scope){return `${yearSelectHTML()}${monthPeriodSelectHTML(scopeVar,scope)}`}
+function simpleControls(kind){const scope=kind==='receita'?revenueScope:kind==='despesa'?expenseScope:rxdScope,scopeVar=kind==='receita'?'revenueScope':kind==='despesa'?'expenseScope':'rxdScope';return `<div class="filterbar period-filterbar">${periodSelectFields(scopeVar,scope)}</div>`} function ownerOptions(sel){return ['todos','Compartilhado','Cícero','Nilce'].map(v=>`<option value="${v}" ${sel===v?'selected':''}>${v==='todos'?'Todos responsáveis':v}</option>`).join('')} function cityOptions(sel){return ['todos','Brasília','Compartilhado','Fortaleza'].map(v=>`<option value="${v}" ${sel===v?'selected':''}>${v==='todos'?'Todas cidades':v}</option>`).join('')} function categoryFilterOptions(sel){return `<option value="todos" ${sel==='todos'?'selected':''}>Todas categorias</option>`+state.categories.slice().sort((a,b)=>textCmp(a.name,b.name)).map(c=>`<option value="${c.id}" ${sel===c.id?'selected':''}>${c.name}</option>`).join('')} function expenseFilterControls(){return `<div class="filterbar">${periodSelectFields('expenseScope',expenseScope)}<select class="select" onchange="expenseFilters.cat=this.value;selectedExpenseCat=null;render()">${categoryFilterOptions(expenseFilters.cat)}</select><select class="select" onchange="expenseFilters.owner=this.value;render()">${ownerOptions(expenseFilters.owner)}</select><select class="select" onchange="expenseFilters.city=this.value;render()">${cityOptions(expenseFilters.city)}</select></div>`} function txPeriodControls(){return `<div class="filterbar tx-filterbar tx-period-controls period-filterbar">${periodSelectFields('txScope',txScope)}</div>`}
 function txForecastFilterControls(){return `<div class="tx-dedicated-filters"><div class="tx-filter-label"><strong>Filtros das previsões</strong><span>Afetam somente o acompanhamento</span></div><div class="filterbar tx-filterbar"><select class="select" onchange="txForecastFilters.cat=this.value;render()">${categoryFilterOptions(txForecastFilters.cat)}</select><select class="select" onchange="txForecastFilters.owner=this.value;render()">${ownerOptions(txForecastFilters.owner)}</select><select class="select" onchange="txForecastFilters.city=this.value;render()">${cityOptions(txForecastFilters.city)}</select><select class="select" onchange="txForecastFilters.balance=this.value;render()"><option value="todos" ${txForecastFilters.balance==='todos'?'selected':''}>Todos os saldos</option><option value="com_saldo" ${txForecastFilters.balance==='com_saldo'?'selected':''}>Com saldo</option><option value="sem_saldo" ${txForecastFilters.balance==='sem_saldo'?'selected':''}>Sem saldo</option><option value="negativo" ${txForecastFilters.balance==='negativo'?'selected':''}>Saldo negativo</option></select><button class="tiny tx-reset-filter" onclick="txForecastFilters={cat:'todos',owner:'todos',city:'todos',balance:'todos'};render()">Limpar</button></div></div>`}
 function txRealizedFilterControls(){return `<div class="tx-dedicated-filters realized"><div class="tx-filter-label"><strong>Filtros dos realizados</strong><span>Afetam somente os lançamentos realizados</span></div><div class="filterbar tx-filterbar"><select class="select" onchange="txRealizedFilters.cat=this.value;render()">${categoryFilterOptions(txRealizedFilters.cat)}</select><select class="select" onchange="txRealizedFilters.owner=this.value;render()">${ownerOptions(txRealizedFilters.owner)}</select><select class="select" onchange="txRealizedFilters.city=this.value;render()">${cityOptions(txRealizedFilters.city)}</select><button class="tiny tx-reset-filter" onclick="txRealizedFilters={cat:'todos',owner:'todos',city:'todos'};render()">Limpar</button></div></div>`}
 function budgetMeta(b){const city=b.city||cityOf(b.sub||'');return {city,owner:ownerOf(city),name:cleanName(b.sub||cat(b.cat).name),cat:b.cat}} function budgetMatches(b,filters=expenseFilters){const meta=budgetMeta(b);return (filters.cat==='todos'||b.cat===filters.cat)&&(filters.owner==='todos'||meta.owner===filters.owner)&&(filters.city==='todos'||meta.city===filters.city)} function txMatches(t,filters=txRealizedFilters){return (filters.cat==='todos'||t.cat===filters.cat)&&(filters.owner==='todos'||t.responsible===filters.owner)&&(filters.city==='todos'||t.city===filters.city)} function monthNameFull(n){return ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'][n-1]} function monthShort(n){return ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'][n-1]} function periodMonths(){const m=state.month,list=months(),year=m.slice(0,4),mm=Number(m.slice(5,7));if(periodMode==='mes')return[m];if(periodMode==='tri'){const q=Math.floor((mm-1)/3);return list.filter(x=>x.startsWith(year)&&Number(x.slice(5,7))>=q*3+1&&Number(x.slice(5,7))<=q*3+3)}if(periodMode==='sem'){const start=mm<=6?1:7,end=mm<=6?6:12;return list.filter(x=>x.startsWith(year)&&Number(x.slice(5,7))>=start&&Number(x.slice(5,7))<=end)}if(periodMode==='ano')return list.filter(x=>x.startsWith(year));if(periodMode==='aa'){const prev=(Number(year)-1)+'-'+String(mm).padStart(2,'0');return[prev,m].filter(x=>list.includes(x))}return[m]} function periodLabel(){const p=metricMonths();if(view==='estrategia'&&periodMode==='aa')return 'Mesmo mês do ano anterior';if(p.length===1)return labelMonth(p[0]);return labelMonth(p[0])+' a '+labelMonth(p[p.length-1])} function metricMonths(){if(view==='receitas')return monthYearList(revenueScope);if(view==='despesas')return monthYearList(expenseScope);if(view==='rxd')return monthYearList(rxdScope);if(view==='estrategia')return periodMonths();return[state.month]} function scopeRevenue(){return metricMonths().reduce((s,m)=>s+revenueTotal(m),0)} function plannedExpenseTotal(m){return state.categories.reduce((s,c)=>s+budgetAdjusted(m,c.id),0)} function scopeExpense(){return metricMonths().reduce((s,m)=>s+plannedExpenseTotal(m),0)} function scopeRealized(){return metricMonths().reduce((s,m)=>s+expenseTotal(m),0)} function scopeBudget(){return metricMonths().reduce((s,m)=>s+state.categories.reduce((a,c)=>a+budgetAdjusted(m,c.id),0),0)}
-const viewLabels={receitas:'Receitas',despesas:'Despesas',rxd:'R x D',lancamentos:'Lançamentos',estrategia:'Visão Gerencial',config:'Configurações'}; function nav(){return Object.keys(viewLabels).map(v=>`<button class="${view===v?'active':''}" onclick="setView('${v}')">${viewLabels[v]}</button>`).join('')} function compareControls(){return `<div class="compare">${[['mes','Mês'],['tri','Trimestre'],['sem','Semestre'],['ano','Ano'],['aa','Mesmo mês A.A.']].map(([id,lb])=>`<button class="${periodMode===id?'active':''}" onclick="periodMode='${id}';render()">${lb}</button>`).join('')}</div>`} function layout(content){document.getElementById('app').innerHTML=`<div class="shell view-${view}"><header class="header"><div class="header-in"><div class="brand"><div class="mark">CN</div><div><h1>Despesas Casal - Controle Financeiro</h1></div></div><nav class="nav">${nav()}</nav><div class="right"><span id="cloudStatus" class="cloud-status">${lastCloudStatus}</span></div></div></header><main class="main">${content}</main></div>`}
-function kpis(){const rec=scopeRevenue(), exp=scopeExpense(), bal=rec-exp;return `<div class="grid cols3"><div class="card metric"><div class="label">Receita</div><div class="value">${fmt(rec)}</div><div class="subtxt">${periodLabel()}</div></div><div class="card metric"><div class="label">Despesas</div><div class="value neg">${fmt(exp)}</div><div class="subtxt">${pct(exp,rec)} da receita</div></div><div class="card metric"><div class="label">Saldo</div><div class="value ${bal>=0?'pos':'neg'}">${fmt(bal)}</div><div class="subtxt">${pct(bal,rec)} da receita</div></div></div>`}
-function revenueKpis(){const list=monthYearList(revenueScope);const totals=list.reduce((a,m)=>{const r=revObj(m);a.cicero+=(+r.cicero||0);a.nilce+=(+r.nilce||0);a.reserva+=(+r.reserva||0);return a},{cicero:0,nilce:0,reserva:0});const total=totals.cicero+totals.nilce+totals.reserva;return `<div class="grid cols3"><div class="card metric cicero"><div class="label">Cícero</div><div class="value">${fmt(totals.cicero)}</div><div class="subtxt">${pct(totals.cicero,total)} do total</div></div><div class="card metric nilce"><div class="label">Nilce</div><div class="value">${fmt(totals.nilce)}</div><div class="subtxt">${pct(totals.nilce,total)} do total</div></div><div class="card metric reserva"><div class="label">Resgate reserva</div><div class="value">${fmt(totals.reserva)}</div><div class="subtxt">${pct(totals.reserva,total)} do total</div></div></div>`}
-function renderReceitas(){const list=monthYearList(revenueScope);const rows=list.map(m=>{const r=revObj(m), total=revenueTotal(m);return `<tr class="clickable" onclick="openRevenue('${m}')"><td>${labelMonth(m)}</td><td class="rev-cicero">${fmt(r.cicero)}</td><td class="rev-cicero">${pct(r.cicero,total)}</td><td class="rev-nilce">${fmt(r.nilce)}</td><td class="rev-nilce">${pct(r.nilce,total)}</td><td class="rev-reserva">${fmt(r.reserva)}</td><td class="rev-reserva">${pct(r.reserva,total)}</td><td><b>${fmt(total)}</b></td><td>100,0%</td></tr>`}).join('');layout(`<div class="head"><div><h2>Receitas</h2><p>Resumo do valor total de cada mês, com participação percentual e edição direta.</p></div><div class="actions"><button class="btn secondary" onclick="openFillRevenues()">Preencher receitas</button></div></div><div class="card"><div class="section-title"><h3>Filtros</h3><span>Ano ou mês selecionado</span></div>${simpleControls('receita')}</div><div style="margin-top:16px">${revenueKpis()}</div><div class="card" style="margin-top:16px"><div class="section-title"><h3>Resumo do Período de Receitas</h3><span>Azul = Cícero · rosa = Nilce · verde = Resgate Reserva</span></div><div class="table-wrap"><table><thead><tr><th>Mês</th><th>Cícero</th><th>%</th><th>Nilce</th><th>%</th><th>Resgate Reserva</th><th>%</th><th>Total</th><th>%</th></tr></thead><tbody>${rows}</tbody></table></div></div>`)}
-function expenseRowsByCat(m){return state.categories.map(c=>{const adjusted=budgetAdjusted(m,c.id), d=reallocDelta(m,c.id);return {...c,adjusted,d}}).filter(x=>x.adjusted||x.d)} function plannedFilteredByCat(m,catId){const hasExtraFilter=expenseFilters.owner!=='todos'||expenseFilters.city!=='todos'; if(!hasExtraFilter){return budgetAdjusted(m,catId)} return (state.budgets[m]||[]).filter(b=>b.cat===catId&&budgetMatches(b,expenseFilters)).reduce((s,b)=>s+budgetLineAdjusted(m,b),0)} function renderDespesas(){const list=monthYearList(expenseScope);const monthHeaders=list.map(m=>`<th class="month-head">${labelMonth(m)}</th>`).join('');const cats=state.categories.filter(c=>expenseFilters.cat==='todos'||c.id===expenseFilters.cat).map(c=>{const vals=list.map(m=>plannedFilteredByCat(m,c.id));const total=vals.reduce((s,v)=>s+v,0);return{c,vals,total}}).filter(x=>x.total>0).sort((a,b)=>textCmp(a.c.name,b.c.name)||(b.total-a.total));const periodTotal=cats.reduce((acc,x)=>acc+x.total,0);const rows=cats.map(({c,vals,total})=>`<tr class="cat-total-row category-tinted" style="--cat-color:${c.color};--cat-soft:${c.color}12"><td><span class="cat-tag" style="background:${c.color}18;color:${c.color}"><span class="row-accent" style="background:${c.color}"></span>${c.name}</span></td>${vals.map(v=>`<td class="soft-cell despesa-cell" style="--cat-color:${c.color}">${fmt(v)}</td>`).join('')}<td class="total-col total-highlight" style="color:${c.color}">${fmt(total)}</td><td>${pct(total,periodTotal)}</td></tr>`).join('');const detail=renderExpenseDetail(list);layout(`<div class="head"><div><h2>Despesas</h2><p>Resumo consolidado lado a lado por mês. A edição acontece somente na visão expandida abaixo.</p></div><div class="actions"><button class="btn secondary" onclick="openNewBudgetLine()">Nova despesa prevista</button></div></div>${kpis()}<div class="card" style="margin-top:16px"><div class="section-title"><h3>Filtros</h3><span>A visão abre no ano todo, mas você pode selecionar mês, categoria, responsável ou cidade</span></div>${expenseFilterControls()}</div><div class="card" style="margin-top:16px"><div class="section-title"><h3>Resumo consolidado de despesas</h3><span>${expenseScope==='ano'?'Ano todo':'Mês selecionado'} · total destacado e leitura mensal mais clara</span></div><div class="table-wrap wide freeze-cat sticky-months summary-colorized"><table><thead><tr><th>Categoria</th>${monthHeaders}<th>Total</th><th>% do período</th></tr></thead><tbody>${rows||'<tr><td colspan="9">Sem dados</td></tr>'}</tbody></table></div></div><div class="card" style="margin-top:16px"><div class="section-title"><h3>Visão expandida das despesas</h3><span>Todas as categorias permanecem visíveis · cabeçalho dos meses fixo · clique no valor do mês para editar</span></div>${detail}</div>`)}
+const viewLabels={receitas:'Receitas',despesas:'Despesas',rxd:'R x D',lancamentos:'Lançamentos',estrategia:'Visão Gerencial',config:'Configurações'};
+const viewShortLabels={receitas:'Receitas',despesas:'Despesas',rxd:'R x D',lancamentos:'Lançar',estrategia:'Gestão',config:'Ajustes'};
+const viewIconPaths={
+  receitas:'<path d="M12 3v18m0 0 6-6m-6 6-6-6"/>',
+  despesas:'<path d="M12 21V3m0 0 6 6m-6-6-6 6"/>',
+  rxd:'<path d="M4 19V9m6 10V5m6 14v-7m4 7H2"/>',
+  lancamentos:'<path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/>',
+  estrategia:'<path d="M4 19V5m0 14h16M7 15l4-4 3 2 5-6"/>',
+  config:'<path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.12 2.12-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.04 1.56V20h-3v-.08a1.7 1.7 0 0 0-1.04-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-2.12-2.12.06-.06A1.7 1.7 0 0 0 7 14.7a1.7 1.7 0 0 0-1.56-1.04H5.3v-3h.14A1.7 1.7 0 0 0 7 9.62a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.12-2.12.06.06A1.7 1.7 0 0 0 10.66 6a1.7 1.7 0 0 0 1.04-1.56V4.3h3v.14A1.7 1.7 0 0 0 15.74 6a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.12 2.12-.06.06a1.7 1.7 0 0 0-.34 1.88 1.7 1.7 0 0 0 1.56 1.04h.14v3h-.14A1.7 1.7 0 0 0 19.4 15Z"/>'
+};
+function viewIcon(v){return `<svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${viewIconPaths[v]||''}</svg>`}
+function nav(){return Object.keys(viewLabels).map(v=>`<button class="${view===v?'active':''}" onclick="setView('${v}')" title="${viewLabels[v]}" aria-label="${viewLabels[v]}">${viewIcon(v)}<span class="nav-label">${viewLabels[v]}</span><span class="nav-short">${viewShortLabels[v]}</span></button>`).join('')}
+function compareControls(){return `<div class="compare">${[['mes','Mês'],['tri','Trimestre'],['sem','Semestre'],['ano','Ano'],['aa','Mesmo mês A.A.']].map(([id,lb])=>`<button class="${periodMode===id?'active':''}" onclick="periodMode='${id}';render()">${lb}</button>`).join('')}</div>`} function enhanceResponsiveTables(){
+  document.querySelectorAll('.main .table-wrap').forEach(wrap=>{
+    const table=wrap.querySelector('table');
+    if(!table)return;
+    wrap.classList.add('freeze-item-column');
+    const headers=[...table.querySelectorAll('thead th')].map(th=>(th.textContent||'').trim().toLowerCase());
+    const first=headers[0]||'';
+    const second=headers[1]||'';
+    if((/^(data|mês|mes)$/.test(first)&&/(lançamento|lancamento|origem|descrição|descricao|despesa)/.test(second))){
+      wrap.classList.add('freeze-item-two');
+    }
+    requestAnimationFrame(()=>{
+      const firstCell=table.querySelector('thead th:first-child')||table.querySelector('tbody tr:first-child td:first-child');
+      if(!firstCell)return;
+      const measured=Math.ceil(firstCell.getBoundingClientRect().width||firstCell.scrollWidth||110);
+      const width=Math.max(78,Math.min(measured,260));
+      wrap.style.setProperty('--freeze-col-1',width+'px');
+    });
+  });
+}
+function layout(content){document.getElementById('app').innerHTML=`<div class="shell view-${view}"><header class="header"><div class="header-in"><div class="brand"><div class="mark">CN</div><div><h1>Despesas Casal - Controle Financeiro</h1></div></div><nav class="nav">${nav()}</nav><div class="right"><span id="cloudStatus" class="cloud-status">${lastCloudStatus}</span></div></div></header><main class="main view-${view}">${content}</main></div>`;requestAnimationFrame(enhanceResponsiveTables)}
+function kpis(){const rec=scopeRevenue(), exp=scopeExpense(), bal=rec-exp;return `<div class="grid cols3 kpi-strip"><div class="card metric"><div class="label">Receita</div><div class="value">${fmt(rec)}</div><div class="subtxt">${periodLabel()}</div></div><div class="card metric"><div class="label">Despesas</div><div class="value neg">${fmt(exp)}</div><div class="subtxt">${pct(exp,rec)} da receita</div></div><div class="card metric"><div class="label">Saldo</div><div class="value ${bal>=0?'pos':'neg'}">${fmt(bal)}</div><div class="subtxt">${pct(bal,rec)} da receita</div></div></div>`}
+function revenueKpis(){const list=monthYearList(revenueScope);const totals=list.reduce((a,m)=>{const r=revObj(m);a.cicero+=(+r.cicero||0);a.nilce+=(+r.nilce||0);a.reserva+=(+r.reserva||0);return a},{cicero:0,nilce:0,reserva:0});const total=totals.cicero+totals.nilce+totals.reserva;return `<div class="grid cols3 kpi-strip revenue-kpi-strip"><div class="card metric cicero"><div class="label">Cícero</div><div class="value">${fmt(totals.cicero)}</div><div class="subtxt">${pct(totals.cicero,total)} do total</div></div><div class="card metric nilce"><div class="label">Nilce</div><div class="value">${fmt(totals.nilce)}</div><div class="subtxt">${pct(totals.nilce,total)} do total</div></div><div class="card metric reserva"><div class="label">Resgate reserva</div><div class="value">${fmt(totals.reserva)}</div><div class="subtxt">${pct(totals.reserva,total)} do total</div></div></div>`}
+function renderReceitas(){const list=monthYearList(revenueScope);const rows=list.map(m=>{const r=revObj(m), total=revenueTotal(m);return `<tr class="clickable" onclick="openRevenue('${m}')"><td>${labelMonth(m)}</td><td class="rev-cicero">${fmt(r.cicero)}</td><td class="rev-cicero">${pct(r.cicero,total)}</td><td class="rev-nilce">${fmt(r.nilce)}</td><td class="rev-nilce">${pct(r.nilce,total)}</td><td class="rev-reserva">${fmt(r.reserva)}</td><td class="rev-reserva">${pct(r.reserva,total)}</td><td><b>${fmt(total)}</b></td><td>100,0%</td></tr>`}).join('');layout(`<div class="head"><div><h2>Receitas</h2><p>Resumo do valor total de cada mês, com participação percentual e edição direta.</p></div><div class="actions"><button class="btn secondary" onclick="openFillRevenues()">Preencher receitas</button></div></div><div class="card"><div class="section-title"><h3>Filtros</h3><span>Selecione o ano ou um mês específico</span></div>${simpleControls('receita')}</div><div style="margin-top:16px">${revenueKpis()}</div><div class="card" style="margin-top:16px"><div class="section-title"><h3>Resumo do Período de Receitas</h3><span>Azul = Cícero · rosa = Nilce · verde = Resgate Reserva</span></div><div class="table-wrap"><table><thead><tr><th>Mês</th><th>Cícero</th><th>%</th><th>Nilce</th><th>%</th><th>Resgate Reserva</th><th>%</th><th>Total</th><th>%</th></tr></thead><tbody>${rows}</tbody></table></div></div>`)}
+function expenseRowsByCat(m){return state.categories.map(c=>{const adjusted=budgetAdjusted(m,c.id), d=reallocDelta(m,c.id);return {...c,adjusted,d}}).filter(x=>x.adjusted||x.d)} function plannedFilteredByCat(m,catId){const hasExtraFilter=expenseFilters.owner!=='todos'||expenseFilters.city!=='todos'; if(!hasExtraFilter){return budgetAdjusted(m,catId)} return (state.budgets[m]||[]).filter(b=>b.cat===catId&&budgetMatches(b,expenseFilters)).reduce((s,b)=>s+budgetLineAdjusted(m,b),0)} function renderDespesas(){const list=monthYearList(expenseScope);const monthHeaders=list.map(m=>`<th class="month-head">${labelMonth(m)}</th>`).join('');const cats=state.categories.filter(c=>expenseFilters.cat==='todos'||c.id===expenseFilters.cat).map(c=>{const vals=list.map(m=>plannedFilteredByCat(m,c.id));const total=vals.reduce((s,v)=>s+v,0);return{c,vals,total}}).filter(x=>x.total>0).sort((a,b)=>textCmp(a.c.name,b.c.name)||(b.total-a.total));const periodTotal=cats.reduce((acc,x)=>acc+x.total,0);const rows=cats.map(({c,vals,total})=>`<tr class="cat-total-row category-tinted" style="--cat-color:${c.color};--cat-soft:${c.color}12"><td><span class="cat-tag" style="background:${c.color}18;color:${c.color}"><span class="row-accent" style="background:${c.color}"></span>${c.name}</span></td>${vals.map(v=>`<td class="soft-cell despesa-cell" style="--cat-color:${c.color}">${fmt(v)}</td>`).join('')}<td class="total-col total-highlight" style="color:${c.color}">${fmt(total)}</td><td>${pct(total,periodTotal)}</td></tr>`).join('');const detail=renderExpenseDetail(list);layout(`<div class="head"><div><h2>Despesas</h2><p>Resumo consolidado lado a lado por mês. A edição acontece somente na visão expandida abaixo.</p></div><div class="actions"><button class="btn secondary" onclick="openNewBudgetLine()">Nova despesa prevista</button></div></div>${kpis()}<div class="card" style="margin-top:16px"><div class="section-title"><h3>Filtros</h3><span>Abre no ano completo; selecione um mês quando necessário</span></div>${expenseFilterControls()}</div><div class="card" style="margin-top:16px"><div class="section-title"><h3>Resumo consolidado de despesas</h3><span>${expenseScope==='ano'?'Ano completo':labelMonth(state.month)} · total destacado e leitura mensal mais clara</span></div><div class="table-wrap wide summary-colorized"><table><thead><tr><th>Categoria</th>${monthHeaders}<th>Total</th><th>% do período</th></tr></thead><tbody>${rows||'<tr><td colspan="9">Sem dados</td></tr>'}</tbody></table></div></div><div class="card" style="margin-top:16px"><div class="section-title"><h3>Visão expandida das despesas</h3><span>Todas as categorias permanecem visíveis · role horizontalmente quando necessário · clique no valor do mês para editar</span></div>${detail}</div>`)}
 function renderExpenseDetail(list){
   const monthHeaders=list.map(m=>`<th class="month-head">${labelMonth(m)}</th>`).join('');
   const grouped={};
@@ -656,12 +1811,12 @@ function renderExpenseDetail(list){
   }));
   const items=Object.values(grouped).filter(x=>x.total>0).sort(compareExpenseItems);
   if(!items.length)return '<div class="empty">Sem despesas na seleção atual.</div>';
-  return `<div class="table-wrap expanded compact freeze-detail sticky-months expense-enhanced"><table><thead><tr><th>Descrição</th><th>Categoria</th><th>Subcategoria</th><th>Responsável</th><th>Cidade</th>${monthHeaders}<th class="total-head">Total</th></tr></thead><tbody>${items.map(b=>{
+  return `<div class="table-wrap expanded compact expense-enhanced expense-grouped sticky-months"><table><thead><tr><th>Despesa</th>${monthHeaders}<th class="total-head">Total</th></tr></thead><tbody>${items.map(b=>{
     const cells=list.map(m=>{const v=b.vals[m]||0,id=b.ids[m];return v?`<td class="soft-cell clickable despesa-cell month-value" style="--cat-color:${cat(b.catId).color}" onclick="openBudgetItem('${id}','${m}')">${fmt(v)}</td>`:`<td class="soft-cell muted-cell despesa-cell month-value" style="--cat-color:${cat(b.catId).color}">-</td>`}).join('');
-    const ownerClass=b.owner==='Cícero'?'cicero':b.owner==='Nilce'?'nilce':'compartilhado';return `<tr class="category-tinted" style="--cat-color:${cat(b.catId).color};--cat-soft:${cat(b.catId).color}12"><td>${b.name}</td><td><span class="cat-tag" style="background:${cat(b.catId).color}18;color:${cat(b.catId).color}"><span class="row-accent" style="background:${cat(b.catId).color}"></span>${cat(b.catId).name}</span></td><td>${b.sub}</td><td><span class="owner-pill compact-label ${ownerClass}">${shortLabel(b.owner)}</span></td><td class="compact-label">${shortLabel(b.city)}</td>${cells}<td class="total-col total-highlight" style="color:${cat(b.catId).color}">${fmt(b.total)}</td></tr>`
+    const ownerClass=b.owner==='Cícero'?'cicero':b.owner==='Nilce'?'nilce':'compartilhado';return `<tr class="category-tinted" style="--cat-color:${cat(b.catId).color};--cat-soft:${cat(b.catId).color}12"><td><div class="expense-item-main"><strong><span class="row-accent" style="background:${cat(b.catId).color}"></span>${b.sub}</strong><small><span class="category-text" style="color:${cat(b.catId).color}">${cat(b.catId).name}</span> · <span class="owner-inline ${ownerClass}">${shortLabel(b.owner)}</span> / ${shortLabel(b.city)}</small></div></td>${cells}<td class="total-col total-highlight" style="color:${cat(b.catId).color}">${fmt(b.total)}</td></tr>`
   }).join('')}</tbody></table></div>`
 }
-function renderRxD(){const p=monthYearList(rxdScope);const max=Math.max(...p.map(m=>Math.max(revenueTotal(m),plannedExpenseTotal(m),Math.abs(revenueTotal(m)-plannedExpenseTotal(m)))),1);const bars=p.map(m=>{const r=revenueTotal(m),e=plannedExpenseTotal(m),b=r-e;return `<div class="bar-group"><div class="bar" style="height:${Math.max(2,r/max*100)}%"></div><div class="bar expense" style="height:${Math.max(2,e/max*100)}%"></div><div class="bar balance" style="height:${Math.max(2,Math.abs(b)/max*100)}%"></div><span>${labelMonth(m).slice(0,3)}</span></div>`}).join('');const rows=p.map(m=>{const r=revenueTotal(m),e=plannedExpenseTotal(m),b=r-e;return `<tr><td class="month-name">${labelMonth(m)}</td><td>${fmt(r)}</td><td>${fmt(e)}</td><td class="${b>=0?'pos':'neg'}">${fmt(b)}</td><td>${pct(e,r)}</td></tr>`}).join('');layout(`<div class="head"><div><h2>R x D</h2><p>Comparativo: receita total x despesa total x saldo. Fórmula viva puxando Receitas e Despesas.</p></div></div><div class="card"><div class="section-title"><h3>Filtros</h3><span>Ano ou mês selecionado</span></div>${simpleControls('rxd')}</div>${kpis()}<div class="grid cols2" style="margin-top:16px"><div class="card"><div class="section-title"><h3>Comparativo do período</h3><span>Receita, despesa e saldo</span></div><div class="barwrap">${bars}</div><div class="note">Azul = receita, vermelho = despesa, verde = saldo absoluto.</div></div><div class="card"><div class="section-title"><h3>Detalhamento R x D</h3><span>${rxdScope==='ano'?'Ano todo':labelMonth(state.month)}</span></div><div class="table-wrap rxd-detail-table"><table><thead><tr><th>Mês</th><th>Receita</th><th>Despesa</th><th>Saldo</th><th>Despesa/Receita</th></tr></thead><tbody>${rows}</tbody></table></div></div></div>`)}
+function renderRxD(){const p=monthYearList(rxdScope);const max=Math.max(...p.map(m=>Math.max(revenueTotal(m),plannedExpenseTotal(m),Math.abs(revenueTotal(m)-plannedExpenseTotal(m)))),1);const bars=p.map(m=>{const r=revenueTotal(m),e=plannedExpenseTotal(m),b=r-e;return `<div class="bar-group"><div class="bar" style="height:${Math.max(2,r/max*100)}%"></div><div class="bar expense" style="height:${Math.max(2,e/max*100)}%"></div><div class="bar balance" style="height:${Math.max(2,Math.abs(b)/max*100)}%"></div><span>${labelMonth(m).slice(0,3)}</span></div>`}).join('');const rows=p.map(m=>{const r=revenueTotal(m),e=plannedExpenseTotal(m),b=r-e;return `<tr><td class="month-name">${labelMonth(m)}</td><td>${fmt(r)}</td><td>${fmt(e)}</td><td class="${b>=0?'pos':'neg'}">${fmt(b)}</td><td>${pct(e,r)}</td></tr>`}).join('');layout(`<div class="head"><div><h2>R x D</h2><p>Comparativo: receita total x despesa total x saldo. Fórmula viva puxando Receitas e Despesas.</p></div></div><div class="card"><div class="section-title"><h3>Filtros</h3><span>Selecione o ano ou um mês específico</span></div>${simpleControls('rxd')}</div>${kpis()}<div class="grid cols2" style="margin-top:16px"><div class="card"><div class="section-title"><h3>Comparativo do período</h3><span>Receita, despesa e saldo</span></div><div class="barwrap">${bars}</div><div class="note">Azul = receita, vermelho = despesa, verde = saldo absoluto.</div></div><div class="card"><div class="section-title"><h3>Detalhamento R x D</h3><span>${rxdScope==='ano'?'Ano completo':labelMonth(state.month)}</span></div><div class="table-wrap rxd-detail-table"><table><thead><tr><th>Mês</th><th>Receita</th><th>Despesa</th><th>Saldo</th><th>Despesa/Receita</th></tr></thead><tbody>${rows}</tbody></table></div></div></div>`)}
 function renderLancamentos(){
   const selectedMonths=monthYearList(txScope);
   const periodTitle=txScope==='ano'?('Ano '+state.month.slice(0,4)):labelMonth(state.month);
@@ -686,16 +1841,16 @@ function renderLancamentos(){
   const noBalance=allBudgets.filter(b=>Math.abs(b.balance)<=.005).length;
   const negativeCount=allBudgets.filter(b=>b.balance<-.005).length;
   const forecastRows=budgets.map(b=>{return `<tr class="clickable category-tinted tx-clean-row" style="--cat-color:${cat(b.cat).color};--cat-soft:${cat(b.cat).color}10" onclick="${txScope==='mes'?`openBudgetItem('${b.id}','${state.month}')`:`alert('Para editar, filtre por mês selecionado.')`}"><td data-label="Despesa"><div class="tx-row-main"><strong><span class="row-accent" style="background:${cat(b.cat).color}"></span>${b.name}</strong><small><span class="category-text" style="color:${cat(b.cat).color}">${cat(b.cat).name}</span> · ${shortLabel(b.owner)} / ${shortLabel(b.city)}</small></div></td><td data-label="Previsto">${fmt(b.planned)}</td><td data-label="Utilizado">${fmt(b.used)}</td><td data-label="Saldo"><div class="tx-balance-cell"><b class="${b.balance<0?'neg':Math.abs(b.balance)<=.005?'muted':'pos'}">${fmt(b.balance)}</b></div></td></tr>`}).join('');
-  const rows=txList.map(t=>`<tr class="clickable category-tinted tx-clean-row" style="--cat-color:${cat(t.cat).color};--cat-soft:${cat(t.cat).color}10" onclick="openTx('${t.id}')"><td data-label="Data">${fmtDate(t.date)}</td><td data-label="Descrição"><div class="tx-row-main"><strong>${cleanName(t.description)}</strong><small>${cleanName(t.sub||'')}</small></div></td><td data-label="Categoria"><span class="cat-tag" style="background:${cat(t.cat).color}18;color:${cat(t.cat).color}"><span class="row-accent" style="background:${cat(t.cat).color}"></span>${cat(t.cat).name}</span></td><td data-label="Responsável/local"><div class="tx-person"><span class="owner-pill compact-label">${shortLabel(t.responsible)}</span><small>${shortLabel(t.city)}</small></div></td><td data-label="Cartão">${cardOf(t.card)}</td><td data-label="Valor" class="tx-amount">${fmt(t.amount)}</td></tr>`).join('');
+  const rows=txList.map(t=>{const ownerClass=t.responsible==='Cícero'?'cicero':t.responsible==='Nilce'?'nilce':'compartilhado';const subLabel=cleanName(t.sub||'Sem subcategoria');return `<tr class="clickable category-tinted tx-clean-row tx-realized-row" style="--cat-color:${cat(t.cat).color};--cat-soft:${cat(t.cat).color}10" onclick="openTx('${t.id}')"><td data-label="Data" class="tx-date">${fmtDate(t.date)}</td><td data-label="Lançamento"><div class="tx-row-main tx-realized-main"><strong><span class="row-accent" style="background:${cat(t.cat).color}"></span>${cleanName(t.description)}</strong><small><span class="category-text" style="color:${cat(t.cat).color}">${cat(t.cat).name}</span> · ${subLabel} · <span class="owner-inline ${ownerClass}">${shortLabel(t.responsible)}</span> / ${shortLabel(t.city)}</small></div></td><td data-label="Pagamento" class="tx-payment">${cardOf(t.card)}</td><td data-label="Valor" class="tx-amount">${fmt(t.amount)}</td></tr>`}).join('');
   const remMonths=txScope==='ano'?selectedMonths:[state.month];
   const remEntries=remMonths.flatMap(m=>(state.reallocations[m]||[]).map(r=>({m,r})));
   const rem=remEntries.map(({m,r})=>{const fromB=(state.budgets[m]||[]).find(b=>b.id===r.fromBudgetId),toB=(state.budgets[m]||[]).find(b=>b.id===r.toBudgetId);const fromLabel=fromB?`${cleanName(fromB.sub)} · ${shortLabel(fromB.city||cityOf(fromB.sub))}`:cat(r.from).name;const toLabel=toB?`${cleanName(toB.sub)} · ${shortLabel(toB.city||cityOf(toB.sub))}`:cat(r.to).name;return `<tr><td>${txScope==='ano'?labelMonth(m):''}</td><td>${fromLabel}</td><td>${toLabel}</td><td>${fmt(r.amount)}</td><td>${r.note||''}</td><td><button class="tiny danger" onclick="event.stopPropagation();deleteRealloc('${r.id}','${m}')">Excluir</button></td></tr>`}).join('');
   const tabs=`<div class="tx-tabs"><button class="${txPanel==='acompanhamento'?'active':''}" onclick="txPanel='acompanhamento';render()"><span>Acompanhamento</span><b>${budgets.length}</b></button><button class="${txPanel==='realizados'?'active':''}" onclick="txPanel='realizados';render()"><span>Realizados</span><b>${txList.length}</b></button><button class="${txPanel==='remanejamentos'?'active':''}" onclick="txPanel='remanejamentos';render()"><span>Remanejamentos</span><b>${remEntries.length}</b></button></div>`;
   let panel='';
   if(txPanel==='acompanhamento')panel=`<div class="card tx-panel"><div class="section-title"><div><h3>Acompanhamento — ${periodTitle}</h3><span>${budgets.length} item(ns) exibido(s) · ${withBalance} em aberto · ${noBalance} zerado(s)${negativeCount?' · '+negativeCount+' negativo(s)':''}</span></div></div>${txForecastFilterControls()}<div class="table-wrap tx-forecast-table"><table><thead><tr><th>Despesa</th><th>Previsto</th><th>Utilizado</th><th>Saldo</th></tr></thead><tbody>${forecastRows||'<tr><td colspan="4">Nenhuma previsão encontrada para os filtros atuais.</td></tr>'}</tbody></table></div></div>`;
-  if(txPanel==='realizados')panel=`<div class="card tx-panel"><div class="section-title"><div><h3>Lançamentos realizados — ${periodTitle}</h3><span>${txList.length} item(ns) exibido(s) · ordem de inclusão preservada</span></div></div>${txRealizedFilterControls()}<div class="table-wrap tx-realized-table"><table><thead><tr><th>Data</th><th>Descrição</th><th>Categoria</th><th>Responsável/local</th><th>Cartão</th><th>Valor</th></tr></thead><tbody>${rows||'<tr><td colspan="6">Sem lançamentos realizados para os filtros atuais.</td></tr>'}</tbody></table></div></div>`;
+  if(txPanel==='realizados')panel=`<div class="card tx-panel"><div class="section-title"><div><h3>Lançamentos realizados — ${periodTitle}</h3><span>${txList.length} item(ns) exibido(s) · categoria, subcategoria, responsável e local agrupados na mesma linha</span></div></div>${txRealizedFilterControls()}<div class="table-wrap tx-realized-table tx-realized-grouped"><table><thead><tr><th>Data</th><th>Lançamento</th><th>Pagamento</th><th>Valor</th></tr></thead><tbody>${rows||'<tr><td colspan="4">Sem lançamentos realizados para os filtros atuais.</td></tr>'}</tbody></table></div></div>`;
   if(txPanel==='remanejamentos')panel=`<div class="card tx-panel"><div class="section-title"><div><h3>Remanejamentos — ${periodTitle}</h3><span>Transfira saldo entre despesas sem deixar a origem negativa.</span></div><button class="btn secondary" onclick="openRealloc()">Novo remanejamento</button></div><div class="table-wrap tx-rem-table"><table><thead><tr>${txScope==='ano'?'<th>Mês</th>':''}<th>Origem</th><th>Destino</th><th>Valor</th><th>Observação</th><th></th></tr></thead><tbody>${rem||'<tr><td colspan="6">Sem remanejamentos.</td></tr>'}</tbody></table></div></div>`;
-  layout(`<div class="head tx-head"><div><h2>Lançamentos</h2><p>Previsões e realizados possuem filtros próprios e independentes.</p></div><div class="actions"><button class="btn" onclick="openTx()">Novo lançamento</button></div></div><div class="tx-overview-grid"><div class="card tx-filter-card tx-period-card"><div class="section-title"><h3>Período</h3><span>A tela abre automaticamente no mês atual</span></div>${txPeriodControls()}</div><div class="tx-summary"><div class="tx-summary-card planned"><span>Previsto</span><strong>${fmt(plannedTotal)}</strong></div><div class="tx-summary-card used"><span>Utilizado</span><strong>${fmt(usedTotal)}</strong></div><div class="tx-summary-card balance"><span>Saldo</span><strong class="${openTotal<0?'neg':'pos'}">${fmt(openTotal)}</strong></div></div></div>${tabs}${panel}`)
+  layout(`<div class="head tx-head"><div><h2>Lançamentos</h2><p>Previsões e realizados possuem filtros próprios e independentes.</p></div><div class="actions"><button class="btn" onclick="openTx()">Novo lançamento</button></div></div><div class="card tx-filter-card tx-period-card"><div class="section-title"><h3>Período</h3><span>Abre no ano completo; selecione um mês quando necessário</span></div>${txPeriodControls()}</div><div class="tx-summary"><div class="tx-summary-card planned"><span>Previsto</span><strong>${fmt(plannedTotal)}</strong></div><div class="tx-summary-card used"><span>Utilizado</span><strong>${fmt(usedTotal)}</strong></div><div class="tx-summary-card balance"><span>Saldo</span><strong class="${openTotal<0?'neg':'pos'}">${fmt(openTotal)}</strong></div></div>${tabs}${panel}`)
 }
 function renderEstrategia(){
   const list=periodMonths();
@@ -717,7 +1872,7 @@ function renderEstrategia(){
   const trend=monthly.map(x=>{const saldo=x.rec-x.budget;return `<div class="mini-bar executive-trend"><span class="mini-value">${fmt(x.budget)}</span><i style="height:${Math.max(4,x.budget/maxMonth*100)}%"></i><b>${labelMonth(x.m).slice(0,3)}</b><small class="${saldo>=0?'pos':'neg'}">${fmt(saldo)}</small></div>`}).join('');
   const compareChart=monthly.map(x=>{const dif=x.budget-x.real;return `<div class="compare-bar-group"><div class="compare-bars"><div class="compare-bar-wrap"><span class="compare-bar-value">${fmt(x.budget)}</span><div class="compare-bar budget" style="height:${Math.max(6,x.budget/maxMonth*100)}%"></div><span class="compare-bar-label">Orçado</span></div><div class="compare-bar-wrap"><span class="compare-bar-value">${fmt(x.real)}</span><div class="compare-bar actual" style="height:${Math.max(6,x.real/maxMonth*100)}%"></div><span class="compare-bar-label">Realizado</span></div></div><span class="compare-month">${labelMonth(x.m).slice(0,3)}</span><small class="compare-diff ${dif>=0?'pos':'neg'}">${dif>=0?'Livre ':'Estouro '}${fmt(Math.abs(dif))}</small></div>`}).join('');
   const rows=list.map(m=>{const r=revenueTotal(m),e=plannedExpenseTotal(m),real=expenseTotal(m),b=r-e,exec=e?real/e*100:0;return `<tr><td>${labelMonth(m)}</td><td>${fmt(r)}</td><td>${fmt(e)}</td><td>${fmt(real)}</td><td class="${b>=0?'pos':'neg'}">${fmt(b)}</td><td>${pct(e,r)}</td><td>${exec.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}%</td></tr>`}).join('');
-  layout(`<div class="head executive-head"><div><h2>Visão Gerencial</h2><p>Painel executivo do período: orçamento, execução, saldo projetado, composição por categoria e comparação orçado x realizado.</p></div></div><div class="card"><div class="section-title"><h3>Filtros</h3><span>Período, ano e mês</span></div><div class="filterbar">${compareControls()}${yearSelectHTML()}${monthSelectHTML()}</div></div><div class="executive-kpis"><div class="exec-card revenue"><span>Receita do período</span><strong>${fmt(totalRec)}</strong><small>${periodLabel()}</small></div><div class="exec-card budget"><span>Orçado</span><strong>${fmt(totalBudget)}</strong><small>${pct(totalBudget,totalRec)} da receita</small></div><div class="exec-card actual"><span>Realizado</span><strong>${fmt(totalReal)}</strong><small>${execPct.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}% do orçado</small></div><div class="exec-card balance"><span>Saldo projetado</span><strong class="${saldoProjetado>=0?'pos':'neg'}">${fmt(saldoProjetado)}</strong><small>Receita menos orçamento</small></div><div class="exec-card pending"><span>A realizar</span><strong class="${pendente>=0?'pos':'neg'}">${fmt(pendente)}</strong><small>Orçado menos realizado</small></div><div class="exec-card real"><span>Saldo real parcial</span><strong class="${saldoReal>=0?'pos':'neg'}">${fmt(saldoReal)}</strong><small>Receita menos realizado</small></div></div><div class="executive-grid"><div class="strategy-card chart-card"><div class="section-title"><h3>Orçado x realizado</h3><span>Comparativo mensal com rótulos e diferença</span></div><div class="legend"><span class="legend-item"><i class="legend-dot budget"></i> Orçado</span><span class="legend-item"><i class="legend-dot actual"></i> Realizado</span></div><div class="compare-chart executive-chart">${compareChart}</div></div><div class="strategy-card chart-card"><div class="section-title"><h3>Composição por categoria</h3><span>Barra cheia = orçado · barra escura = realizado</span></div><div class="hbar-list executive-bars">${catBars||'<div class="empty">Sem categorias no período.</div>'}</div></div></div><div class="strategy-grid"><div class="strategy-card"><div class="section-title"><h3>Cícero/Fortaleza x Nilce/Brasília</h3><span>Distribuição do previsto por local/responsável</span></div><div class="split-wrap"><div class="split-card c-card"><h4>Cícero · Fort.</h4><strong>${fmt(ownerTotals.cicero)}</strong><span>${pct(ownerTotals.cicero,ownerTotal)} do total</span></div><div class="split-card n-card"><h4>Nilce · Bras.</h4><strong>${fmt(ownerTotals.nilce)}</strong><span>${pct(ownerTotals.nilce,ownerTotal)} do total</span></div><div class="split-card s-card"><h4>Compartil.</h4><strong>${fmt(ownerTotals.comp)}</strong><span>${pct(ownerTotals.comp,ownerTotal)} do total</span></div></div></div><div class="strategy-card"><div class="section-title"><h3>Evolução mensal do orçamento</h3><span>Valor orçado e saldo projetado por mês</span></div><div class="mini-trend executive-mini">${trend}</div></div></div><div class="card" style="margin-top:16px"><div class="section-title"><h3>Detalhamento gerencial</h3><span>${periodLabel()}</span></div><div class="table-wrap manager-table"><table><thead><tr><th>Mês</th><th>Receita</th><th>Orçamento</th><th>Realizado</th><th>Saldo Projetado</th><th>Desp./Rec.</th><th>Execução</th></tr></thead><tbody>${rows}</tbody></table></div></div>`)
+  layout(`<div class="head executive-head"><div><h2>Visão Gerencial</h2><p>Painel executivo do período: orçamento, execução, saldo projetado, composição por categoria e comparação orçado x realizado.</p></div></div><div class="card"><div class="section-title"><h3>Filtros</h3><span>Filtro por ano e mês</span></div><div class="filterbar period-filterbar">${periodSelectFields('periodMode',periodMode)}</div></div><div class="executive-kpis"><div class="exec-card revenue"><span>Receita do período</span><strong>${fmt(totalRec)}</strong><small>${periodLabel()}</small></div><div class="exec-card budget"><span>Orçado</span><strong>${fmt(totalBudget)}</strong><small>${pct(totalBudget,totalRec)} da receita</small></div><div class="exec-card actual"><span>Realizado</span><strong>${fmt(totalReal)}</strong><small>${execPct.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}% do orçado</small></div><div class="exec-card balance"><span>Saldo projetado</span><strong class="${saldoProjetado>=0?'pos':'neg'}">${fmt(saldoProjetado)}</strong><small>Receita menos orçamento</small></div><div class="exec-card pending"><span>A realizar</span><strong class="${pendente>=0?'pos':'neg'}">${fmt(pendente)}</strong><small>Orçado menos realizado</small></div><div class="exec-card real"><span>Saldo real parcial</span><strong class="${saldoReal>=0?'pos':'neg'}">${fmt(saldoReal)}</strong><small>Receita menos realizado</small></div></div><div class="executive-grid"><div class="strategy-card chart-card"><div class="section-title"><h3>Orçado x realizado</h3><span>Comparativo mensal com rótulos e diferença</span></div><div class="legend"><span class="legend-item"><i class="legend-dot budget"></i> Orçado</span><span class="legend-item"><i class="legend-dot actual"></i> Realizado</span></div><div class="compare-chart executive-chart">${compareChart}</div></div><div class="strategy-card chart-card"><div class="section-title"><h3>Composição por categoria</h3><span>Barra cheia = orçado · barra escura = realizado</span></div><div class="hbar-list executive-bars">${catBars||'<div class="empty">Sem categorias no período.</div>'}</div></div></div><div class="strategy-grid"><div class="strategy-card"><div class="section-title"><h3>Cícero/Fortaleza x Nilce/Brasília</h3><span>Distribuição do previsto por local/responsável</span></div><div class="split-wrap"><div class="split-card c-card"><h4>Cícero · Fort.</h4><strong>${fmt(ownerTotals.cicero)}</strong><span>${pct(ownerTotals.cicero,ownerTotal)} do total</span></div><div class="split-card n-card"><h4>Nilce · Bras.</h4><strong>${fmt(ownerTotals.nilce)}</strong><span>${pct(ownerTotals.nilce,ownerTotal)} do total</span></div><div class="split-card s-card"><h4>Compartil.</h4><strong>${fmt(ownerTotals.comp)}</strong><span>${pct(ownerTotals.comp,ownerTotal)} do total</span></div></div></div><div class="strategy-card"><div class="section-title"><h3>Evolução mensal do orçamento</h3><span>Valor orçado e saldo projetado por mês</span></div><div class="mini-trend executive-mini">${trend}</div></div></div><div class="card" style="margin-top:16px"><div class="section-title"><h3>Detalhamento gerencial</h3><span>${periodLabel()}</span></div><div class="table-wrap manager-table"><table><thead><tr><th>Mês</th><th>Receita</th><th>Orçamento</th><th>Realizado</th><th>Saldo Projetado</th><th>Desp./Rec.</th><th>Execução</th></tr></thead><tbody>${rows}</tbody></table></div></div>`)
 }
 function renderConfig(){const catRows=state.categories.slice().sort((a,b)=>textCmp(a.name,b.name)).map(c=>`<tr><td><span class="cat-tag" style="background:${c.color}18;color:${c.color}"><span class="row-accent" style="background:${c.color}"></span>${c.name}</span></td><td>${c.id}</td><td>${(state.subs[c.id]||[]).length}</td><td><button class="tiny" onclick="openCategory('${c.id}')">Editar</button> <button class="tiny" onclick="openSubcategory('${c.id}')">Nova subcategoria</button></td></tr>`).join('');const subRows=state.categories.slice().sort((a,b)=>textCmp(a.name,b.name)).flatMap(c=>(state.subs[c.id]||[]).slice().sort(textCmp).map(sub=>`<tr><td>${c.name}</td><td>${sub}</td><td><button class="tiny" onclick="openSubcategory('${c.id}','${encodeURIComponent(sub)}')">Editar</button></td></tr>`)).join('');layout(`<div class="head"><div><h2>Configurações</h2><p>Backup, anos, categorias e subcategorias.</p></div><div class="actions"><button class="btn" onclick="openCreateYear('config')">Criar novo ano</button><button class="btn secondary" onclick="openCategory()">Nova categoria</button></div></div><div class="grid cols2"><div class="card"><div class="section-title"><h3>Backup</h3><span>JSON</span></div><div class="actions" style="justify-content:flex-start"><button class="btn" onclick="exportJSON()">Exportar JSON</button><label class="btn secondary">Importar JSON<input type="file" accept="application/json" style="display:none" onchange="importJSON(event)"></label></div></div><div class="card"><div class="section-title"><h3>Anos disponíveis</h3><span>${years().join(', ')}</span></div><div class="actions" style="justify-content:flex-start"><button class="btn secondary" onclick="openCreateYear('config')">Criar ano</button><button class="btn danger" onclick="resetData()">Restaurar base inicial</button></div></div></div><div class="card" style="margin-top:16px"><div class="section-title"><h3>Categorias</h3><span>Editar ou criar categorias</span></div><div class="table-wrap"><table><thead><tr><th>Categoria</th><th>ID</th><th>Subcategorias</th><th>Ações</th></tr></thead><tbody>${catRows}</tbody></table></div></div><div class="card" style="margin-top:16px"><div class="section-title"><h3>Subcategorias</h3><span>Editar ou criar subcategorias por categoria</span></div><div class="table-wrap"><table><thead><tr><th>Categoria</th><th>Subcategoria</th><th>Ações</th></tr></thead><tbody>${subRows||'<tr><td colspan="3">Sem subcategorias</td></tr>'}</tbody></table></div></div>`)} function render(){({receitas:renderReceitas,despesas:renderDespesas,rxd:renderRxD,lancamentos:renderLancamentos,estrategia:renderEstrategia,config:renderConfig}[view]||renderReceitas)()}
 function modal(html){document.getElementById('modal').innerHTML=`<div class="sheet">${html}</div>`;document.getElementById('modal').classList.add('open')}function closeModal(){document.getElementById('modal').classList.remove('open');document.getElementById('modal').innerHTML=''}function catOptions(sel=''){return state.categories.slice().sort((a,b)=>textCmp(a.name,b.name)).map(c=>`<option value="${c.id}" ${c.id===sel?'selected':''}>${c.name}</option>`).join('')}function subOptions(catId,sel=''){return (state.subs[catId]||[]).slice().sort(textCmp).map(s=>`<option value="${s}" ${s===sel?'selected':''}>${s}</option>`).join('')}
