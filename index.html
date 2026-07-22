@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão v62 -->
+<!-- Despesas Casal - Controle Financeiro | versão v63 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -2247,22 +2247,100 @@ html[data-theme="dark"] .mobile-view-title small{color:#9CA3AF!important}
 /* v61 — busca sem contador de itens */
 .view-search-meta,#viewSearchCount{display:none!important;}
 
-/* v62 — tipografia dos KPIs de Lançamentos alinhada aos demais indicadores */
-.view-lancamentos .tx-summary-card span{
-  font-size:12px!important;
+/* v63 — tipografia única para todos os KPIs */
+.kpi-strip .label,
+.tx-summary-card span,
+.exec-card span,
+.split-card h4{
+  font-size:clamp(9.5px,.95vw,12px)!important;
   line-height:1.15!important;
+  letter-spacing:.08em!important;
+  font-weight:900!important;
+  text-transform:uppercase!important;
 }
-.view-lancamentos .tx-summary-card strong{
-  font-size:26px!important;
-  line-height:1.08!important;
+.kpi-strip .value,
+.tx-summary-card strong,
+.exec-card strong,
+.split-card strong{
+  font-size:clamp(18px,2.25vw,29px)!important;
+  line-height:1.06!important;
+  letter-spacing:-.05em!important;
+  font-weight:950!important;
+  white-space:nowrap!important;
 }
-@media(max-width:920px){
-  .view-lancamentos .tx-summary-card span{font-size:10.5px!important}
-  .view-lancamentos .tx-summary-card strong{font-size:22px!important}
+.kpi-strip .subtxt,
+.exec-card small,
+.split-card span{
+  font-size:clamp(9px,.92vw,11.5px)!important;
+  line-height:1.2!important;
+  font-weight:800!important;
 }
+
+/* Receitas e indicadores gerais */
+.kpi-strip .metric.cicero .label,
+.kpi-strip .metric.cicero .value,
+.kpi-strip .metric.income .label,
+.kpi-strip .metric.income .value{color:#1D4ED8!important}
+.kpi-strip .metric.nilce .label,
+.kpi-strip .metric.nilce .value{color:#C2185B!important}
+.kpi-strip .metric.reserva .label,
+.kpi-strip .metric.reserva .value,
+.kpi-strip .metric.balance .label,
+.kpi-strip .metric.balance .value{color:#047857!important}
+.kpi-strip .metric.expense .label,
+.kpi-strip .metric.expense .value{color:#C8104D!important}
+
+/* Lançamentos */
+.view-lancamentos .tx-summary-card{
+  min-height:118px!important;
+  padding:18px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:space-between!important;
+  gap:8px!important;
+}
+.view-lancamentos .tx-summary-card.planned span,
+.view-lancamentos .tx-summary-card.planned strong{color:#1D4ED8!important}
+.view-lancamentos .tx-summary-card.used span,
+.view-lancamentos .tx-summary-card.used strong{color:#C8104D!important}
+.view-lancamentos .tx-summary-card.balance span,
+.view-lancamentos .tx-summary-card.balance strong{color:#047857!important}
+
+/* Visão gerencial */
+.exec-card.revenue span,.exec-card.revenue strong{color:#047857!important}
+.exec-card.budget span,.exec-card.budget strong{color:#1D4ED8!important}
+.exec-card.actual span,.exec-card.actual strong{color:#C8104D!important}
+.exec-card.balance span,.exec-card.balance strong{color:#7C3AED!important}
+.exec-card.pending span,.exec-card.pending strong{color:#B54708!important}
+.exec-card.real span,.exec-card.real strong{color:#0F766E!important}
+.split-card.c-card h4,.split-card.c-card strong{color:#1D4ED8!important}
+.split-card.n-card h4,.split-card.n-card strong{color:#C2185B!important}
+.split-card.s-card h4,.split-card.s-card strong{color:#475467!important}
+
 @media(max-width:560px){
-  .view-lancamentos .tx-summary-card span{font-size:9.5px!important}
-  .view-lancamentos .tx-summary-card strong{font-size:17px!important}
+  .kpi-strip .metric,
+  .view-lancamentos .tx-summary-card{
+    min-height:104px!important;
+    padding:14px 11px!important;
+  }
+  .kpi-strip .value,
+  .tx-summary-card strong,
+  .exec-card strong,
+  .split-card strong{
+    font-size:18px!important;
+  }
+  .kpi-strip .label,
+  .tx-summary-card span,
+  .exec-card span,
+  .split-card h4{
+    font-size:9.5px!important;
+  }
+  .kpi-strip .subtxt,
+  .exec-card small,
+  .split-card span{
+    font-size:9px!important;
+  }
 }
 </style></head><body><div id="app"></div><div id="modal" class="modal"></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 const storeKey='despesas-casal-profissional-v12';
@@ -2609,7 +2687,7 @@ function viewSearchCandidates(root){return [...root.querySelectorAll('tbody > tr
 function applyViewSearch(scope=view){const root=document.querySelector(`.main.view-${scope}`);if(!root)return;const raw=String(viewSearchTerms[scope]||'').trim(),tokens=norm(raw).split(/\s+/).filter(Boolean),candidates=viewSearchCandidates(root);let matched=0,total=0;candidates.forEach(el=>{const placeholder=el.matches('tr')&&el.querySelector('td[colspan]')&&/^(sem|nenhum|nenhuma|não há|nao ha)/i.test((el.innerText||'').trim());if(placeholder){el.classList.toggle('search-hidden',tokens.length>0);return}total++;const hay=searchCandidateText(el),ok=!tokens.length||tokens.every(token=>hay.includes(token));el.classList.toggle('search-hidden',!ok);if(ok)matched++});const clear=document.getElementById('viewSearchClear');if(clear)clear.style.display=raw?'grid':'none';const empty=document.getElementById('viewSearchEmpty');if(empty)empty.classList.toggle('show',!!raw&&matched===0);const visibleChecks=[...root.querySelectorAll('.tx-realized-grouped tbody tr:not(.search-hidden) input[data-tx-id]')];const all=document.getElementById('txSelectAll');if(all){const checked=visibleChecks.filter(x=>x.checked).length;all.checked=visibleChecks.length>0&&checked===visibleChecks.length;all.indeterminate=checked>0&&checked<visibleChecks.length}}
 
 function sortSelectOptions(root=document){root.querySelectorAll('select:not(.period-select)').forEach(select=>{const options=[...select.options];if(options.length<2)return;const pinned=options.filter(o=>o.value===''||o.value==='todos'||/^(Todos|Todas|Ano em branco)/i.test(o.textContent.trim()));const sortable=options.filter(o=>!pinned.includes(o)).sort((a,b)=>textCmp(a.textContent,b.textContent));[...pinned,...sortable].forEach(o=>select.appendChild(o))})}function layout(content){document.getElementById('app').innerHTML=`<div class="shell view-${view}"><header class="header"><div class="header-in"><div class="brand"><div class="mark">CN</div><div><h1>Despesas Casal - Controle Financeiro</h1></div></div><div class="mobile-view-title"><strong>${escapeHtml(viewLabels[view]||'Finanças')}</strong><small>Finanças Cícero &amp; Nilce</small></div><nav class="nav">${nav()}</nav><div class="right"><span id="cloudStatus" class="cloud-status" data-state="${cloudStatusState}">${lastCloudStatus}</span><button class="more-button" type="button" onclick="openMoreMenu()" title="Mais opções"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg><span>Mais...</span></button><button class="account-button" type="button" onclick="openAccount()" title="Conta de ${escapeHtml(authUser?.email||'')}"><span class="account-avatar">${authInitials()}</span><span class="account-email">${escapeHtml(authUser?.email||'Conta')}</span></button></div></div></header><main class="main view-${view}">${viewSearchBar(view)}${content}</main></div>`;sortSelectOptions(document.getElementById('app'));requestAnimationFrame(()=>{enhanceResponsiveTables();requestAnimationFrame(()=>{initColumnWidthEditors(document.getElementById('app'));applyViewSearch(view)})})}
-function kpis(){const rec=scopeRevenue(), exp=scopeExpense(), bal=rec-exp;return `<div class="grid cols3 kpi-strip"><div class="card metric"><div class="label">Receita</div><div class="value">${fmt(rec)}</div><div class="subtxt">${periodLabel()}</div></div><div class="card metric"><div class="label">Despesas</div><div class="value neg">${fmt(exp)}</div><div class="subtxt">${pct(exp,rec)} da receita</div></div><div class="card metric"><div class="label">Saldo</div><div class="value ${bal>=0?'pos':'neg'}">${fmt(bal)}</div><div class="subtxt">${pct(bal,rec)} da receita</div></div></div>`}
+function kpis(){const rec=scopeRevenue(), exp=scopeExpense(), bal=rec-exp;return `<div class="grid cols3 kpi-strip"><div class="card metric income"><div class="label">Receita</div><div class="value">${fmt(rec)}</div><div class="subtxt">${periodLabel()}</div></div><div class="card metric expense"><div class="label">Despesas</div><div class="value">${fmt(exp)}</div><div class="subtxt">${pct(exp,rec)} da receita</div></div><div class="card metric balance"><div class="label">Saldo</div><div class="value">${fmt(bal)}</div><div class="subtxt">${pct(bal,rec)} da receita</div></div></div>`}
 function revenueKpis(){const list=monthYearList(revenueScope);const totals=list.reduce((a,m)=>{const r=revObj(m);a.cicero+=(+r.cicero||0);a.nilce+=(+r.nilce||0);a.reserva+=(+r.reserva||0);return a},{cicero:0,nilce:0,reserva:0});const total=totals.cicero+totals.nilce+totals.reserva;return `<div class="grid cols3 kpi-strip revenue-kpi-strip"><div class="card metric cicero"><div class="label">Cícero</div><div class="value">${fmt(totals.cicero)}</div><div class="subtxt">${pct(totals.cicero,total)} do total</div></div><div class="card metric nilce"><div class="label">Nilce</div><div class="value">${fmt(totals.nilce)}</div><div class="subtxt">${pct(totals.nilce,total)} do total</div></div><div class="card metric reserva"><div class="label">Resgate reserva</div><div class="value">${fmt(totals.reserva)}</div><div class="subtxt">${pct(totals.reserva,total)} do total</div></div></div>`}
 function renderReceitas(){const list=monthYearList(revenueScope);const rows=list.map(m=>{const r=revObj(m), total=revenueTotal(m);return `<tr class="clickable" onclick="openRevenue('${m}')"><td>${labelMonth(m)}</td><td class="rev-cicero">${fmt(r.cicero)}</td><td class="rev-cicero">${pct(r.cicero,total)}</td><td class="rev-nilce">${fmt(r.nilce)}</td><td class="rev-nilce">${pct(r.nilce,total)}</td><td class="rev-reserva">${fmt(r.reserva)}</td><td class="rev-reserva">${pct(r.reserva,total)}</td><td><b>${fmt(total)}</b></td><td>100,0%</td></tr>`}).join('');layout(`<div class="head"><div><h2>Receitas</h2><p>Resumo do valor total de cada mês, com participação percentual e edição direta.</p></div><div class="actions"><button class="btn" onclick="openFillRevenues()">Cadastrar receitas</button></div></div><div class="card"><div class="section-title"><h3>Filtros</h3><span>Selecione o ano ou um mês específico</span></div>${simpleControls('receita')}</div><div style="margin-top:16px">${revenueKpis()}</div><div class="card" style="margin-top:16px"><div class="section-title"><h3>Resumo do Período de Receitas</h3><span>Azul = Cícero · rosa = Nilce · verde = Resgate Reserva</span></div><div class="table-wrap"><table><thead><tr><th>Mês</th><th>Cícero</th><th>%</th><th>Nilce</th><th>%</th><th>Resgate Reserva</th><th>%</th><th>Total</th><th>%</th></tr></thead><tbody>${rows}</tbody></table></div></div>`)}
 function expenseRowsByCat(m){return state.categories.map(c=>{const adjusted=budgetAdjusted(m,c.id), d=reallocDelta(m,c.id);return {...c,adjusted,d}}).filter(x=>x.adjusted||x.d)} function plannedFilteredByCat(m,catId){const hasExtraFilter=expenseFilters.owner!=='todos'||expenseFilters.city!=='todos'; if(!hasExtraFilter){return budgetAdjusted(m,catId)} return (state.budgets[m]||[]).filter(b=>b.cat===catId&&budgetMatches(b,expenseFilters)).reduce((s,b)=>s+budgetLineAdjusted(m,b),0)} function renderDespesas(){const list=monthYearList(expenseScope);const monthHeaders=list.map(m=>`<th class="month-head">${labelMonth(m)}</th>`).join('');const cats=state.categories.filter(c=>expenseFilters.cat==='todos'||c.id===expenseFilters.cat).map(c=>{const vals=list.map(m=>plannedFilteredByCat(m,c.id));const total=vals.reduce((s,v)=>s+v,0);return{c,vals,total}}).filter(x=>x.total>0).sort((a,b)=>textCmp(a.c.name,b.c.name)||(b.total-a.total));const periodTotal=cats.reduce((acc,x)=>acc+x.total,0);const rows=cats.map(({c,vals,total})=>`<tr class="cat-total-row category-tinted" style="--cat-color:${c.color};--cat-soft:${c.color}12"><td><span class="cat-tag" style="background:${c.color}18;color:${c.color}"><span class="row-accent" style="background:${c.color}"></span>${c.name}</span></td>${vals.map(v=>`<td class="soft-cell despesa-cell" style="--cat-color:${c.color}">${fmt(v)}</td>`).join('')}<td class="total-col total-highlight" style="color:${c.color}">${fmt(total)}</td><td>${pct(total,periodTotal)}</td></tr>`).join('');const detail=renderExpenseDetail(list);layout(`<div class="head"><div><h2>Despesas</h2><p>Resumo consolidado lado a lado por mês. A edição acontece somente na visão expandida abaixo.</p></div><div class="actions"><button class="btn" onclick="openNewBudgetLine()">Nova despesa prevista</button></div></div>${kpis()}<div class="card" style="margin-top:16px"><div class="section-title"><h3>Filtros</h3><span>Abre no ano completo; selecione um mês quando necessário</span></div>${expenseFilterControls()}</div><div class="card" style="margin-top:16px"><div class="section-title"><h3>Resumo consolidado de despesas</h3><span>${expenseScope==='ano'?'Ano completo':labelMonth(state.month)} · total destacado e leitura mensal mais clara</span></div><div class="table-wrap wide summary-colorized"><table><thead><tr><th>Categoria</th>${monthHeaders}<th>Total</th><th>% do período</th></tr></thead><tbody>${rows||'<tr><td colspan="9">Sem dados</td></tr>'}</tbody></table></div></div><div class="card" style="margin-top:16px"><div class="section-title"><h3>Visão expandida das despesas</h3><span>Todas as categorias permanecem visíveis · role horizontalmente quando necessário · clique no valor do mês para editar</span></div>${detail}</div>`)}
