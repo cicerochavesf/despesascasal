@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão v65 -->
+<!-- Despesas Casal - Controle Financeiro | versão v66 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -2966,6 +2966,100 @@ html[data-theme="dark"] .select,html[data-theme="dark"] .field input,html[data-t
   html[data-theme="dark"] .nav button.active{background:#1D2E5E!important;border-color:#294A9A!important;color:#AFC3FF!important}
 }
 
+
+/* v66 — KPIs realmente padronizados e negativos em vermelho */
+:where(.kpi-strip .metric,.view-lancamentos .tx-summary-card,.exec-card){
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:flex-start!important;
+  min-width:0!important;
+  overflow:hidden!important;
+}
+:where(.kpi-strip .label,.view-lancamentos .tx-summary-card>span,.exec-card>span){
+  display:block!important;
+  width:100%!important;
+  min-height:1.35em!important;
+  margin:0!important;
+  font-size:11.5px!important;
+  line-height:1.2!important;
+  letter-spacing:.075em!important;
+  font-weight:900!important;
+  text-transform:uppercase!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+}
+:where(.kpi-strip .value,.view-lancamentos .tx-summary-card>strong,.exec-card>strong){
+  display:block!important;
+  width:100%!important;
+  min-width:0!important;
+  margin:11px 0 0!important;
+  font-size:clamp(25px,2.25vw,31px)!important;
+  line-height:1.03!important;
+  letter-spacing:-.055em!important;
+  font-weight:950!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+}
+:where(.kpi-strip .value,.view-lancamentos .tx-summary-card>strong,.exec-card>strong) .money{
+  display:inline-block!important;
+  max-width:100%!important;
+  font:inherit!important;
+  line-height:inherit!important;
+  letter-spacing:inherit!important;
+  color:inherit;
+  white-space:nowrap!important;
+}
+:where(.kpi-strip .subtxt,.exec-card>small){
+  display:block!important;
+  width:100%!important;
+  margin:9px 0 0!important;
+  font-size:11.5px!important;
+  line-height:1.25!important;
+  font-weight:800!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+}
+.view-lancamentos .tx-summary-card>strong{
+  margin-top:11px!important;
+}
+.negative-value,
+.money.negative-value,
+.percent.negative-value,
+.neg .negative-value{
+  color:var(--danger,#C8104D)!important;
+}
+html[data-theme="dark"] .negative-value,
+html[data-theme="dark"] .money.negative-value,
+html[data-theme="dark"] .percent.negative-value{
+  color:#FB7185!important;
+}
+@media(max-width:760px){
+  :where(.kpi-strip .metric,.view-lancamentos .tx-summary-card,.exec-card){
+    min-height:122px!important;
+    padding:17px 18px!important;
+  }
+  :where(.kpi-strip .label,.view-lancamentos .tx-summary-card>span,.exec-card>span){
+    min-height:1.3em!important;
+    font-size:10.5px!important;
+  }
+  :where(.kpi-strip .value,.view-lancamentos .tx-summary-card>strong,.exec-card>strong){
+    margin-top:10px!important;
+    font-size:clamp(22px,6.4vw,25px)!important;
+    letter-spacing:-.05em!important;
+  }
+  :where(.kpi-strip .subtxt,.exec-card>small){
+    margin-top:7px!important;
+    font-size:10px!important;
+  }
+}
+@media(max-width:390px){
+  :where(.kpi-strip .value,.view-lancamentos .tx-summary-card>strong,.exec-card>strong){
+    font-size:clamp(20px,6.1vw,23px)!important;
+  }
+}
+
 </style></head><body><div id="app"></div><div id="modal" class="modal"></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 const storeKey='despesas-casal-profissional-v12';
 const SUPABASE_URL='https://fpcwnjlneaaarzeevgpl.supabase.co';
@@ -3131,7 +3225,7 @@ function exportLocalEmergencyCopy(){const cached=loadLocalCache();downloadJSONFi
 function retryCloudSync(){initCloud()}
 async function loadFromCloud(){setCloudStatus('Carregando nuvem...','loading');renderCloudGate('loading');try{const res=await fetch(cloudTableUrl(`id=eq.${encodeURIComponent(SUPABASE_ROW_ID)}&select=data,updated_at`),{headers:cloudReadHeaders(),cache:'no-store'});if(!res.ok)throw new Error(await parseCloudError(res));const rows=await res.json();if(rows&&rows.length&&rows[0].data){state=merge(clone(baseData),rows[0].data);lastCloudUpdatedAt=rows[0].updated_at||''}else{const seed=loadLocalCache();state=merge(clone(baseData),seed);setCloudStatus('Criando estado na nuvem...','loading');await writeCloudRow(SUPABASE_ROW_ID,state);lastCloudUpdatedAt=new Date().toISOString()}ensureUiState();cacheCloudState();const openingSnapshot=clone(state);cloudReady=true;cloudSynced=true;cloudLoadError='';setCloudStatus('Nuvem sincronizada','ok');render();ensureDailyCloudBackup(openingSnapshot)}catch(err){console.error('Erro ao carregar do Supabase',err);cloudReady=false;cloudSynced=false;cloudLoadError=String(err.message||err);setCloudStatus('Nuvem indisponível','error');renderCloudGate('error',cloudLoadError)}}
 function initCloud(){if(!authUser){renderAuthGate('login');return}if(cloudLoading)return;clearTimeout(cloudSaveTimer);cloudReady=false;cloudSynced=false;cloudLoadError='';cloudLoading=true;loadFromCloud().finally(()=>{cloudLoading=false})}
-const months=()=>state.months.map(m=>m.id); const fmt=v=>`<span class="money">${(Number(v)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>`; const pct=(v,t)=>!t?'0,0%':((Number(v||0)/Number(t||0))*100).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})+'%'; const fmtDate=d=>{const s=String(d||'');const m=s.match(/^(\d{4})-(\d{2})-(\d{2})/);return m?`${m[3]}/${m[2]}/${m[1]}`:s}; const labelMonth=id=>(state.months.find(m=>m.id===id)||{label:id}).label; function setView(v){view=v;selectedExpenseCat=null;revenueScope='ano';expenseScope='ano';rxdScope='ano';periodMode='ano';if(v==='lancamentos'){state.month=validMonth(currentMonthId());txScope='mes';if(!['acompanhamento','realizados','envelopes','remanejamentos'].includes(txPanel))txPanel='acompanhamento';save()}else{txScope='ano'}render()} function currentMonthId(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')} function validMonth(m){if(months().includes(m))return m;const y=String(m||'').slice(0,4);return months().find(x=>x.startsWith(y))||months()[0]||m} function setMonth(m){state.month=validMonth(m);save();render()} function cat(id){return state.categories.find(c=>c.id===id)||{id,name:id,color:'#667085'}} function cityOf(sub=''){return String(sub||'').includes('Bras')?'Brasília':String(sub||'').includes('Fortaleza')?'Fortaleza':'Compartilhado'} function ownerOf(city=''){return city==='Fortaleza'?'Cícero':city==='Brasília'?'Nilce':'Compartilhado'} function cleanName(txt=''){let out=String(txt||'').trim(),before='';while(out&&out!==before){before=out;out=out.replace(/\s*[-–—]\s*(Fortaleza|Brasília|Brasilia|Compartilhado|Cícero|Cicero|Nilce)\s*$/i,'').trim()}return out} function norm(txt=''){return String(txt||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim()} function textCmp(a,b){return norm(a).localeCompare(norm(b),'pt-BR',{sensitivity:'base'})} function expenseSortMeta(x){const catId=x.catId||x.cat||'';const sub=cleanName(x.sub||x.name||x.description||x.desc||'');const desc=cleanName(x.description||x.desc||x.name||x.sub||'');const value=Number(x.total??x.planned??x.amount??0)||0;return{cat:cat(catId).name,sub,desc,value}} function compareExpenseItems(a,b){const A=expenseSortMeta(a),B=expenseSortMeta(b);return textCmp(A.cat,B.cat)||textCmp(A.sub,B.sub)||textCmp(A.desc,B.desc)||(B.value-A.value)} function cardOf(v){const x=String(v||'').trim();return (!x||x==='Não informado'||x==='Não se aplica')?'-':x} function shortLabel(v){return String(v||'').replace('Compartilhado','Compartil.').replace('Restaurantes e Delivery','Rest. e Delivery')} function txs(m=state.month){return (state.transactions[m]||[]).map(t=>{const city=t.city||cityOf(t.sub||t.description||t.desc||'');return {...t,description:cleanName(t.description||t.desc||''),responsible:ownerOf(city),city,card:cardOf(t.card),sub:cleanName(t.sub||'')}})} function revObj(m){return state.revenues[m]||{cicero:0,nilce:0,reserva:0}} function revenueTotal(m){const r=revObj(m);return Number(r.cicero||0)+Number(r.nilce||0)+Number(r.reserva||0)} function expenseTotal(m){return txs(m).reduce((s,t)=>s+Number(t.amount||0),0)} function budgetBase(m,catId){return (state.budgets[m]||[]).filter(b=>!catId||b.cat===catId).reduce((s,b)=>s+Number(b.planned||0),0)} function reallocDelta(m,catId){return (state.reallocations[m]||[]).reduce((s,r)=>s+(r.to===catId?Number(r.amount||0):0)-(r.from===catId?Number(r.amount||0):0),0)} function budgetAdjusted(m,catId){return budgetBase(m,catId)+reallocDelta(m,catId)}
+const months=()=>state.months.map(m=>m.id); const fmt=v=>{const n=Number(v)||0;return `<span class="money${n<0?' negative-value':''}">${n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</span>`}; const pct=(v,t)=>{const base=Number(t||0),ratio=base?(Number(v||0)/base)*100:0;return `<span class="percent${ratio<0?' negative-value':''}">${ratio.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}%</span>`}; const fmtDate=d=>{const s=String(d||'');const m=s.match(/^(\d{4})-(\d{2})-(\d{2})/);return m?`${m[3]}/${m[2]}/${m[1]}`:s}; const labelMonth=id=>(state.months.find(m=>m.id===id)||{label:id}).label; function setView(v){view=v;selectedExpenseCat=null;revenueScope='ano';expenseScope='ano';rxdScope='ano';periodMode='ano';if(v==='lancamentos'){state.month=validMonth(currentMonthId());txScope='mes';if(!['acompanhamento','realizados','envelopes','remanejamentos'].includes(txPanel))txPanel='acompanhamento';save()}else{txScope='ano'}render()} function currentMonthId(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')} function validMonth(m){if(months().includes(m))return m;const y=String(m||'').slice(0,4);return months().find(x=>x.startsWith(y))||months()[0]||m} function setMonth(m){state.month=validMonth(m);save();render()} function cat(id){return state.categories.find(c=>c.id===id)||{id,name:id,color:'#667085'}} function cityOf(sub=''){return String(sub||'').includes('Bras')?'Brasília':String(sub||'').includes('Fortaleza')?'Fortaleza':'Compartilhado'} function ownerOf(city=''){return city==='Fortaleza'?'Cícero':city==='Brasília'?'Nilce':'Compartilhado'} function cleanName(txt=''){let out=String(txt||'').trim(),before='';while(out&&out!==before){before=out;out=out.replace(/\s*[-–—]\s*(Fortaleza|Brasília|Brasilia|Compartilhado|Cícero|Cicero|Nilce)\s*$/i,'').trim()}return out} function norm(txt=''){return String(txt||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim()} function textCmp(a,b){return norm(a).localeCompare(norm(b),'pt-BR',{sensitivity:'base'})} function expenseSortMeta(x){const catId=x.catId||x.cat||'';const sub=cleanName(x.sub||x.name||x.description||x.desc||'');const desc=cleanName(x.description||x.desc||x.name||x.sub||'');const value=Number(x.total??x.planned??x.amount??0)||0;return{cat:cat(catId).name,sub,desc,value}} function compareExpenseItems(a,b){const A=expenseSortMeta(a),B=expenseSortMeta(b);return textCmp(A.cat,B.cat)||textCmp(A.sub,B.sub)||textCmp(A.desc,B.desc)||(B.value-A.value)} function cardOf(v){const x=String(v||'').trim();return (!x||x==='Não informado'||x==='Não se aplica')?'-':x} function shortLabel(v){return String(v||'').replace('Compartilhado','Compartil.').replace('Restaurantes e Delivery','Rest. e Delivery')} function txs(m=state.month){return (state.transactions[m]||[]).map(t=>{const city=t.city||cityOf(t.sub||t.description||t.desc||'');return {...t,description:cleanName(t.description||t.desc||''),responsible:ownerOf(city),city,card:cardOf(t.card),sub:cleanName(t.sub||'')}})} function revObj(m){return state.revenues[m]||{cicero:0,nilce:0,reserva:0}} function revenueTotal(m){const r=revObj(m);return Number(r.cicero||0)+Number(r.nilce||0)+Number(r.reserva||0)} function expenseTotal(m){return txs(m).reduce((s,t)=>s+Number(t.amount||0),0)} function budgetBase(m,catId){return (state.budgets[m]||[]).filter(b=>!catId||b.cat===catId).reduce((s,b)=>s+Number(b.planned||0),0)} function reallocDelta(m,catId){return (state.reallocations[m]||[]).reduce((s,r)=>s+(r.to===catId?Number(r.amount||0):0)-(r.from===catId?Number(r.amount||0):0),0)} function budgetAdjusted(m,catId){return budgetBase(m,catId)+reallocDelta(m,catId)}
 function budgetLineDelta(m,budgetId){return (state.reallocations[m]||[]).reduce((s,r)=>s+(r.toBudgetId===budgetId?Number(r.amount||0):0)-(r.fromBudgetId===budgetId?Number(r.amount||0):0),0)}
 function budgetLineAdjusted(m,b){return Number(b&&b.planned||0)+budgetLineDelta(m,b&&b.id)}
 function sameBudgetTarget(item,catId,sub,city){const itemCity=item.city||cityOf(item.sub||item.description||item.desc||'');return item.cat===catId&&norm(cleanName(item.sub||''))===norm(cleanName(sub||''))&&itemCity===city}
@@ -3495,7 +3589,7 @@ function slugify(txt){return String(txt||'').normalize('NFD').replace(/[\u0300-\
 function openSubcategory(catId,enc=''){const old=enc?decodeURIComponent(enc):'';modal(`<div class="sheet-head"><h3>${old?'Editar':'Nova'} subcategoria</h3><button class="close" onclick="closeModal()">×</button></div><form class="form" onsubmit="saveSubcategory(event,'${catId}','${encodeURIComponent(old)}')"><div class="form two"><div class="field"><label>Categoria</label><select name="cat">${catOptions(catId)}</select></div><div class="field"><label>Subcategoria</label><input name="sub" value="${old.replaceAll('"','&quot;')}" required></div></div><label class="envelope-toggle"><input type="checkbox" name="envelope" ${old&&isEnvelopeEnabled(catId,old)?'checked':''}> Controle por envelope semanal</label><div class="note">Quando ativo, os lançamentos desta subcategoria são distribuídos automaticamente por semanas de domingo a sábado.</div><div class="actions">${old?'<button class="btn danger" type="button" onclick="deleteSubcategory(\''+catId+'\',\''+encodeURIComponent(old)+'\')">Excluir</button>':''}<button class="btn secondary" type="button" onclick="closeModal()">Cancelar</button><button class="btn">Salvar</button></div></form>`)} function saveSubcategory(e,catId,encOld){e.preventDefault();const f=new FormData(e.target),newCat=f.get('cat'),sub=String(f.get('sub')||'').trim(),old=decodeURIComponent(encOld||''),enabled=f.get('envelope')==='on';if(!sub)return;if(!state.subs[newCat])state.subs[newCat]=[];if(old&&state.subs[catId])state.subs[catId]=state.subs[catId].filter(x=>x!==old);if(old)deleteEnvelopeSetting(catId,old);if(!state.subs[newCat].includes(sub))state.subs[newCat].push(sub);setEnvelopeEnabled(newCat,sub,enabled);save();closeModal();render()} function deleteSubcategory(catId,enc){const old=decodeURIComponent(enc);if(!confirm('Excluir subcategoria?'))return;state.subs[catId]=(state.subs[catId]||[]).filter(x=>x!==old);deleteEnvelopeSetting(catId,old);save();closeModal();render()}
 function downloadJSONFile(content,filename){const blob=new Blob([JSON.stringify(content,null,2)],{type:'application/json'});const a=document.createElement('a');const url=URL.createObjectURL(blob);a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1200)}
 function safeFileStamp(){const d=new Date(),pad=n=>String(n).padStart(2,'0');return `${localDateId(d)}_${pad(d.getHours())}-${pad(d.getMinutes())}`}
-function exportJSON(){if(!cloudSynced)return alert('Aguarde a sincronização da nuvem.');downloadJSONFile({app:'Finanças Cícero & Nilce',version:'v65',exportedAt:new Date().toISOString(),source:'estado-sincronizado-da-nuvem',state:clone(state)},`backup-completo-financas-cicero-nilce-${safeFileStamp()}.json`)}
+function exportJSON(){if(!cloudSynced)return alert('Aguarde a sincronização da nuvem.');downloadJSONFile({app:'Finanças Cícero & Nilce',version:'v66',exportedAt:new Date().toISOString(),source:'estado-sincronizado-da-nuvem',state:clone(state)},`backup-completo-financas-cicero-nilce-${safeFileStamp()}.json`)}
 function importJSON(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=async()=>{try{const parsed=JSON.parse(reader.result),payload=parsed&&parsed.state?parsed.state:parsed,next=merge(clone(baseData),payload);if(!confirm('Importar este backup e substituir o estado atual na nuvem?'))return;setCloudStatus('Importando backup...','loading');await writeCloudRow(SUPABASE_ROW_ID,next);state=next;cacheCloudState();setCloudStatus('Backup importado','ok');closeModal();render();alert('Backup importado e salvo na nuvem.')}catch(err){console.error(err);setCloudStatus('Erro na importação','error');alert('Arquivo inválido ou não foi possível salvar na nuvem.')}};reader.readAsText(file);e.target.value=''}
 async function resetData(){if(!confirm('Restaurar a base inicial? Isso substituirá também o estado principal da nuvem.'))return;setCloudStatus('Restaurando base...','loading');try{const next=clone(baseData);await writeCloudRow(SUPABASE_ROW_ID,next);state=next;cacheCloudState();setCloudStatus('Base restaurada','ok');render()}catch(err){setCloudStatus('Erro ao restaurar','error');alert('Não foi possível restaurar a base na nuvem.')}}
 
