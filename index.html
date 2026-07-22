@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão v63 -->
+<!-- Despesas Casal - Controle Financeiro | versão v65 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -2247,101 +2247,725 @@ html[data-theme="dark"] .mobile-view-title small{color:#9CA3AF!important}
 /* v61 — busca sem contador de itens */
 .view-search-meta,#viewSearchCount{display:none!important;}
 
-/* v63 — tipografia única para todos os KPIs */
-.kpi-strip .label,
-.tx-summary-card span,
-.exec-card span,
-.split-card h4{
-  font-size:clamp(9.5px,.95vw,12px)!important;
-  line-height:1.15!important;
-  letter-spacing:.08em!important;
-  font-weight:900!important;
-  text-transform:uppercase!important;
-}
-.kpi-strip .value,
-.tx-summary-card strong,
-.exec-card strong,
-.split-card strong{
-  font-size:clamp(18px,2.25vw,29px)!important;
-  line-height:1.06!important;
-  letter-spacing:-.05em!important;
-  font-weight:950!important;
-  white-space:nowrap!important;
-}
-.kpi-strip .subtxt,
-.exec-card small,
-.split-card span{
-  font-size:clamp(9px,.92vw,11.5px)!important;
-  line-height:1.2!important;
-  font-weight:800!important;
+/* v64 — padrão único e responsivo para todos os KPIs principais */
+.kpi-strip,
+.tx-summary,
+.executive-kpis{
+  align-items:stretch!important;
+  gap:16px!important;
 }
 
-/* Receitas e indicadores gerais */
+.kpi-strip .metric,
+.view-lancamentos .tx-summary-card,
+.exec-card{
+  min-width:0!important;
+  min-height:126px!important;
+  padding:18px 20px!important;
+  border-radius:18px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:flex-start!important;
+  gap:0!important;
+  overflow:hidden!important;
+  box-sizing:border-box!important;
+}
+
+.kpi-strip .label,
+.view-lancamentos .tx-summary-card span,
+.exec-card span{
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+  font-size:12px!important;
+  line-height:1.2!important;
+  letter-spacing:.075em!important;
+  font-weight:900!important;
+  text-transform:uppercase!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+}
+
+.kpi-strip .value,
+.view-lancamentos .tx-summary-card strong,
+.exec-card strong{
+  display:block!important;
+  width:100%!important;
+  max-width:100%!important;
+  margin:12px 0 0!important;
+  font-size:29px!important;
+  line-height:1.05!important;
+  letter-spacing:-.05em!important;
+  font-weight:950!important;
+  font-variant-numeric:tabular-nums!important;
+  white-space:nowrap!important;
+}
+
+.kpi-strip .subtxt,
+.exec-card small{
+  display:block!important;
+  width:100%!important;
+  margin:8px 0 0!important;
+  font-size:12px!important;
+  line-height:1.2!important;
+  font-weight:800!important;
+  color:#8A93A3!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+}
+
+/* Mesma borda superior e mesma hierarquia visual */
+.kpi-strip .metric,
+.view-lancamentos .tx-summary-card{
+  border-left:1px solid var(--line)!important;
+  border-right:1px solid var(--line)!important;
+  border-bottom:1px solid var(--line)!important;
+}
+.kpi-strip .metric.cicero,
+.kpi-strip .metric.income,
+.view-lancamentos .tx-summary-card.planned{border-top:4px solid #3B82F6!important}
+.kpi-strip .metric.nilce{border-top:4px solid #EC4899!important}
+.kpi-strip .metric.reserva,
+.kpi-strip .metric.balance,
+.view-lancamentos .tx-summary-card.balance{border-top:4px solid #10B981!important}
+.kpi-strip .metric.expense,
+.view-lancamentos .tx-summary-card.used{border-top:4px solid #E11D48!important}
+
+/* Cores dos títulos e valores */
 .kpi-strip .metric.cicero .label,
 .kpi-strip .metric.cicero .value,
 .kpi-strip .metric.income .label,
-.kpi-strip .metric.income .value{color:#1D4ED8!important}
+.kpi-strip .metric.income .value,
+.view-lancamentos .tx-summary-card.planned span,
+.view-lancamentos .tx-summary-card.planned strong{color:#1D4ED8!important}
 .kpi-strip .metric.nilce .label,
 .kpi-strip .metric.nilce .value{color:#C2185B!important}
 .kpi-strip .metric.reserva .label,
 .kpi-strip .metric.reserva .value,
 .kpi-strip .metric.balance .label,
-.kpi-strip .metric.balance .value{color:#047857!important}
-.kpi-strip .metric.expense .label,
-.kpi-strip .metric.expense .value{color:#C8104D!important}
-
-/* Lançamentos */
-.view-lancamentos .tx-summary-card{
-  min-height:118px!important;
-  padding:18px!important;
-  display:flex!important;
-  flex-direction:column!important;
-  align-items:flex-start!important;
-  justify-content:space-between!important;
-  gap:8px!important;
-}
-.view-lancamentos .tx-summary-card.planned span,
-.view-lancamentos .tx-summary-card.planned strong{color:#1D4ED8!important}
-.view-lancamentos .tx-summary-card.used span,
-.view-lancamentos .tx-summary-card.used strong{color:#C8104D!important}
+.kpi-strip .metric.balance .value,
 .view-lancamentos .tx-summary-card.balance span,
 .view-lancamentos .tx-summary-card.balance strong{color:#047857!important}
+.kpi-strip .metric.expense .label,
+.kpi-strip .metric.expense .value,
+.view-lancamentos .tx-summary-card.used span,
+.view-lancamentos .tx-summary-card.used strong{color:#C8104D!important}
 
-/* Visão gerencial */
+/* Visão Gerencial segue exatamente a mesma escala tipográfica */
+.exec-card:before{height:4px!important}
 .exec-card.revenue span,.exec-card.revenue strong{color:#047857!important}
 .exec-card.budget span,.exec-card.budget strong{color:#1D4ED8!important}
 .exec-card.actual span,.exec-card.actual strong{color:#C8104D!important}
 .exec-card.balance span,.exec-card.balance strong{color:#7C3AED!important}
 .exec-card.pending span,.exec-card.pending strong{color:#B54708!important}
 .exec-card.real span,.exec-card.real strong{color:#0F766E!important}
-.split-card.c-card h4,.split-card.c-card strong{color:#1D4ED8!important}
-.split-card.n-card h4,.split-card.n-card strong{color:#C2185B!important}
-.split-card.s-card h4,.split-card.s-card strong{color:#475467!important}
 
-@media(max-width:560px){
-  .kpi-strip .metric,
-  .view-lancamentos .tx-summary-card{
-    min-height:104px!important;
-    padding:14px 11px!important;
+/* Os cartões secundários da visão gerencial usam a mesma proporção */
+.split-card h4{
+  font-size:11px!important;
+  line-height:1.2!important;
+  letter-spacing:.07em!important;
+  font-weight:900!important;
+  text-transform:uppercase!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+}
+.split-card strong{
+  display:block!important;
+  max-width:100%!important;
+  margin-top:10px!important;
+  font-size:25px!important;
+  line-height:1.05!important;
+  letter-spacing:-.05em!important;
+  font-weight:950!important;
+  font-variant-numeric:tabular-nums!important;
+  white-space:nowrap!important;
+}
+.split-card span{
+  font-size:11px!important;
+  line-height:1.2!important;
+  font-weight:800!important;
+  overflow-wrap:anywhere!important;
+}
+
+/* Celular: mantém o tamanho legível e evita qualquer texto fora do cartão */
+@media(max-width:720px){
+  .kpi-strip,
+  .tx-summary,
+  .executive-kpis{
+    width:100%!important;
+    display:grid!important;
+    grid-template-columns:none!important;
+    grid-auto-flow:column!important;
+    grid-auto-columns:minmax(235px,82vw)!important;
+    gap:10px!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    padding:0 0 7px!important;
+    scroll-snap-type:x proximity!important;
+    overscroll-behavior-inline:contain!important;
+    -webkit-overflow-scrolling:touch!important;
   }
-  .kpi-strip .value,
-  .tx-summary-card strong,
-  .exec-card strong,
-  .split-card strong{
-    font-size:18px!important;
+  .kpi-strip .metric,
+  .view-lancamentos .tx-summary-card,
+  .exec-card{
+    min-height:116px!important;
+    padding:16px 17px!important;
+    scroll-snap-align:start!important;
   }
   .kpi-strip .label,
-  .tx-summary-card span,
-  .exec-card span,
-  .split-card h4{
-    font-size:9.5px!important;
+  .view-lancamentos .tx-summary-card span,
+  .exec-card span{
+    font-size:10.5px!important;
+    min-height:1.25em!important;
+  }
+  .kpi-strip .value,
+  .view-lancamentos .tx-summary-card strong,
+  .exec-card strong{
+    margin-top:10px!important;
+    font-size:24px!important;
   }
   .kpi-strip .subtxt,
-  .exec-card small,
-  .split-card span{
-    font-size:9px!important;
+  .exec-card small{
+    margin-top:7px!important;
+    font-size:10.5px!important;
+  }
+  .split-wrap{
+    grid-template-columns:1fr!important;
+  }
+  .split-card strong{font-size:23px!important}
+}
+
+@media(max-width:390px){
+  .kpi-strip,
+  .tx-summary,
+  .executive-kpis{
+    grid-auto-columns:minmax(218px,88vw)!important;
+  }
+  .kpi-strip .metric,
+  .view-lancamentos .tx-summary-card,
+  .exec-card{
+    min-height:112px!important;
+    padding:15px!important;
+  }
+  .kpi-strip .value,
+  .view-lancamentos .tx-summary-card strong,
+  .exec-card strong{
+    font-size:22px!important;
   }
 }
+
+/* Preserva contraste no modo escuro */
+html[data-theme="dark"] .kpi-strip .subtxt,
+html[data-theme="dark"] .exec-card small{color:#9CA3AF!important}
+
+
+
+/* v65 — renovação visual inspirada nos melhores apps financeiros atuais */
+:root{
+  --app-bg:#F2F5F9;
+  --surface:#FFFFFF;
+  --surface-soft:#F7F9FC;
+  --surface-tint:#EEF3F8;
+  --ink-strong:#101828;
+  --ink-soft:#475467;
+  --ink-muted:#7A8496;
+  --stroke:#E2E8F0;
+  --stroke-strong:#D6DEE9;
+  --brand:#1D4ED8;
+  --brand-strong:#173EA6;
+  --success:#047857;
+  --danger:#C8104D;
+  --warning:#B54708;
+  --app-shadow:0 14px 38px rgba(16,24,40,.07);
+  --app-shadow-soft:0 8px 24px rgba(16,24,40,.055);
+  --app-radius:20px;
+}
+html{scroll-behavior:smooth;background:var(--app-bg)!important}
+body{
+  background:linear-gradient(180deg,#E9EEF5 0,#F4F7FA 280px,#EEF2F6 100%)!important;
+  color:var(--ink-strong)!important;
+  line-height:1.45;
+}
+.shell{
+  max-width:1480px!important;
+  background:var(--app-bg)!important;
+  box-shadow:0 0 80px rgba(16,24,40,.12)!important;
+}
+.header{
+  background:rgba(255,255,255,.92)!important;
+  border-bottom:1px solid rgba(226,232,240,.94)!important;
+  box-shadow:0 8px 24px rgba(16,24,40,.045)!important;
+  backdrop-filter:blur(20px) saturate(150%)!important;
+}
+.header-in{
+  max-width:1480px!important;
+  margin:0 auto!important;
+  padding:12px 28px!important;
+  gap:20px!important;
+}
+.brand{min-width:230px!important}
+.mark{
+  background:linear-gradient(145deg,#0F172A,#2854E8)!important;
+  box-shadow:0 10px 22px rgba(37,84,232,.22)!important;
+}
+.brand h1{
+  font-size:15px!important;
+  font-weight:900!important;
+  letter-spacing:-.035em!important;
+  color:#172033!important;
+}
+.nav{
+  background:#F0F3F7!important;
+  border:1px solid #E2E7EE!important;
+  border-radius:16px!important;
+  padding:4px!important;
+  gap:3px!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9)!important;
+}
+.nav button{
+  min-height:42px!important;
+  border-radius:12px!important;
+  padding:9px 13px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:7px!important;
+  font-weight:850!important;
+  color:#667085!important;
+  transition:transform .16s ease,background .16s ease,color .16s ease,box-shadow .16s ease!important;
+}
+.nav button:hover:not(.active){background:#FFFFFF!important;color:#172033!important;transform:translateY(-1px)!important}
+.nav button.active{
+  background:linear-gradient(145deg,#172033,#0F172A)!important;
+  color:#FFFFFF!important;
+  box-shadow:0 8px 18px rgba(15,23,42,.18)!important;
+}
+.nav-icon{width:17px!important;height:17px!important;flex:0 0 17px!important}
+.right{gap:7px!important}
+.more-button,.account-button{
+  min-height:42px!important;
+  border-radius:13px!important;
+  border:1px solid var(--stroke)!important;
+  background:#FFFFFF!important;
+  box-shadow:0 5px 14px rgba(16,24,40,.04)!important;
+}
+.more-button:hover,.account-button:hover{background:#F8FAFC!important;border-color:#CBD5E1!important}
+.cloud-status{border-radius:999px!important;background:#F8FAFC!important;border-color:#E2E8F0!important}
+.main{
+  padding:28px 30px 72px!important;
+}
+.head{
+  margin-bottom:20px!important;
+  align-items:center!important;
+}
+.head h2{
+  font-size:clamp(27px,2.3vw,34px)!important;
+  line-height:1.02!important;
+  letter-spacing:-.055em!important;
+  color:#10203A!important;
+}
+.head p{
+  max-width:760px!important;
+  font-size:13px!important;
+  line-height:1.5!important;
+  color:#667085!important;
+}
+.card,.strategy-card,.split-card,.exec-card,.tx-summary-card{
+  border-color:var(--stroke)!important;
+  box-shadow:var(--app-shadow-soft)!important;
+}
+.card,.strategy-card{
+  border-radius:var(--app-radius)!important;
+  background:rgba(255,255,255,.96)!important;
+}
+.card{padding:20px!important}
+.section-title{margin-bottom:15px!important}
+.section-title h3{
+  font-size:16px!important;
+  color:#172033!important;
+  letter-spacing:-.025em!important;
+}
+.section-title span{color:#7A8496!important;font-size:11.5px!important}
+.btn{
+  min-height:44px!important;
+  border-radius:13px!important;
+  padding:10px 16px!important;
+  background:linear-gradient(145deg,#172033,#0F172A)!important;
+  box-shadow:0 10px 22px rgba(15,23,42,.14)!important;
+  transition:transform .16s ease,box-shadow .16s ease,filter .16s ease!important;
+}
+.btn:hover{transform:translateY(-1px)!important;box-shadow:0 13px 25px rgba(15,23,42,.18)!important}
+.btn.secondary{background:#FFFFFF!important;border-color:#DCE3EC!important;color:#344054!important;box-shadow:none!important}
+.btn.danger{background:linear-gradient(145deg,#C81E1E,#9F1239)!important}
+.tiny{
+  min-height:36px!important;
+  border-radius:11px!important;
+  border:1px solid #E2E8F0!important;
+  background:#F7F9FC!important;
+  color:#475467!important;
+}
+.select,.field input,.field select,.field textarea,.view-search-input{
+  min-height:44px!important;
+  border-radius:13px!important;
+  border-color:#DCE3EC!important;
+  background:#FFFFFF!important;
+  color:#172033!important;
+  box-shadow:0 1px 0 rgba(255,255,255,.8) inset!important;
+}
+.select:focus,.field input:focus,.field select:focus,.field textarea:focus,.view-search-input:focus{
+  border-color:#7996F6!important;
+  box-shadow:0 0 0 4px rgba(37,84,232,.10)!important;
+}
+.filterbar{gap:9px!important}
+.period-filterbar{
+  background:#F5F7FA!important;
+  border:1px solid #E1E7EF!important;
+  border-radius:16px!important;
+  padding:7px!important;
+}
+.period-filterbar .select{background:#FFFFFF!important;min-width:145px!important}
+.view-search-card{
+  max-width:470px!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  margin:0 0 18px auto!important;
+}
+.view-search-input{
+  min-height:42px!important;
+  padding-left:42px!important;
+  background:rgba(255,255,255,.9)!important;
+  box-shadow:0 7px 20px rgba(16,24,40,.045)!important;
+}
+.view-search-clear{background:#EEF2F7!important}
+
+/* KPIs: uma única linguagem visual, com foco em leitura rápida */
+.kpi-strip,.tx-summary,.executive-kpis{gap:14px!important}
+.kpi-strip .metric,.view-lancamentos .tx-summary-card,.exec-card{
+  min-height:128px!important;
+  border-radius:20px!important;
+  padding:19px 20px!important;
+  background:linear-gradient(180deg,#FFFFFF,#FBFCFE)!important;
+  box-shadow:0 10px 28px rgba(16,24,40,.06)!important;
+  isolation:isolate!important;
+  position:relative!important;
+}
+.kpi-strip .metric:after,.view-lancamentos .tx-summary-card:after,.exec-card:after{
+  content:"";
+  position:absolute;
+  width:120px;
+  height:120px;
+  right:-52px;
+  top:-62px;
+  border-radius:999px;
+  background:currentColor;
+  opacity:.045;
+  pointer-events:none;
+  z-index:-1;
+}
+.kpi-strip .label,.view-lancamentos .tx-summary-card span,.exec-card span{
+  font-size:11.5px!important;
+  line-height:1.18!important;
+  letter-spacing:.075em!important;
+}
+.kpi-strip .value,.view-lancamentos .tx-summary-card strong,.exec-card strong{
+  margin-top:12px!important;
+  font-size:clamp(25px,2.25vw,31px)!important;
+  line-height:1.02!important;
+  letter-spacing:-.055em!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.kpi-strip .subtxt,.exec-card small{
+  margin-top:9px!important;
+  font-size:11.5px!important;
+  line-height:1.25!important;
+}
+.exec-card:before{border-radius:20px 20px 0 0!important}
+
+/* Tabelas e listas com aparência de produto financeiro */
+.table-wrap{
+  border-radius:16px!important;
+  scrollbar-width:thin;
+  scrollbar-color:#C8D1DE transparent;
+}
+.table-wrap::-webkit-scrollbar{height:8px;width:8px}
+.table-wrap::-webkit-scrollbar-thumb{background:#C8D1DE;border-radius:99px}
+table{border-spacing:0 7px!important}
+th{
+  font-size:10px!important;
+  letter-spacing:.065em!important;
+  color:#7A8496!important;
+  padding:0 11px 4px!important;
+}
+td{
+  padding:12px 11px!important;
+  border-color:#E4E9F0!important;
+  background:#FFFFFF!important;
+}
+tr.clickable td{transition:background .14s ease,border-color .14s ease!important}
+tr.clickable:hover td{background:#F7F9FC!important;border-color:#D7E0EA!important}
+.cat-tag,.owner-pill,.status-chip,.envelope-status{
+  border-radius:999px!important;
+  font-weight:850!important;
+}
+.row-accent{width:4px!important;border-radius:999px!important}
+
+/* Lançamentos: navegação e filtros no padrão de apps mobile */
+.tx-tabs{
+  background:#EDEFF4!important;
+  border-color:#DFE4EC!important;
+  border-radius:16px!important;
+  padding:5px!important;
+  gap:4px!important;
+}
+.tx-tabs button{
+  min-height:42px!important;
+  border-radius:12px!important;
+  color:#667085!important;
+  font-weight:850!important;
+}
+.tx-tabs button.active{
+  background:#FFFFFF!important;
+  color:#172033!important;
+  box-shadow:0 5px 14px rgba(16,24,40,.08)!important;
+}
+.tx-dedicated-filters{
+  background:#F7F9FC!important;
+  border-color:#E3E8EF!important;
+  border-radius:16px!important;
+}
+.tx-panel{border-radius:20px!important}
+
+/* Modais como bottom sheets no celular e diálogos limpos no desktop */
+.modal{background:rgba(15,23,42,.55)!important;backdrop-filter:blur(6px)!important}
+.sheet{
+  border:1px solid rgba(255,255,255,.65)!important;
+  background:#F8FAFC!important;
+  border-radius:26px!important;
+  box-shadow:0 30px 90px rgba(15,23,42,.32)!important;
+}
+.close{border:1px solid #E2E8F0!important;box-shadow:0 5px 14px rgba(16,24,40,.06)!important}
+.more-menu-grid{gap:10px!important}
+.more-menu-item,.export-card{
+  border-radius:17px!important;
+  border-color:#E2E8F0!important;
+  box-shadow:0 6px 18px rgba(16,24,40,.04)!important;
+}
+
+/* Ação rápida contextual — padrão de apps financeiros mobile */
+.mobile-fab{display:none}
+
+@media(any-pointer:coarse){
+  button,.btn,.tiny,.select,.more-button,.account-button{min-height:48px}
+}
+
+@media(max-width:760px){
+  body{background:#F2F5F9!important}
+  .shell{width:100%!important;max-width:none!important;box-shadow:none!important}
+  .header{
+    position:sticky!important;
+    top:0!important;
+    box-shadow:0 5px 18px rgba(16,24,40,.055)!important;
+  }
+  .header-in{
+    grid-template-columns:auto minmax(0,1fr) auto!important;
+    grid-template-areas:'brand current right'!important;
+    padding:9px 12px!important;
+    gap:9px!important;
+  }
+  .mark{width:39px!important;height:39px!important;border-radius:13px!important}
+  .mobile-view-title strong{font-size:15px!important}
+  .mobile-view-title small{font-size:9px!important;color:#8490A3!important}
+  .right{gap:5px!important}
+  .cloud-status{width:17px!important;height:38px!important}
+  .more-button,.account-button{width:38px!important;height:38px!important;min-width:38px!important;border-radius:12px!important}
+
+  /* Barra inferior fixa com navegação por polegar */
+  .nav{
+    position:fixed!important;
+    left:10px!important;
+    right:10px!important;
+    bottom:max(10px,env(safe-area-inset-bottom))!important;
+    z-index:64!important;
+    width:auto!important;
+    height:68px!important;
+    display:grid!important;
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;
+    padding:6px!important;
+    gap:3px!important;
+    background:rgba(255,255,255,.96)!important;
+    border:1px solid rgba(218,225,234,.96)!important;
+    border-radius:22px!important;
+    box-shadow:0 18px 48px rgba(15,23,42,.22)!important;
+    backdrop-filter:blur(22px) saturate(160%)!important;
+  }
+  .nav button{
+    height:54px!important;
+    min-height:54px!important;
+    padding:5px 2px!important;
+    border-radius:16px!important;
+    gap:3px!important;
+    font-size:9px!important;
+    color:#7A8496!important;
+  }
+  .nav button.active{
+    background:#EEF3FF!important;
+    border-color:#DCE6FF!important;
+    color:#214ED8!important;
+    box-shadow:none!important;
+  }
+  .nav-icon{width:20px!important;height:20px!important;flex-basis:20px!important;stroke-width:2.2!important}
+  .nav-short{font-size:9px!important;font-weight:900!important}
+
+  .main{
+    padding:16px 12px calc(112px + env(safe-area-inset-bottom))!important;
+  }
+  .view-search-card{
+    max-width:none!important;
+    width:100%!important;
+    margin:0 0 12px!important;
+  }
+  .view-search-input{min-height:44px!important}
+  .head{
+    margin-bottom:14px!important;
+    gap:8px!important;
+    align-items:flex-start!important;
+  }
+  .head h2{font-size:25px!important}
+  .head p{font-size:11.5px!important;line-height:1.42!important;margin-top:5px!important}
+  .view-receitas .head>.actions,
+  .view-despesas .head>.actions,
+  .view-lancamentos .head>.actions{display:none!important}
+  .card,.strategy-card{padding:14px!important;border-radius:18px!important;box-shadow:0 7px 20px rgba(16,24,40,.045)!important}
+  .section-title{align-items:flex-start!important;margin-bottom:11px!important}
+  .section-title h3{font-size:14px!important}
+  .section-title span{font-size:9.5px!important;text-align:right!important}
+  .period-filterbar{display:grid!important;grid-template-columns:1fr 1fr!important;width:100%!important;padding:5px!important;gap:5px!important}
+  .period-filterbar .select{width:100%!important;min-width:0!important;min-height:44px!important}
+  .filterbar:not(.period-filterbar){
+    flex-wrap:nowrap!important;
+    overflow-x:auto!important;
+    padding-bottom:4px!important;
+    scroll-snap-type:x proximity!important;
+  }
+  .filterbar:not(.period-filterbar)>*{flex:0 0 auto!important;scroll-snap-align:start!important}
+
+  .kpi-strip,.tx-summary,.executive-kpis{
+    grid-auto-columns:minmax(244px,82vw)!important;
+    gap:10px!important;
+    margin-left:-1px!important;
+    padding-bottom:8px!important;
+    scroll-snap-type:x mandatory!important;
+  }
+  .kpi-strip .metric,.view-lancamentos .tx-summary-card,.exec-card{
+    min-height:122px!important;
+    padding:17px 18px!important;
+    border-radius:18px!important;
+    scroll-snap-align:start!important;
+  }
+  .kpi-strip .label,.view-lancamentos .tx-summary-card span,.exec-card span{font-size:10.5px!important;min-height:0!important}
+  .kpi-strip .value,.view-lancamentos .tx-summary-card strong,.exec-card strong{
+    font-size:25px!important;
+    margin-top:10px!important;
+    overflow:visible!important;
+    text-overflow:clip!important;
+  }
+  .kpi-strip .subtxt,.exec-card small{font-size:10px!important;margin-top:7px!important}
+
+  .tx-tabs{
+    display:flex!important;
+    overflow-x:auto!important;
+    scroll-snap-type:x proximity!important;
+    padding:4px!important;
+  }
+  .tx-tabs button{flex:0 0 auto!important;min-width:112px!important;scroll-snap-align:start!important}
+  .tx-panel{padding:12px!important}
+
+  .table-wrap{
+    margin-left:-2px!important;
+    margin-right:-2px!important;
+    padding-bottom:5px!important;
+    border-radius:14px!important;
+  }
+  table{border-spacing:0 6px!important}
+  th{font-size:9px!important;padding-left:8px!important;padding-right:8px!important}
+  td{font-size:11px!important;padding:10px 8px!important}
+
+  .modal{padding:0!important;align-items:flex-end!important}
+  .sheet{
+    width:100%!important;
+    max-height:92vh!important;
+    border-radius:24px 24px 0 0!important;
+    padding:16px 14px calc(18px + env(safe-area-inset-bottom))!important;
+    border-bottom:0!important;
+  }
+  .sheet:before{
+    content:"";
+    display:block;
+    width:42px;
+    height:5px;
+    margin:-5px auto 12px;
+    border-radius:99px;
+    background:#CBD5E1;
+  }
+  .sheet-head h3{font-size:18px!important}
+
+  .mobile-fab{
+    position:fixed!important;
+    right:16px!important;
+    bottom:calc(89px + env(safe-area-inset-bottom))!important;
+    z-index:63!important;
+    min-height:50px!important;
+    max-width:calc(100vw - 32px)!important;
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:8px!important;
+    padding:0 17px!important;
+    border:0!important;
+    border-radius:999px!important;
+    background:linear-gradient(145deg,#2854E8,#173EA6)!important;
+    color:#FFFFFF!important;
+    font-size:12px!important;
+    font-weight:900!important;
+    box-shadow:0 16px 35px rgba(37,84,232,.32)!important;
+  }
+  .mobile-fab svg{width:19px;height:19px;stroke-width:2.4}
+  .mobile-fab:active{transform:scale(.97)}
+}
+
+@media(max-width:390px){
+  .header-in{padding-left:9px!important;padding-right:9px!important}
+  .nav{left:7px!important;right:7px!important;bottom:max(7px,env(safe-area-inset-bottom))!important;height:65px!important;border-radius:20px!important}
+  .nav button{height:51px!important;min-height:51px!important;font-size:8.4px!important}
+  .nav-short{font-size:8.4px!important}
+  .main{padding-left:9px!important;padding-right:9px!important}
+  .kpi-strip,.tx-summary,.executive-kpis{grid-auto-columns:minmax(228px,84vw)!important}
+  .kpi-strip .value,.view-lancamentos .tx-summary-card strong,.exec-card strong{font-size:23px!important}
+  .section-title span{display:none!important}
+  .mobile-fab{right:12px!important;padding:0 15px!important;font-size:11px!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  *,*:before,*:after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+}
+
+html[data-theme="dark"] body{background:#07101D!important}
+html[data-theme="dark"] .shell{background:#0B1220!important}
+html[data-theme="dark"] .header{background:rgba(11,18,32,.94)!important;border-color:#253044!important}
+html[data-theme="dark"] .brand h1,html[data-theme="dark"] .head h2,html[data-theme="dark"] .section-title h3{color:#F8FAFC!important}
+html[data-theme="dark"] .nav{background:#111827!important;border-color:#2D3748!important}
+html[data-theme="dark"] .nav button:hover:not(.active){background:#172033!important;color:#F8FAFC!important}
+html[data-theme="dark"] .card,html[data-theme="dark"] .strategy-card,html[data-theme="dark"] .kpi-strip .metric,html[data-theme="dark"] .view-lancamentos .tx-summary-card,html[data-theme="dark"] .exec-card{background:#111827!important;border-color:#2D3748!important}
+html[data-theme="dark"] .period-filterbar,html[data-theme="dark"] .tx-dedicated-filters,html[data-theme="dark"] .tx-tabs{background:#0F172A!important;border-color:#2D3748!important}
+html[data-theme="dark"] .select,html[data-theme="dark"] .field input,html[data-theme="dark"] .field select,html[data-theme="dark"] .field textarea,html[data-theme="dark"] .view-search-input{background:#111827!important;border-color:#344054!important;color:#F8FAFC!important}
+@media(max-width:760px){
+  html[data-theme="dark"] .nav{background:rgba(17,24,39,.97)!important;border-color:#344054!important}
+  html[data-theme="dark"] .nav button.active{background:#1D2E5E!important;border-color:#294A9A!important;color:#AFC3FF!important}
+}
+
 </style></head><body><div id="app"></div><div id="modal" class="modal"></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 const storeKey='despesas-casal-profissional-v12';
 const SUPABASE_URL='https://fpcwnjlneaaarzeevgpl.supabase.co';
@@ -2536,7 +3160,7 @@ const viewIconPaths={
   config:'<path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.12 2.12-.06-.06a1.7 1.7 0 0 0-1.88-.34 1.7 1.7 0 0 0-1.04 1.56V20h-3v-.08a1.7 1.7 0 0 0-1.04-1.56 1.7 1.7 0 0 0-1.88.34l-.06.06-2.12-2.12.06-.06A1.7 1.7 0 0 0 7 14.7a1.7 1.7 0 0 0-1.56-1.04H5.3v-3h.14A1.7 1.7 0 0 0 7 9.62a1.7 1.7 0 0 0-.34-1.88l-.06-.06 2.12-2.12.06.06A1.7 1.7 0 0 0 10.66 6a1.7 1.7 0 0 0 1.04-1.56V4.3h3v.14A1.7 1.7 0 0 0 15.74 6a1.7 1.7 0 0 0 1.88-.34l.06-.06 2.12 2.12-.06.06a1.7 1.7 0 0 0-.34 1.88 1.7 1.7 0 0 0 1.56 1.04h.14v3h-.14A1.7 1.7 0 0 0 19.4 15Z"/>'
 };
 function viewIcon(v){return `<svg class="nav-icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${viewIconPaths[v]||''}</svg>`}
-function nav(){const primary=['receitas','despesas','rxd','lancamentos','estrategia'];return primary.map(v=>`<button class="${view===v?'active':''}" onclick="setView('${v}')" title="${viewLabels[v]}" aria-label="${viewLabels[v]}">${viewIcon(v)}<span class="nav-label">${viewLabels[v]}</span><span class="nav-short">${viewShortLabels[v]}</span></button>`).join('')}
+function nav(){const primary=['receitas','despesas','rxd','lancamentos','estrategia'];return primary.map(v=>`<button class="${view===v?'active':''}" onclick="setView('${v}')" title="${viewLabels[v]}" aria-label="${viewLabels[v]}" aria-current="${view===v?'page':'false'}">${viewIcon(v)}<span class="nav-label">${viewLabels[v]}</span><span class="nav-short">${viewShortLabels[v]}</span></button>`).join('')}
 function compareControls(){return `<div class="compare">${[['mes','Mês'],['tri','Trimestre'],['sem','Semestre'],['ano','Ano'],['aa','Mesmo mês A.A.']].map(([id,lb])=>`<button class="${periodMode===id?'active':''}" onclick="periodMode='${id}';render()">${lb}</button>`).join('')}</div>`} function enhanceResponsiveTables(){
   document.querySelectorAll('.main .table-wrap').forEach(wrap=>{
     const table=wrap.querySelector('table');
@@ -2686,7 +3310,17 @@ function searchCandidateText(el){const extra=el.getAttribute('data-search-text')
 function viewSearchCandidates(root){return [...root.querySelectorAll('tbody > tr, .backup-row, .card-config-row, .integrity-item, [data-search-item]')].filter((el,index,all)=>all.indexOf(el)===index&&!el.closest('#modal'))}
 function applyViewSearch(scope=view){const root=document.querySelector(`.main.view-${scope}`);if(!root)return;const raw=String(viewSearchTerms[scope]||'').trim(),tokens=norm(raw).split(/\s+/).filter(Boolean),candidates=viewSearchCandidates(root);let matched=0,total=0;candidates.forEach(el=>{const placeholder=el.matches('tr')&&el.querySelector('td[colspan]')&&/^(sem|nenhum|nenhuma|não há|nao ha)/i.test((el.innerText||'').trim());if(placeholder){el.classList.toggle('search-hidden',tokens.length>0);return}total++;const hay=searchCandidateText(el),ok=!tokens.length||tokens.every(token=>hay.includes(token));el.classList.toggle('search-hidden',!ok);if(ok)matched++});const clear=document.getElementById('viewSearchClear');if(clear)clear.style.display=raw?'grid':'none';const empty=document.getElementById('viewSearchEmpty');if(empty)empty.classList.toggle('show',!!raw&&matched===0);const visibleChecks=[...root.querySelectorAll('.tx-realized-grouped tbody tr:not(.search-hidden) input[data-tx-id]')];const all=document.getElementById('txSelectAll');if(all){const checked=visibleChecks.filter(x=>x.checked).length;all.checked=visibleChecks.length>0&&checked===visibleChecks.length;all.indeterminate=checked>0&&checked<visibleChecks.length}}
 
-function sortSelectOptions(root=document){root.querySelectorAll('select:not(.period-select)').forEach(select=>{const options=[...select.options];if(options.length<2)return;const pinned=options.filter(o=>o.value===''||o.value==='todos'||/^(Todos|Todas|Ano em branco)/i.test(o.textContent.trim()));const sortable=options.filter(o=>!pinned.includes(o)).sort((a,b)=>textCmp(a.textContent,b.textContent));[...pinned,...sortable].forEach(o=>select.appendChild(o))})}function layout(content){document.getElementById('app').innerHTML=`<div class="shell view-${view}"><header class="header"><div class="header-in"><div class="brand"><div class="mark">CN</div><div><h1>Despesas Casal - Controle Financeiro</h1></div></div><div class="mobile-view-title"><strong>${escapeHtml(viewLabels[view]||'Finanças')}</strong><small>Finanças Cícero &amp; Nilce</small></div><nav class="nav">${nav()}</nav><div class="right"><span id="cloudStatus" class="cloud-status" data-state="${cloudStatusState}">${lastCloudStatus}</span><button class="more-button" type="button" onclick="openMoreMenu()" title="Mais opções"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg><span>Mais...</span></button><button class="account-button" type="button" onclick="openAccount()" title="Conta de ${escapeHtml(authUser?.email||'')}"><span class="account-avatar">${authInitials()}</span><span class="account-email">${escapeHtml(authUser?.email||'Conta')}</span></button></div></div></header><main class="main view-${view}">${viewSearchBar(view)}${content}</main></div>`;sortSelectOptions(document.getElementById('app'));requestAnimationFrame(()=>{enhanceResponsiveTables();requestAnimationFrame(()=>{initColumnWidthEditors(document.getElementById('app'));applyViewSearch(view)})})}
+function mobileQuickAction(){
+  const actions={
+    receitas:{label:'Cadastrar receitas',action:'openFillRevenues()'},
+    despesas:{label:'Nova despesa',action:'openNewBudgetLine()'},
+    lancamentos:{label:'Novo lançamento',action:'openTx()'}
+  };
+  const item=actions[view];
+  if(!item)return '';
+  return `<button class="mobile-fab" type="button" onclick="${item.action}" aria-label="${item.label}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg><span>${item.label}</span></button>`
+}
+function sortSelectOptions(root=document){root.querySelectorAll('select:not(.period-select)').forEach(select=>{const options=[...select.options];if(options.length<2)return;const pinned=options.filter(o=>o.value===''||o.value==='todos'||/^(Todos|Todas|Ano em branco)/i.test(o.textContent.trim()));const sortable=options.filter(o=>!pinned.includes(o)).sort((a,b)=>textCmp(a.textContent,b.textContent));[...pinned,...sortable].forEach(o=>select.appendChild(o))})}function layout(content){document.getElementById('app').innerHTML=`<div class="shell view-${view}"><header class="header"><div class="header-in"><div class="brand"><div class="mark">CN</div><div><h1>Finanças Cícero &amp; Nilce</h1></div></div><div class="mobile-view-title"><strong>${escapeHtml(viewLabels[view]||'Finanças')}</strong><small>Controle financeiro do casal</small></div><nav class="nav">${nav()}</nav><div class="right"><span id="cloudStatus" class="cloud-status" data-state="${cloudStatusState}">${lastCloudStatus}</span><button class="more-button" type="button" onclick="openMoreMenu()" title="Mais opções"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg><span>Mais...</span></button><button class="account-button" type="button" onclick="openAccount()" title="Conta de ${escapeHtml(authUser?.email||'')}"><span class="account-avatar">${authInitials()}</span><span class="account-email">${escapeHtml(authUser?.email||'Conta')}</span></button></div></div></header><main class="main view-${view}">${viewSearchBar(view)}${content}</main>${mobileQuickAction()}</div>`;sortSelectOptions(document.getElementById('app'));requestAnimationFrame(()=>{enhanceResponsiveTables();requestAnimationFrame(()=>{initColumnWidthEditors(document.getElementById('app'));applyViewSearch(view)})})}
 function kpis(){const rec=scopeRevenue(), exp=scopeExpense(), bal=rec-exp;return `<div class="grid cols3 kpi-strip"><div class="card metric income"><div class="label">Receita</div><div class="value">${fmt(rec)}</div><div class="subtxt">${periodLabel()}</div></div><div class="card metric expense"><div class="label">Despesas</div><div class="value">${fmt(exp)}</div><div class="subtxt">${pct(exp,rec)} da receita</div></div><div class="card metric balance"><div class="label">Saldo</div><div class="value">${fmt(bal)}</div><div class="subtxt">${pct(bal,rec)} da receita</div></div></div>`}
 function revenueKpis(){const list=monthYearList(revenueScope);const totals=list.reduce((a,m)=>{const r=revObj(m);a.cicero+=(+r.cicero||0);a.nilce+=(+r.nilce||0);a.reserva+=(+r.reserva||0);return a},{cicero:0,nilce:0,reserva:0});const total=totals.cicero+totals.nilce+totals.reserva;return `<div class="grid cols3 kpi-strip revenue-kpi-strip"><div class="card metric cicero"><div class="label">Cícero</div><div class="value">${fmt(totals.cicero)}</div><div class="subtxt">${pct(totals.cicero,total)} do total</div></div><div class="card metric nilce"><div class="label">Nilce</div><div class="value">${fmt(totals.nilce)}</div><div class="subtxt">${pct(totals.nilce,total)} do total</div></div><div class="card metric reserva"><div class="label">Resgate reserva</div><div class="value">${fmt(totals.reserva)}</div><div class="subtxt">${pct(totals.reserva,total)} do total</div></div></div>`}
 function renderReceitas(){const list=monthYearList(revenueScope);const rows=list.map(m=>{const r=revObj(m), total=revenueTotal(m);return `<tr class="clickable" onclick="openRevenue('${m}')"><td>${labelMonth(m)}</td><td class="rev-cicero">${fmt(r.cicero)}</td><td class="rev-cicero">${pct(r.cicero,total)}</td><td class="rev-nilce">${fmt(r.nilce)}</td><td class="rev-nilce">${pct(r.nilce,total)}</td><td class="rev-reserva">${fmt(r.reserva)}</td><td class="rev-reserva">${pct(r.reserva,total)}</td><td><b>${fmt(total)}</b></td><td>100,0%</td></tr>`}).join('');layout(`<div class="head"><div><h2>Receitas</h2><p>Resumo do valor total de cada mês, com participação percentual e edição direta.</p></div><div class="actions"><button class="btn" onclick="openFillRevenues()">Cadastrar receitas</button></div></div><div class="card"><div class="section-title"><h3>Filtros</h3><span>Selecione o ano ou um mês específico</span></div>${simpleControls('receita')}</div><div style="margin-top:16px">${revenueKpis()}</div><div class="card" style="margin-top:16px"><div class="section-title"><h3>Resumo do Período de Receitas</h3><span>Azul = Cícero · rosa = Nilce · verde = Resgate Reserva</span></div><div class="table-wrap"><table><thead><tr><th>Mês</th><th>Cícero</th><th>%</th><th>Nilce</th><th>%</th><th>Resgate Reserva</th><th>%</th><th>Total</th><th>%</th></tr></thead><tbody>${rows}</tbody></table></div></div>`)}
@@ -2861,7 +3495,7 @@ function slugify(txt){return String(txt||'').normalize('NFD').replace(/[\u0300-\
 function openSubcategory(catId,enc=''){const old=enc?decodeURIComponent(enc):'';modal(`<div class="sheet-head"><h3>${old?'Editar':'Nova'} subcategoria</h3><button class="close" onclick="closeModal()">×</button></div><form class="form" onsubmit="saveSubcategory(event,'${catId}','${encodeURIComponent(old)}')"><div class="form two"><div class="field"><label>Categoria</label><select name="cat">${catOptions(catId)}</select></div><div class="field"><label>Subcategoria</label><input name="sub" value="${old.replaceAll('"','&quot;')}" required></div></div><label class="envelope-toggle"><input type="checkbox" name="envelope" ${old&&isEnvelopeEnabled(catId,old)?'checked':''}> Controle por envelope semanal</label><div class="note">Quando ativo, os lançamentos desta subcategoria são distribuídos automaticamente por semanas de domingo a sábado.</div><div class="actions">${old?'<button class="btn danger" type="button" onclick="deleteSubcategory(\''+catId+'\',\''+encodeURIComponent(old)+'\')">Excluir</button>':''}<button class="btn secondary" type="button" onclick="closeModal()">Cancelar</button><button class="btn">Salvar</button></div></form>`)} function saveSubcategory(e,catId,encOld){e.preventDefault();const f=new FormData(e.target),newCat=f.get('cat'),sub=String(f.get('sub')||'').trim(),old=decodeURIComponent(encOld||''),enabled=f.get('envelope')==='on';if(!sub)return;if(!state.subs[newCat])state.subs[newCat]=[];if(old&&state.subs[catId])state.subs[catId]=state.subs[catId].filter(x=>x!==old);if(old)deleteEnvelopeSetting(catId,old);if(!state.subs[newCat].includes(sub))state.subs[newCat].push(sub);setEnvelopeEnabled(newCat,sub,enabled);save();closeModal();render()} function deleteSubcategory(catId,enc){const old=decodeURIComponent(enc);if(!confirm('Excluir subcategoria?'))return;state.subs[catId]=(state.subs[catId]||[]).filter(x=>x!==old);deleteEnvelopeSetting(catId,old);save();closeModal();render()}
 function downloadJSONFile(content,filename){const blob=new Blob([JSON.stringify(content,null,2)],{type:'application/json'});const a=document.createElement('a');const url=URL.createObjectURL(blob);a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1200)}
 function safeFileStamp(){const d=new Date(),pad=n=>String(n).padStart(2,'0');return `${localDateId(d)}_${pad(d.getHours())}-${pad(d.getMinutes())}`}
-function exportJSON(){if(!cloudSynced)return alert('Aguarde a sincronização da nuvem.');downloadJSONFile({app:'Finanças Cícero & Nilce',version:'v60',exportedAt:new Date().toISOString(),source:'estado-sincronizado-da-nuvem',state:clone(state)},`backup-completo-financas-cicero-nilce-${safeFileStamp()}.json`)}
+function exportJSON(){if(!cloudSynced)return alert('Aguarde a sincronização da nuvem.');downloadJSONFile({app:'Finanças Cícero & Nilce',version:'v65',exportedAt:new Date().toISOString(),source:'estado-sincronizado-da-nuvem',state:clone(state)},`backup-completo-financas-cicero-nilce-${safeFileStamp()}.json`)}
 function importJSON(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=async()=>{try{const parsed=JSON.parse(reader.result),payload=parsed&&parsed.state?parsed.state:parsed,next=merge(clone(baseData),payload);if(!confirm('Importar este backup e substituir o estado atual na nuvem?'))return;setCloudStatus('Importando backup...','loading');await writeCloudRow(SUPABASE_ROW_ID,next);state=next;cacheCloudState();setCloudStatus('Backup importado','ok');closeModal();render();alert('Backup importado e salvo na nuvem.')}catch(err){console.error(err);setCloudStatus('Erro na importação','error');alert('Arquivo inválido ou não foi possível salvar na nuvem.')}};reader.readAsText(file);e.target.value=''}
 async function resetData(){if(!confirm('Restaurar a base inicial? Isso substituirá também o estado principal da nuvem.'))return;setCloudStatus('Restaurando base...','loading');try{const next=clone(baseData);await writeCloudRow(SUPABASE_ROW_ID,next);state=next;cacheCloudState();setCloudStatus('Base restaurada','ok');render()}catch(err){setCloudStatus('Erro ao restaurar','error');alert('Não foi possível restaurar a base na nuvem.')}}
 
