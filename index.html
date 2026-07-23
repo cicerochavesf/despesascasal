@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão v87 -->
+<!-- Despesas Casal - Controle Financeiro | versão v88 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -1151,6 +1151,95 @@ html.device-mobile .summary-colorized tbody td::before{display:none!important}
 
 /* v86 — importação da planilha atualizada e migração única dos dados de 2026 */
 /* v87 — correção da importação: AirBNB removido e ajuste artificial de julho excluído */
+
+
+/* v88 — Receitas e Despesas em blocos no celular; tabelas preservadas no computador */
+.mobile-only-block{display:none!important}
+.desktop-only-table{display:block!important}
+.mobile-finance-list{display:grid;grid-template-columns:1fr;gap:10px;min-width:0}
+.mobile-finance-card{
+  --item-color:#64748B;
+  min-width:0;
+  overflow:hidden;
+  border:1px solid #DFE5ED;
+  border-top:4px solid var(--item-color);
+  border-radius:16px;
+  background:linear-gradient(145deg,color-mix(in srgb,var(--item-color) 5%,#FFFFFF),#FFFFFF 48%);
+  box-shadow:0 6px 18px rgba(15,23,42,.055);
+  padding:12px;
+}
+.mobile-finance-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;min-width:0}
+.mobile-finance-card-title{min-width:0}
+.mobile-finance-card-title strong{display:block;color:#172033;font-size:14px;line-height:1.2;font-weight:950;overflow-wrap:anywhere}
+.mobile-finance-card-title small{display:block;margin-top:3px;color:#667085;font-size:9.5px;line-height:1.25;font-weight:780;overflow-wrap:anywhere}
+.mobile-finance-card-total{flex:0 0 auto;text-align:right;white-space:nowrap}
+.mobile-finance-card-total small{display:block;color:#7A8496;font-size:8px;line-height:1.1;font-weight:900;text-transform:uppercase;letter-spacing:.045em}
+.mobile-finance-card-total strong{display:block;margin-top:4px;color:var(--item-color);font-size:14px;line-height:1.15;font-weight:950}
+.mobile-finance-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:11px}
+.mobile-finance-field{min-width:0;border:1px solid #E6EBF1;border-radius:11px;background:rgba(255,255,255,.82);padding:8px}
+.mobile-finance-field.wide{grid-column:1/-1}
+.mobile-finance-field small{display:block;color:#7A8496;font-size:7.8px;line-height:1.15;font-weight:900;text-transform:uppercase;letter-spacing:.04em;overflow-wrap:anywhere}
+.mobile-finance-field strong{display:block;margin-top:4px;color:#344054;font-size:11.5px;line-height:1.2;font-weight:900;overflow-wrap:anywhere}
+.mobile-finance-field span{display:block;margin-top:2px;color:#7A8496;font-size:8.8px;line-height:1.2;font-weight:780}
+.mobile-finance-field.cicero strong{color:#1D4ED8}
+.mobile-finance-field.nilce strong{color:#BE185D}
+.mobile-finance-field.outras strong{color:#047857}
+.mobile-finance-field.total strong{color:#172033}
+.mobile-finance-action{width:100%;border:0;background:transparent;text-align:left;padding:0;color:inherit}
+.mobile-month-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:10px}
+.mobile-month-cell{min-width:0;border:1px solid #E6EBF1;border-radius:10px;background:rgba(255,255,255,.82);padding:8px;text-align:left}
+button.mobile-month-cell{cursor:pointer}
+.mobile-month-cell small{display:block;color:#7A8496;font-size:7.5px;line-height:1.1;font-weight:900;text-transform:uppercase;letter-spacing:.04em}
+.mobile-month-cell strong{display:block;margin-top:4px;color:#344054;font-size:10.8px;line-height:1.15;font-weight:900;white-space:nowrap}
+.mobile-month-cell.is-empty strong{color:#98A2B3}
+.mobile-expense-meta{display:flex;flex-wrap:wrap;gap:4px 6px;margin-top:4px;color:#667085;font-size:9px;line-height:1.25;font-weight:780}
+.mobile-expense-meta span{min-width:0;overflow-wrap:anywhere}
+
+html.device-mobile .desktop-only-table{display:none!important}
+html.device-mobile .mobile-only-block{display:grid!important}
+html.device-mobile .revenue-mobile-blocks,
+html.device-mobile .expense-summary-mobile-blocks,
+html.device-mobile .expense-detail-mobile-blocks{width:100%!important;min-width:0!important;max-width:100%!important;overflow:visible!important}
+html.device-mobile .view-receitas .card:has(.revenue-mobile-blocks),
+html.device-mobile .view-despesas .card:has(.expense-summary-mobile-blocks),
+html.device-mobile .view-despesas .card:has(.expense-detail-mobile-blocks){overflow:visible!important}
+
+@media(max-width:760px){
+  .desktop-only-table{display:none!important}
+  .mobile-only-block{display:grid!important}
+  .revenue-mobile-blocks,.expense-summary-mobile-blocks,.expense-detail-mobile-blocks{width:100%!important;min-width:0!important;max-width:100%!important;overflow:visible!important}
+  .mobile-finance-card{padding:11px;border-radius:15px}
+  .mobile-finance-card-title strong{font-size:13px}
+  .mobile-finance-card-total strong{font-size:13px}
+  .mobile-finance-grid,.mobile-month-grid{gap:6px}
+}
+@media(max-width:390px){
+  .mobile-finance-grid,.mobile-month-grid{grid-template-columns:1fr 1fr}
+  .mobile-finance-field,.mobile-month-cell{padding:7px}
+  .mobile-finance-field strong,.mobile-month-cell strong{font-size:10.5px}
+}
+html[data-theme="dark"] .mobile-finance-card{background:linear-gradient(145deg,color-mix(in srgb,var(--item-color) 8%,#111827),#111827 48%)!important;border-color:#344054!important}
+html[data-theme="dark"] .mobile-finance-card-title strong,
+html[data-theme="dark"] .mobile-finance-field strong,
+html[data-theme="dark"] .mobile-month-cell strong{color:#F8FAFC!important}
+html[data-theme="dark"] .mobile-finance-card-title small,
+html[data-theme="dark"] .mobile-finance-card-total small,
+html[data-theme="dark"] .mobile-finance-field small,
+html[data-theme="dark"] .mobile-finance-field span,
+html[data-theme="dark"] .mobile-month-cell small,
+html[data-theme="dark"] .mobile-expense-meta{color:#B8C1CE!important}
+html[data-theme="dark"] .mobile-finance-field,
+html[data-theme="dark"] .mobile-month-cell{background:#172033!important;border-color:#344054!important}
+
+/* v88 — controles de largura não aparecem quando a visão móvel usa blocos */
+html.device-mobile .view-receitas .column-width-toolbar,
+html.device-mobile .view-receitas .table-view-toolbar,
+html.device-mobile .view-despesas .column-width-toolbar,
+html.device-mobile .view-despesas .table-view-toolbar{display:none!important}
+@media(max-width:760px){
+  .view-receitas .column-width-toolbar,.view-receitas .table-view-toolbar,
+  .view-despesas .column-width-toolbar,.view-despesas .table-view-toolbar{display:none!important}
+}
 </style></head><body><div id="app"></div><div id="modal" class="modal"></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 const storeKey='despesas-casal-profissional-v12';
 const SUPABASE_URL='https://fpcwnjlneaaarzeevgpl.supabase.co';
@@ -1675,12 +1764,27 @@ function layout(content){
 
 function kpis(){const rec=scopeRevenue(), exp=scopeExpense(), bal=rec-exp;return `<div class="grid cols3 kpi-strip"><div class="card metric income"><div class="label">Receita</div><div class="value">${fmt(rec)}</div><div class="subtxt">${periodLabel()}</div></div><div class="card metric expense"><div class="label">Despesas</div><div class="value">${fmt(exp)}</div><div class="subtxt">${pct(exp,rec)} da receita</div></div><div class="card metric balance"><div class="label">Saldo</div><div class="value">${fmt(bal)}</div><div class="subtxt">${pct(bal,rec)} da receita</div></div></div>`}
 function revenueKpis(){const list=monthYearList(revenueScope);const totals=list.reduce((a,m)=>{const r=revObj(m);a.cicero+=(+r.cicero||0);a.nilce+=(+r.nilce||0);a.reserva+=(+r.reserva||0);return a},{cicero:0,nilce:0,reserva:0});const total=totals.cicero+totals.nilce+totals.reserva;return `<div class="grid cols3 kpi-strip revenue-kpi-strip"><div class="card metric cicero"><div class="label">Cícero</div><div class="value">${fmt(totals.cicero)}</div><div class="subtxt">${pct(totals.cicero,total)} do total</div></div><div class="card metric nilce"><div class="label">Nilce</div><div class="value">${fmt(totals.nilce)}</div><div class="subtxt">${pct(totals.nilce,total)} do total</div></div><div class="card metric reserva other-revenue-kpi" role="button" tabindex="0" title="Editar valores e origens das outras receitas" onclick="openOtherRevenues()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openOtherRevenues()}"><div class="label">Outras receitas</div><div class="value">${fmt(totals.reserva)}</div><div class="subtxt">${pct(totals.reserva,total)} do total</div></div></div>`}
+function revenueMobileBlocks(list){
+  return `<div class="mobile-only-block mobile-finance-list revenue-mobile-blocks">${list.map(m=>{const r=revObj(m),total=revenueTotal(m);return `<article class="mobile-finance-card" style="--item-color:#3B82F6"><div class="mobile-finance-card-head"><button class="mobile-finance-action mobile-finance-card-title" type="button" onclick="openRevenue('${m}')"><strong>${labelMonth(m)}</strong></button><div class="mobile-finance-card-total"><small>Total</small><strong>${fmt(total)}</strong></div></div><div class="mobile-finance-grid"><div class="mobile-finance-field cicero"><small>Cícero</small><strong>${fmt(r.cicero)}</strong><span>${pct(r.cicero,total)}</span></div><div class="mobile-finance-field nilce"><small>Nilce</small><strong>${fmt(r.nilce)}</strong><span>${pct(r.nilce,total)}</span></div><button class="mobile-finance-field outras mobile-finance-action" type="button" onclick="openOtherRevenueMonth('${m}')"><small>Outras receitas</small><strong>${fmt(r.reserva)}</strong><span>${pct(r.reserva,total)}</span></button><div class="mobile-finance-field total"><small>Total do mês</small><strong>${fmt(total)}</strong><span>100,0%</span></div></div></article>`}).join('')}</div>`
+}
+function expenseSummaryMobileBlocks(cats,list,periodTotal){
+  return `<div class="mobile-only-block mobile-finance-list expense-summary-mobile-blocks">${cats.map(({c,vals,total})=>`<article class="mobile-finance-card" style="--item-color:${c.color}"><div class="mobile-finance-card-head"><div class="mobile-finance-card-title"><strong>${escapeHtml(c.name)}</strong><small>${pct(total,periodTotal)} do período</small></div><div class="mobile-finance-card-total"><small>Total</small><strong>${fmt(total)}</strong></div></div><div class="mobile-month-grid">${list.map((m,index)=>`<div class="mobile-month-cell ${Math.abs(vals[index]||0)<.005?'is-empty':''}"><small>${labelMonth(m)}</small><strong>${vals[index]?fmt(vals[index]):'-'}</strong></div>`).join('')}</div></article>`).join('')||'<div class="empty">Sem dados</div>'}</div>`
+}
 function renderReceitas(){
   const list=monthYearList(revenueScope);
   const rows=list.map(m=>{const r=revObj(m),total=revenueTotal(m);return `<tr class="clickable" onclick="openRevenue('${m}')"><td data-label="Mês" class="revenue-month">${labelMonth(m)}</td><td data-label="Cícero" class="rev-cicero">${fmt(r.cicero)}</td><td class="revenue-percent rev-cicero">${pct(r.cicero,total)}</td><td data-label="Nilce" class="rev-nilce">${fmt(r.nilce)}</td><td class="revenue-percent rev-nilce">${pct(r.nilce,total)}</td><td data-label="Outras receitas" class="rev-reserva other-revenue-cell" onclick="event.stopPropagation()"><button class="other-revenue-cell-button" type="button" onclick="openOtherRevenueMonth('${m}')" title="Ver e editar outras receitas"><strong>${fmt(r.reserva)}</strong></button></td><td class="revenue-percent rev-reserva">${pct(r.reserva,total)}</td><td data-label="Total" class="revenue-total"><b>${fmt(total)}</b></td><td class="revenue-percent">100,0%</td></tr>`}).join('');
-  layout(`<div class="head"><div><h2>Receitas</h2><p>Resumo do valor total de cada mês, com participação percentual e edição direta.</p></div><div class="actions"><button class="btn" onclick="openFillRevenues()">Cadastrar receitas</button></div></div><div class="card compact-period-card"><div class="section-title"><h3>Período</h3><span>Selecione o ano ou um mês específico</span></div>${simpleControls('receita')}</div><div style="margin-top:16px">${revenueKpis()}</div><div class="card" style="margin-top:16px"><div class="section-title"><h3>Resumo do período</h3></div><div class="table-wrap revenue-table"><table><thead><tr><th>Mês</th><th>Cícero</th><th>%</th><th>Nilce</th><th>%</th><th>Outras receitas</th><th>%</th><th>Total</th><th>%</th></tr></thead><tbody>${rows}</tbody></table></div></div>`)
+  layout(`<div class="head"><div><h2>Receitas</h2><p>Resumo do valor total de cada mês, com participação percentual e edição direta.</p></div><div class="actions"><button class="btn" onclick="openFillRevenues()">Cadastrar receitas</button></div></div><div class="card compact-period-card"><div class="section-title"><h3>Período</h3><span>Selecione o ano ou um mês específico</span></div>${simpleControls('receita')}</div><div style="margin-top:16px">${revenueKpis()}</div><div class="card" style="margin-top:16px"><div class="section-title"><h3>Resumo do período</h3></div><div class="table-wrap revenue-table desktop-only-table"><table><thead><tr><th>Mês</th><th>Cícero</th><th>%</th><th>Nilce</th><th>%</th><th>Outras receitas</th><th>%</th><th>Total</th><th>%</th></tr></thead><tbody>${rows}</tbody></table></div>${revenueMobileBlocks(list)}</div>`)
 }
-function plannedFilteredByCat(m,catId){return (state.budgets[m]||[]).filter(b=>b.cat===catId&&budgetMatches(b,expenseFilters)).reduce((s,b)=>s+Number(b.planned||0),0)} function renderDespesas(){const list=monthYearList(expenseScope);const monthHeaders=list.map(m=>`<th class="month-head">${labelMonth(m)}</th>`).join('');const cats=state.categories.filter(c=>expenseFilters.cat==='todos'||c.id===expenseFilters.cat).map(c=>{const vals=list.map(m=>plannedFilteredByCat(m,c.id));const total=vals.reduce((s,v)=>s+v,0);return{c,vals,total}}).filter(x=>x.total>0).sort((a,b)=>textCmp(a.c.name,b.c.name)||(b.total-a.total));const periodTotal=cats.reduce((acc,x)=>acc+x.total,0);const rows=cats.map(({c,vals,total})=>`<tr class="cat-total-row category-tinted" style="--cat-color:${c.color};--cat-soft:${c.color}12"><td><span class="cat-tag" style="background:${c.color}18;color:${c.color}"><span class="row-accent" style="background:${c.color}"></span>${c.name}</span></td>${vals.map(v=>`<td class="soft-cell despesa-cell" style="--cat-color:${c.color}">${fmt(v)}</td>`).join('')}<td class="total-col total-highlight" style="color:${c.color}">${fmt(total)}</td><td>${pct(total,periodTotal)}</td></tr>`).join('');const detail=renderExpenseDetail(list);layout(`<div class="head"><div><h2>Despesas</h2><p>Resumo consolidado lado a lado por mês. A edição acontece somente na visão expandida abaixo.</p></div><div class="actions"><button class="btn" onclick="openNewBudgetLine()">Nova despesa prevista</button></div></div>${kpis()}<div class="card" style="margin-top:16px"><div class="section-title"><h3>Filtros</h3><span>Abre no ano completo; selecione um mês quando necessário</span></div>${expenseFilterControls()}</div><div class="card" style="margin-top:16px"><div class="section-title"><h3>Resumo consolidado de despesas</h3><span>${expenseScope==='ano'?'Ano completo':labelMonth(state.month)} · total destacado e leitura mensal mais clara</span></div><div class="table-wrap wide summary-colorized"><table><thead><tr><th>Categoria</th>${monthHeaders}<th>Total</th><th>% do período</th></tr></thead><tbody>${rows||'<tr><td colspan="9">Sem dados</td></tr>'}</tbody></table></div></div><div class="card" style="margin-top:16px"><div class="section-title"><h3>Visão expandida das despesas</h3><span>Clique no nome da despesa para editar o ano inteiro · clique em um valor para editar somente aquele mês</span></div>${detail}</div>`)}
+function plannedFilteredByCat(m,catId){return (state.budgets[m]||[]).filter(b=>b.cat===catId&&budgetMatches(b,expenseFilters)).reduce((s,b)=>s+Number(b.planned||0),0)}
+function renderDespesas(){
+  const list=monthYearList(expenseScope);
+  const monthHeaders=list.map(m=>`<th class="month-head">${labelMonth(m)}</th>`).join('');
+  const cats=state.categories.filter(c=>expenseFilters.cat==='todos'||c.id===expenseFilters.cat).map(c=>{const vals=list.map(m=>plannedFilteredByCat(m,c.id));const total=vals.reduce((s,v)=>s+v,0);return{c,vals,total}}).filter(x=>x.total>0).sort((a,b)=>textCmp(a.c.name,b.c.name)||(b.total-a.total));
+  const periodTotal=cats.reduce((acc,x)=>acc+x.total,0);
+  const rows=cats.map(({c,vals,total})=>`<tr class="cat-total-row category-tinted" style="--cat-color:${c.color};--cat-soft:${c.color}12"><td><span class="cat-tag" style="background:${c.color}18;color:${c.color}"><span class="row-accent" style="background:${c.color}"></span>${c.name}</span></td>${vals.map(v=>`<td class="soft-cell despesa-cell" style="--cat-color:${c.color}">${fmt(v)}</td>`).join('')}<td class="total-col total-highlight" style="color:${c.color}">${fmt(total)}</td><td>${pct(total,periodTotal)}</td></tr>`).join('');
+  const detail=renderExpenseDetail(list);
+  layout(`<div class="head"><div><h2>Despesas</h2><p>Resumo consolidado lado a lado por mês. A edição acontece somente na visão expandida abaixo.</p></div><div class="actions"><button class="btn" onclick="openNewBudgetLine()">Nova despesa prevista</button></div></div>${kpis()}<div class="card" style="margin-top:16px"><div class="section-title"><h3>Filtros</h3><span>Abre no ano completo; selecione um mês quando necessário</span></div>${expenseFilterControls()}</div><div class="card" style="margin-top:16px"><div class="section-title"><h3>Resumo consolidado de despesas</h3><span>${expenseScope==='ano'?'Ano completo':labelMonth(state.month)} · total destacado e leitura mensal mais clara</span></div><div class="table-wrap wide summary-colorized desktop-only-table"><table><thead><tr><th>Categoria</th>${monthHeaders}<th>Total</th><th>% do período</th></tr></thead><tbody>${rows||'<tr><td colspan="9">Sem dados</td></tr>'}</tbody></table></div>${expenseSummaryMobileBlocks(cats,list,periodTotal)}</div><div class="card" style="margin-top:16px"><div class="section-title"><h3>Visão expandida das despesas</h3><span>Clique no nome da despesa para editar o ano inteiro · clique em um valor para editar somente aquele mês</span></div>${detail}</div>`)
+}
 function renderExpenseDetail(list){
   const monthHeaders=list.map(m=>`<th class="month-head">${labelMonth(m)}</th>`).join('');
   const grouped={};
@@ -1698,12 +1802,17 @@ function renderExpenseDetail(list){
   }));
   const items=Object.values(grouped).filter(x=>x.total>0).sort(compareExpenseItems);
   if(!items.length)return '<div class="empty">Sem despesas na seleção atual.</div>';
-  return `<div class="table-wrap expanded compact expense-enhanced expense-grouped sticky-months"><table><thead><tr><th>Despesa</th>${monthHeaders}<th class="total-head">Total</th></tr></thead><tbody>${items.map(b=>{
+  const desktopRows=items.map(b=>{
     const cells=list.map(m=>{const v=b.vals[m]||0,id=b.ids[m];return v?`<td data-label="${labelMonth(m)}" class="soft-cell clickable despesa-cell month-value" style="--cat-color:${cat(b.catId).color}" onclick="event.stopPropagation();openBudgetItem('${id}','${m}')">${fmt(v)}</td>`:`<td data-label="${labelMonth(m)}" class="soft-cell muted-cell despesa-cell month-value" style="--cat-color:${cat(b.catId).color}">-</td>`}).join('');
     const ownerClass=b.owner==='Cícero'?'cicero':b.owner==='Nilce'?'nilce':'compartilhado';
     const annualKey=encodeURIComponent(JSON.stringify({catId:b.catId,sub:b.sub,city:b.city}));
     return `<tr class="category-tinted" style="--cat-color:${cat(b.catId).color};--cat-soft:${cat(b.catId).color}12"><td><button class="expense-line-button" type="button" onclick="openAnnualBudgetEditor('${annualKey}')" title="Abrir detalhes desta despesa"><span class="expense-item-main"><strong><span class="row-accent" style="background:${cat(b.catId).color}"></span><span class="expense-name-text">${b.sub}</span></strong><small class="expense-meta"><span class="category-text" style="color:${cat(b.catId).color}">${cat(b.catId).name}</span><span>•</span><span class="owner-inline ${ownerClass}">${shortLabel(b.owner)}</span><span>•</span><span class="expense-meta-city">${shortLabel(b.city)}</span></small></span></button></td>${cells}<td data-label="Total" class="total-col total-highlight" style="color:${cat(b.catId).color}">${fmt(b.total)}</td></tr>`
-  }).join('')}</tbody></table></div>`
+  }).join('');
+  const mobileCards=items.map(b=>{
+    const annualKey=encodeURIComponent(JSON.stringify({catId:b.catId,sub:b.sub,city:b.city}));
+    return `<article class="mobile-finance-card" style="--item-color:${cat(b.catId).color}"><div class="mobile-finance-card-head"><button class="mobile-finance-action mobile-finance-card-title" type="button" onclick="openAnnualBudgetEditor('${annualKey}')"><strong>${escapeHtml(b.sub)}</strong><div class="mobile-expense-meta"><span style="color:${cat(b.catId).color}">${escapeHtml(cat(b.catId).name)}</span><span>${escapeHtml(shortLabel(b.owner))}</span><span>${escapeHtml(shortLabel(b.city))}</span></div></button><div class="mobile-finance-card-total"><small>Total</small><strong>${fmt(b.total)}</strong></div></div><div class="mobile-month-grid">${list.map(m=>{const v=b.vals[m]||0,id=b.ids[m];return id&&v?`<button class="mobile-month-cell" type="button" onclick="openBudgetItem('${id}','${m}')"><small>${labelMonth(m)}</small><strong>${fmt(v)}</strong></button>`:`<div class="mobile-month-cell is-empty"><small>${labelMonth(m)}</small><strong>-</strong></div>`}).join('')}</div></article>`
+  }).join('');
+  return `<div class="table-wrap expanded compact expense-enhanced expense-grouped sticky-months desktop-only-table"><table><thead><tr><th>Despesa</th>${monthHeaders}<th class="total-head">Total</th></tr></thead><tbody>${desktopRows}</tbody></table></div><div class="mobile-only-block mobile-finance-list expense-detail-mobile-blocks">${mobileCards}</div>`
 }
 function renderRxD(){
   const p=monthYearList(rxdScope);
@@ -1918,7 +2027,7 @@ function openSubcategory(catId,enc=''){const old=enc?decodeURIComponent(enc):'';
 }
 function downloadJSONFile(content,filename){const blob=new Blob([JSON.stringify(content,null,2)],{type:'application/json'});const a=document.createElement('a');const url=URL.createObjectURL(blob);a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1200)}
 function safeFileStamp(){const d=new Date(),pad=n=>String(n).padStart(2,'0');return `${localDateId(d)}_${pad(d.getHours())}-${pad(d.getMinutes())}`}
-function exportJSON(){if(!cloudSynced)return alert('Aguarde a sincronização da nuvem.');downloadJSONFile({app:'Finanças Cícero & Nilce',version:'v87',exportedAt:new Date().toISOString(),source:'estado-sincronizado-da-nuvem',state:clone(state)},`backup-completo-financas-cicero-nilce-${safeFileStamp()}.json`)}
+function exportJSON(){if(!cloudSynced)return alert('Aguarde a sincronização da nuvem.');downloadJSONFile({app:'Finanças Cícero & Nilce',version:'v88',exportedAt:new Date().toISOString(),source:'estado-sincronizado-da-nuvem',state:clone(state)},`backup-completo-financas-cicero-nilce-${safeFileStamp()}.json`)}
 function importJSON(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=async()=>{try{const parsed=JSON.parse(reader.result),payload=parsed&&parsed.state?parsed.state:parsed,next=merge(clone(baseData),payload);if(!confirm('Importar este backup e substituir o estado atual na nuvem?'))return;setCloudStatus('Importando backup...','loading');await writeCloudRow(SUPABASE_ROW_ID,next);state=next;cacheCloudState();setCloudStatus('Backup importado','ok');closeModal();render();alert('Backup importado e salvo na nuvem.')}catch(err){console.error(err);setCloudStatus('Erro na importação','error');alert('Arquivo inválido ou não foi possível salvar na nuvem.')}};reader.readAsText(file);e.target.value=''}
 async function resetData(){if(!confirm('Restaurar a base inicial? Isso substituirá também o estado principal da nuvem.'))return;setCloudStatus('Restaurando base...','loading');try{const next=clone(baseData);await writeCloudRow(SUPABASE_ROW_ID,next);state=next;cacheCloudState();setCloudStatus('Base restaurada','ok');render()}catch(err){setCloudStatus('Erro ao restaurar','error');alert('Não foi possível restaurar a base na nuvem.')}}
 
@@ -1954,7 +2063,7 @@ function integritySubExists(catId,sub,city=''){const values=state.subs?.[catId]|
 function integrityBudgetNaturalKey(month,b){const city=b.city||cityOf(b.sub||'');return [month,b.cat,norm(cleanName(b.sub||'')),city].join('|')}
 function integrityTransactionNaturalKey(month,t){const city=t.city||cityOf(t.sub||'');return [month,t.date,norm(t.description||t.desc||''),Number(t.amount||0).toFixed(2),t.cat,norm(cleanName(t.sub||'')),city].join('|')}
 function runIntegrityChecks(){
-  const report={generatedAt:new Date().toISOString(),checks:[],meta:{version:'v87'}};
+  const report={generatedAt:new Date().toISOString(),checks:[],meta:{version:'v88'}};
   const allowedCities=new Set(['Fortaleza','Brasília','Compartilhado']);
   const requiredTypes={months:'array',categories:'array',subs:'object',revenues:'object',budgets:'object',transactions:'object',reallocations:'object'};
 
@@ -2051,7 +2160,7 @@ function runIntegrityChecks(){
 }
 function integrityStatusLabel(status){return status==='error'?'Erro':status==='warning'?'Aviso':status==='info'?'Recomend.':'OK'}
 function integrityRenderGroup(report,group){const checks=report.checks.filter(check=>check.group===group),counts={error:0,warning:0,info:0,ok:0};checks.forEach(check=>counts[check.status]++);const problemCount=counts.error+counts.warning+counts.info;const badges=['error','warning','info','ok'].filter(status=>counts[status]).map(status=>`<span class="integrity-count ${status}">${counts[status]}</span>`).join('');const rows=checks.map(check=>`<div class="integrity-item ${check.status}" data-integrity-status="${check.status}"><span class="integrity-badge">${integrityStatusLabel(check.status)}</span><div><strong>${escapeHtml(check.title)}</strong><small>${escapeHtml(check.detail||'')}</small></div></div>`).join('');return `<details class="integrity-group" ${problemCount?'open':''}><summary><div class="integrity-group-title"><strong>${escapeHtml(group)}</strong><small>${checks.length} teste(s) · ${problemCount?`${problemCount} ponto(s) para revisar`:'sem ocorrências'}</small></div><div class="integrity-group-counts">${badges}</div></summary><div class="integrity-group-body">${rows}</div></details>`}
-function renderIntegrityReport(report,onlyProblems=false){const s=report.stats,groups=report.groups.map(group=>integrityRenderGroup(report,group)).join('');modal(`<div class="sheet-head"><div><h3>Verificação de integridade</h3><p class="muted" style="margin-top:4px;font-weight:750">Diagnóstico v87 executado em ${new Date(report.generatedAt).toLocaleString('pt-BR')}</p></div><button class="close" onclick="closeModal()">×</button></div><div class="integrity-health"><div class="integrity-score"><strong class="${s.score>=85?'pos':s.score>=65?'warn':'neg'}">${s.score}</strong><span>Saúde geral / 100</span><small>Índice calculado pela gravidade dos testes. Não altera dados automaticamente.</small></div><div class="integrity-summary"><div class="integrity-stat"><span>Testes</span><strong>${s.total}</strong><small>${s.ok} concluídos sem ocorrência</small></div><div class="integrity-stat"><span>Erros</span><strong class="${s.error?'neg':'pos'}">${s.error}</strong><small>Exigem atenção prioritária</small></div><div class="integrity-stat"><span>Avisos</span><strong class="${s.warning?'warn':'pos'}">${s.warning}</strong><small>Podem indicar inconsistência</small></div><div class="integrity-stat"><span>Recomendações</span><strong>${s.info}</strong><small>Melhorias preventivas</small></div></div></div><div class="integrity-toolbar"><span class="integrity-toolbar-copy">${s.fixable?`${s.fixable} grupo(s) possui(em) correção segura disponível.`:'Nenhuma correção automática segura foi identificada.'}</span><div class="integrity-toolbar-actions"><button class="tiny" onclick="toggleIntegrityProblems()">${onlyProblems?'Mostrar todos':'Somente problemas'}</button><button class="tiny" onclick="exportIntegrityReport()">Exportar relatório</button>${s.fixable?'<button class="tiny" onclick="applyIntegritySafeFixes()">Correções seguras</button>':''}</div></div><div class="integrity-list" id="integrityList">${groups||'<div class="integrity-empty">Nenhum teste foi executado.</div>'}</div><div class="actions" style="margin-top:14px"><button class="btn secondary" onclick="openMoreMenu()">Voltar</button><button class="btn" onclick="openIntegrityCheck()">Executar novamente</button></div>`);document.querySelector('#modal .sheet')?.classList.add('integrity-sheet');if(onlyProblems)document.querySelectorAll('#integrityList .integrity-item.ok').forEach(item=>item.style.display='none');document.getElementById('integrityList')?.setAttribute('data-only-problems',onlyProblems?'true':'false')}
+function renderIntegrityReport(report,onlyProblems=false){const s=report.stats,groups=report.groups.map(group=>integrityRenderGroup(report,group)).join('');modal(`<div class="sheet-head"><div><h3>Verificação de integridade</h3><p class="muted" style="margin-top:4px;font-weight:750">Diagnóstico v88 executado em ${new Date(report.generatedAt).toLocaleString('pt-BR')}</p></div><button class="close" onclick="closeModal()">×</button></div><div class="integrity-health"><div class="integrity-score"><strong class="${s.score>=85?'pos':s.score>=65?'warn':'neg'}">${s.score}</strong><span>Saúde geral / 100</span><small>Índice calculado pela gravidade dos testes. Não altera dados automaticamente.</small></div><div class="integrity-summary"><div class="integrity-stat"><span>Testes</span><strong>${s.total}</strong><small>${s.ok} concluídos sem ocorrência</small></div><div class="integrity-stat"><span>Erros</span><strong class="${s.error?'neg':'pos'}">${s.error}</strong><small>Exigem atenção prioritária</small></div><div class="integrity-stat"><span>Avisos</span><strong class="${s.warning?'warn':'pos'}">${s.warning}</strong><small>Podem indicar inconsistência</small></div><div class="integrity-stat"><span>Recomendações</span><strong>${s.info}</strong><small>Melhorias preventivas</small></div></div></div><div class="integrity-toolbar"><span class="integrity-toolbar-copy">${s.fixable?`${s.fixable} grupo(s) possui(em) correção segura disponível.`:'Nenhuma correção automática segura foi identificada.'}</span><div class="integrity-toolbar-actions"><button class="tiny" onclick="toggleIntegrityProblems()">${onlyProblems?'Mostrar todos':'Somente problemas'}</button><button class="tiny" onclick="exportIntegrityReport()">Exportar relatório</button>${s.fixable?'<button class="tiny" onclick="applyIntegritySafeFixes()">Correções seguras</button>':''}</div></div><div class="integrity-list" id="integrityList">${groups||'<div class="integrity-empty">Nenhum teste foi executado.</div>'}</div><div class="actions" style="margin-top:14px"><button class="btn secondary" onclick="openMoreMenu()">Voltar</button><button class="btn" onclick="openIntegrityCheck()">Executar novamente</button></div>`);document.querySelector('#modal .sheet')?.classList.add('integrity-sheet');if(onlyProblems)document.querySelectorAll('#integrityList .integrity-item.ok').forEach(item=>item.style.display='none');document.getElementById('integrityList')?.setAttribute('data-only-problems',onlyProblems?'true':'false')}
 function toggleIntegrityProblems(){if(!integrityLastReport)return;const only=document.getElementById('integrityList')?.getAttribute('data-only-problems')!=='true';renderIntegrityReport(integrityLastReport,only)}
 function exportIntegrityReport(){if(!integrityLastReport)return alert('Execute a verificação primeiro.');downloadTextFile(JSON.stringify(integrityLastReport,null,2),`relatorio-integridade-${safeFileStamp()}.json`,'application/json;charset=utf-8')}
 function applyIntegritySafeFixes(){if(!integrityLastReport)return;if(!confirm('Aplicar somente correções estruturais seguras?\n\nAntes, será baixado um backup completo do estado atual. Nenhuma despesa, receita ou lançamento será excluído.'))return;downloadTextFile(JSON.stringify({exportedAt:new Date().toISOString(),reason:'antes-das-correcoes-de-integridade-v87',state},null,2),`backup-antes-integridade-${safeFileStamp()}.json`,'application/json;charset=utf-8');const changes=[];if(!Array.isArray(state.months)){state.months=[];changes.push('estrutura de meses criada')}const uniqueMonths=new Map();state.months.forEach(month=>{if(month?.id&&!uniqueMonths.has(month.id))uniqueMonths.set(month.id,month)});if(uniqueMonths.size!==state.months.length){state.months=[...uniqueMonths.values()].sort((a,b)=>String(a.id).localeCompare(String(b.id)));changes.push('meses duplicados removidos da lista')}for(const key of ['categories'])if(!Array.isArray(state[key])){state[key]=[];changes.push(`${key} inicializado`)}for(const key of ['subs','revenues','budgets','transactions','reallocations'])if(!state[key]||typeof state[key]!=='object'||Array.isArray(state[key])){state[key]={};changes.push(`${key} inicializado`)};(state.months||[]).forEach(month=>{const id=month.id;if(!state.revenues[id]||typeof state.revenues[id]!=='object'){state.revenues[id]={cicero:0,nilce:0,reserva:0,outrasOrigem:''};changes.push(`receita de ${id} criada`)}if(!Array.isArray(state.budgets[id])){state.budgets[id]=[];changes.push(`despesas de ${id} criadas`)}if(!Array.isArray(state.transactions[id])){state.transactions[id]=[];changes.push(`lançamentos de ${id} criados`)}if(!Array.isArray(state.reallocations[id])){state.reallocations[id]=[];changes.push(`remanejamentos de ${id} criados`)}});if(state.month&&!state.months.some(month=>month.id===state.month)){state.month=state.months[0]?.id||'';changes.push('mês atual corrigido')}ensureUiState();Object.entries(state.ui.columnWidthProfiles||{}).forEach(([userKey,devices])=>Object.entries(devices||{}).forEach(([device,profile])=>Object.entries(profile||{}).forEach(([key,cfg])=>{if(!Array.isArray(cfg?.widths))return;cfg.widths=cfg.widths.map((value,index)=>{const min=index===0&&/tx_(forecast|realized)/i.test(key)?28:50;return Math.max(min,Math.min(700,Number(value)||min))})})));ensureEnvelopeState();const validEnvelopeKeys=new Set();Object.entries(state.subs||{}).forEach(([catId,subs])=>(subs||[]).forEach(sub=>validEnvelopeKeys.add(envelopeSettingKey(catId,sub))));Object.keys(state.envelopes.items||{}).forEach(key=>{if(!validEnvelopeKeys.has(key)){delete state.envelopes.items[key];changes.push(`configuração órfã de envelope removida: ${key}`)}});if(!changes.length)return alert('Nenhuma correção segura era necessária.');save();alert(`${changes.length} correção(ões) segura(s) aplicada(s). O relatório será executado novamente.`);openIntegrityCheck()}
