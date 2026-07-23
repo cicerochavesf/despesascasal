@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão v89 -->
+<!-- Despesas Casal - Controle Financeiro | versão v90 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -1250,6 +1250,43 @@ html.device-mobile .view-despesas .table-view-toolbar{display:none!important}
   .view-receitas .column-width-toolbar,.view-receitas .table-view-toolbar,
   .view-despesas .column-width-toolbar,.view-despesas .table-view-toolbar{display:none!important}
 }
+
+
+/* v90 — R x D mobile em blocos nativos; sem tabela, larguras ou colunas configuráveis */
+.rxd-mobile-blocks{display:grid;grid-template-columns:1fr;gap:10px;width:100%;min-width:0}
+.rxd-mobile-card{
+  --balance-color:#047857;
+  width:100%;min-width:0;overflow:hidden;
+  border:1px solid #DFE5ED;border-top:4px solid var(--balance-color);
+  border-radius:16px;background:linear-gradient(145deg,color-mix(in srgb,var(--balance-color) 5%,#FFFFFF),#FFFFFF 48%);
+  box-shadow:0 6px 18px rgba(15,23,42,.055);padding:12px;
+}
+.rxd-mobile-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0}
+.rxd-mobile-card-head strong{color:#172033;font-size:14px;line-height:1.2;font-weight:950}
+.rxd-mobile-card-head span{flex:0 0 auto;color:var(--balance-color);font-size:13px;line-height:1.15;font-weight:950;white-space:nowrap}
+.rxd-mobile-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}
+.rxd-mobile-field{min-width:0;border:1px solid #E6EBF1;border-radius:11px;background:rgba(255,255,255,.82);padding:8px}
+.rxd-mobile-field small{display:block;color:#7A8496;font-size:7.8px;line-height:1.15;font-weight:900;text-transform:uppercase;letter-spacing:.04em;overflow-wrap:anywhere}
+.rxd-mobile-field strong{display:block;margin-top:4px;color:#344054;font-size:11.5px;line-height:1.2;font-weight:950;white-space:nowrap}
+.rxd-mobile-field.revenue strong{color:#1D4ED8}
+.rxd-mobile-field.expense strong{color:#C1154B}
+.rxd-mobile-field.balance strong,.rxd-mobile-field.accumulated strong{color:#047857}
+.rxd-mobile-field.balance strong.neg,.rxd-mobile-field.accumulated strong.neg{color:#B42318!important}
+html.device-mobile .view-rxd .rxd-detail-table,
+html.device-mobile .view-rxd .table-view-toolbar,
+html.device-mobile .view-rxd .column-width-toolbar{display:none!important}
+html[data-theme="dark"] .rxd-mobile-card{background:linear-gradient(145deg,color-mix(in srgb,var(--balance-color) 8%,#111827),#111827 48%);border-color:#344054}
+html[data-theme="dark"] .rxd-mobile-card-head strong{color:#F8FAFC}
+html[data-theme="dark"] .rxd-mobile-field{background:#172033;border-color:#344054}
+html[data-theme="dark"] .rxd-mobile-field small{color:#B8C1CE}
+html[data-theme="dark"] .rxd-mobile-field strong{color:#E5E7EB}
+html[data-theme="dark"] .rxd-mobile-field.revenue strong{color:#60A5FA}
+html[data-theme="dark"] .rxd-mobile-field.expense strong{color:#FB7185}
+html[data-theme="dark"] .rxd-mobile-field.balance strong,
+html[data-theme="dark"] .rxd-mobile-field.accumulated strong{color:#34D399}
+html[data-theme="dark"] .rxd-mobile-field.balance strong.neg,
+html[data-theme="dark"] .rxd-mobile-field.accumulated strong.neg{color:#F87171!important}
+
 </style></head><body><div id="app"></div><div id="modal" class="modal"></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 const storeKey='despesas-casal-profissional-v12';
 const SUPABASE_URL='https://fpcwnjlneaaarzeevgpl.supabase.co';
@@ -1264,7 +1301,7 @@ const APP_MOBILE_DEVICE=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAg
 document.documentElement.classList.toggle('device-mobile',APP_MOBILE_DEVICE);
 function useMobileFinanceBlocks(){return APP_MOBILE_DEVICE||window.matchMedia('(max-width:900px)').matches}
 let lastFinanceMobileMode=useMobileFinanceBlocks();
-window.addEventListener('resize',()=>{const next=useMobileFinanceBlocks();if(next!==lastFinanceMobileMode){lastFinanceMobileMode=next;if(authUser&&cloudSynced&&['receitas','despesas'].includes(view))render()}});
+window.addEventListener('resize',()=>{const next=useMobileFinanceBlocks();if(next!==lastFinanceMobileMode){lastFinanceMobileMode=next;if(authUser&&cloudSynced&&['receitas','despesas','rxd'].includes(view))render()}});
 
 const BACKUP_PREFIX='estado_backup_';
 const BACKUP_RETENTION_DAYS=14;
@@ -1602,7 +1639,7 @@ function compareControls(){return `<div class="compare">${[['mes','Mês'],['tri'
     if((/^(data|mês|mes)$/.test(first)&&/(lançamento|lancamento|origem|descrição|descricao|despesa)/.test(second))||wrap.classList.contains('tx-forecast-table')||wrap.classList.contains('tx-realized-grouped')){
       wrap.classList.add('freeze-item-two');
     }
-    const safeCardTable=wrap.classList.contains('revenue-table')||wrap.classList.contains('expense-grouped')||wrap.classList.contains('rxd-detail-table')||wrap.classList.contains('manager-table')||wrap.classList.contains('envelope-week-table')||(view==='config'&&headerLabels.length<=5&&!wrap.closest('.column-width-editor'));
+    const safeCardTable=wrap.classList.contains('revenue-table')||wrap.classList.contains('expense-grouped')||wrap.classList.contains('manager-table')||wrap.classList.contains('envelope-week-table')||(view==='config'&&headerLabels.length<=5&&!wrap.closest('.column-width-editor'));
     if(safeCardTable)wrap.classList.add('mobile-card-table');
     requestAnimationFrame(()=>{
       const firstCell=table.querySelector('thead th:first-child')||table.querySelector('tbody tr:first-child td:first-child');
@@ -1838,8 +1875,21 @@ function renderExpenseDetail(list,mobile=useMobileFinanceBlocks()){
   }).join('');
   return `<div class="table-wrap expanded compact expense-enhanced expense-grouped sticky-months"><table><thead><tr><th>Despesa</th>${monthHeaders}<th class="total-head">Total</th></tr></thead><tbody>${desktopRows}</tbody></table></div>`
 }
+function renderRxDMobileBlocks(periodMonthsList,cumulativeByMonth){
+  return `<div class="rxd-mobile-blocks">${periodMonthsList.map(m=>{
+    const revenue=revenueTotal(m),expense=plannedExpenseTotal(m);
+    const rawBalance=revenue-expense;
+    const balance=Math.abs(rawBalance)<.005?0:rawBalance;
+    const accumulated=cumulativeByMonth[m]??balance;
+    const balanceClass=balance<0?'neg':'';
+    const accumulatedClass=accumulated<0?'neg':'';
+    const balanceColor=balance<0?'#B42318':'#047857';
+    return `<article class="rxd-mobile-card" style="--balance-color:${balanceColor}"><div class="rxd-mobile-card-head"><strong>${labelMonth(m)}</strong><span>${fmt(balance)}</span></div><div class="rxd-mobile-grid"><div class="rxd-mobile-field revenue"><small>Receita</small><strong>${fmt(revenue)}</strong></div><div class="rxd-mobile-field expense"><small>Despesa</small><strong>${fmt(expense)}</strong></div><div class="rxd-mobile-field balance"><small>Saldo do mês</small><strong class="${balanceClass}">${fmt(balance)}</strong></div><div class="rxd-mobile-field accumulated"><small>Saldo acumulado</small><strong class="${accumulatedClass}">${fmt(accumulated)}</strong></div></div></article>`
+  }).join('')}</div>`
+}
 function renderRxD(){
   const p=monthYearList(rxdScope);
+  const mobile=useMobileFinanceBlocks();
   const max=Math.max(...p.map(m=>Math.max(revenueTotal(m),plannedExpenseTotal(m),Math.abs(revenueTotal(m)-plannedExpenseTotal(m)))),1);
   const bars=p.map(m=>{
     const r=revenueTotal(m),e=plannedExpenseTotal(m),b=r-e;
@@ -1862,7 +1912,11 @@ function renderRxD(){
     return `<tr><td data-label="Mês" class="month-name">${labelMonth(m)}</td><td data-label="Receita">${fmt(r)}</td><td data-label="Despesa">${fmt(e)}</td><td data-label="Saldo do mês" class="${b>=0?'pos':'neg'}">${fmt(b)}</td><td data-label="Saldo acumulado" class="${accumulatedBalance>=0?'pos':'neg'}">${fmt(accumulatedBalance)}</td></tr>`
   }).join('');
 
-  layout(`<div class="head"><div><h2>R x D</h2><p>Comparativo: receita total x despesa total, com saldo mensal e saldo acumulado.</p></div></div><div class="card"><div class="section-title"><h3>Filtros</h3><span>Selecione o ano ou um mês específico</span></div>${simpleControls('rxd')}</div>${kpis()}<div class="grid cols2" style="margin-top:16px"><div class="card"><div class="section-title"><h3>Comparativo do período</h3><span>Receita, despesa e saldo</span></div><div class="barwrap">${bars}</div><div class="note">Azul = receita, vermelho = despesa, verde = saldo absoluto.</div></div><div class="card"><div class="section-title"><h3>Detalhamento R x D</h3><span>${rxdScope==='ano'?'Ano completo':labelMonth(state.month)}</span></div><div class="table-wrap rxd-detail-table"><table><thead><tr><th>Mês</th><th>Receita</th><th>Despesa</th><th>Saldo do mês</th><th>Saldo acumulado</th></tr></thead><tbody>${rows}</tbody></table></div></div></div>`)
+  const detailContent=mobile
+    ? renderRxDMobileBlocks(p,cumulativeByMonth)
+    : `<div class="table-wrap rxd-detail-table"><table><thead><tr><th>Mês</th><th>Receita</th><th>Despesa</th><th>Saldo do mês</th><th>Saldo acumulado</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+
+  layout(`<div class="head"><div><h2>R x D</h2><p>Comparativo: receita total x despesa total, com saldo mensal e saldo acumulado.</p></div></div><div class="card"><div class="section-title"><h3>Filtros</h3><span>Selecione o ano ou um mês específico</span></div>${simpleControls('rxd')}</div>${kpis()}<div class="grid cols2" style="margin-top:16px"><div class="card"><div class="section-title"><h3>Comparativo do período</h3><span>Receita, despesa e saldo</span></div><div class="barwrap">${bars}</div><div class="note">Azul = receita, vermelho = despesa, verde = saldo absoluto.</div></div><div class="card"><div class="section-title"><h3>Detalhamento R x D</h3><span>${rxdScope==='ano'?'Ano completo':labelMonth(state.month)}</span></div>${detailContent}</div></div>`)
 }
 function ensureEnvelopeState(){
   if(!state.envelopes||typeof state.envelopes!=='object')state.envelopes={};
