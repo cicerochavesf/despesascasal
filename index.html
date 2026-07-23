@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão v92 -->
+<!-- Despesas Casal - Controle Financeiro | versão v93 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -1335,7 +1335,133 @@ html[data-theme="dark"] .tx-statement-icon{background:#172033!important}
   .tx-statement-copy small{font-size:10px}
 }
 
-</style></head><body><div id="app"></div><div id="modal" class="modal"></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
+</style>
+<style id="v93-mobile-header-fix">
+/* v93 — cabeçalho mobile com altura fixa e título sempre visível */
+@media (max-width:760px){
+  .header{
+    height:64px!important;
+    min-height:64px!important;
+    max-height:64px!important;
+    padding:0!important;
+    overflow:visible!important;
+  }
+  .header-in{
+    display:grid!important;
+    grid-template-columns:48px minmax(0,1fr) auto!important;
+    grid-template-rows:64px!important;
+    grid-template-areas:"brand current right"!important;
+    align-items:center!important;
+    width:100%!important;
+    height:64px!important;
+    min-height:64px!important;
+    max-height:64px!important;
+    margin:0!important;
+    padding:8px 12px!important;
+    gap:10px!important;
+    overflow:visible!important;
+  }
+  .brand{
+    grid-area:brand!important;
+    display:flex!important;
+    align-items:center!important;
+    width:48px!important;
+    min-width:48px!important;
+    max-width:48px!important;
+    height:48px!important;
+    min-height:48px!important;
+    margin:0!important;
+    padding:0!important;
+    overflow:hidden!important;
+  }
+  .brand>div:not(.mark){display:none!important;}
+  .mark{
+    width:48px!important;
+    min-width:48px!important;
+    max-width:48px!important;
+    height:48px!important;
+    min-height:48px!important;
+    border-radius:15px!important;
+  }
+  .mobile-view-title{
+    grid-area:current!important;
+    position:static!important;
+    display:flex!important;
+    visibility:visible!important;
+    opacity:1!important;
+    width:auto!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:48px!important;
+    margin:0!important;
+    padding:0!important;
+    flex-direction:column!important;
+    justify-content:center!important;
+    gap:2px!important;
+    overflow:hidden!important;
+  }
+  .mobile-view-title strong{
+    display:block!important;
+    visibility:visible!important;
+    opacity:1!important;
+    margin:0!important;
+    color:#172033!important;
+    font-size:17px!important;
+    font-weight:950!important;
+    line-height:1.12!important;
+    letter-spacing:-.035em!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+  .mobile-view-title small{
+    display:block!important;
+    visibility:visible!important;
+    opacity:1!important;
+    margin:2px 0 0!important;
+    color:#7A8699!important;
+    font-size:9.5px!important;
+    font-weight:800!important;
+    line-height:1.15!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+  .right{
+    grid-area:right!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-end!important;
+    width:auto!important;
+    min-width:0!important;
+    height:48px!important;
+    margin:0!important;
+    gap:6px!important;
+  }
+  .cloud-status{height:40px!important;max-height:40px!important;}
+  .more-button,.account-button{
+    width:40px!important;
+    min-width:40px!important;
+    max-width:40px!important;
+    height:40px!important;
+    min-height:40px!important;
+    max-height:40px!important;
+  }
+  html[data-theme="dark"] .mobile-view-title strong{color:#F8FAFC!important;}
+  html[data-theme="dark"] .mobile-view-title small{color:#B7C0CE!important;}
+}
+@media (max-width:390px){
+  .header-in{grid-template-columns:44px minmax(0,1fr) auto!important;padding-left:9px!important;padding-right:9px!important;gap:7px!important;}
+  .brand,.mark{width:44px!important;min-width:44px!important;max-width:44px!important;height:44px!important;min-height:44px!important;}
+  .mobile-view-title strong{font-size:15px!important;}
+  .mobile-view-title small{font-size:8.5px!important;}
+  .right{gap:4px!important;}
+  .more-button,.account-button{width:38px!important;min-width:38px!important;max-width:38px!important;height:38px!important;min-height:38px!important;max-height:38px!important;}
+}
+</style>
+</head><body><div id="app"></div><div id="modal" class="modal"></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 const storeKey='despesas-casal-profissional-v12';
 const SUPABASE_URL='https://fpcwnjlneaaarzeevgpl.supabase.co';
 const SUPABASE_KEY='sb_publishable_ixXhYpfGixMsJ2iZmg-6eA_hx6rgosC';
@@ -2097,7 +2223,7 @@ function openSubcategory(catId,enc=''){const old=enc?decodeURIComponent(enc):'';
 }
 function downloadJSONFile(content,filename){const blob=new Blob([JSON.stringify(content,null,2)],{type:'application/json'});const a=document.createElement('a');const url=URL.createObjectURL(blob);a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1200)}
 function safeFileStamp(){const d=new Date(),pad=n=>String(n).padStart(2,'0');return `${localDateId(d)}_${pad(d.getHours())}-${pad(d.getMinutes())}`}
-function exportJSON(){if(!cloudSynced)return alert('Aguarde a sincronização da nuvem.');downloadJSONFile({app:'Finanças Cícero & Nilce',version:'v92',exportedAt:new Date().toISOString(),source:'estado-sincronizado-da-nuvem',state:clone(state)},`backup-completo-financas-cicero-nilce-${safeFileStamp()}.json`)}
+function exportJSON(){if(!cloudSynced)return alert('Aguarde a sincronização da nuvem.');downloadJSONFile({app:'Finanças Cícero & Nilce',version:'v93',exportedAt:new Date().toISOString(),source:'estado-sincronizado-da-nuvem',state:clone(state)},`backup-completo-financas-cicero-nilce-${safeFileStamp()}.json`)}
 function importJSON(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=async()=>{try{const parsed=JSON.parse(reader.result),payload=parsed&&parsed.state?parsed.state:parsed,next=merge(clone(baseData),payload);if(!confirm('Importar este backup e substituir o estado atual na nuvem?'))return;setCloudStatus('Importando backup...','loading');lastCloudUpdatedAt=await writeCloudRow(SUPABASE_ROW_ID,next);state=next;cacheCloudState();setCloudStatus('Backup importado','ok');closeModal();render();alert('Backup importado e salvo na nuvem.')}catch(err){console.error(err);setCloudStatus('Erro na importação','error');alert('Arquivo inválido ou não foi possível salvar na nuvem.')}};reader.readAsText(file);e.target.value=''}
 async function resetData(){if(!confirm('Restaurar a base inicial? Isso substituirá também o estado principal da nuvem.'))return;setCloudStatus('Restaurando base...','loading');try{const next=clone(baseData);lastCloudUpdatedAt=await writeCloudRow(SUPABASE_ROW_ID,next);state=next;cacheCloudState();setCloudStatus('Base restaurada','ok');render()}catch(err){setCloudStatus('Erro ao restaurar','error');alert('Não foi possível restaurar a base na nuvem.')}}
 
@@ -2133,7 +2259,7 @@ function integritySubExists(catId,sub,city=''){const values=state.subs?.[catId]|
 function integrityBudgetNaturalKey(month,b){const city=b.city||cityOf(b.sub||'');return [month,b.cat,norm(cleanName(b.sub||'')),city].join('|')}
 function integrityTransactionNaturalKey(month,t){const city=t.city||cityOf(t.sub||'');return [month,t.date,norm(t.description||t.desc||''),Number(t.amount||0).toFixed(2),t.cat,norm(cleanName(t.sub||'')),city].join('|')}
 function runIntegrityChecks(){
-  const report={generatedAt:new Date().toISOString(),checks:[],meta:{version:'v92'}};
+  const report={generatedAt:new Date().toISOString(),checks:[],meta:{version:'v93'}};
   const allowedCities=new Set(['Fortaleza','Brasília','Compartilhado']);
   const requiredTypes={months:'array',categories:'array',subs:'object',revenues:'object',budgets:'object',transactions:'object',reallocations:'object'};
 
@@ -2230,10 +2356,10 @@ function runIntegrityChecks(){
 }
 function integrityStatusLabel(status){return status==='error'?'Erro':status==='warning'?'Aviso':status==='info'?'Recomend.':'OK'}
 function integrityRenderGroup(report,group){const checks=report.checks.filter(check=>check.group===group),counts={error:0,warning:0,info:0,ok:0};checks.forEach(check=>counts[check.status]++);const problemCount=counts.error+counts.warning+counts.info;const badges=['error','warning','info','ok'].filter(status=>counts[status]).map(status=>`<span class="integrity-count ${status}">${counts[status]}</span>`).join('');const rows=checks.map(check=>`<div class="integrity-item ${check.status}" data-integrity-status="${check.status}"><span class="integrity-badge">${integrityStatusLabel(check.status)}</span><div><strong>${escapeHtml(check.title)}</strong><small>${escapeHtml(check.detail||'')}</small></div></div>`).join('');return `<details class="integrity-group" ${problemCount?'open':''}><summary><div class="integrity-group-title"><strong>${escapeHtml(group)}</strong><small>${checks.length} teste(s) · ${problemCount?`${problemCount} ponto(s) para revisar`:'sem ocorrências'}</small></div><div class="integrity-group-counts">${badges}</div></summary><div class="integrity-group-body">${rows}</div></details>`}
-function renderIntegrityReport(report,onlyProblems=false){const s=report.stats,groups=report.groups.map(group=>integrityRenderGroup(report,group)).join('');modal(`<div class="sheet-head"><div><h3>Verificação de integridade</h3><p class="muted" style="margin-top:4px;font-weight:750">Diagnóstico v92 executado em ${new Date(report.generatedAt).toLocaleString('pt-BR')}</p></div><button class="close" onclick="closeModal()">×</button></div><div class="integrity-health"><div class="integrity-score"><strong class="${s.score>=85?'pos':s.score>=65?'warn':'neg'}">${s.score}</strong><span>Saúde geral / 100</span><small>Índice calculado pela gravidade dos testes. Não altera dados automaticamente.</small></div><div class="integrity-summary"><div class="integrity-stat"><span>Testes</span><strong>${s.total}</strong><small>${s.ok} concluídos sem ocorrência</small></div><div class="integrity-stat"><span>Erros</span><strong class="${s.error?'neg':'pos'}">${s.error}</strong><small>Exigem atenção prioritária</small></div><div class="integrity-stat"><span>Avisos</span><strong class="${s.warning?'warn':'pos'}">${s.warning}</strong><small>Podem indicar inconsistência</small></div><div class="integrity-stat"><span>Recomendações</span><strong>${s.info}</strong><small>Melhorias preventivas</small></div></div></div><div class="integrity-toolbar"><span class="integrity-toolbar-copy">${s.fixable?`${s.fixable} grupo(s) possui(em) correção segura disponível.`:'Nenhuma correção automática segura foi identificada.'}</span><div class="integrity-toolbar-actions"><button class="tiny" onclick="toggleIntegrityProblems()">${onlyProblems?'Mostrar todos':'Somente problemas'}</button><button class="tiny" onclick="exportIntegrityReport()">Exportar relatório</button>${s.fixable?'<button class="tiny" onclick="applyIntegritySafeFixes()">Correções seguras</button>':''}</div></div><div class="integrity-list" id="integrityList">${groups||'<div class="integrity-empty">Nenhum teste foi executado.</div>'}</div><div class="actions" style="margin-top:14px"><button class="btn secondary" onclick="openMoreMenu()">Voltar</button><button class="btn" onclick="openIntegrityCheck()">Executar novamente</button></div>`);document.querySelector('#modal .sheet')?.classList.add('integrity-sheet');if(onlyProblems)document.querySelectorAll('#integrityList .integrity-item.ok').forEach(item=>item.style.display='none');document.getElementById('integrityList')?.setAttribute('data-only-problems',onlyProblems?'true':'false')}
+function renderIntegrityReport(report,onlyProblems=false){const s=report.stats,groups=report.groups.map(group=>integrityRenderGroup(report,group)).join('');modal(`<div class="sheet-head"><div><h3>Verificação de integridade</h3><p class="muted" style="margin-top:4px;font-weight:750">Diagnóstico v93 executado em ${new Date(report.generatedAt).toLocaleString('pt-BR')}</p></div><button class="close" onclick="closeModal()">×</button></div><div class="integrity-health"><div class="integrity-score"><strong class="${s.score>=85?'pos':s.score>=65?'warn':'neg'}">${s.score}</strong><span>Saúde geral / 100</span><small>Índice calculado pela gravidade dos testes. Não altera dados automaticamente.</small></div><div class="integrity-summary"><div class="integrity-stat"><span>Testes</span><strong>${s.total}</strong><small>${s.ok} concluídos sem ocorrência</small></div><div class="integrity-stat"><span>Erros</span><strong class="${s.error?'neg':'pos'}">${s.error}</strong><small>Exigem atenção prioritária</small></div><div class="integrity-stat"><span>Avisos</span><strong class="${s.warning?'warn':'pos'}">${s.warning}</strong><small>Podem indicar inconsistência</small></div><div class="integrity-stat"><span>Recomendações</span><strong>${s.info}</strong><small>Melhorias preventivas</small></div></div></div><div class="integrity-toolbar"><span class="integrity-toolbar-copy">${s.fixable?`${s.fixable} grupo(s) possui(em) correção segura disponível.`:'Nenhuma correção automática segura foi identificada.'}</span><div class="integrity-toolbar-actions"><button class="tiny" onclick="toggleIntegrityProblems()">${onlyProblems?'Mostrar todos':'Somente problemas'}</button><button class="tiny" onclick="exportIntegrityReport()">Exportar relatório</button>${s.fixable?'<button class="tiny" onclick="applyIntegritySafeFixes()">Correções seguras</button>':''}</div></div><div class="integrity-list" id="integrityList">${groups||'<div class="integrity-empty">Nenhum teste foi executado.</div>'}</div><div class="actions" style="margin-top:14px"><button class="btn secondary" onclick="openMoreMenu()">Voltar</button><button class="btn" onclick="openIntegrityCheck()">Executar novamente</button></div>`);document.querySelector('#modal .sheet')?.classList.add('integrity-sheet');if(onlyProblems)document.querySelectorAll('#integrityList .integrity-item.ok').forEach(item=>item.style.display='none');document.getElementById('integrityList')?.setAttribute('data-only-problems',onlyProblems?'true':'false')}
 function toggleIntegrityProblems(){if(!integrityLastReport)return;const only=document.getElementById('integrityList')?.getAttribute('data-only-problems')!=='true';renderIntegrityReport(integrityLastReport,only)}
 function exportIntegrityReport(){if(!integrityLastReport)return alert('Execute a verificação primeiro.');downloadTextFile(JSON.stringify(integrityLastReport,null,2),`relatorio-integridade-${safeFileStamp()}.json`,'application/json;charset=utf-8')}
-function applyIntegritySafeFixes(){if(!integrityLastReport)return;if(!confirm('Aplicar somente correções estruturais seguras?\n\nAntes, será baixado um backup completo do estado atual. Nenhuma despesa, receita ou lançamento será excluído.'))return;downloadTextFile(JSON.stringify({exportedAt:new Date().toISOString(),reason:'antes-das-correcoes-de-integridade-v92',state},null,2),`backup-antes-integridade-${safeFileStamp()}.json`,'application/json;charset=utf-8');const changes=[];if(!Array.isArray(state.months)){state.months=[];changes.push('estrutura de meses criada')}const uniqueMonths=new Map();state.months.forEach(month=>{if(month?.id&&!uniqueMonths.has(month.id))uniqueMonths.set(month.id,month)});if(uniqueMonths.size!==state.months.length){state.months=[...uniqueMonths.values()].sort((a,b)=>String(a.id).localeCompare(String(b.id)));changes.push('meses duplicados removidos da lista')}for(const key of ['categories'])if(!Array.isArray(state[key])){state[key]=[];changes.push(`${key} inicializado`)}for(const key of ['subs','revenues','budgets','transactions','reallocations'])if(!state[key]||typeof state[key]!=='object'||Array.isArray(state[key])){state[key]={};changes.push(`${key} inicializado`)};(state.months||[]).forEach(month=>{const id=month.id;if(!state.revenues[id]||typeof state.revenues[id]!=='object'){state.revenues[id]={cicero:0,nilce:0,reserva:0,outrasOrigem:''};changes.push(`receita de ${id} criada`)}if(!Array.isArray(state.budgets[id])){state.budgets[id]=[];changes.push(`despesas de ${id} criadas`)}if(!Array.isArray(state.transactions[id])){state.transactions[id]=[];changes.push(`lançamentos de ${id} criados`)}if(!Array.isArray(state.reallocations[id])){state.reallocations[id]=[];changes.push(`remanejamentos de ${id} criados`)}});if(state.month&&!state.months.some(month=>month.id===state.month)){state.month=state.months[0]?.id||'';changes.push('mês atual corrigido')}ensureUiState();Object.entries(state.ui.columnWidthProfiles||{}).forEach(([userKey,devices])=>Object.entries(devices||{}).forEach(([device,profile])=>Object.entries(profile||{}).forEach(([key,cfg])=>{if(!Array.isArray(cfg?.widths))return;cfg.widths=cfg.widths.map((value,index)=>{const min=index===0&&/tx_(forecast|realized)/i.test(key)?28:50;return Math.max(min,Math.min(700,Number(value)||min))})})));ensureEnvelopeState();const validEnvelopeKeys=new Set();Object.entries(state.subs||{}).forEach(([catId,subs])=>(subs||[]).forEach(sub=>validEnvelopeKeys.add(envelopeSettingKey(catId,sub))));Object.keys(state.envelopes.items||{}).forEach(key=>{if(!validEnvelopeKeys.has(key)){delete state.envelopes.items[key];changes.push(`configuração órfã de envelope removida: ${key}`)}});if(!changes.length)return alert('Nenhuma correção segura era necessária.');save();alert(`${changes.length} correção(ões) segura(s) aplicada(s). O relatório será executado novamente.`);openIntegrityCheck()}
+function applyIntegritySafeFixes(){if(!integrityLastReport)return;if(!confirm('Aplicar somente correções estruturais seguras?\n\nAntes, será baixado um backup completo do estado atual. Nenhuma despesa, receita ou lançamento será excluído.'))return;downloadTextFile(JSON.stringify({exportedAt:new Date().toISOString(),reason:'antes-das-correcoes-de-integridade-v93',state},null,2),`backup-antes-integridade-${safeFileStamp()}.json`,'application/json;charset=utf-8');const changes=[];if(!Array.isArray(state.months)){state.months=[];changes.push('estrutura de meses criada')}const uniqueMonths=new Map();state.months.forEach(month=>{if(month?.id&&!uniqueMonths.has(month.id))uniqueMonths.set(month.id,month)});if(uniqueMonths.size!==state.months.length){state.months=[...uniqueMonths.values()].sort((a,b)=>String(a.id).localeCompare(String(b.id)));changes.push('meses duplicados removidos da lista')}for(const key of ['categories'])if(!Array.isArray(state[key])){state[key]=[];changes.push(`${key} inicializado`)}for(const key of ['subs','revenues','budgets','transactions','reallocations'])if(!state[key]||typeof state[key]!=='object'||Array.isArray(state[key])){state[key]={};changes.push(`${key} inicializado`)};(state.months||[]).forEach(month=>{const id=month.id;if(!state.revenues[id]||typeof state.revenues[id]!=='object'){state.revenues[id]={cicero:0,nilce:0,reserva:0,outrasOrigem:''};changes.push(`receita de ${id} criada`)}if(!Array.isArray(state.budgets[id])){state.budgets[id]=[];changes.push(`despesas de ${id} criadas`)}if(!Array.isArray(state.transactions[id])){state.transactions[id]=[];changes.push(`lançamentos de ${id} criados`)}if(!Array.isArray(state.reallocations[id])){state.reallocations[id]=[];changes.push(`remanejamentos de ${id} criados`)}});if(state.month&&!state.months.some(month=>month.id===state.month)){state.month=state.months[0]?.id||'';changes.push('mês atual corrigido')}ensureUiState();Object.entries(state.ui.columnWidthProfiles||{}).forEach(([userKey,devices])=>Object.entries(devices||{}).forEach(([device,profile])=>Object.entries(profile||{}).forEach(([key,cfg])=>{if(!Array.isArray(cfg?.widths))return;cfg.widths=cfg.widths.map((value,index)=>{const min=index===0&&/tx_(forecast|realized)/i.test(key)?28:50;return Math.max(min,Math.min(700,Number(value)||min))})})));ensureEnvelopeState();const validEnvelopeKeys=new Set();Object.entries(state.subs||{}).forEach(([catId,subs])=>(subs||[]).forEach(sub=>validEnvelopeKeys.add(envelopeSettingKey(catId,sub))));Object.keys(state.envelopes.items||{}).forEach(key=>{if(!validEnvelopeKeys.has(key)){delete state.envelopes.items[key];changes.push(`configuração órfã de envelope removida: ${key}`)}});if(!changes.length)return alert('Nenhuma correção segura era necessária.');save();alert(`${changes.length} correção(ões) segura(s) aplicada(s). O relatório será executado novamente.`);openIntegrityCheck()}
 async function openIntegrityCheck(){closeModal();modal(`<div class="sheet-head"><h3>Verificação de integridade</h3><button class="close" onclick="closeModal()">×</button></div><div class="empty">Executando verificações estruturais, financeiras e de nuvem...</div>`);try{await fetchCloudBackups();cloudBackupError=''}catch(error){cloudBackupError=String(error?.message||error)}const report=runIntegrityChecks();renderIntegrityReport(report,false)}
 function csvCell(v){const text=String(v??'');return /[;"\n\r]/.test(text)?`"${text.replaceAll('"','""')}"`:text}
 function downloadTextFile(content,filename,type='text/csv;charset=utf-8'){const blob=new Blob(['\ufeff',content],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),800)}
@@ -2377,7 +2503,7 @@ function saveTx(e){
 function deleteTx(){if(!confirm('Excluir somente este lançamento/parcela?'))return;for(const m of months()){const arr=state.transactions[m]||[],i=arr.findIndex(x=>x.id===editTxId);if(i>=0)arr.splice(i,1)}selectedRealizedIds.delete(editTxId);save();closeModal();render()}
 function deleteInstallmentSeries(){const found=findTransactionById(editTxId),groupId=found?.tx?.installmentGroupId;if(!groupId)return;if(!confirm(`Excluir todas as ${found.tx.installmentCount} parcelas desta compra?`))return;for(const m of months())state.transactions[m]=(state.transactions[m]||[]).filter(t=>t.installmentGroupId!==groupId);selectedRealizedIds.clear();save();closeModal();render()}
 
-/* v92 — recursos unificados sem sobrescrita de funções */
+/* v93 — cabeçalho mobile restaurado e estabilizado */
 function unifiedUserKey(){return columnWidthUserKey()}
 function unifiedDeviceKey(){return columnWidthDevice()}
 function devicePreferences(create=true){
