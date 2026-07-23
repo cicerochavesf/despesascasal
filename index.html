@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão v77 -->
+<!-- Despesas Casal - Controle Financeiro | versão v81 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -443,62 +443,375 @@ html[data-theme="dark"] .managed-preview-kicker,html[data-theme="dark"] .managed
 
 
 
-/* v77 — densidade única, linhas menores e colunas visíveis confiáveis */
-.shell{--managed-row-height:42px}
-.table-view-toolbar{padding:7px 9px!important;margin-bottom:7px!important;min-height:42px!important}
-.table-view-toolbar-copy{font-size:10px!important}
-.table-view-toolbar-actions{margin-left:auto!important}
-.table-view-toolbar-actions .tiny{min-height:30px!important;padding:6px 9px!important}
-.managed-table thead th[data-col-hidden="false"],
-.managed-table tbody td[data-col-hidden="false"]{display:table-cell!important}
-.managed-table thead th[data-col-hidden="true"],
-.managed-table tbody td[data-col-hidden="true"]{display:none!important}
-.managed-table tbody td{
-  padding-top:5px!important;
-  padding-bottom:5px!important;
-  line-height:1.1!important;
+/* v81 — dimensionamento automático e linhas proporcionais ao conteúdo */
+:root{
+  --table-header-min-height:36px;
+  --table-cell-pad-y:5px;
+  --table-cell-pad-x:8px;
 }
+
+/* Regra única: nenhuma tabela mantém altura fixa herdada de versões anteriores. */
+.table-wrap table tbody tr,
+.managed-table tbody tr,
+.table-wrap table tbody td,
+.managed-table tbody td,
 .managed-table tbody tr[data-expand-ready] > td{
-  height:var(--managed-row-height)!important;
-  min-height:var(--managed-row-height)!important;
-  padding-top:4px!important;
-  padding-bottom:4px!important;
+  height:auto!important;
+  min-height:0!important;
 }
-.shell[data-density="comfortable"] .managed-table td,
-.shell[data-density="compact"] .managed-table td,
-.shell[data-density="comfortable"] .managed-table tbody tr[data-expand-ready] > td,
-.shell[data-density="compact"] .managed-table tbody tr[data-expand-ready] > td{
-  padding-top:4px!important;
-  padding-bottom:4px!important;
+.table-wrap table tbody td,
+.managed-table tbody td,
+.managed-table tbody tr[data-expand-ready] > td{
+  padding:var(--table-cell-pad-y) var(--table-cell-pad-x)!important;
+  line-height:1.18!important;
+  vertical-align:middle!important;
 }
-.expense-item-main{gap:1px!important}
-.expense-item-main strong,
-.managed-table td[data-freeze="true"] .tx-row-main strong{
+
+/* Cabeçalhos podem quebrar sem ultrapassar a célula. */
+.table-wrap table thead th,
+.managed-table thead th{
+  height:auto!important;
+  min-height:var(--table-header-min-height)!important;
+  padding:7px var(--table-cell-pad-x)!important;
+  vertical-align:middle!important;
+  white-space:normal!important;
+  overflow:visible!important;
+  overflow-wrap:anywhere!important;
+  word-break:normal!important;
+  hyphens:auto!important;
+  text-overflow:clip!important;
+  line-height:1.12!important;
+  font-size:9.5px!important;
+  letter-spacing:.04em!important;
+}
+.table-wrap table thead th:not(:first-child),
+.managed-table thead th:not(:first-child){text-align:center!important}
+
+/* Textos crescem verticalmente só quando realmente precisam quebrar. */
+.table-wrap table tbody td,
+.managed-table tbody td{white-space:normal!important;overflow-wrap:anywhere!important;word-break:normal!important}
+.table-wrap .money,
+.table-wrap td.revenue-percent,
+.table-wrap td.revenue-total,
+.table-wrap td.rev-cicero,
+.table-wrap td.rev-nilce,
+.table-wrap td.rev-reserva,
+.table-wrap td.total-col,
+.table-wrap td[data-col="previsto"],
+.table-wrap td[data-col="utilizado"],
+.table-wrap td[data-col="saldo"],
+.table-wrap td[data-col="valor"]{white-space:nowrap!important;overflow-wrap:normal!important}
+
+/* Receitas: largura padrão limitada ao conteúdo, sem colunas artificialmente largas. */
+.revenue-table table{
+  table-layout:auto!important;
+  width:max-content!important;
+  min-width:100%!important;
+  max-width:none!important;
+}
+.revenue-table th,
+.revenue-table td{
+  width:auto!important;
+  max-width:none!important;
+}
+.revenue-table th:nth-child(1),.revenue-table td:nth-child(1){
+  width:82px!important;
+  min-width:82px!important;
+  max-width:82px!important;
+  white-space:nowrap!important;
+}
+.revenue-table th:nth-child(2),.revenue-table td:nth-child(2),
+.revenue-table th:nth-child(4),.revenue-table td:nth-child(4),
+.revenue-table th:nth-child(8),.revenue-table td:nth-child(8){
+  width:1%!important;
+  min-width:112px!important;
+  white-space:nowrap!important;
+  text-align:right!important;
+}
+.revenue-table th:nth-child(6),.revenue-table td:nth-child(6){
+  width:116px!important;
+  min-width:116px!important;
+  max-width:132px!important;
+  text-align:right!important;
+}
+.revenue-table th:nth-child(3),.revenue-table td:nth-child(3),
+.revenue-table th:nth-child(5),.revenue-table td:nth-child(5),
+.revenue-table th:nth-child(7),.revenue-table td:nth-child(7),
+.revenue-table th:nth-child(9),.revenue-table td:nth-child(9){
+  width:58px!important;
+  min-width:58px!important;
+  max-width:64px!important;
+  white-space:nowrap!important;
+  text-align:right!important;
+}
+.revenue-table tbody td{
+  height:auto!important;
+  min-height:0!important;
+  padding:6px 9px!important;
   font-size:10.5px!important;
-  line-height:1.08!important;
+  line-height:1.15!important;
 }
-.expense-meta,
-.managed-table td[data-freeze="true"] .tx-row-main small{
-  margin-top:1px!important;
-  font-size:8px!important;
-  line-height:1.05!important;
+.revenue-table .other-revenue-cell{padding:6px 9px!important}
+.revenue-table .other-revenue-cell-button{
+  width:100%!important;
+  min-width:0!important;
+  padding:0!important;
+  line-height:1.15!important;
+  text-align:right!important;
 }
-.managed-table .row-accent{height:14px!important;width:4px!important;margin-right:5px!important}
+.revenue-table .other-revenue-cell-button strong{line-height:1.15!important;white-space:nowrap!important}
+
+/* Conteúdos compostos não recebem altura fixa. */
+.expense-item-main,.tx-row-main{gap:1px!important;line-height:1.12!important}
+.expense-item-main strong,.tx-row-main strong{line-height:1.15!important}
+.expense-meta,.tx-row-main small{margin-top:1px!important;line-height:1.1!important}
 .managed-table .budget-progress{height:3px!important;margin-top:3px!important}
-.managed-table .budget-progress-caption{margin-top:2px!important;font-size:7px!important;line-height:1!important}
-.managed-table th{height:34px!important;padding-top:6px!important;padding-bottom:6px!important}
+.managed-table .budget-progress-caption{margin-top:2px!important;line-height:1!important}
+
 @media(max-width:760px){
-  .shell{--managed-row-height:38px}
-  .table-view-toolbar{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;gap:7px!important;padding:7px 8px!important}
-  .table-view-toolbar-copy{width:auto!important;justify-content:flex-start!important}
-  .table-view-toolbar-actions{width:auto!important;display:block!important}
-  .table-view-toolbar .tiny{width:auto!important;min-height:30px!important}
-  .managed-table tbody td{padding:4px 6px!important}
-  .managed-table tbody tr[data-expand-ready] > td{height:38px!important;min-height:38px!important;padding-top:3px!important;padding-bottom:3px!important}
-  .expense-item-main strong,.managed-table td[data-freeze="true"] .tx-row-main strong{font-size:10px!important}
-  .expense-meta,.managed-table td[data-freeze="true"] .tx-row-main small{font-size:7.6px!important}
-  .managed-table .budget-progress-caption{display:none!important}
-  .managed-table .budget-progress{margin-top:3px!important}
+  :root{
+    --table-header-min-height:36px;
+    --table-cell-pad-y:4px;
+    --table-cell-pad-x:6px;
+  }
+  .table-wrap table thead th,.managed-table thead th{
+    padding:6px!important;
+    font-size:8.5px!important;
+    line-height:1.08!important;
+    letter-spacing:.03em!important;
+  }
+  .table-wrap table tbody td,.managed-table tbody td,.managed-table tbody tr[data-expand-ready] > td{
+    padding:4px 6px!important;
+    font-size:10px!important;
+    line-height:1.14!important;
+  }
+  .revenue-table table{min-width:548px!important}
+  .revenue-table tbody td{padding:6px 8px!important;font-size:10.5px!important;line-height:1.15!important}
+  .revenue-table th:nth-child(1),.revenue-table td:nth-child(1){width:82px!important;min-width:82px!important;max-width:82px!important}
+  .revenue-table th:nth-child(2),.revenue-table td:nth-child(2),
+  .revenue-table th:nth-child(4),.revenue-table td:nth-child(4),
+  .revenue-table th:nth-child(8),.revenue-table td:nth-child(8){min-width:108px!important}
+  .revenue-table th:nth-child(6),.revenue-table td:nth-child(6){width:112px!important;min-width:112px!important;max-width:120px!important}
+  .revenue-table th:nth-child(3),.revenue-table td:nth-child(3),
+  .revenue-table th:nth-child(5),.revenue-table td:nth-child(5),
+  .revenue-table th:nth-child(7),.revenue-table td:nth-child(7),
+  .revenue-table th:nth-child(9),.revenue-table td:nth-child(9){width:54px!important;min-width:54px!important;max-width:58px!important}
+}
+
+
+/* v80 — correção do acompanhamento e empilhamento real dos KPIs no celular */
+.tx-description-field{grid-column:1/-1!important}
+.tx-description-field textarea{min-height:62px!important;resize:vertical!important;line-height:1.35!important}
+
+.tx-forecast-table table{min-width:760px!important;table-layout:fixed!important}
+.tx-forecast-table th:nth-child(1),.tx-forecast-table td:nth-child(1){width:34px!important;min-width:34px!important;max-width:34px!important;text-align:center!important}
+.tx-forecast-table th:nth-child(2),.tx-forecast-table td:nth-child(2){width:96px!important;min-width:76px!important;max-width:120px!important;text-align:left!important;white-space:normal!important}
+.tx-forecast-table th:nth-child(3),.tx-forecast-table td:nth-child(3){width:240px!important;min-width:120px!important;max-width:360px!important;text-align:left!important;white-space:normal!important}
+.tx-forecast-table th:nth-child(n+4),.tx-forecast-table td:nth-child(n+4){width:118px!important;min-width:88px!important;text-align:right!important;white-space:nowrap!important}
+.tx-forecast-date{font-variant-numeric:tabular-nums!important;font-weight:850!important;color:#475467!important}
+.tx-forecast-expense,.tx-forecast-expense *{white-space:normal!important}
+.tx-forecast-expense .tx-row-main strong,.tx-forecast-expense .tx-wrap-text{display:block!important;min-width:0!important;overflow-wrap:anywhere!important;word-break:normal!important;line-height:1.25!important}
+.tx-forecast-expense .tx-row-main small{white-space:normal!important;overflow-wrap:anywhere!important}
+
+.tx-realized-grouped{overflow-x:auto!important}
+.tx-realized-grouped table{min-width:920px!important;width:100%!important;table-layout:fixed!important}
+.tx-realized-grouped th:nth-child(1),.tx-realized-grouped td:nth-child(1){width:34px!important;min-width:34px!important;max-width:34px!important;text-align:center!important}
+.tx-realized-grouped th:nth-child(2),.tx-realized-grouped td:nth-child(2){width:98px!important;min-width:78px!important;max-width:120px!important;text-align:left!important;white-space:normal!important}
+.tx-realized-grouped th:nth-child(3),.tx-realized-grouped td:nth-child(3){width:250px!important;min-width:120px!important;max-width:420px!important;text-align:left!important;white-space:normal!important}
+.tx-realized-grouped th:nth-child(4),.tx-realized-grouped td:nth-child(4){width:220px!important;min-width:130px!important;max-width:360px!important;text-align:left!important;white-space:normal!important}
+.tx-realized-grouped th:nth-child(5),.tx-realized-grouped td:nth-child(5){width:126px!important;min-width:90px!important;white-space:normal!important}
+.tx-realized-grouped th:nth-child(6),.tx-realized-grouped td:nth-child(6){width:88px!important;min-width:72px!important;text-align:center!important}
+.tx-realized-grouped th:nth-child(7),.tx-realized-grouped td:nth-child(7){width:122px!important;min-width:96px!important;text-align:right!important;white-space:nowrap!important}
+.tx-realized-row td{height:auto!important;min-height:0!important;vertical-align:top!important;padding-top:7px!important;padding-bottom:7px!important}
+.tx-description-cell,.tx-description-cell *{white-space:normal!important}
+.tx-description-text{display:flex!important;align-items:flex-start!important;gap:7px!important;min-width:0!important;line-height:1.28!important}
+.tx-description-text strong{display:block!important;min-width:0!important;overflow-wrap:anywhere!important;word-break:normal!important;font-size:11.5px!important;line-height:1.28!important}
+.tx-description-text .row-accent{flex:0 0 4px!important;margin-top:1px!important}
+.tx-categorization{display:flex!important;flex-direction:column!important;gap:3px!important;min-width:0!important}
+.tx-categorization strong,.tx-categorization small{display:block!important;white-space:normal!important;overflow-wrap:anywhere!important;line-height:1.25!important}
+.tx-categorization small{font-size:9.5px!important;color:#667085!important;font-weight:750!important}
+
+/* A seleção e a data rolam normalmente. A terceira coluna é a única que congela. */
+.tx-forecast-table th:nth-child(1),.tx-forecast-table td:nth-child(1),
+.tx-forecast-table th:nth-child(2),.tx-forecast-table td:nth-child(2),
+.tx-realized-grouped th:nth-child(1),.tx-realized-grouped td:nth-child(1),
+.tx-realized-grouped th:nth-child(2),.tx-realized-grouped td:nth-child(2){position:static!important;left:auto!important;z-index:auto!important;box-shadow:none!important}
+.tx-forecast-table th[data-freeze="true"],.tx-forecast-table td[data-freeze="true"],
+.tx-realized-grouped th[data-freeze="true"],.tx-realized-grouped td[data-freeze="true"]{position:sticky!important;left:0!important;z-index:16!important;background:#FFFFFF!important;box-shadow:9px 0 15px -13px rgba(15,23,42,.82)!important}
+.tx-forecast-table thead th[data-freeze="true"],.tx-realized-grouped thead th[data-freeze="true"]{z-index:24!important;background:#E8EDF5!important}
+.tx-forecast-table tr.category-tinted td[data-freeze="true"],.tx-realized-grouped tr.category-tinted td[data-freeze="true"]{background:linear-gradient(90deg,var(--cat-soft),#FFFFFF 70%)!important}
+html[data-theme="dark"] .tx-forecast-table th[data-freeze="true"],html[data-theme="dark"] .tx-forecast-table td[data-freeze="true"],
+html[data-theme="dark"] .tx-realized-grouped th[data-freeze="true"],html[data-theme="dark"] .tx-realized-grouped td[data-freeze="true"]{background:#111827!important}
+html[data-theme="dark"] .tx-forecast-table thead th[data-freeze="true"],html[data-theme="dark"] .tx-realized-grouped thead th[data-freeze="true"]{background:#253246!important}
+
+/* Divisórias arrastáveis como em uma planilha. */
+th.column-resizable{position:relative!important;padding-right:13px!important}
+.column-resize-handle{position:absolute!important;top:0!important;right:-6px!important;bottom:0!important;width:13px!important;z-index:45!important;cursor:col-resize!important;touch-action:none!important;user-select:none!important}
+.column-resize-handle::after{content:"";position:absolute;top:20%;bottom:20%;left:6px;width:2px;border-radius:999px;background:transparent;transition:background .15s,box-shadow .15s}
+th.column-resizable:hover>.column-resize-handle::after,.column-resize-handle.is-active::after{background:#64748B;box-shadow:0 0 0 3px rgba(100,116,139,.12)}
+html.is-column-resizing,html.is-column-resizing *{cursor:col-resize!important;user-select:none!important}
+.table-wrap.is-column-resizing{outline:2px solid rgba(53,89,224,.25)!important;outline-offset:-2px!important}
+
+@media(max-width:760px){
+  .kpi-strip,.tx-summary,.executive-kpis{grid-template-columns:1fr!important;display:grid!important;overflow:visible!important}
+  .kpi-strip .metric,.tx-summary-card{width:100%!important;min-width:0!important}
+  .tx-forecast-table table{min-width:700px!important}
+  .tx-realized-grouped{overflow-x:auto!important}
+  .tx-realized-grouped table{min-width:820px!important;width:820px!important;table-layout:fixed!important}
+  .tx-realized-grouped th,.tx-realized-grouped td,.tx-forecast-table th,.tx-forecast-table td{font-size:10px!important;padding-top:6px!important;padding-bottom:6px!important}
+  .tx-description-text strong{font-size:10.5px!important}
+  .tx-categorization small{font-size:8.7px!important}
+  .tx-forecast-table th[data-freeze="true"],.tx-forecast-table td[data-freeze="true"],
+  .tx-realized-grouped th[data-freeze="true"],.tx-realized-grouped td[data-freeze="true"]{min-width:120px!important;max-width:420px!important}
+  .column-resize-handle{width:17px!important;right:-8px!important}
+  .column-resize-handle::after{left:8px!important}
+}
+
+
+
+/* v80 — regras finais autoritativas para Acompanhamento e KPIs mobile */
+.tx-forecast-table table{
+  min-width:600px!important;
+  width:100%!important;
+  table-layout:fixed!important;
+}
+.tx-forecast-table th:nth-child(1),
+.tx-forecast-table td:nth-child(1){
+  width:34px!important;
+  min-width:34px!important;
+  max-width:34px!important;
+  padding-left:4px!important;
+  padding-right:4px!important;
+  text-align:center!important;
+  position:static!important;
+  left:auto!important;
+  z-index:auto!important;
+  box-shadow:none!important;
+}
+.tx-forecast-table th:nth-child(2),
+.tx-forecast-table td:nth-child(2){
+  width:250px!important;
+  min-width:160px!important;
+  max-width:380px!important;
+  text-align:left!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+}
+.tx-forecast-table th:nth-child(n+3),
+.tx-forecast-table td:nth-child(n+3){
+  width:105px!important;
+  min-width:86px!important;
+  text-align:right!important;
+  white-space:nowrap!important;
+}
+.tx-forecast-table th[data-freeze="true"],
+.tx-forecast-table td[data-freeze="true"]{
+  position:sticky!important;
+  left:0!important;
+  z-index:66!important;
+  background:#FFFFFF!important;
+  border-right:2px solid #CBD5E1!important;
+  box-shadow:8px 0 13px -11px rgba(15,23,42,.72)!important;
+}
+.tx-forecast-table thead th[data-freeze="true"]{
+  z-index:86!important;
+  background:#E8EDF5!important;
+}
+.tx-forecast-table tr.category-tinted td[data-freeze="true"]{
+  background:linear-gradient(90deg,var(--cat-soft),#FFFFFF 72%)!important;
+}
+html[data-theme="dark"] .tx-forecast-table th[data-freeze="true"],
+html[data-theme="dark"] .tx-forecast-table td[data-freeze="true"]{
+  background:#111827!important;
+  border-right-color:#475569!important;
+}
+html[data-theme="dark"] .tx-forecast-table thead th[data-freeze="true"]{
+  background:#253246!important;
+}
+
+@media(max-width:760px){
+  .kpi-strip,
+  .tx-summary,
+  .executive-kpis{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    grid-auto-flow:row!important;
+    grid-auto-columns:minmax(0,1fr)!important;
+    grid-template-rows:none!important;
+    width:100%!important;
+    max-width:100%!important;
+    overflow:visible!important;
+    gap:10px!important;
+    scroll-snap-type:none!important;
+  }
+  .kpi-strip > *,
+  .tx-summary > *,
+  .executive-kpis > *{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    min-height:108px!important;
+    height:auto!important;
+    aspect-ratio:auto!important;
+    writing-mode:horizontal-tb!important;
+    transform:none!important;
+    flex:none!important;
+    scroll-snap-align:none!important;
+  }
+  .kpi-strip .metric,
+  .tx-summary .metric{
+    display:block!important;
+    padding:15px 16px!important;
+  }
+  .kpi-strip .label,
+  .kpi-strip .value,
+  .kpi-strip .subtxt,
+  .tx-summary .label,
+  .tx-summary .value,
+  .tx-summary .subtxt{
+    width:auto!important;
+    min-width:0!important;
+    writing-mode:horizontal-tb!important;
+    text-orientation:mixed!important;
+    transform:none!important;
+    word-break:normal!important;
+    overflow-wrap:normal!important;
+  }
+  .kpi-strip .label,
+  .tx-summary .label{
+    display:block!important;
+    font-size:11px!important;
+    line-height:1.15!important;
+    white-space:normal!important;
+  }
+  .kpi-strip .value,
+  .tx-summary .value{
+    display:block!important;
+    margin-top:9px!important;
+    font-size:26px!important;
+    line-height:1.05!important;
+    white-space:nowrap!important;
+  }
+  .kpi-strip .subtxt,
+  .tx-summary .subtxt{
+    display:block!important;
+    margin-top:7px!important;
+    font-size:11px!important;
+    line-height:1.2!important;
+    white-space:normal!important;
+  }
+  .tx-forecast-table table{min-width:560px!important;}
+  .tx-forecast-table th:nth-child(2),
+  .tx-forecast-table td:nth-child(2){
+    width:clamp(168px,48vw,210px)!important;
+    min-width:clamp(168px,48vw,210px)!important;
+    max-width:clamp(168px,48vw,210px)!important;
+  }
+  .tx-forecast-table th:nth-child(n+3),
+  .tx-forecast-table td:nth-child(n+3){
+    width:90px!important;
+    min-width:90px!important;
+  }
 }
 
 </style></head><body><div id="app"></div><div id="modal" class="modal"></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
@@ -1033,8 +1346,8 @@ function renderLancamentos(){
   selectedForecastKeys=new Set([...selectedForecastKeys].filter(key=>visibleForecastKeys.has(key)));
   const forecastSelected=budgets.filter(b=>selectedForecastKeys.has(forecastSelectionKey(b))),forecastTotals=forecastSelected.reduce((a,b)=>({planned:a.planned+Number(b.planned||0),used:a.used+Number(b.used||0),balance:a.balance+Number(b.balance||0)}),{planned:0,used:0,balance:0}),allForecastSelected=budgets.length>0&&budgets.every(b=>selectedForecastKeys.has(forecastSelectionKey(b)));
   const plannedTotal=allBudgets.reduce((s,b)=>s+Number(b.planned||0),0),usedTotal=allBudgets.reduce((s,b)=>s+b.used,0),openTotal=plannedTotal-usedTotal,withBalance=allBudgets.filter(b=>b.balance>.005).length,noBalance=allBudgets.filter(b=>Math.abs(b.balance)<=.005).length,negativeCount=allBudgets.filter(b=>b.balance<-.005).length;
-  const forecastRows=budgets.map(b=>{const key=forecastSelectionKey(b),encoded=encodeURIComponent(key),selected=selectedForecastKeys.has(key),progress=budgetUsagePercent(b.planned,b.used),overspent=b.balance<-.005;return `<tr data-forecast-key="${escapeHtml(key)}" data-planned="${Number(b.planned||0)}" data-used="${Number(b.used||0)}" data-balance="${Number(b.balance||0)}" class="clickable category-tinted tx-clean-row tx-forecast-row ${selected?'is-selected':''}" style="--cat-color:${cat(b.cat).color};--cat-soft:${cat(b.cat).color}10" onclick="${txScope==='mes'?`openBudgetItem('${b.id}','${state.month}')`:`alert('Para editar, filtre por mês selecionado.')`}"><td class="tx-select-cell" onclick="event.stopPropagation()"><input class="tx-select-box" type="checkbox" data-forecast-key="${escapeHtml(key)}" ${selected?'checked':''} onchange="toggleForecastSelection('${encoded}',this.checked)"></td><td data-label="Despesa"><div class="tx-row-main"><strong><span class="row-accent" style="background:${cat(b.cat).color}"></span>${b.name}</strong><small><span class="category-text" style="color:${cat(b.cat).color}">${cat(b.cat).name}</span> · ${shortLabel(b.owner)} / ${shortLabel(b.city)}</small><div class="budget-progress ${overspent?'is-over':''}"><i style="width:${overspent?100:progress}%"></i></div><div class="budget-progress-caption"><span>${progress.toLocaleString('pt-BR',{maximumFractionDigits:0})}% utilizado</span><b>${overspent?'Acima do previsto':'Dentro do previsto'}</b></div></div></td><td data-label="Previsto">${fmt(b.planned)}</td><td data-label="Utilizado">${fmt(b.used)}</td><td data-label="Saldo"><div class="tx-balance-cell"><b class="${b.balance<0?'neg':Math.abs(b.balance)<=.005?'muted':'pos'}">${fmt(b.balance)}</b></div></td></tr>`}).join('');
-  const rows=txList.map(t=>{const ownerClass=t.responsible==='Cícero'?'cicero':t.responsible==='Nilce'?'nilce':'compartilhado',subLabel=cleanName(t.sub||'Sem subcategoria'),selected=selectedRealizedIds.has(t.id);return `<tr class="clickable category-tinted tx-clean-row tx-realized-row ${selected?'is-selected':''}" style="--cat-color:${cat(t.cat).color};--cat-soft:${cat(t.cat).color}10" onclick="openTx('${t.id}')"><td class="tx-select-cell" onclick="event.stopPropagation()"><input class="tx-select-box" type="checkbox" data-tx-id="${escapeHtml(t.id)}" ${selected?'checked':''} onchange="toggleRealizedSelection('${t.id}',this.checked)"></td><td data-label="Lançamento"><div class="tx-row-main tx-realized-main"><strong><span class="row-accent" style="background:${cat(t.cat).color}"></span>${cleanName(t.description)}</strong><small><span class="category-text" style="color:${cat(t.cat).color}">${cat(t.cat).name}</span> · ${subLabel} · <span class="owner-inline ${ownerClass}">${shortLabel(t.responsible)}</span> / ${shortLabel(t.city)}</small></div></td><td data-label="Data" class="tx-date">${fmtDate(t.date)}</td><td data-label="Pagamento" class="tx-payment">${cardOf(t.card)}</td><td data-label="Parcela">${installmentBadge(t)}</td><td data-label="Valor" class="tx-amount">${fmt(t.amount)}</td></tr>`}).join('');
+  const forecastRows=budgets.map(b=>{const key=forecastSelectionKey(b),encoded=encodeURIComponent(key),selected=selectedForecastKeys.has(key),progress=budgetUsagePercent(b.planned,b.used),overspent=b.balance<-.005;return `<tr data-forecast-key="${escapeHtml(key)}" data-planned="${Number(b.planned||0)}" data-used="${Number(b.used||0)}" data-balance="${Number(b.balance||0)}" class="clickable category-tinted tx-clean-row tx-forecast-row ${selected?'is-selected':''}" style="--cat-color:${cat(b.cat).color};--cat-soft:${cat(b.cat).color}10" onclick="${txScope==='mes'?`openBudgetItem('${b.id}','${state.month}')`:`alert('Para editar, filtre por mês selecionado.')`}"><td class="tx-select-cell" onclick="event.stopPropagation()"><input class="tx-select-box" type="checkbox" data-forecast-key="${escapeHtml(key)}" ${selected?'checked':''} onchange="toggleForecastSelection('${encoded}',this.checked)"></td><td data-label="Despesa" class="tx-forecast-expense"><div class="tx-row-main"><strong><span class="row-accent" style="background:${cat(b.cat).color}"></span><span class="tx-wrap-text">${escapeHtml(b.name)}</span></strong><small><span class="category-text" style="color:${cat(b.cat).color}">${escapeHtml(cat(b.cat).name)}</span> · ${escapeHtml(shortLabel(b.owner))} / ${escapeHtml(shortLabel(b.city))}</small><div class="budget-progress ${overspent?'is-over':''}"><i style="width:${overspent?100:progress}%"></i></div><div class="budget-progress-caption"><span>${progress.toLocaleString('pt-BR',{maximumFractionDigits:0})}% utilizado</span><b>${overspent?'Acima do previsto':'Dentro do previsto'}</b></div></div></td><td data-label="Previsto">${fmt(b.planned)}</td><td data-label="Utilizado">${fmt(b.used)}</td><td data-label="Saldo"><div class="tx-balance-cell"><b class="${b.balance<0?'neg':Math.abs(b.balance)<=.005?'muted':'pos'}">${fmt(b.balance)}</b></div></td></tr>`}).join('');
+  const rows=txList.map(t=>{const ownerClass=t.responsible==='Cícero'?'cicero':t.responsible==='Nilce'?'nilce':'compartilhado',subLabel=cleanName(t.sub||'Sem subcategoria'),selected=selectedRealizedIds.has(t.id),description=String(t.description||t.desc||'Sem descrição').trim()||'Sem descrição';return `<tr class="clickable category-tinted tx-clean-row tx-realized-row ${selected?'is-selected':''}" style="--cat-color:${cat(t.cat).color};--cat-soft:${cat(t.cat).color}10" onclick="openTx('${t.id}')"><td class="tx-select-cell" onclick="event.stopPropagation()"><input class="tx-select-box" type="checkbox" data-tx-id="${escapeHtml(t.id)}" ${selected?'checked':''} onchange="toggleRealizedSelection('${t.id}',this.checked)"></td><td data-label="Data" class="tx-date">${fmtDate(t.date)}</td><td data-label="Descrição" class="tx-description-cell"><div class="tx-description-text"><span class="row-accent" style="background:${cat(t.cat).color}"></span><strong>${escapeHtml(description)}</strong></div></td><td data-label="Categorização" class="tx-categorization-cell"><div class="tx-categorization"><strong class="category-text" style="color:${cat(t.cat).color}">${escapeHtml(cat(t.cat).name)}</strong><small>${escapeHtml(subLabel)} · <span class="owner-inline ${ownerClass}">${escapeHtml(shortLabel(t.responsible))}</span> / ${escapeHtml(shortLabel(t.city))}</small></div></td><td data-label="Pagamento" class="tx-payment">${escapeHtml(cardOf(t.card))}</td><td data-label="Parcela">${installmentBadge(t)}</td><td data-label="Valor" class="tx-amount">${fmt(t.amount)}</td></tr>`}).join('');
   const envelopes=envelopeSummaries(state.month),envelopePlanned=envelopes.reduce((s,e)=>s+e.planned,0),envelopeUsed=envelopes.reduce((s,e)=>s+e.used,0),envelopeBalance=envelopePlanned-envelopeUsed,envelopeCurrent=envelopes.reduce((s,e)=>s+e.currentAvailable,0);
   const envelopeRows=envelopes.map(env=>`<tr class="clickable category-tinted tx-clean-row" style="--cat-color:${cat(env.cat).color};--cat-soft:${cat(env.cat).color}10" onclick="openEnvelopeDetail('${encodeURIComponent(env.key)}')"><td><div class="envelope-main"><strong><span class="row-accent" style="background:${cat(env.cat).color}"></span>${env.name}</strong><small>${cat(env.cat).name} · ${shortLabel(env.owner)} / ${shortLabel(env.city)}</small></div></td><td>${fmt(env.planned)}</td><td>${fmt(env.used)}</td><td class="${env.balance<-.005?'neg':env.balance>.005?'pos':'muted'}">${fmt(env.balance)}</td><td class="${env.currentAvailable<-.005?'neg':env.currentAvailable>.005?'pos':'muted'}">${fmt(env.currentAvailable)}</td><td><span class="envelope-status ${env.status}">${envelopeStatusLabel(env.status)}</span></td></tr>`).join('');
   const remMonths=txScope==='ano'?selectedMonths:[state.month],remEntries=remMonths.flatMap(m=>(state.reallocations[m]||[]).map(r=>({m,r})));
@@ -1042,7 +1355,7 @@ function renderLancamentos(){
   const tabs=`<div class="tx-tabs"><button class="${txPanel==='acompanhamento'?'active':''}" onclick="setTxPanel('acompanhamento')"><span>Acompanhamento</span><b>${budgets.length}</b></button><button class="${txPanel==='realizados'?'active':''}" onclick="setTxPanel('realizados')"><span>Realizados</span><b>${txList.length}</b></button><button class="${txPanel==='envelopes'?'active':''}" onclick="setTxPanel('envelopes')"><span>Envelopes</span><b>${envelopes.length}</b></button><button class="${txPanel==='remanejamentos'?'active':''}" onclick="setTxPanel('remanejamentos')"><span>Remanejamentos</span><b>${remEntries.length}</b></button></div>`;
   let panel='';
   if(txPanel==='acompanhamento')panel=`<div class="card tx-panel"><div class="section-title"><div><h3>Acompanhamento — ${periodTitle}</h3><span>${budgets.length} item(ns) · ${withBalance} em aberto · ${noBalance} zerado(s)${negativeCount?' · '+negativeCount+' negativo(s)':''}</span></div></div><div class="mobile-list-toolbar">${mobileFilterTrigger('forecast','Filtros')}<button type="button" onclick="toggleAllForecastSelection(true)">Selecionar todos</button></div>${txForecastFilterControls()}<div class="table-wrap tx-forecast-table"><table><thead><tr><th class="tx-select-cell"><input id="forecastSelectAll" class="tx-select-box" type="checkbox" ${allForecastSelected?'checked':''} onchange="toggleAllForecastSelection(this.checked)" title="Selecionar todas as despesas exibidas"></th><th>Despesa</th><th>Previsto</th><th>Utilizado</th><th>Saldo</th></tr></thead><tbody>${forecastRows||'<tr><td colspan="5">Nenhuma previsão encontrada para os filtros atuais.</td></tr>'}</tbody></table></div></div>${selectionTray('forecast',forecastSelected.length,forecastTotals)}`;
-  if(txPanel==='realizados')panel=`<div class="card tx-panel"><div class="section-title"><div><h3>Lançamentos realizados — ${periodTitle}</h3><span>${txList.length} item(ns) · marque as linhas para somar em tempo real.</span></div></div><div class="mobile-list-toolbar">${mobileFilterTrigger('realized','Filtros')}<button type="button" onclick="toggleAllRealizedSelection(true)">Selecionar todos</button></div>${txRealizedFilterControls()}<div class="table-wrap tx-realized-table tx-realized-grouped"><table><thead><tr><th class="tx-select-cell"><input id="txSelectAll" class="tx-select-box" type="checkbox" ${allVisibleSelected?'checked':''} onchange="toggleAllRealizedSelection(this.checked)" title="Selecionar todos os lançamentos exibidos"></th><th>Lançamento</th><th>Data</th><th>Pagamento</th><th>Parcela</th><th>Valor</th></tr></thead><tbody>${rows||'<tr><td colspan="6">Sem lançamentos realizados para os filtros atuais.</td></tr>'}</tbody></table></div></div>${selectionTray('realized',selectedRealizedIds.size,{total:selectedTotal})}`;
+  if(txPanel==='realizados')panel=`<div class="card tx-panel"><div class="section-title"><div><h3>Lançamentos realizados — ${periodTitle}</h3><span>${txList.length} item(ns) · marque as linhas para somar em tempo real.</span></div></div><div class="mobile-list-toolbar">${mobileFilterTrigger('realized','Filtros')}<button type="button" onclick="toggleAllRealizedSelection(true)">Selecionar todos</button></div>${txRealizedFilterControls()}<div class="table-wrap tx-realized-table tx-realized-grouped"><table><thead><tr><th class="tx-select-cell"><input id="txSelectAll" class="tx-select-box" type="checkbox" ${allVisibleSelected?'checked':''} onchange="toggleAllRealizedSelection(this.checked)" title="Selecionar todos os lançamentos exibidos"></th><th>Data</th><th>Descrição</th><th>Categorização</th><th>Pagamento</th><th>Parcela</th><th>Valor</th></tr></thead><tbody>${rows||'<tr><td colspan="7">Sem lançamentos realizados para os filtros atuais.</td></tr>'}</tbody></table></div></div>${selectionTray('realized',selectedRealizedIds.size,{total:selectedTotal})}`;
   if(txPanel==='envelopes')panel=`<div class="card tx-panel"><div class="section-title"><div><h3>Envelopes semanais — ${labelMonth(state.month)}</h3><span>Domingo a sábado · clique em um envelope para ver as semanas.</span></div></div><div class="envelope-summary"><div class="envelope-stat"><span>Previsto nos envelopes</span><strong>${fmt(envelopePlanned)}</strong><small>${envelopes.length} envelope(s) ativo(s)</small></div><div class="envelope-stat"><span>Utilizado no período</span><strong class="neg">${fmt(envelopeUsed)}</strong><small>${envelopeDateLabel(envelopePeriod(state.month).start)} a ${envelopeDateLabel(addDateDays(envelopePeriod(state.month).endExclusive,-1))}</small></div><div class="envelope-stat"><span>Saldo dos envelopes</span><strong class="${envelopeBalance<0?'neg':'pos'}">${fmt(envelopeBalance)}</strong><small>Previsto menos realizado</small></div><div class="envelope-stat"><span>Disponível na semana</span><strong class="${envelopeCurrent<0?'neg':'pos'}">${fmt(envelopeCurrent)}</strong><small>Após redistribuições encerradas</small></div></div><div class="note" style="margin-bottom:12px">Lançamentos são vinculados automaticamente pela subcategoria, cidade e data. Sobras e excessos só são redistribuídos quando a semana termina.</div><div class="table-wrap tx-envelope-table"><table><thead><tr><th>Envelope</th><th>Previsto mês</th><th>Utilizado</th><th>Saldo mês</th><th>Semana disponível</th><th>Situação</th></tr></thead><tbody>${envelopeRows||'<tr><td colspan="6">Nenhuma subcategoria com envelope semanal possui previsão neste mês.</td></tr>'}</tbody></table></div></div>`;
   if(txPanel==='remanejamentos')panel=`<div class="card tx-panel"><div class="section-title"><div><h3>Remanejamentos — ${periodTitle}</h3><span>Transfira saldo somente dentro do acompanhamento. O orçamento original não será alterado.</span></div><button class="btn secondary" onclick="openRealloc()">Novo remanejamento</button></div><div class="table-wrap tx-rem-table"><table><thead><tr>${txScope==='ano'?'<th>Mês</th>':''}<th>Origem</th><th>Destino</th><th>Valor</th><th>Observação</th><th></th></tr></thead><tbody>${rem||'<tr><td colspan="6">Sem remanejamentos.</td></tr>'}</tbody></table></div></div>`;
   layout(`<div class="head tx-head"><div><h2>Lançamentos</h2><p>Acompanhe o planejado, o realizado e os saldos sem perder espaço na tela.</p></div><div class="actions"><button class="btn" onclick="openTx()">Novo lançamento</button></div></div><div class="card tx-filter-card tx-period-card"><div class="section-title"><h3>Período</h3><span>Selecione o ano ou mês</span></div>${txPeriodControls()}</div><div class="tx-summary grid cols3 kpi-strip"><div class="card metric income planned"><div class="label">Previsto</div><div class="value">${fmt(plannedTotal)}</div><div class="subtxt">Orçamento do período</div></div><div class="card metric expense used"><div class="label">Utilizado</div><div class="value">${fmt(usedTotal)}</div><div class="subtxt">Lançamentos realizados</div></div><div class="card metric balance"><div class="label">Saldo</div><div class="value">${fmt(openTotal)}</div><div class="subtxt">Disponível no acompanhamento</div></div></div>${tabs}${panel}`)
@@ -1149,7 +1462,7 @@ function integritySubExists(catId,sub){const values=state.subs?.[catId]||[],full
 function integrityBudgetNaturalKey(month,b){const city=b.city||cityOf(b.sub||'');return [month,b.cat,norm(cleanName(b.sub||'')),city].join('|')}
 function integrityTransactionNaturalKey(month,t){const city=t.city||cityOf(t.sub||'');return [month,t.date,norm(t.description||t.desc||''),Number(t.amount||0).toFixed(2),t.cat,norm(cleanName(t.sub||'')),city].join('|')}
 function runIntegrityChecks(){
-  const report={generatedAt:new Date().toISOString(),checks:[],meta:{version:'v74'}};
+  const report={generatedAt:new Date().toISOString(),checks:[],meta:{version:'v80'}};
   const allowedCities=new Set(['Fortaleza','Brasília','Compartilhado']);
   const requiredTypes={months:'array',categories:'array',subs:'object',revenues:'object',budgets:'object',transactions:'object',reallocations:'object'};
 
@@ -1243,10 +1556,10 @@ function runIntegrityChecks(){
 }
 function integrityStatusLabel(status){return status==='error'?'Erro':status==='warning'?'Aviso':status==='info'?'Recomend.':'OK'}
 function integrityRenderGroup(report,group){const checks=report.checks.filter(check=>check.group===group),counts={error:0,warning:0,info:0,ok:0};checks.forEach(check=>counts[check.status]++);const problemCount=counts.error+counts.warning+counts.info;const badges=['error','warning','info','ok'].filter(status=>counts[status]).map(status=>`<span class="integrity-count ${status}">${counts[status]}</span>`).join('');const rows=checks.map(check=>`<div class="integrity-item ${check.status}" data-integrity-status="${check.status}"><span class="integrity-badge">${integrityStatusLabel(check.status)}</span><div><strong>${escapeHtml(check.title)}</strong><small>${escapeHtml(check.detail||'')}</small></div></div>`).join('');return `<details class="integrity-group" ${problemCount?'open':''}><summary><div class="integrity-group-title"><strong>${escapeHtml(group)}</strong><small>${checks.length} teste(s) · ${problemCount?`${problemCount} ponto(s) para revisar`:'sem ocorrências'}</small></div><div class="integrity-group-counts">${badges}</div></summary><div class="integrity-group-body">${rows}</div></details>`}
-function renderIntegrityReport(report,onlyProblems=false){const s=report.stats,groups=report.groups.map(group=>integrityRenderGroup(report,group)).join('');modal(`<div class="sheet-head"><div><h3>Verificação de integridade</h3><p class="muted" style="margin-top:4px;font-weight:750">Diagnóstico v77 executado em ${new Date(report.generatedAt).toLocaleString('pt-BR')}</p></div><button class="close" onclick="closeModal()">×</button></div><div class="integrity-health"><div class="integrity-score"><strong class="${s.score>=85?'pos':s.score>=65?'warn':'neg'}">${s.score}</strong><span>Saúde geral / 100</span><small>Índice calculado pela gravidade dos testes. Não altera dados automaticamente.</small></div><div class="integrity-summary"><div class="integrity-stat"><span>Testes</span><strong>${s.total}</strong><small>${s.ok} concluídos sem ocorrência</small></div><div class="integrity-stat"><span>Erros</span><strong class="${s.error?'neg':'pos'}">${s.error}</strong><small>Exigem atenção prioritária</small></div><div class="integrity-stat"><span>Avisos</span><strong class="${s.warning?'warn':'pos'}">${s.warning}</strong><small>Podem indicar inconsistência</small></div><div class="integrity-stat"><span>Recomendações</span><strong>${s.info}</strong><small>Melhorias preventivas</small></div></div></div><div class="integrity-toolbar"><span class="integrity-toolbar-copy">${s.fixable?`${s.fixable} grupo(s) possui(em) correção segura disponível.`:'Nenhuma correção automática segura foi identificada.'}</span><div class="integrity-toolbar-actions"><button class="tiny" onclick="toggleIntegrityProblems()">${onlyProblems?'Mostrar todos':'Somente problemas'}</button><button class="tiny" onclick="exportIntegrityReport()">Exportar relatório</button>${s.fixable?'<button class="tiny" onclick="applyIntegritySafeFixes()">Correções seguras</button>':''}</div></div><div class="integrity-list" id="integrityList">${groups||'<div class="integrity-empty">Nenhum teste foi executado.</div>'}</div><div class="actions" style="margin-top:14px"><button class="btn secondary" onclick="openMoreMenu()">Voltar</button><button class="btn" onclick="openIntegrityCheck()">Executar novamente</button></div>`);document.querySelector('#modal .sheet')?.classList.add('integrity-sheet');if(onlyProblems)document.querySelectorAll('#integrityList .integrity-item.ok').forEach(item=>item.style.display='none');document.getElementById('integrityList')?.setAttribute('data-only-problems',onlyProblems?'true':'false')}
+function renderIntegrityReport(report,onlyProblems=false){const s=report.stats,groups=report.groups.map(group=>integrityRenderGroup(report,group)).join('');modal(`<div class="sheet-head"><div><h3>Verificação de integridade</h3><p class="muted" style="margin-top:4px;font-weight:750">Diagnóstico v80 executado em ${new Date(report.generatedAt).toLocaleString('pt-BR')}</p></div><button class="close" onclick="closeModal()">×</button></div><div class="integrity-health"><div class="integrity-score"><strong class="${s.score>=85?'pos':s.score>=65?'warn':'neg'}">${s.score}</strong><span>Saúde geral / 100</span><small>Índice calculado pela gravidade dos testes. Não altera dados automaticamente.</small></div><div class="integrity-summary"><div class="integrity-stat"><span>Testes</span><strong>${s.total}</strong><small>${s.ok} concluídos sem ocorrência</small></div><div class="integrity-stat"><span>Erros</span><strong class="${s.error?'neg':'pos'}">${s.error}</strong><small>Exigem atenção prioritária</small></div><div class="integrity-stat"><span>Avisos</span><strong class="${s.warning?'warn':'pos'}">${s.warning}</strong><small>Podem indicar inconsistência</small></div><div class="integrity-stat"><span>Recomendações</span><strong>${s.info}</strong><small>Melhorias preventivas</small></div></div></div><div class="integrity-toolbar"><span class="integrity-toolbar-copy">${s.fixable?`${s.fixable} grupo(s) possui(em) correção segura disponível.`:'Nenhuma correção automática segura foi identificada.'}</span><div class="integrity-toolbar-actions"><button class="tiny" onclick="toggleIntegrityProblems()">${onlyProblems?'Mostrar todos':'Somente problemas'}</button><button class="tiny" onclick="exportIntegrityReport()">Exportar relatório</button>${s.fixable?'<button class="tiny" onclick="applyIntegritySafeFixes()">Correções seguras</button>':''}</div></div><div class="integrity-list" id="integrityList">${groups||'<div class="integrity-empty">Nenhum teste foi executado.</div>'}</div><div class="actions" style="margin-top:14px"><button class="btn secondary" onclick="openMoreMenu()">Voltar</button><button class="btn" onclick="openIntegrityCheck()">Executar novamente</button></div>`);document.querySelector('#modal .sheet')?.classList.add('integrity-sheet');if(onlyProblems)document.querySelectorAll('#integrityList .integrity-item.ok').forEach(item=>item.style.display='none');document.getElementById('integrityList')?.setAttribute('data-only-problems',onlyProblems?'true':'false')}
 function toggleIntegrityProblems(){if(!integrityLastReport)return;const only=document.getElementById('integrityList')?.getAttribute('data-only-problems')!=='true';renderIntegrityReport(integrityLastReport,only)}
 function exportIntegrityReport(){if(!integrityLastReport)return alert('Execute a verificação primeiro.');downloadTextFile(JSON.stringify(integrityLastReport,null,2),`relatorio-integridade-${safeFileStamp()}.json`,'application/json;charset=utf-8')}
-function applyIntegritySafeFixes(){if(!integrityLastReport)return;if(!confirm('Aplicar somente correções estruturais seguras?\n\nAntes, será baixado um backup completo do estado atual. Nenhuma despesa, receita ou lançamento será excluído.'))return;downloadTextFile(JSON.stringify({exportedAt:new Date().toISOString(),reason:'antes-das-correcoes-de-integridade-v74',state},null,2),`backup-antes-integridade-${safeFileStamp()}.json`,'application/json;charset=utf-8');const changes=[];if(!Array.isArray(state.months)){state.months=[];changes.push('estrutura de meses criada')}const uniqueMonths=new Map();state.months.forEach(month=>{if(month?.id&&!uniqueMonths.has(month.id))uniqueMonths.set(month.id,month)});if(uniqueMonths.size!==state.months.length){state.months=[...uniqueMonths.values()].sort((a,b)=>String(a.id).localeCompare(String(b.id)));changes.push('meses duplicados removidos da lista')}for(const key of ['categories'])if(!Array.isArray(state[key])){state[key]=[];changes.push(`${key} inicializado`)}for(const key of ['subs','revenues','budgets','transactions','reallocations'])if(!state[key]||typeof state[key]!=='object'||Array.isArray(state[key])){state[key]={};changes.push(`${key} inicializado`)};(state.months||[]).forEach(month=>{const id=month.id;if(!state.revenues[id]||typeof state.revenues[id]!=='object'){state.revenues[id]={cicero:0,nilce:0,reserva:0,outrasOrigem:''};changes.push(`receita de ${id} criada`)}if(!Array.isArray(state.budgets[id])){state.budgets[id]=[];changes.push(`despesas de ${id} criadas`)}if(!Array.isArray(state.transactions[id])){state.transactions[id]=[];changes.push(`lançamentos de ${id} criados`)}if(!Array.isArray(state.reallocations[id])){state.reallocations[id]=[];changes.push(`remanejamentos de ${id} criados`)}});if(state.month&&!state.months.some(month=>month.id===state.month)){state.month=state.months[0]?.id||'';changes.push('mês atual corrigido')}ensureUiState();Object.entries(state.ui.columnWidthProfiles||{}).forEach(([userKey,devices])=>Object.entries(devices||{}).forEach(([device,profile])=>Object.entries(profile||{}).forEach(([key,cfg])=>{if(!Array.isArray(cfg?.widths))return;cfg.widths=cfg.widths.map((value,index)=>{const min=index===0&&/tx_(forecast|realized)/i.test(key)?28:50;return Math.max(min,Math.min(700,Number(value)||min))})})));ensureEnvelopeState();const validEnvelopeKeys=new Set();Object.entries(state.subs||{}).forEach(([catId,subs])=>(subs||[]).forEach(sub=>validEnvelopeKeys.add(envelopeSettingKey(catId,sub))));Object.keys(state.envelopes.items||{}).forEach(key=>{if(!validEnvelopeKeys.has(key)){delete state.envelopes.items[key];changes.push(`configuração órfã de envelope removida: ${key}`)}});if(!changes.length)return alert('Nenhuma correção segura era necessária.');save();alert(`${changes.length} correção(ões) segura(s) aplicada(s). O relatório será executado novamente.`);openIntegrityCheck()}
+function applyIntegritySafeFixes(){if(!integrityLastReport)return;if(!confirm('Aplicar somente correções estruturais seguras?\n\nAntes, será baixado um backup completo do estado atual. Nenhuma despesa, receita ou lançamento será excluído.'))return;downloadTextFile(JSON.stringify({exportedAt:new Date().toISOString(),reason:'antes-das-correcoes-de-integridade-v80',state},null,2),`backup-antes-integridade-${safeFileStamp()}.json`,'application/json;charset=utf-8');const changes=[];if(!Array.isArray(state.months)){state.months=[];changes.push('estrutura de meses criada')}const uniqueMonths=new Map();state.months.forEach(month=>{if(month?.id&&!uniqueMonths.has(month.id))uniqueMonths.set(month.id,month)});if(uniqueMonths.size!==state.months.length){state.months=[...uniqueMonths.values()].sort((a,b)=>String(a.id).localeCompare(String(b.id)));changes.push('meses duplicados removidos da lista')}for(const key of ['categories'])if(!Array.isArray(state[key])){state[key]=[];changes.push(`${key} inicializado`)}for(const key of ['subs','revenues','budgets','transactions','reallocations'])if(!state[key]||typeof state[key]!=='object'||Array.isArray(state[key])){state[key]={};changes.push(`${key} inicializado`)};(state.months||[]).forEach(month=>{const id=month.id;if(!state.revenues[id]||typeof state.revenues[id]!=='object'){state.revenues[id]={cicero:0,nilce:0,reserva:0,outrasOrigem:''};changes.push(`receita de ${id} criada`)}if(!Array.isArray(state.budgets[id])){state.budgets[id]=[];changes.push(`despesas de ${id} criadas`)}if(!Array.isArray(state.transactions[id])){state.transactions[id]=[];changes.push(`lançamentos de ${id} criados`)}if(!Array.isArray(state.reallocations[id])){state.reallocations[id]=[];changes.push(`remanejamentos de ${id} criados`)}});if(state.month&&!state.months.some(month=>month.id===state.month)){state.month=state.months[0]?.id||'';changes.push('mês atual corrigido')}ensureUiState();Object.entries(state.ui.columnWidthProfiles||{}).forEach(([userKey,devices])=>Object.entries(devices||{}).forEach(([device,profile])=>Object.entries(profile||{}).forEach(([key,cfg])=>{if(!Array.isArray(cfg?.widths))return;cfg.widths=cfg.widths.map((value,index)=>{const min=index===0&&/tx_(forecast|realized)/i.test(key)?28:50;return Math.max(min,Math.min(700,Number(value)||min))})})));ensureEnvelopeState();const validEnvelopeKeys=new Set();Object.entries(state.subs||{}).forEach(([catId,subs])=>(subs||[]).forEach(sub=>validEnvelopeKeys.add(envelopeSettingKey(catId,sub))));Object.keys(state.envelopes.items||{}).forEach(key=>{if(!validEnvelopeKeys.has(key)){delete state.envelopes.items[key];changes.push(`configuração órfã de envelope removida: ${key}`)}});if(!changes.length)return alert('Nenhuma correção segura era necessária.');save();alert(`${changes.length} correção(ões) segura(s) aplicada(s). O relatório será executado novamente.`);openIntegrityCheck()}
 async function openIntegrityCheck(){closeModal();modal(`<div class="sheet-head"><h3>Verificação de integridade</h3><button class="close" onclick="closeModal()">×</button></div><div class="empty">Executando verificações estruturais, financeiras e de nuvem...</div>`);try{await fetchCloudBackups();cloudBackupError=''}catch(error){cloudBackupError=String(error?.message||error)}const report=runIntegrityChecks();renderIntegrityReport(report,false)}
 function csvCell(v){const text=String(v??'');return /[;"\n\r]/.test(text)?`"${text.replaceAll('"','""')}"`:text}
 function downloadTextFile(content,filename,type='text/csv;charset=utf-8'){const blob=new Blob(['\ufeff',content],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),800)}
@@ -1357,7 +1670,7 @@ function openTx(id){
   const cards=ensureCardsState(),hasCards=cards.length>0||cardOf(t.card)!=='-',series=Number(t.installmentCount||0)>1&&t.installmentGroupId;
   const cardField=hasCards?`<select name="card" id="txCardSelect" onchange="updateTxCardFields()">${cardOptions(t.card)}</select>`:`<select name="card" id="txCardSelect" disabled><option value="">Nenhum cartão cadastrado</option></select><button class="tiny" type="button" style="margin-top:7px" onclick="closeModal();setView('config')">Cadastrar em Configurações</button>`;
   const paymentBox=!id?`<div id="txCardPaymentBox" class="card-payment-box" ${cardOf(t.card)==='-'?'hidden':''}><div class="card-payment-grid"><div class="field"><label>Forma no cartão</label><select name="paymentMode" id="txPaymentMode" onchange="updateTxCardFields()"><option value="avista">À vista</option><option value="parcelado">Parcelado</option></select></div><div class="field" id="txInstallmentCountWrap" hidden><label>Quantidade de parcelas</label><input id="txInstallmentCount" type="number" name="installmentCount" min="2" max="48" value="2" oninput="updateTxCardFields()"></div></div><div id="txInstallmentPreview" class="installment-preview">Pagamento à vista no mês do lançamento.</div><div class="card-payment-note">No parcelamento, informe no campo Valor o total da compra. O app divide os centavos e cria uma parcela em cada mês seguinte.</div></div>`:`<div class="card-payment-box"><strong>${series?`Parcela ${t.installmentNumber}/${t.installmentCount}`:'Pagamento deste lançamento'}</strong><div class="card-payment-note">${series?'Este item pertence a uma série automática. A edição altera somente esta parcela.':'Parcelamento automático é definido ao criar um novo lançamento.'}</div></div>`;
-  modal(`<div class="sheet-head"><h3>${id?'Editar':'Novo'} lançamento</h3><button class="close" onclick="closeModal()">×</button></div><form class="form" onsubmit="saveTx(event)"><div class="form two"><div class="field"><label>Data</label><input type="date" name="date" value="${t.date||''}" required></div><div class="field"><label>Descrição</label><input name="description" value="${escapeHtml(t.description||'')}" required></div><div class="field"><label>Categoria</label><select name="cat" onchange="refreshSub(this.value)">${catOptions(t.cat)}</select></div><div class="field"><label>Subcategoria</label><select name="sub" id="subselect" data-clean-labels="true">${txSubOptions(t.cat,t.sub)}</select></div><div class="field"><label>Responsável</label><select name="responsible"><option ${t.responsible==='Cícero'?'selected':''}>Cícero</option><option ${t.responsible==='Nilce'?'selected':''}>Nilce</option><option ${t.responsible==='Compartilhado'?'selected':''}>Compartilhado</option></select></div><div class="field"><label>Cidade</label><select name="city"><option ${t.city==='Fortaleza'?'selected':''}>Fortaleza</option><option ${t.city==='Brasília'?'selected':''}>Brasília</option><option ${t.city==='Compartilhado'?'selected':''}>Compartilhado</option></select></div><div class="field"><label>Cartão</label>${cardField}</div><div class="field"><label>${!id?'Valor total da compra':'Valor da parcela/lançamento'}</label><input type="number" step="0.01" name="amount" value="${t.amount||0}" oninput="updateTxCardFields()" required></div>${paymentBox}</div><div class="actions">${id?'<button class="btn danger" type="button" onclick="deleteTx()">Excluir parcela/lançamento</button>':''}${series?'<button class="btn danger" type="button" onclick="deleteInstallmentSeries()">Excluir série completa</button>':''}<button class="btn secondary" type="button" onclick="closeModal()">Cancelar</button><button class="btn">Salvar</button></div></form>`);requestAnimationFrame(updateTxCardFields);
+  modal(`<div class="sheet-head"><h3>${id?'Editar':'Novo'} lançamento</h3><button class="close" onclick="closeModal()">×</button></div><form class="form" onsubmit="saveTx(event)"><div class="form two"><div class="field"><label>Data</label><input type="date" name="date" value="${t.date||''}" required></div><div class="field tx-description-field"><label>Descrição do lançamento</label><textarea name="description" rows="2" required>${escapeHtml(t.description||'')}</textarea></div><div class="field"><label>Categoria</label><select name="cat" onchange="refreshSub(this.value)">${catOptions(t.cat)}</select></div><div class="field"><label>Subcategoria</label><select name="sub" id="subselect" data-clean-labels="true">${txSubOptions(t.cat,t.sub)}</select></div><div class="field"><label>Responsável</label><select name="responsible"><option ${t.responsible==='Cícero'?'selected':''}>Cícero</option><option ${t.responsible==='Nilce'?'selected':''}>Nilce</option><option ${t.responsible==='Compartilhado'?'selected':''}>Compartilhado</option></select></div><div class="field"><label>Cidade</label><select name="city"><option ${t.city==='Fortaleza'?'selected':''}>Fortaleza</option><option ${t.city==='Brasília'?'selected':''}>Brasília</option><option ${t.city==='Compartilhado'?'selected':''}>Compartilhado</option></select></div><div class="field"><label>Cartão</label>${cardField}</div><div class="field"><label>${!id?'Valor total da compra':'Valor da parcela/lançamento'}</label><input type="number" step="0.01" name="amount" value="${t.amount||0}" oninput="updateTxCardFields()" required></div>${paymentBox}</div><div class="actions">${id?'<button class="btn danger" type="button" onclick="deleteTx()">Excluir parcela/lançamento</button>':''}${series?'<button class="btn danger" type="button" onclick="deleteInstallmentSeries()">Excluir série completa</button>':''}<button class="btn secondary" type="button" onclick="closeModal()">Cancelar</button><button class="btn">Salvar</button></div></form>`);requestAnimationFrame(updateTxCardFields);
 }
 function saveTx(e){
   e.preventDefault();const f=new FormData(e.target),date=f.get('date')||state.month+'-01',m=date.slice(0,7),catId=f.get('cat'),sub=f.get('sub'),city=f.get('city'),amount=+f.get('amount')||0,card=cardOf(f.get('card'));
@@ -1456,14 +1769,14 @@ const managedTableDefinitions=[
   {selector:'.summary-colorized',key:'despesas_resumo',locked:[0],freeze:0},
   {selector:'.expense-grouped',key:'despesas_expandidas',locked:[0],freeze:0},
   {selector:'.rxd-detail-table',key:'rxd_detalhe',labels:['Mês','Receita','Despesa','Saldo do mês','Saldo acumulado'],locked:[0],freeze:0},
-  {selector:'.tx-forecast-table',key:'lancamentos_acompanhamento',labels:['Seleção','Despesa','Previsto','Utilizado','Saldo'],locked:[0,1],freeze:1},
-  {selector:'.tx-realized-grouped',key:'lancamentos_realizados',labels:['Seleção','Lançamento','Data','Pagamento','Parcela','Valor'],locked:[0,1],freeze:1,defaultMobileHidden:[3,4]},
+  {selector:'.tx-forecast-table',key:'lancamentos_acompanhamento',labels:['Seleção','Despesa','Previsto','Utilizado','Saldo'],locked:[0,1],freeze:1,schema:'v80-forecast'},
+  {selector:'.tx-realized-grouped',key:'lancamentos_realizados',labels:['Seleção','Data','Descrição','Categorização','Pagamento','Parcela','Valor'],locked:[0,2],freeze:2,defaultMobileHidden:[4,5],schema:'v79-realized'},
   {selector:'.tx-envelope-table',key:'lancamentos_envelopes',locked:[0],freeze:0},
   {selector:'.tx-rem-table',key:'lancamentos_remanejamentos',locked:[0],freeze:0},
   {selector:'.manager-table',key:'gestao_detalhe',labels:['Mês','Receita','Orçamento','Realizado','Saldo projetado','Desp./Rec.','Execução'],locked:[0],freeze:0,defaultMobileHidden:[5,6]}
 ];
 function tableColumnSlug(text,index){const base=norm(text||'coluna').replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'')||'coluna';return `${index}_${base}`}
-function tablePreferences(key,definition){const prefs=devicePreferences(),tables=prefs.tables||(prefs.tables={});if(!tables[key])tables[key]={hidden:unifiedDeviceKey()==='mobile'?(definition.defaultMobileHidden||[]).map(String):[]};if(!Array.isArray(tables[key].hidden))tables[key].hidden=[];return tables[key]}
+function tablePreferences(key,definition){const prefs=devicePreferences(),tables=prefs.tables||(prefs.tables={}),schema=definition?.schema||'';if(!tables[key]||(schema&&tables[key].schema!==schema))tables[key]={hidden:unifiedDeviceKey()==='mobile'?(definition.defaultMobileHidden||[]).map(String):[],schema};if(!Array.isArray(tables[key].hidden))tables[key].hidden=[];if(schema)tables[key].schema=schema;return tables[key]}
 function managedDefinitionFor(wrapper){return managedTableDefinitions.find(def=>wrapper.matches(def.selector))}
 function tableToolbarHTML(key,visible,total){return `<div class="table-view-toolbar" data-for-table="${key}"><div class="table-view-toolbar-copy"><span><b>${visible}</b> de ${total} colunas visíveis</span></div><div class="table-view-toolbar-actions"><button class="tiny" type="button" onclick="openTableColumns('${key}')">Escolher colunas</button></div></div>`}
 function decorateManagedTables(root=document){
@@ -1558,9 +1871,92 @@ const modalV74=modal,closeModalV74=closeModal;
 modal=function(html){modalV74(html);const modalEl=document.getElementById('modal'),panel=/Editar|Novo lançamento|Nova despesa|Receitas de|Filtros|Colunas da tabela|Filtros salvos|Ações rápidas|Detalhamento mensal|Orçado versus realizado/i.test(String(html));modalEl.classList.toggle('side-panel-mode',panel)};
 closeModal=function(){const modalEl=document.getElementById('modal');modalEl.classList.remove('side-panel-mode');closeModalV74()};
 
-function postRenderV75(){applyDensityPreference();decorateManagedTables(document.getElementById('app'));enhanceExpandableRows(document.getElementById('app'));enhanceStrategyInteractivity(document.getElementById('app'));initPeriodSwipe(document.getElementById('app'))}
+function postRenderV75(){applyDensityPreference();decorateManagedTables(document.getElementById('app'));enhanceExpandableRows(document.getElementById('app'));enhanceStrategyInteractivity(document.getElementById('app'));initPeriodSwipe(document.getElementById('app'));installColumnDragResizers(document.getElementById('app'))}
 const layoutV74=layout;
 layout=function(content){layoutV74(content);requestAnimationFrame(()=>requestAnimationFrame(postRenderV75))};
+
+
+// v80 — redimensionamento de colunas por arraste e respeito à orientação do aparelho.
+let activeColumnDrag=null;
+function installColumnDragResizers(root=document){
+  if(!root)return;
+  root.querySelectorAll('table[data-column-key]').forEach(table=>{
+    const headers=[...table.querySelectorAll('thead tr:first-child > th')];
+    headers.forEach((th,index)=>{
+      th.classList.add('column-resizable');
+      let handle=th.querySelector(':scope > .column-resize-handle');
+      if(!handle){
+        handle=document.createElement('span');
+        handle.className='column-resize-handle';
+        handle.setAttribute('role','separator');
+        handle.setAttribute('aria-orientation','vertical');
+        handle.title='Arraste para ajustar a largura desta coluna';
+        th.appendChild(handle);
+      }
+      if(handle.dataset.bound==='1')return;
+      handle.dataset.bound='1';
+      handle.addEventListener('pointerdown',event=>startColumnDrag(event,table,index,handle));
+    });
+  });
+}
+function startColumnDrag(event,table,index,handle){
+  if(event.button!==undefined&&event.button!==0)return;
+  event.preventDefault();event.stopPropagation();
+  ensureUiState();
+  const headers=[...table.querySelectorAll('thead tr:first-child > th')],key=table.dataset.columnKey;
+  if(!key||!headers[index])return;
+  const saved=columnWidthProfile()[key]?.widths;
+  const widths=Array.isArray(saved)&&saved.length===headers.length?saved.slice():currentColumnWidths(table);
+  const min=columnMinimumWidth(table,index,headers[index].textContent||''),startWidth=Math.max(min,Number(widths[index])||headers[index].getBoundingClientRect().width||100);
+  activeColumnDrag={table,index,key,headers,widths,startX:event.clientX,startWidth,min,handle,wrap:table.closest('.table-wrap')};
+  handle.classList.add('is-active');activeColumnDrag.wrap?.classList.add('is-column-resizing');document.documentElement.classList.add('is-column-resizing');
+  try{handle.setPointerCapture(event.pointerId)}catch{}
+  window.addEventListener('pointermove',moveColumnDrag,{passive:false});
+  window.addEventListener('pointerup',finishColumnDrag,{once:true});
+  window.addEventListener('pointercancel',finishColumnDrag,{once:true});
+}
+function moveColumnDrag(event){
+  const drag=activeColumnDrag;if(!drag)return;
+  event.preventDefault();
+  drag.widths[drag.index]=Math.max(drag.min,Math.min(700,Math.round(drag.startWidth+(event.clientX-drag.startX))));
+  applyColumnWidthsToTable(drag.table,drag.widths);
+}
+function finishColumnDrag(){
+  const drag=activeColumnDrag;if(!drag)return;
+  window.removeEventListener('pointermove',moveColumnDrag);
+  drag.handle?.classList.remove('is-active');drag.wrap?.classList.remove('is-column-resizing');document.documentElement.classList.remove('is-column-resizing');
+  columnWidthProfile()[drag.key]={title:drag.table.dataset.columnTitle||'Tabela',headers:drag.headers.map(th=>(th.textContent||'').trim()),widths:drag.widths.slice(),updatedAt:new Date().toISOString(),method:'drag'};
+  save();activeColumnDrag=null;
+}
+function respectDeviceOrientation(){
+  try{const result=window.screen?.orientation?.unlock?.();if(result&&typeof result.catch==='function')result.catch(()=>{})}catch{}
+}
+window.addEventListener('pageshow',respectDeviceOrientation);
+window.addEventListener('focus',respectDeviceOrientation);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)respectDeviceOrientation()});
+respectDeviceOrientation();
+
+
+// v81 — remove uma única vez larguras antigas de Receitas que impediam o ajuste automático.
+function migrateRevenueAutoSizingV81(){
+  const prefs=devicePreferences();
+  if(prefs.revenueAutoSizingV81)return;
+  const profile=columnWidthProfile();
+  let changed=false;
+  Object.keys(profile).forEach(key=>{
+    if(/^receitas_resumo_do_periodo_/i.test(key)){
+      delete profile[key];
+      changed=true;
+    }
+  });
+  prefs.revenueAutoSizingV81=true;
+  if(changed&&cloudSynced){cacheCloudState();scheduleCloudSave()}
+}
+const layoutV80BeforeRevenueAutoSizing=layout;
+layout=function(content){
+  migrateRevenueAutoSizingV81();
+  layoutV80BeforeRevenueAutoSizing(content);
+};
 
 
 applySavedTheme();
