@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.6 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.7 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -2408,6 +2408,53 @@ html[data-theme="dark"][data-ui="v23"] .v26-movement-search .view-search-input{b
   html[data-ui="v23"] .view-lancamentos.v26-movements-compact .tx-panel{padding:10px!important;}
 }
 
+
+/* =========================================================
+   V2.7 — MOVIMENTAÇÕES SEM VAZIOS + AÇÃO GLOBAL FLUTUANTE
+   ========================================================= */
+html[data-ui="v23"] .view-lancamentos.v27-movements-compact{padding-top:12px!important;}
+html[data-ui="v23"] .view-lancamentos.v27-movements-compact>.tx-tabs{margin:0 0 8px!important;}
+html[data-ui="v23"] .view-lancamentos .v27-movement-toolbar{margin:0 0 8px!important;padding:10px 12px!important;border-radius:14px!important;}
+html[data-ui="v23"] .v27-movement-toolbar-grid{display:grid;grid-template-columns:minmax(116px,140px) minmax(160px,210px) minmax(280px,1fr);gap:10px;align-items:end;width:100%;}
+html[data-ui="v23"] .v27-movement-field{min-width:0;}
+html[data-ui="v23"] .v27-movement-field>label{display:block;margin:0 0 5px;color:var(--v23-muted);font-size:8.5px;font-weight:900;letter-spacing:.065em;text-transform:uppercase;}
+html[data-ui="v23"] .v27-movement-field .select{width:100%!important;min-width:0!important;min-height:40px!important;}
+html[data-ui="v23"] .v27-movement-search .view-search-field{width:100%;}
+html[data-ui="v23"] .v27-movement-search .view-search-input{width:100%;min-height:40px!important;background:#fff!important;}
+html[data-ui="v23"] .view-lancamentos.v27-movements-compact>.tx-summary{margin:0 0 8px!important;gap:8px!important;}
+html[data-ui="v23"] .view-lancamentos.v27-movements-compact .tx-summary .metric{min-height:80px!important;padding:10px 13px!important;}
+html[data-ui="v23"] .view-lancamentos.v27-movements-compact .tx-panel{padding:12px!important;}
+html[data-ui="v23"] .view-lancamentos.v27-movements-compact .tx-panel>.section-title{margin-bottom:7px!important;}
+html[data-ui="v23"] .view-lancamentos.v27-movements-compact .tx-dedicated-filters{margin:0 0 7px!important;padding:8px 9px!important;}
+html[data-theme="dark"][data-ui="v23"] .v27-movement-search .view-search-input{background:#111827!important;}
+
+html[data-ui="v23"] .v27-global-fab{position:fixed;right:28px;bottom:26px;z-index:109;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:0 18px;border:0;border-radius:999px;background:var(--v23-brand);color:#fff;font-size:11.5px;font-weight:900;box-shadow:0 16px 38px rgba(79,70,229,.3);transition:transform .16s ease,box-shadow .16s ease,opacity .16s ease;}
+html[data-ui="v23"] .v27-global-fab:hover{transform:translateY(-2px);box-shadow:0 20px 44px rgba(79,70,229,.36);}
+html[data-ui="v23"] .v27-global-fab:active{transform:translateY(0) scale(.98);}
+html[data-ui="v23"] .v27-global-fab svg{width:18px;height:18px;flex:0 0 18px;}
+html[data-theme="dark"][data-ui="v23"] .v27-global-fab{background:#6366f1;color:#fff;}
+body:has(.modal.open) .v27-global-fab{opacity:0;pointer-events:none;}
+
+@media (max-width:1000px){
+  html[data-ui="v23"] .v27-movement-toolbar-grid{grid-template-columns:minmax(104px,126px) minmax(145px,180px) minmax(230px,1fr);gap:8px;}
+}
+@media (max-width:760px){
+  html[data-ui="v23"] .view-lancamentos.v27-movements-compact{padding-top:8px!important;}
+  html[data-ui="v23"] .view-lancamentos .v27-movement-toolbar{padding:8px!important;margin-bottom:7px!important;}
+  html[data-ui="v23"] .v27-movement-toolbar-grid{grid-template-columns:1fr 1fr;gap:6px;}
+  html[data-ui="v23"] .v27-movement-search{grid-column:1/-1;}
+  html[data-ui="v23"] .v27-movement-field>label{margin-bottom:3px;font-size:8px;}
+  html[data-ui="v23"] .v27-movement-field .select,
+  html[data-ui="v23"] .v27-movement-search .view-search-input{min-height:39px!important;}
+  html[data-ui="v23"] .view-lancamentos.v27-movements-compact>.tx-summary{margin-bottom:7px!important;}
+  html[data-ui="v23"] .view-lancamentos.v27-movements-compact .tx-panel{padding:9px!important;}
+  html[data-ui="v23"] .v27-global-fab{right:15px;bottom:calc(89px + env(safe-area-inset-bottom));min-height:50px;padding:0 16px;font-size:11px;}
+  html.has-selection-tray[data-ui="v23"] .v27-global-fab{bottom:calc(194px + env(safe-area-inset-bottom));}
+}
+@media (max-width:390px){
+  html[data-ui="v23"] .v27-global-fab{right:11px;padding:0 14px;}
+}
+
 </style></head><body><div id="app"></div><div id="modal" class="modal"></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 const storeKey='despesas-casal-profissional-v12';
 const SUPABASE_URL='https://fpcwnjlneaaarzeevgpl.supabase.co';
@@ -2891,9 +2938,7 @@ function viewSearchCandidates(root){return [...root.querySelectorAll('tbody > tr
 function applyViewSearch(scope=view){const root=document.querySelector(`.main.view-${scope}`);if(!root)return;const raw=String(viewSearchTerms[scope]||'').trim(),tokens=norm(raw).split(/\s+/).filter(Boolean),candidates=viewSearchCandidates(root);let matched=0,total=0;candidates.forEach(el=>{const placeholder=el.matches('tr')&&el.querySelector('td[colspan]')&&/^(sem|nenhum|nenhuma|não há|nao ha)/i.test((el.innerText||'').trim());if(placeholder){el.classList.toggle('search-hidden',tokens.length>0);return}total++;const hay=searchCandidateText(el),ok=!tokens.length||tokens.every(token=>hay.includes(token));el.classList.toggle('search-hidden',!ok);if(ok)matched++});const clear=document.getElementById('viewSearchClear');if(clear)clear.style.display=raw?'grid':'none';const empty=document.getElementById('viewSearchEmpty');if(empty)empty.classList.toggle('show',!!raw&&matched===0);const visibleChecks=[...root.querySelectorAll('.tx-realized-grouped tbody tr:not(.search-hidden) input[data-tx-id]')];const all=document.getElementById('txSelectAll');if(all){const checked=visibleChecks.filter(x=>x.checked).length;all.checked=visibleChecks.length>0&&checked===visibleChecks.length;all.indeterminate=checked>0&&checked<visibleChecks.length}root.querySelectorAll('.tx-statement-group').forEach(group=>{const items=[...group.querySelectorAll('.tx-statement-item')];group.classList.toggle('search-hidden',items.length>0&&items.every(item=>item.classList.contains('search-hidden')))});const forecastChecks=[...root.querySelectorAll('.tx-forecast-card:not(.search-hidden) input[data-forecast-key]')],forecastAll=document.getElementById('forecastSelectAll');if(forecastAll){const checked=forecastChecks.filter(x=>x.checked).length;forecastAll.checked=forecastChecks.length>0&&checked===forecastChecks.length;forecastAll.indeterminate=checked>0&&checked<forecastChecks.length}}
 
 function mobileQuickAction(){
-  const actions={estrategia:{label:'Novo lançamento',action:"view='lancamentos';txScope='mes';txPanel='realizados';openTx()"},receitas:{label:'Cadastrar receitas',action:'openFillRevenues()'},despesas:{label:'Nova despesa',action:'openNewBudgetLine()'},lancamentos:{label:'Novo lançamento',action:'openTx()'}};
-  const item=actions[view];if(!item)return '';
-  return `<button class="mobile-fab" type="button" onclick="${item.action}" aria-label="${item.label}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg><span>${item.label}</span></button>`
+  return `<button class="v27-global-fab" type="button" onclick="openTx()" aria-label="Novo lançamento"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg><span>Novo lançamento</span></button>`
 }
 function mobileCardKey(card,index){const title=card.querySelector('.section-title h3')?.textContent?.trim()||`secao-${index}`;return `${view}|${title}`}
 function toggleMobileCard(button){const card=button.closest('.mobile-collapsible'),key=card?.dataset.collapseKey;if(!card||!key)return;card.classList.toggle('is-collapsed');if(card.classList.contains('is-collapsed'))mobileCollapsedCards.add(key);else mobileCollapsedCards.delete(key);button.setAttribute('aria-expanded',String(!card.classList.contains('is-collapsed')))}
@@ -3257,7 +3302,7 @@ function openSubcategory(catId,enc=''){const old=enc?decodeURIComponent(enc):'';
 }
 function downloadJSONFile(content,filename){const blob=new Blob([JSON.stringify(content,null,2)],{type:'application/json'});const a=document.createElement('a');const url=URL.createObjectURL(blob);a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1200)}
 function safeFileStamp(){const d=new Date(),pad=n=>String(n).padStart(2,'0');return `${localDateId(d)}_${pad(d.getHours())}-${pad(d.getMinutes())}`}
-function exportJSON(){if(!cloudSynced)return alert('Aguarde a sincronização da nuvem.');downloadJSONFile({app:'Finanças Cícero & Nilce',version:'v2.6',exportedAt:new Date().toISOString(),source:'estado-sincronizado-da-nuvem',state:clone(state)},`backup-completo-financas-cicero-nilce-${safeFileStamp()}.json`)}
+function exportJSON(){if(!cloudSynced)return alert('Aguarde a sincronização da nuvem.');downloadJSONFile({app:'Finanças Cícero & Nilce',version:'v2.7',exportedAt:new Date().toISOString(),source:'estado-sincronizado-da-nuvem',state:clone(state)},`backup-completo-financas-cicero-nilce-${safeFileStamp()}.json`)}
 function importJSON(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=async()=>{try{const parsed=JSON.parse(reader.result),payload=parsed&&parsed.state?parsed.state:parsed,next=merge(clone(baseData),payload);if(!confirm('Importar este backup e substituir o estado atual na nuvem?'))return;setCloudStatus('Importando backup...','loading');lastCloudUpdatedAt=await writeCloudRow(SUPABASE_ROW_ID,next);state=next;cacheCloudState();setCloudStatus('Backup importado','ok');closeModal();render();alert('Backup importado e salvo na nuvem.')}catch(err){console.error(err);setCloudStatus('Erro na importação','error');alert('Arquivo inválido ou não foi possível salvar na nuvem.')}};reader.readAsText(file);e.target.value=''}
 async function resetData(){if(!confirm('Restaurar a base inicial? Isso substituirá também o estado principal da nuvem.'))return;setCloudStatus('Restaurando base...','loading');try{const next=clone(baseData);lastCloudUpdatedAt=await writeCloudRow(SUPABASE_ROW_ID,next);state=next;cacheCloudState();setCloudStatus('Base restaurada','ok');render()}catch(err){setCloudStatus('Erro ao restaurar','error');alert('Não foi possível restaurar a base na nuvem.')}}
 
@@ -3293,7 +3338,7 @@ function integritySubExists(catId,sub,city=''){const values=state.subs?.[catId]|
 function integrityBudgetNaturalKey(month,b){const city=b.city||cityOf(b.sub||'');return [month,b.cat,norm(cleanName(b.sub||'')),city].join('|')}
 function integrityTransactionNaturalKey(month,t){const city=t.city||cityOf(t.sub||'');return [month,t.date,norm(t.description||t.desc||''),Number(t.amount||0).toFixed(2),t.cat,norm(cleanName(t.sub||'')),city].join('|')}
 function runIntegrityChecks(){
-  const report={generatedAt:new Date().toISOString(),checks:[],meta:{version:'v2.6'}};
+  const report={generatedAt:new Date().toISOString(),checks:[],meta:{version:'v2.7'}};
   const allowedCities=new Set(['Fortaleza','Brasília','Compartilhado']);
   const requiredTypes={months:'array',categories:'array',subs:'object',revenues:'object',budgets:'object',transactions:'object',reallocations:'object'};
 
@@ -4127,7 +4172,7 @@ layout=function(content){
       <button class="v23-side-account" type="button" onclick="openAccount()"><span class="v23-side-avatar">${authInitials()}</span><span><strong>${accountTitle||'Minha conta'}</strong><small>Conta e segurança</small></span></button>
     </aside>
     <section class="v23-stage">
-      <header class="v23-topbar"><div class="v23-topbar-copy"><strong>${escapeHtml(meta[0])}</strong><small>${escapeHtml(meta[1])}</small></div><div class="v23-topbar-actions"><button class="v23-icon-button" type="button" onclick="openMoreMenu()" title="Mais opções">${v23Icon('dots')}</button><button class="v23-icon-button" type="button" onclick="openAccount()" title="Conta"><span class="account-avatar">${authInitials()}</span></button>${view==='estrategia'?'':`<button class="v23-top-add" type="button" onclick="view='lancamentos';txScope='mes';txPanel='realizados';openTx()">${v23Icon('plus')} Novo lançamento</button>`}</div></header>
+      <header class="v23-topbar"><div class="v23-topbar-copy"><strong>${escapeHtml(meta[0])}</strong><small>${escapeHtml(meta[1])}</small></div><div class="v23-topbar-actions"><button class="v23-icon-button" type="button" onclick="openMoreMenu()" title="Mais opções">${v23Icon('dots')}</button><button class="v23-icon-button" type="button" onclick="openAccount()" title="Conta"><span class="account-avatar">${authInitials()}</span></button></div></header>
       <main class="v23-main view-${view}">${search}${content}</main>
     </section>
     <nav class="v23-mobile-nav" aria-label="Navegação principal">${nav()}</nav>
@@ -4278,13 +4323,13 @@ renderRxD=function(){
 
 function v26MovementSearchMarkup(){
   const value=escapeHtml(viewSearchTerms.lancamentos||'');
-  return `<div class="v26-movement-control v26-movement-search"><label for="viewSearchInput">Buscar</label><div class="view-search-field"><svg class="view-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="viewSearchInput" class="view-search-input" type="search" autocomplete="off" value="${value}" placeholder="${viewSearchPlaceholder('lancamentos')}" oninput="setViewSearch('lancamentos',this.value)" onkeydown="if(event.key==='Escape'){clearViewSearch('lancamentos')}" aria-label="Buscar nas movimentações"><button id="viewSearchClear" class="view-search-clear" type="button" onclick="clearViewSearch('lancamentos')" title="Limpar busca" style="${value?'':'display:none'}">×</button></div></div>`;
+  return `<div class="v27-movement-field v27-movement-search"><label for="viewSearchInput">Buscar</label><div class="view-search-field"><svg class="view-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="viewSearchInput" class="view-search-input" type="search" autocomplete="off" value="${value}" placeholder="${viewSearchPlaceholder('lancamentos')}" oninput="setViewSearch('lancamentos',this.value)" onkeydown="if(event.key==='Escape'){clearViewSearch('lancamentos')}" aria-label="Buscar nas movimentações"><button id="viewSearchClear" class="view-search-clear" type="button" onclick="clearViewSearch('lancamentos')" title="Limpar busca" style="${value?'':'display:none'}">×</button></div></div>`;
 }
 
 renderLancamentos=function(){
   v23LegacyRenderLancamentos();
   const main=document.querySelector('.v23-main');if(!main)return;
-  main.classList.add('v26-movements-compact');
+  main.classList.add('v26-movements-compact','v27-movements-compact');
   const oldHead=main.querySelector('.head');if(oldHead)oldHead.remove();
 
   const tabs=main.querySelector('.tx-tabs');
@@ -4301,14 +4346,11 @@ renderLancamentos=function(){
   }
 
   if(periodCard){
-    const controls=periodCard.querySelector('.tx-period-controls');
-    periodCard.classList.add('v26-movement-toolbar');
+    periodCard.classList.add('v26-movement-toolbar','v27-movement-toolbar');
     periodCard.innerHTML='';
-    const grid=document.createElement('div');grid.className='v26-movement-toolbar-grid';
-    const period=document.createElement('div');period.className='v26-movement-control v26-movement-period';
-    const label=document.createElement('span');label.className='v26-movement-label';label.textContent='Período';period.appendChild(label);
-    if(controls)period.appendChild(controls);
-    grid.appendChild(period);
+    const grid=document.createElement('div');grid.className='v27-movement-toolbar-grid';
+    const year=document.createElement('div');year.className='v27-movement-field';year.innerHTML='<label>Ano</label>'+yearSelectHTML();grid.appendChild(year);
+    const month=document.createElement('div');month.className='v27-movement-field';month.innerHTML='<label>Mês</label>'+(txPanel==='envelopes'?envelopeMonthSelectHTMLBase():monthPeriodSelectHTML('txScope',txScope));grid.appendChild(month);
     const search=document.createElement('div');search.innerHTML=v26MovementSearchMarkup();grid.appendChild(search.firstElementChild);
     periodCard.appendChild(grid);
     if(tabs)tabs.insertAdjacentElement('afterend',periodCard);
