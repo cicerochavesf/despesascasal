@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.4 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.5 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -1381,6 +1381,32 @@ html[data-theme="dark"][data-ui="v23"] .v24-home-period,html[data-theme="dark"][
 html[data-theme="dark"][data-ui="v23"] .v24-rank-scale{background:#263244;}
 html[data-theme="dark"][data-ui="v23"] .v23-chart-legend{background:var(--v23-soft)!important;}
 html[data-theme="dark"][data-ui="v23"] .v24-unplanned-row{background:rgba(190,24,93,.12);border-color:#7f2946;}
+
+/* ===== Versão 2.5: unificação do orçamento e tabela de planejamento ===== */
+html[data-ui="v23"] .v25-planning-note{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:10px;padding:11px 13px;border:1px solid var(--v23-line);border-radius:14px;background:var(--v23-soft);color:var(--v23-muted);font-size:10.5px;font-weight:780;}
+html[data-ui="v23"] .v25-planning-note strong{color:var(--v23-ink);}
+html[data-ui="v23"] .v25-planning-table{overflow:auto;}
+html[data-ui="v23"] .v25-planning-table table{min-width:760px!important;}
+html[data-ui="v23"] .v25-planning-table th:nth-child(n+2),html[data-ui="v23"] .v25-planning-table td:nth-child(n+2){text-align:right!important;white-space:nowrap!important;}
+html[data-ui="v23"] .v25-planning-table th:first-child,html[data-ui="v23"] .v25-planning-table td:first-child{min-width:310px!important;text-align:left!important;}
+html[data-ui="v23"] .v25-planning-table tbody tr{cursor:pointer;}
+html[data-ui="v23"] .v25-planning-table tbody tr:hover td{background:var(--v23-soft)!important;}
+html[data-ui="v23"] .v25-planning-table .v23-primary-copy small{white-space:normal!important;}
+html[data-ui="v23"] .v25-planning-cards{display:none;}
+html[data-theme="dark"][data-ui="v23"] .v25-planning-note{background:#0f172a;border-color:#2d3748;}
+@media (max-width:760px){
+  html[data-ui="v23"] .v25-planning-note{align-items:flex-start;flex-direction:column;}
+  html[data-ui="v23"] .v25-planning-table{display:none!important;}
+  html[data-ui="v23"] .v25-planning-cards{display:flex;flex-direction:column;gap:9px;padding:0 12px 13px;}
+  html[data-ui="v23"] .v25-planning-card{padding:12px;border:1px solid var(--v23-line);border-left:4px solid var(--item-color);border-radius:15px;background:var(--v23-surface);box-shadow:0 5px 14px rgba(16,24,40,.045);}
+  html[data-ui="v23"] .v25-planning-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding-bottom:9px;border-bottom:1px solid var(--v23-line);}
+  html[data-ui="v23"] .v25-planning-card-head strong{display:block;color:var(--v23-ink);font-size:11.5px;}
+  html[data-ui="v23"] .v25-planning-card-head small{display:block;margin-top:3px;color:var(--v23-muted);font-size:8.8px;font-weight:760;}
+  html[data-ui="v23"] .v25-planning-card-values{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:9px;}
+  html[data-ui="v23"] .v25-planning-card-values div{padding:8px;border-radius:10px;background:var(--v23-soft);}
+  html[data-ui="v23"] .v25-planning-card-values span{display:block;color:var(--v23-muted);font-size:7.5px;font-weight:900;text-transform:uppercase;letter-spacing:.05em;}
+  html[data-ui="v23"] .v25-planning-card-values strong{display:block;margin-top:3px;color:var(--v23-ink);font-size:10.5px;white-space:nowrap;}
+}
 </style>
 
 
@@ -3185,7 +3211,7 @@ function openSubcategory(catId,enc=''){const old=enc?decodeURIComponent(enc):'';
 }
 function downloadJSONFile(content,filename){const blob=new Blob([JSON.stringify(content,null,2)],{type:'application/json'});const a=document.createElement('a');const url=URL.createObjectURL(blob);a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1200)}
 function safeFileStamp(){const d=new Date(),pad=n=>String(n).padStart(2,'0');return `${localDateId(d)}_${pad(d.getHours())}-${pad(d.getMinutes())}`}
-function exportJSON(){if(!cloudSynced)return alert('Aguarde a sincronização da nuvem.');downloadJSONFile({app:'Finanças Cícero & Nilce',version:'v2.4',exportedAt:new Date().toISOString(),source:'estado-sincronizado-da-nuvem',state:clone(state)},`backup-completo-financas-cicero-nilce-${safeFileStamp()}.json`)}
+function exportJSON(){if(!cloudSynced)return alert('Aguarde a sincronização da nuvem.');downloadJSONFile({app:'Finanças Cícero & Nilce',version:'v2.5',exportedAt:new Date().toISOString(),source:'estado-sincronizado-da-nuvem',state:clone(state)},`backup-completo-financas-cicero-nilce-${safeFileStamp()}.json`)}
 function importJSON(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=async()=>{try{const parsed=JSON.parse(reader.result),payload=parsed&&parsed.state?parsed.state:parsed,next=merge(clone(baseData),payload);if(!confirm('Importar este backup e substituir o estado atual na nuvem?'))return;setCloudStatus('Importando backup...','loading');lastCloudUpdatedAt=await writeCloudRow(SUPABASE_ROW_ID,next);state=next;cacheCloudState();setCloudStatus('Backup importado','ok');closeModal();render();alert('Backup importado e salvo na nuvem.')}catch(err){console.error(err);setCloudStatus('Erro na importação','error');alert('Arquivo inválido ou não foi possível salvar na nuvem.')}};reader.readAsText(file);e.target.value=''}
 async function resetData(){if(!confirm('Restaurar a base inicial? Isso substituirá também o estado principal da nuvem.'))return;setCloudStatus('Restaurando base...','loading');try{const next=clone(baseData);lastCloudUpdatedAt=await writeCloudRow(SUPABASE_ROW_ID,next);state=next;cacheCloudState();setCloudStatus('Base restaurada','ok');render()}catch(err){setCloudStatus('Erro ao restaurar','error');alert('Não foi possível restaurar a base na nuvem.')}}
 
@@ -3221,7 +3247,7 @@ function integritySubExists(catId,sub,city=''){const values=state.subs?.[catId]|
 function integrityBudgetNaturalKey(month,b){const city=b.city||cityOf(b.sub||'');return [month,b.cat,norm(cleanName(b.sub||'')),city].join('|')}
 function integrityTransactionNaturalKey(month,t){const city=t.city||cityOf(t.sub||'');return [month,t.date,norm(t.description||t.desc||''),Number(t.amount||0).toFixed(2),t.cat,norm(cleanName(t.sub||'')),city].join('|')}
 function runIntegrityChecks(){
-  const report={generatedAt:new Date().toISOString(),checks:[],meta:{version:'v2.4'}};
+  const report={generatedAt:new Date().toISOString(),checks:[],meta:{version:'v2.5'}};
   const allowedCities=new Set(['Fortaleza','Brasília','Compartilhado']);
   const requiredTypes={months:'array',categories:'array',subs:'object',revenues:'object',budgets:'object',transactions:'object',reallocations:'object'};
 
@@ -3600,6 +3626,7 @@ const managedTableDefinitions=[
   {selector:'.summary-colorized',key:'despesas_resumo',locked:[0],freeze:0},
   {selector:'.expense-grouped',key:'despesas_expandidas',locked:[0],freeze:0},
   {selector:'.rxd-detail-table',key:'rxd_detalhe',labels:['Mês','Receita','Despesa','Saldo do mês','Saldo acumulado'],locked:[0],freeze:0},
+  {selector:'.v25-planning-table',key:'planejamento_despesas',labels:['Despesa','Planejado','Utilizado','Saldo'],locked:[0],freeze:0,schema:'v25-planning'},
   {selector:'.tx-forecast-table',key:'lancamentos_acompanhamento',labels:['Seleção','Despesa','Previsto','Utilizado','Saldo'],locked:[0,1],freeze:1,schema:'v80-forecast'},
   {selector:'.tx-realized-grouped',key:'lancamentos_realizados',labels:['Seleção','Data','Descrição','Categorização','Forma de Pagamento','Parcela','Valor'],locked:[0,2],freeze:2,defaultMobileHidden:[4,5],schema:'v79-realized'},
   {selector:'.tx-envelope-table',key:'lancamentos_envelopes',locked:[0],freeze:0},
@@ -4088,6 +4115,29 @@ function v23RecentTransactions(limit=7,periodMonthsList=[state.month]){
   return `<div class="v23-list">${list.map(t=>`<div class="v23-list-row"><button type="button" onclick="openTx('${escapeHtml(t.id)}')"><strong>${escapeHtml(String(t.description||t.desc||cleanName(t.sub)||'Movimentação'))}</strong><small>${fmtDate(t.date)} · ${escapeHtml(cat(t.cat).name)} · ${escapeHtml(paymentDisplayName(t.card))}</small></button><div class="v23-list-value"><strong class="v23-negative">${fmt(t.amount)}</strong><small>${escapeHtml(shortLabel(t.responsible||ownerOf(t.city)))}</small></div></div>`).join('')}</div>`;
 }
 
+function v25BudgetSnapshot(month,filters=null){
+  const groups=new Map(),transactionsByKey=new Map();
+  (state.budgets[month]||[]).filter(b=>budgetLineAdjusted(month,b)>0).filter(b=>!filters||budgetMatches(b,filters)).forEach(b=>{
+    const city=b.city||cityOf(b.sub||''),name=cleanName(b.sub||cat(b.cat).name),key=[b.cat,norm(name),city].join('|');
+    if(!groups.has(key))groups.set(key,{key,catId:b.cat,name,city,owner:ownerOf(city),planned:0,used:0,firstId:b.id,firstMonth:month});
+    groups.get(key).planned+=budgetLineAdjusted(month,b);
+  });
+  txs(month).forEach(t=>{
+    const city=t.city||cityOf(t.sub||t.description||t.desc||''),name=cleanName(t.sub||t.description||t.desc||cat(t.cat).name),key=[t.cat,norm(name),city].join('|');
+    transactionsByKey.set(key,(transactionsByKey.get(key)||0)+Number(t.amount||0));
+  });
+  const items=[...groups.values()].map(item=>({...item,used:transactionsByKey.get(item.key)||0,balance:item.planned-(transactionsByKey.get(item.key)||0)})).sort((a,b)=>textCmp(cat(a.catId).name,cat(b.catId).name)||textCmp(a.name,b.name)||textCmp(a.city,b.city));
+  return {items,planned:items.reduce((s,x)=>s+x.planned,0),used:items.reduce((s,x)=>s+x.used,0),balance:items.reduce((s,x)=>s+x.balance,0)};
+}
+function v25PlanningItems(monthList,filters=null){
+  const map=new Map();
+  monthList.forEach(month=>v25BudgetSnapshot(month,filters).items.forEach(item=>{
+    if(!map.has(item.key))map.set(item.key,{...item,planned:0,used:0,balance:0});
+    const target=map.get(item.key);target.planned+=item.planned;target.used+=item.used;target.balance=target.planned-target.used;
+  }));
+  return [...map.values()].sort((a,b)=>textCmp(cat(a.catId).name,cat(b.catId).name)||textCmp(a.name,b.name)||textCmp(a.city,b.city));
+}
+
 function v24GreetingName(){
   const meta=authUser?.user_metadata||{};
   const candidates=[meta.full_name,meta.name,meta.display_name,meta.first_name,String(authUser?.email||'').split('@')[0]].map(value=>String(value||'').trim()).filter(Boolean);
@@ -4105,15 +4155,13 @@ function v24HomePeriodControls(){
 
 renderEstrategia=function(){
   const month=validMonth(state.month),year=month.slice(0,4),yearMonths=months().filter(m=>m.startsWith(year)).sort();
-  const revenue=revenueTotal(month),planned=plannedExpenseTotal(month),real=expenseTotal(month),currentBalance=revenue-real,projected=revenue-planned,commitment=revenue?real/revenue*100:0;
+  const monthSnapshot=v25BudgetSnapshot(month),revenue=revenueTotal(month),planned=monthSnapshot.planned,real=monthSnapshot.used,currentBalance=monthSnapshot.balance,projected=revenue-planned,commitment=revenue?real/revenue*100:0;
   const monthBudgets=state.budgets[month]||[],monthTransactions=txs(month);
-  const monthly=yearMonths.map(m=>({month:m,revenue:revenueTotal(m),planned:plannedExpenseTotal(m),real:expenseTotal(m)}));
+  const monthly=yearMonths.map(m=>{const snapshot=v25BudgetSnapshot(m);return {month:m,revenue:revenueTotal(m),planned:snapshot.planned,real:snapshot.used}});
 
-  const categoryFinancials=state.categories.map(c=>{
-    const categoryPlanned=monthBudgets.filter(b=>b.cat===c.id).reduce((sum,b)=>sum+budgetLineAdjusted(month,b),0);
-    const categoryReal=monthTransactions.filter(t=>t.cat===c.id).reduce((sum,t)=>sum+Number(t.amount||0),0);
-    return {c,planned:categoryPlanned,real:categoryReal,pct:categoryPlanned>0?categoryReal/categoryPlanned*100:0};
-  });
+  const categoryMap=new Map();
+  monthSnapshot.items.forEach(item=>{if(!categoryMap.has(item.catId))categoryMap.set(item.catId,{c:cat(item.catId),planned:0,real:0});const group=categoryMap.get(item.catId);group.planned+=item.planned;group.real+=item.used});
+  const categoryFinancials=state.categories.map(c=>categoryMap.get(c.id)||{c,planned:0,real:0}).map(x=>({...x,pct:x.planned>0?x.real/x.planned*100:0}));
   const plannedCategories=categoryFinancials.filter(x=>x.planned>.005).sort((a,b)=>b.planned-a.planned).slice(0,7);
   const unplannedCategories=categoryFinancials.filter(x=>x.planned<=.005&&x.real>.005).sort((a,b)=>b.real-a.real);
   const maxPlanned=Math.max(...plannedCategories.map(x=>x.planned),1);
@@ -4128,8 +4176,8 @@ renderEstrategia=function(){
   const categoryOver=categoryFinancials.filter(x=>x.planned>.005&&x.real>x.planned+.005).sort((a,b)=>(b.real-b.planned)-(a.real-a.planned));
   categoryOver.forEach(x=>alertItems.push({priority:80+(x.real-x.planned),html:`<div class="v23-alert"><div class="v23-alert-icon" style="--alert-bg:var(--v23-negative-soft);--alert-color:var(--v23-negative)">!</div><div><strong>${escapeHtml(x.c.name)} acima do planejado</strong><small>Excedeu o orçamento da categoria em ${v23MoneyNumber(x.real-x.planned)}.</small></div><button onclick="view='lancamentos';txPanel='acompanhamento';txScope='mes';render()">Ver</button></div>`}));
 
-  const nearBudget=monthBudgets.map(b=>({b,planned:budgetLineAdjusted(month,b),used:budgetLineUsed(month,b)})).filter(x=>x.planned>.005&&x.used<x.planned-.005&&x.used/x.planned>=.9).sort((a,b)=>(b.used/b.planned)-(a.used/a.planned));
-  nearBudget.forEach(x=>alertItems.push({priority:60+x.used/x.planned,html:`<div class="v23-alert"><div class="v23-alert-icon" style="--alert-bg:#FFF4E5;--alert-color:var(--v23-warning)">90%</div><div><strong>${escapeHtml(cleanName(x.b.sub||cat(x.b.cat).name))}</strong><small>Já utilizou ${reportPercentLabel(reportPercentValue(x.used,x.planned))} do valor planejado.</small></div><button onclick="view='lancamentos';txPanel='acompanhamento';txScope='mes';render()">Ver</button></div>`}));
+  const nearBudget=monthSnapshot.items.filter(x=>x.planned>.005&&x.used<x.planned-.005&&x.used/x.planned>=.9).sort((a,b)=>(b.used/b.planned)-(a.used/a.planned));
+  nearBudget.forEach(x=>alertItems.push({priority:60+x.used/x.planned,html:`<div class="v23-alert"><div class="v23-alert-icon" style="--alert-bg:#FFF4E5;--alert-color:var(--v23-warning)">90%</div><div><strong>${escapeHtml(x.name)}</strong><small>Já utilizou ${reportPercentLabel(reportPercentValue(x.used,x.planned))} do valor planejado.</small></div><button onclick="view='lancamentos';txPanel='acompanhamento';txScope='mes';render()">Ver</button></div>`}));
 
   const unplannedMap=new Map();
   monthTransactions.forEach(t=>{
@@ -4151,7 +4199,7 @@ renderEstrategia=function(){
   const unplannedRows=unplannedCategories.length?`<div class="v24-unplanned-title"><span>Não planejadas</span><small>Valores realizados sem orçamento na categoria</small></div>${unplannedCategories.map(x=>`<div class="v24-unplanned-row"><div><strong>${escapeHtml(x.c.name)}</strong><small>Sem valor planejado para ${labelMonth(month)}</small></div><strong>${fmt(x.real)}</strong></div>`).join('')}`:'';
 
   layout(`${v23PageHead('Olá, '+v24GreetingName(),'Acompanhe o resultado de '+labelMonth(month)+' de '+year+' e os pontos que precisam de atenção.',v24HomePeriodControls())}
-    <section class="v23-hero"><div class="v23-hero-copy"><span>Saldo atual · ${labelMonth(month)} de ${year}</span><strong class="v23-hero-value">${fmt(currentBalance)}</strong><p>Receitas do mês menos as despesas realizadas.</p><div class="v24-hero-commitment"><i></i><span>${commitment.toLocaleString('pt-BR',{maximumFractionDigits:1})}% da renda já está comprometida</span></div></div><div class="v23-hero-metrics"><div class="v23-hero-metric"><span>Receitas</span><strong>${fmt(revenue)}</strong></div><div class="v23-hero-metric"><span>Planejado</span><strong>${fmt(planned)}</strong></div><div class="v23-hero-metric"><span>Despesas realizadas</span><strong>${fmt(real)}</strong></div><div class="v23-hero-metric"><span>Saldo projetado</span><strong>${fmt(projected)}</strong></div></div></section>
+    <section class="v23-hero"><div class="v23-hero-copy"><span>Saldo atual · ${labelMonth(month)} de ${year}</span><strong class="v23-hero-value">${fmt(currentBalance)}</strong><p>Orçamento planejado menos o valor já utilizado.</p><div class="v24-hero-commitment"><i></i><span>${commitment.toLocaleString('pt-BR',{maximumFractionDigits:1})}% da renda já está comprometida</span></div></div><div class="v23-hero-metrics"><div class="v23-hero-metric"><span>Receitas</span><strong>${fmt(revenue)}</strong></div><div class="v23-hero-metric"><span>Planejado</span><strong>${fmt(planned)}</strong></div><div class="v23-hero-metric"><span>Despesas realizadas</span><strong>${fmt(real)}</strong></div><div class="v23-hero-metric"><span>Saldo projetado</span><strong>${fmt(projected)}</strong></div></div></section>
     <div class="v23-grid two v23-gap-top"><section class="v23-panel v23-panel-pad"><div class="v23-panel-head"><div><h2>Evolução financeira</h2><p>Receitas, planejamento e despesas realizadas ao longo de ${year}.</p></div><button class="v23-panel-link" onclick="setMainView('rxd')">Abrir análises</button></div>${v23TrendChart(monthly)}</section><section class="v23-panel v23-panel-pad"><div class="v23-panel-head"><div><h2>Atenções do mês</h2><p>${orderedAlerts.length?`${orderedAlerts.length} ${orderedAlerts.length===1?'ponto encontrado':'pontos encontrados'} em ${labelMonth(month)}.`:'Nenhum desvio relevante encontrado.'}</p></div></div>${alertsHtml}</section></div>
     <div class="v23-grid equal v23-gap-top"><section class="v23-panel v23-panel-pad"><div class="v23-panel-head"><div><h2>Maiores despesas planejadas</h2><p>Ranking pelo orçamento do mês e avanço do valor realizado.</p></div><button class="v23-panel-link" onclick="view='despesas';expenseScope='mes';render()">Ver planejamento</button></div><div class="v24-plan-list">${plannedRows||'<div class="v23-empty">Nenhuma despesa planejada neste mês.</div>'}${unplannedRows}</div></section><section class="v23-panel v23-panel-pad"><div class="v23-panel-head"><div><h2>Movimentações recentes</h2><p>Últimos registros de ${labelMonth(month)}.</p></div><button class="v23-panel-link" onclick="setMainView('lancamentos')">Ver extrato</button></div>${v23RecentTransactions(7,[month])}</section></div>`);
 };
@@ -4162,16 +4210,15 @@ renderReceitas=function(){
   layout(`${v23PageHead('Planejamento','Defina quanto o casal espera receber e como o dinheiro será distribuído.',`<button class="v23-btn" onclick="openFillRevenues()">Cadastrar receitas</button>`)}${v23PlanningTabs('income')}<div class="v23-grid three"><div class="v23-stat is-brand"><span>Cícero</span><strong>${fmt(totals.cicero)}</strong><small>${reportPercentLabel(reportPercentValue(totals.cicero,totals.total))} das receitas</small></div><div class="v23-stat" style="--stat-color:#db2777"><span>Nilce</span><strong>${fmt(totals.nilce)}</strong><small>${reportPercentLabel(reportPercentValue(totals.nilce,totals.total))} das receitas</small></div><div class="v23-stat is-positive"><span>Outras receitas</span><strong>${fmt(totals.other)}</strong><small>${reportPercentLabel(reportPercentValue(totals.other,totals.total))} das receitas</small></div></div><section class="v23-panel v23-panel-pad v23-gap-top"><div class="v23-panel-head"><div><h2>Receitas previstas</h2><p>Resumo por mês e origem do dinheiro.</p></div></div>${v23MonthOptionControls('income')}<div class="v23-table-wrap v23-gap-top"><table class="v23-table"><thead><tr><th>Mês</th><th>Cícero</th><th>Nilce</th><th>Outras receitas</th><th>Total</th></tr></thead><tbody>${rows}</tbody><tfoot><tr><td>Total do período</td><td>${fmt(totals.cicero)}</td><td>${fmt(totals.nilce)}</td><td>${fmt(totals.other)}</td><td>${fmt(totals.total)}</td></tr></tfoot></table></div></section>`);
 };
 
-function v23ExpenseAggregates(list){
-  const map=new Map();
-  list.forEach(m=>(state.budgets[m]||[]).filter(b=>budgetMatches(b,expenseFilters)).forEach(b=>{const city=b.city||cityOf(b.sub||''),name=cleanName(b.sub||cat(b.cat).name),key=[b.cat,norm(name),city].join('|');if(!map.has(key))map.set(key,{key,catId:b.cat,name,city,owner:ownerOf(city),planned:0,used:0,firstId:b.id,firstMonth:m});const item=map.get(key);item.planned+=budgetLineAdjusted(m,b);item.used+=budgetLineUsed(m,b)}));
-  return [...map.values()].map(x=>({...x,balance:x.planned-x.used})).sort((a,b)=>b.planned-a.planned||textCmp(a.name,b.name));
-}
+function v23ExpenseAggregates(list){return v25PlanningItems(list,expenseFilters)}
 renderDespesas=function(){
-  const list=monthYearList(expenseScope),items=v23ExpenseAggregates(list),planned=items.reduce((s,x)=>s+x.planned,0),used=items.reduce((s,x)=>s+x.used,0),balance=planned-used;
-  const categoryMap=new Map();items.forEach(x=>{if(!categoryMap.has(x.catId))categoryMap.set(x.catId,{c:cat(x.catId),planned:0,used:0});const g=categoryMap.get(x.catId);g.planned+=x.planned;g.used+=x.used});const categories=[...categoryMap.values()].sort((a,b)=>b.planned-a.planned);
-  const rows=items.map(x=>{const status=v23Status(x.balance),encoded=encodeURIComponent(JSON.stringify({catId:x.catId,sub:x.name,city:x.city})),action=expenseScope==='mes'?`openBudgetItem('${x.firstId}','${x.firstMonth}')`:`openAnnualBudgetEditor('${encoded}')`;return `<div class="v23-budget-row" onclick="${action}"><div class="v23-primary"><i class="v23-primary-dot" style="--item-color:${cat(x.catId).color}"></i><div class="v23-primary-copy"><strong>${escapeHtml(x.name)}</strong><small>${escapeHtml(cat(x.catId).name)} · ${escapeHtml(shortLabel(x.owner))} · ${escapeHtml(x.city)}</small></div></div><div class="v23-budget-value"><span>Planejado</span><strong>${fmt(x.planned)}</strong></div><div class="v23-budget-value"><span>Utilizado</span><strong>${fmt(x.used)}</strong></div><div class="v23-budget-value"><span>Saldo</span><strong class="${x.balance<0?'v23-negative':x.balance>0?'v23-positive':'v23-muted'}">${fmt(x.balance)}</strong><small class="v23-chip ${status.cls}">${status.label}</small></div></div>`}).join('');
-  layout(`${v23PageHead('Planejamento','Defina limites claros para as despesas e acompanhe quanto ainda pode ser utilizado.',`<button class="v23-btn" onclick="openNewBudgetLine()">${v23Icon('plus')} Nova despesa prevista</button>`)}${v23PlanningTabs('expenses')}<div class="v23-grid three"><div class="v23-stat is-brand"><span>Orçamento planejado</span><strong>${fmt(planned)}</strong><small>${expenseScope==='ano'?'Total do ano':'Total do mês selecionado'}</small></div><div class="v23-stat is-negative"><span>Já utilizado</span><strong>${fmt(used)}</strong><small>${reportPercentLabel(reportPercentValue(used,planned))} do orçamento</small></div><div class="v23-stat ${balance<0?'is-negative':'is-positive'}"><span>Disponível</span><strong>${fmt(balance)}</strong><small>${balance<0?'Planejamento ultrapassado':'Ainda pode ser utilizado'}</small></div></div><section class="v23-panel v23-panel-pad v23-gap-top"><div class="v23-panel-head"><div><h2>Orçamento por categoria</h2><p>Visão rápida do planejado e utilizado.</p></div></div><div class="v23-toolbar"><div class="v23-toolbar-group">${expenseFilterControls()}</div></div><div class="v23-category-list v23-gap-top">${categories.map(g=>{const pct=v23Progress(g.used,g.planned),over=g.used>g.planned;return `<div class="v23-category-row"><div class="v23-category-row-head"><div><strong>${escapeHtml(g.c.name)}</strong><small>${fmt(g.used)} utilizados de ${fmt(g.planned)}</small></div><div class="v23-category-row-value"><strong class="${over?'v23-negative':''}">${pct.toLocaleString('pt-BR',{maximumFractionDigits:0})}%</strong></div></div><div class="v23-progress" style="--progress-color:${over?'var(--v23-negative)':g.c.color}"><i style="width:${Math.min(100,pct)}%"></i></div></div>`}).join('')||'<div class="v23-empty">Nenhuma categoria encontrada com os filtros atuais.</div>'}</div></section><section class="v23-panel v23-gap-top"><div class="v23-panel-pad"><div class="v23-panel-head"><div><h2>Despesas previstas</h2><p>${expenseScope==='ano'?'Clique em uma despesa para editar os valores do ano.':'Clique em uma despesa para editar o mês.'}</p></div><button class="v23-panel-link" onclick="expenseScope=expenseScope==='ano'?'mes':'ano';render()">${expenseScope==='ano'?'Ver mês':'Ver ano'}</button></div></div><div style="overflow:auto">${rows||'<div class="v23-empty" style="margin:0 18px 18px">Nenhuma despesa encontrada.</div>'}</div></section>`);
+  const list=monthYearList(expenseScope),items=v25PlanningItems(list,expenseFilters),planned=items.reduce((s,x)=>s+x.planned,0),used=items.reduce((s,x)=>s+x.used,0),balance=planned-used;
+  const tableRows=items.map(x=>{const status=v23Status(x.balance),encoded=encodeURIComponent(JSON.stringify({catId:x.catId,sub:x.name,city:x.city})),action=expenseScope==='mes'?`openBudgetItem('${x.firstId}','${x.firstMonth}')`:`openAnnualBudgetEditor('${encoded}')`;return `<tr data-search-item onclick="${action}"><td><div class="v23-primary"><i class="v23-primary-dot" style="--item-color:${cat(x.catId).color}"></i><div class="v23-primary-copy"><strong>${escapeHtml(x.name)}</strong><small>${escapeHtml(cat(x.catId).name)} · ${escapeHtml(shortLabel(x.owner))} · ${escapeHtml(x.city)}</small></div></div></td><td>${fmt(x.planned)}</td><td>${fmt(x.used)}</td><td><strong class="${x.balance<0?'v23-negative':x.balance>0?'v23-positive':'v23-muted'}">${fmt(x.balance)}</strong><small class="v23-chip ${status.cls}" style="margin-left:7px">${status.label}</small></td></tr>`}).join('');
+  const cards=items.map(x=>{const status=v23Status(x.balance),encoded=encodeURIComponent(JSON.stringify({catId:x.catId,sub:x.name,city:x.city})),action=expenseScope==='mes'?`openBudgetItem('${x.firstId}','${x.firstMonth}')`:`openAnnualBudgetEditor('${encoded}')`;return `<article data-search-item class="v25-planning-card" style="--item-color:${cat(x.catId).color}" onclick="${action}"><div class="v25-planning-card-head"><div><strong>${escapeHtml(x.name)}</strong><small>${escapeHtml(cat(x.catId).name)} · ${escapeHtml(shortLabel(x.owner))} · ${escapeHtml(x.city)}</small></div><span class="v23-chip ${status.cls}">${status.label}</span></div><div class="v25-planning-card-values"><div><span>Planejado</span><strong>${fmt(x.planned)}</strong></div><div><span>Utilizado</span><strong>${fmt(x.used)}</strong></div><div><span>Saldo</span><strong class="${x.balance<0?'v23-negative':x.balance>0?'v23-positive':'v23-muted'}">${fmt(x.balance)}</strong></div></div></article>`}).join('');
+  layout(`${v23PageHead('Planejamento','Cadastre e edite as receitas e despesas previstas do casal.',`<button class="v23-btn" onclick="openNewBudgetLine()">${v23Icon('plus')} Nova despesa prevista</button>`)}${v23PlanningTabs('expenses')}
+    <section class="v23-panel v23-panel-pad"><div class="v23-panel-head"><div><h2>Período e filtros</h2><p>As mesmas despesas e valores usados no Orçamento de Movimentações.</p></div></div>${expenseFilterControls()}<div class="v25-planning-note"><span><strong>Planejamento</strong> serve para cadastrar e editar o previsto.</span><span>Os remanejamentos continuam em <strong>Movimentações → Orçamento</strong>.</span></div></section>
+    <div class="v23-grid three v23-gap-top"><div class="v23-stat is-brand"><span>Orçamento planejado</span><strong>${fmt(planned)}</strong><small>${expenseScope==='ano'?'Total do ano':'Total do mês selecionado'}</small></div><div class="v23-stat is-negative"><span>Já utilizado</span><strong>${fmt(used)}</strong><small>${reportPercentLabel(reportPercentValue(used,planned))} do orçamento</small></div><div class="v23-stat ${balance<0?'is-negative':'is-positive'}"><span>Disponível</span><strong>${fmt(balance)}</strong><small>${balance<0?'Planejamento ultrapassado':'Planejado menos utilizado'}</small></div></div>
+    <section class="v23-panel v23-gap-top"><div class="v23-panel-pad"><div class="v23-panel-head"><div><h2>Despesas previstas</h2><p>Ordenadas por categoria e depois por subcategoria, ambas em ordem alfabética.</p></div><button class="v23-panel-link" onclick="expenseScope=expenseScope==='ano'?'mes':'ano';render()">${expenseScope==='ano'?'Ver mês':'Ver ano'}</button></div></div><div class="table-wrap v25-planning-table"><table><thead><tr><th>Despesa</th><th>Planejado</th><th>Utilizado</th><th>Saldo</th></tr></thead><tbody>${tableRows||'<tr><td colspan="4">Nenhuma despesa encontrada com os filtros atuais.</td></tr>'}</tbody><tfoot><tr><td>Total do período</td><td>${fmt(planned)}</td><td>${fmt(used)}</td><td>${fmt(balance)}</td></tr></tfoot></table></div><div class="v25-planning-cards">${cards||'<div class="v23-empty">Nenhuma despesa encontrada com os filtros atuais.</div>'}</div></section>`);
 };
 
 renderRxD=function(){
