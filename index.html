@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 1.104 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.2 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -1688,6 +1688,312 @@ html[data-theme="dark"] .realized-filter-chip button{background:#172033!importan
 }
 </style>
 
+
+
+<style id="v22-modern-desktop-finance-ui">
+/* 2.2 — sistema visual único para tabelas e Visão Geral no computador.
+   O celular mantém os componentes próprios já existentes. */
+:root{
+  --ft-surface:#FFFFFF;
+  --ft-surface-subtle:#F8FAFC;
+  --ft-surface-muted:#F1F5F9;
+  --ft-border:#E2E8F0;
+  --ft-border-strong:#CBD5E1;
+  --ft-text:#172033;
+  --ft-text-soft:#475467;
+  --ft-text-muted:#7A8496;
+  --ft-blue:#2854E8;
+  --ft-green:#047857;
+  --ft-red:#C8104D;
+  --ft-amber:#B54708;
+  --ft-radius:18px;
+  --ft-shadow:0 10px 30px rgba(15,23,42,.055);
+}
+.finance-status-chip{display:inline-flex;align-items:center;gap:6px;min-height:25px;padding:4px 9px;border-radius:999px;font-size:9.5px;font-weight:900;white-space:nowrap}
+.finance-status-chip:before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.8}
+.finance-status-chip.is-good{background:#ECFDF3;color:#027A48}
+.finance-status-chip.is-warning{background:#FFFAEB;color:#B54708}
+.finance-status-chip.is-danger{background:#FFF1F3;color:#C01048}
+.finance-status-chip.is-neutral{background:#F2F4F7;color:#667085}
+.finance-value-stack{display:flex;flex-direction:column;align-items:flex-end;gap:3px;min-width:0}
+.finance-value-stack strong{font-size:12px;font-weight:900;color:var(--ft-text);white-space:nowrap;font-variant-numeric:tabular-nums}
+.finance-value-stack small{font-size:9px;font-weight:750;color:var(--ft-text-muted);white-space:nowrap}
+.finance-table-primary{display:flex;align-items:center;gap:10px;min-width:0}
+.finance-table-primary__marker{width:4px;height:30px;flex:0 0 4px;border-radius:99px;background:var(--item-color,#94A3B8)}
+.finance-table-primary__copy{min-width:0;display:flex;flex-direction:column;gap:3px}
+.finance-table-primary__copy strong{display:block;color:var(--ft-text);font-size:12px;font-weight:900;line-height:1.2}
+.finance-table-primary__copy small{display:block;color:var(--ft-text-muted);font-size:9.5px;font-weight:750;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.finance-inline-action{display:inline-grid;place-items:center;width:28px;height:28px;flex:0 0 28px;border:1px solid transparent;border-radius:9px;background:transparent;color:#64748B;opacity:0;transition:opacity .15s,background .15s,border-color .15s}
+.finance-inline-action:hover{background:#EEF3FF;border-color:#D6E1FF;color:#2854E8}
+.finance-inline-action svg{width:14px;height:14px}
+
+@media (min-width:761px){
+  .main{max-width:1480px!important;padding-left:28px!important;padding-right:28px!important}
+  .card:has(.finance-table-shell){padding:18px 18px 16px!important}
+  .finance-table-toolbar{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:0 0 12px;padding:0 2px}
+  .finance-table-toolbar__copy strong{display:block;color:var(--ft-text);font-size:12px;font-weight:900}
+  .finance-table-toolbar__copy small{display:block;margin-top:3px;color:var(--ft-text-muted);font-size:10px;font-weight:750}
+  .finance-table-toolbar__meta{display:flex;align-items:center;gap:8px;color:var(--ft-text-muted);font-size:10px;font-weight:800}
+  .finance-table-toolbar__pill{display:inline-flex;align-items:center;padding:5px 9px;border:1px solid var(--ft-border);border-radius:999px;background:var(--ft-surface-subtle);color:var(--ft-text-soft)}
+
+  .finance-table-shell{
+    position:relative!important;
+    width:100%!important;
+    max-width:100%!important;
+    overflow:auto!important;
+    border:1px solid var(--ft-border)!important;
+    border-radius:var(--ft-radius)!important;
+    background:var(--ft-surface)!important;
+    box-shadow:var(--ft-shadow)!important;
+    scrollbar-width:thin;
+    scrollbar-color:#C6D0DE transparent;
+  }
+  .finance-table-shell::-webkit-scrollbar{height:8px;width:8px}
+  .finance-table-shell::-webkit-scrollbar-thumb{background:#C6D0DE;border-radius:999px}
+  .finance-table-shell table.finance-table{
+    width:100%!important;
+    min-width:720px!important;
+    border-collapse:separate!important;
+    border-spacing:0!important;
+    table-layout:auto!important;
+    font-variant-numeric:tabular-nums;
+  }
+  .finance-table-shell table.finance-table thead th{
+    position:sticky!important;
+    top:0!important;
+    z-index:28!important;
+    height:43px!important;
+    padding:11px 14px!important;
+    border:0!important;
+    border-bottom:1px solid var(--ft-border-strong)!important;
+    border-radius:0!important;
+    background:#F7F9FC!important;
+    box-shadow:none!important;
+    color:#596579!important;
+    font-size:9.5px!important;
+    line-height:1.15!important;
+    font-weight:900!important;
+    letter-spacing:.055em!important;
+    text-transform:uppercase!important;
+    white-space:nowrap!important;
+  }
+  .finance-table-shell table.finance-table tbody td,
+  .finance-table-shell table.finance-table tfoot td{
+    height:48px!important;
+    padding:10px 14px!important;
+    border:0!important;
+    border-bottom:1px solid #EDF0F4!important;
+    border-radius:0!important;
+    background:#FFFFFF!important;
+    color:var(--ft-text-soft)!important;
+    font-size:11px!important;
+    line-height:1.3!important;
+    vertical-align:middle!important;
+  }
+  .finance-table-shell table.finance-table tbody tr:hover>td{background:#F8FAFD!important}
+  .finance-table-shell table.finance-table tbody tr:hover .finance-inline-action{opacity:1}
+  .finance-table-shell table.finance-table tbody tr:last-child td{border-bottom:0!important}
+  .finance-table-shell table.finance-table th:not(:first-child),
+  .finance-table-shell table.finance-table td:not(:first-child){text-align:right!important}
+  .finance-table-shell table.finance-table th:first-child,
+  .finance-table-shell table.finance-table td:first-child{text-align:left!important}
+  .finance-table-shell table.finance-table tfoot td{
+    position:sticky!important;
+    bottom:0!important;
+    z-index:22!important;
+    height:50px!important;
+    border-top:1px solid var(--ft-border-strong)!important;
+    border-bottom:0!important;
+    background:#F3F6FA!important;
+    color:var(--ft-text)!important;
+    font-weight:900!important;
+    box-shadow:0 -7px 18px rgba(15,23,42,.045)!important;
+  }
+  .finance-table-shell table.finance-table .money{font-size:11.5px!important;font-weight:900!important;color:var(--ft-text)!important}
+  .finance-table-shell table.finance-table .is-muted{color:#98A2B3!important}
+  .finance-table-shell table.finance-table .is-total{background:#F4F7FB!important;font-weight:900!important;color:#10203A!important}
+  .finance-table-shell table.finance-table .is-positive{color:#027A48!important;font-weight:900!important}
+  .finance-table-shell table.finance-table .is-negative{color:#C01048!important;font-weight:900!important}
+  .finance-table-shell table.finance-table .is-current-period{background:#F1F5FF!important;color:#214ED8!important}
+  .finance-table-shell table.finance-table .finance-source-cicero strong{color:#1D4ED8}
+  .finance-table-shell table.finance-table .finance-source-nilce strong{color:#BE185D}
+  .finance-table-shell table.finance-table .finance-source-other strong{color:#047857}
+
+  .finance-table--revenue{min-width:720px!important}
+  .finance-table--revenue th:first-child,.finance-table--revenue td:first-child{width:150px!important}
+  .finance-table--revenue th:not(:first-child),.finance-table--revenue td:not(:first-child){width:22%!important}
+  .finance-table--revenue .other-revenue-cell-button{min-width:0!important;width:auto!important;padding:0!important;text-align:right!important}
+  .finance-table--revenue .other-revenue-cell-button strong{font-size:12px!important}
+
+  .finance-table--summary{min-width:900px!important}
+  .finance-table--summary th:first-child,.finance-table--summary td:first-child{position:sticky!important;left:0!important;z-index:18!important;min-width:205px!important;background:#FFFFFF!important;border-right:1px solid #E6EBF1!important}
+  .finance-table--summary thead th:first-child{z-index:38!important;background:#F7F9FC!important}
+  .finance-table--summary tfoot td:first-child{z-index:30!important;background:#F3F6FA!important}
+  .finance-category-share{display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+  .finance-category-share strong{font-size:11px;color:var(--ft-text);font-weight:900}
+  .finance-category-share small{font-size:8.8px;color:var(--ft-text-muted);font-weight:750}
+
+  .finance-table--expense-detail{min-width:940px!important}
+  .finance-table--expense-detail th:first-child,.finance-table--expense-detail td:first-child{position:sticky!important;left:0!important;z-index:17!important;width:300px!important;min-width:300px!important;max-width:300px!important;background:#FFFFFF!important;border-right:1px solid #E6EBF1!important}
+  .finance-table--expense-detail thead th:first-child{z-index:40!important;background:#F7F9FC!important}
+  .finance-table--expense-detail th:last-child,.finance-table--expense-detail td:last-child{position:sticky!important;right:0!important;z-index:16!important;min-width:118px!important;background:#F4F7FB!important;border-left:1px solid #E1E7EF!important}
+  .finance-table--expense-detail thead th:last-child{z-index:39!important;background:#EDF2F8!important}
+  .finance-expense-group-row td{height:42px!important;padding:8px 12px!important;background:#F8FAFC!important;border-top:1px solid #DCE3EC!important;border-bottom:1px solid #DCE3EC!important}
+  .finance-table--expense-detail .finance-expense-group-row td{position:static!important;left:auto!important;right:auto!important;width:auto!important;min-width:0!important;max-width:none!important;border-right:0!important;border-left:0!important}
+  .finance-expense-group-row button{display:flex;align-items:center;justify-content:space-between;width:100%;border:0;background:transparent;color:var(--ft-text);text-align:left}
+  .finance-expense-group-row__title{display:flex;align-items:center;gap:9px;font-size:11px;font-weight:950}
+  .finance-expense-group-row__title i{display:block;width:8px;height:8px;border-radius:50%;background:var(--group-color)}
+  .finance-expense-group-row__meta{display:flex;align-items:center;gap:9px;color:var(--ft-text-muted);font-size:9.5px;font-weight:800}
+  .finance-expense-group-row__chevron{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:8px;color:#667085;transition:transform .18s}
+  .finance-expense-group.is-collapsed .finance-expense-group-row__chevron{transform:rotate(-90deg)}
+  .finance-expense-group.is-collapsed .finance-expense-item-row,.finance-expense-group.is-collapsed .finance-subtotal-row{display:none!important}
+  .finance-expense-item-row .finance-table-primary__copy small{max-width:238px}
+  .finance-expense-month-cell{min-width:94px!important;white-space:nowrap!important}
+  .finance-expense-month-cell.is-editable{cursor:pointer!important}
+  .finance-expense-month-cell.is-editable:hover{background:#EEF3FF!important;color:#214ED8!important}
+  .finance-subtotal-row td{height:43px!important;background:#FBFCFE!important;color:#475467!important;font-weight:850!important;border-top:1px dashed #D8E0EA!important}
+  .finance-subtotal-row td:first-child{color:#344054!important}
+
+  .finance-table-shell--rxd{max-width:960px!important;margin:0 auto!important}
+  .finance-table--rxd{min-width:760px!important}
+  .finance-table--rxd td:first-child{width:150px!important}
+  .finance-balance-stack{display:flex;flex-direction:column;align-items:flex-end;gap:3px}
+  .finance-balance-stack strong{font-size:12px;font-weight:950;white-space:nowrap}
+  .finance-balance-stack small{font-size:8.8px;color:var(--ft-text-muted);font-weight:750;white-space:nowrap}
+  .finance-commitment-cell{display:flex;align-items:center;justify-content:flex-end;gap:10px}
+  .finance-commitment-cell>strong{font-size:11px;color:var(--ft-text);font-weight:900}
+
+  /* Acompanhamento — tabela operacional agrupada, sem aparência de planilha. */
+  .tx-forecast-table.finance-table-shell{max-height:min(68vh,720px)!important}
+  .tx-forecast-table table.finance-table--forecast{min-width:900px!important}
+  .tx-forecast-table table.finance-table--forecast th:nth-child(1),.tx-forecast-table table.finance-table--forecast td:nth-child(1){width:48px!important;text-align:center!important}
+  .tx-forecast-table table.finance-table--forecast th:nth-child(2),.tx-forecast-table table.finance-table--forecast td:nth-child(2){width:38%!important;text-align:left!important}
+  .tx-forecast-table table.finance-table--forecast th:nth-child(n+3),.tx-forecast-table table.finance-table--forecast td:nth-child(n+3){min-width:122px!important;text-align:right!important}
+  .tx-forecast-table table.finance-table--forecast th:last-child,.tx-forecast-table table.finance-table--forecast td:last-child{min-width:150px!important}
+  .finance-group-row td{height:39px!important;background:#F4F7FA!important;color:#344054!important;font-weight:900!important;border-top:1px solid #DDE4ED!important;border-bottom:1px solid #DDE4ED!important}
+  .finance-group-row__content{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .finance-group-row__name{display:flex;align-items:center;gap:8px}
+  .finance-group-row__name i{display:block;width:7px;height:7px;border-radius:50%;background:var(--group-color,#94A3B8)}
+  .finance-group-row__content small{font-size:9px;color:#7A8496;font-weight:800}
+  .finance-subtotal-row-modern td{height:40px!important;background:#FBFCFE!important;font-weight:900!important;color:#475467!important;border-bottom:1px solid #DDE4ED!important}
+  .finance-subtotal-row-modern td:nth-child(n+3){text-align:right!important}
+  .tx-forecast-table .tx-row-main strong{font-size:11.5px!important}
+  .tx-forecast-table .tx-row-main small{font-size:9px!important;color:#7A8496!important}
+  .tx-forecast-table .tx-clean-row td{background:#FFFFFF!important;border-color:#EDF0F4!important}
+  .tx-forecast-table .tx-clean-row:hover td{background:#F8FAFD!important}
+
+  /* Envelopes — foco na semana atual. */
+  .tx-envelope-table.finance-table-shell{max-height:min(65vh,680px)!important}
+  .tx-envelope-table table.finance-table--envelopes{min-width:900px!important}
+  .tx-envelope-table table.finance-table--envelopes th:first-child,.tx-envelope-table table.finance-table--envelopes td:first-child{width:35%!important;text-align:left!important}
+  .tx-envelope-table table.finance-table--envelopes th:nth-child(5),.tx-envelope-table table.finance-table--envelopes td:nth-child(5){background:#F4F7FF!important;color:#214ED8!important;font-weight:900!important}
+  .tx-envelope-table .envelope-main strong{font-size:11.5px!important;color:var(--ft-text)!important}
+  .tx-envelope-table .envelope-main small{font-size:9px!important;color:var(--ft-text-muted)!important}
+
+  /* Filtros mais compactos no desktop. */
+  .view-lancamentos .tx-period-card,.view-despesas .card:has(.expense-filter-stack){box-shadow:none!important;background:#F8FAFC!important}
+  .view-lancamentos .tx-dedicated-filters{padding:10px!important;margin-bottom:12px!important}
+  .view-lancamentos .tx-filterbar{gap:7px!important}
+  .view-lancamentos .tx-filterbar .select,.view-lancamentos .tx-filterbar button{min-height:38px!important}
+
+  /* Visão Geral — bento dashboard moderno. */
+  .overview-head{align-items:flex-end!important}
+  .overview-head .head-actions{min-width:310px}
+  .overview-period-filter{display:flex;justify-content:flex-end;padding:6px;border:1px solid var(--ft-border);border-radius:15px;background:#F7F9FC}
+  .overview-period-filter .select{min-width:145px!important}
+  .overview-kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px;margin:16px 0}
+  .overview-kpi{position:relative;min-width:0;min-height:118px;padding:17px 17px 15px;border:1px solid var(--ft-border);border-radius:18px;background:#FFFFFF;box-shadow:var(--ft-shadow);overflow:hidden}
+  .overview-kpi:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--kpi-color,#2854E8)}
+  .overview-kpi span{display:block;color:#7A8496;font-size:9.5px;font-weight:900;text-transform:uppercase;letter-spacing:.07em}
+  .overview-kpi strong{display:block;margin-top:11px;color:#172033;font-size:22px;font-weight:950;line-height:1.04;letter-spacing:-.045em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .overview-kpi small{display:block;margin-top:8px;color:#7A8496;font-size:9.5px;font-weight:750;line-height:1.25}
+  .overview-grid-main{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(330px,.72fr);gap:14px}
+  .overview-grid-half{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+  .overview-card{min-width:0;border:1px solid var(--ft-border);border-radius:20px;background:#FFFFFF;box-shadow:var(--ft-shadow);padding:18px}
+  .overview-card__head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
+  .overview-card__head strong{display:block;color:#172033;font-size:14px;font-weight:950;letter-spacing:-.025em}
+  .overview-card__head small{display:block;margin-top:4px;color:#7A8496;font-size:9.5px;font-weight:750}
+  .overview-card__link{border:0;background:transparent;color:#2854E8;font-size:9.5px;font-weight:900;white-space:nowrap}
+  .overview-chart{display:grid;grid-template-columns:repeat(var(--months,6),minmax(88px,1fr));gap:10px;align-items:end;min-height:300px;overflow-x:auto;padding:10px 2px 2px}
+  .overview-chart-month{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:86px}
+  .overview-chart-bars{display:flex;align-items:flex-end;justify-content:center;gap:6px;width:100%;height:225px;padding:8px;border:1px solid #EEF1F5;border-radius:15px;background:#FAFBFD}
+  .overview-chart-bar{position:relative;width:24%;min-width:14px;max-width:24px;border-radius:7px 7px 3px 3px;min-height:4px;background:#2854E8}
+  .overview-chart-bar.is-budget{background:#94A3B8}
+  .overview-chart-bar.is-real{background:#E05270}
+  .overview-chart-bar:hover:after{content:attr(data-value);position:absolute;left:50%;bottom:calc(100% + 7px);transform:translateX(-50%);z-index:5;padding:5px 7px;border-radius:8px;background:#172033;color:#FFF;font-size:8px;font-weight:800;white-space:nowrap;box-shadow:0 7px 18px rgba(15,23,42,.18)}
+  .overview-chart-month>b{font-size:10px;color:#475467;font-weight:900}
+  .overview-chart-month>small{font-size:8.5px;font-weight:850;white-space:nowrap}
+  .overview-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;color:#667085;font-size:9px;font-weight:800}
+  .overview-legend span{display:inline-flex;align-items:center;gap:6px}
+  .overview-legend i{width:8px;height:8px;border-radius:3px;background:#2854E8}
+  .overview-legend .is-budget{background:#94A3B8}.overview-legend .is-real{background:#E05270}
+  .overview-health{display:flex;flex-direction:column;gap:9px}
+  .overview-health-item{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:11px 12px;border:1px solid #E7ECF2;border-radius:14px;background:#FBFCFE}
+  .overview-health-icon{display:grid;place-items:center;width:30px;height:30px;border-radius:10px;background:#EEF3FF;color:#2854E8;font-size:13px;font-weight:950}
+  .overview-health-item.is-warning .overview-health-icon{background:#FFF4E5;color:#B54708}
+  .overview-health-item.is-danger .overview-health-icon{background:#FFF1F3;color:#C01048}
+  .overview-health-copy strong{display:block;color:#344054;font-size:10.5px;font-weight:900}
+  .overview-health-copy small{display:block;margin-top:2px;color:#7A8496;font-size:8.8px;font-weight:750;line-height:1.25}
+  .overview-health-value{color:#172033;font-size:10.5px;font-weight:950;white-space:nowrap}
+  .overview-rank-list{display:flex;flex-direction:column;gap:4px}
+  .overview-rank-row{display:grid;grid-template-columns:minmax(120px,1fr) 100px 96px;gap:10px;align-items:center;padding:10px 3px;border-bottom:1px solid #EDF0F4}
+  .overview-rank-row:last-child{border-bottom:0}
+  .overview-rank-name{display:flex;align-items:center;gap:8px;min-width:0;color:#344054;font-size:10.5px;font-weight:900}
+  .overview-rank-name i{width:7px;height:7px;flex:0 0 7px;border-radius:50%;background:var(--rank-color)}
+  .overview-rank-name span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .overview-rank-value{text-align:right;color:#172033;font-size:10.5px;font-weight:900;white-space:nowrap}
+  .overview-rank-diff{text-align:right;font-size:9px;font-weight:850;white-space:nowrap}
+  .overview-actions-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}
+  .overview-action-card{min-width:0;padding:15px;border:1px solid var(--ft-border);border-radius:17px;background:#FFFFFF;box-shadow:0 7px 22px rgba(15,23,42,.045)}
+  .overview-action-card__top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .overview-action-card__top strong{color:#344054;font-size:11px;font-weight:950}
+  .overview-action-card__count{display:grid;place-items:center;min-width:26px;height:26px;padding:0 7px;border-radius:999px;background:#EEF3FF;color:#2854E8;font-size:9px;font-weight:950}
+  .overview-action-card p{min-height:32px;margin-top:9px;color:#7A8496;font-size:9.5px;font-weight:750;line-height:1.35}
+  .overview-action-card button{margin-top:10px;border:0;background:transparent;color:#2854E8;font-size:9.5px;font-weight:900;padding:0}
+  .overview-table.finance-table{min-width:620px!important}
+  .overview-table.finance-table th:first-child,.overview-table.finance-table td:first-child{min-width:105px!important}
+}
+
+@media (min-width:761px) and (max-width:1230px){
+  .overview-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .overview-grid-main{grid-template-columns:1fr}
+  .overview-grid-half{grid-template-columns:1fr}
+  .overview-actions-grid{grid-template-columns:1fr 1fr}
+}
+
+html[data-theme="dark"] .finance-table-shell,
+html[data-theme="dark"] .overview-card,
+html[data-theme="dark"] .overview-kpi,
+html[data-theme="dark"] .overview-action-card{background:#111827!important;border-color:#2D3748!important;box-shadow:none!important}
+html[data-theme="dark"] .finance-table-shell table.finance-table thead th{background:#1B2638!important;color:#D7DFEA!important;border-color:#3A4659!important}
+html[data-theme="dark"] .finance-table-shell table.finance-table tbody td{background:#111827!important;color:#DDE4EE!important;border-color:#293548!important}
+html[data-theme="dark"] .finance-table-shell table.finance-table tbody tr:hover>td{background:#172033!important}
+html[data-theme="dark"] .finance-table-shell table.finance-table tfoot td,
+html[data-theme="dark"] .finance-table-shell table.finance-table .is-total{background:#1B2638!important;color:#F8FAFC!important;border-color:#3A4659!important}
+html[data-theme="dark"] .finance-table-primary__copy strong,
+html[data-theme="dark"] .finance-value-stack strong,
+html[data-theme="dark"] .finance-balance-stack strong,
+html[data-theme="dark"] .overview-card__head strong,
+html[data-theme="dark"] .overview-kpi strong,
+html[data-theme="dark"] .overview-health-value,
+html[data-theme="dark"] .overview-rank-value{color:#F8FAFC!important}
+html[data-theme="dark"] .finance-table-primary__copy small,
+html[data-theme="dark"] .finance-value-stack small,
+html[data-theme="dark"] .finance-balance-stack small,
+html[data-theme="dark"] .overview-card__head small,
+html[data-theme="dark"] .overview-kpi span,
+html[data-theme="dark"] .overview-kpi small{color:#AEB8C7!important}
+html[data-theme="dark"] .finance-expense-group-row td,
+html[data-theme="dark"] .finance-group-row td,
+html[data-theme="dark"] .finance-subtotal-row td,
+html[data-theme="dark"] .finance-subtotal-row-modern td{background:#141D2B!important;color:#DDE4EE!important;border-color:#344054!important}
+html[data-theme="dark"] .overview-chart-bars,
+html[data-theme="dark"] .overview-health-item{background:#0F172A!important;border-color:#2D3748!important}
+html[data-theme="dark"] .overview-health-copy strong,
+html[data-theme="dark"] .overview-rank-name{color:#E5E7EB!important}
+html[data-theme="dark"] .overview-rank-row{border-color:#253044!important}
+</style>
+
 </head><body><div id="app"></div><div id="modal" class="modal"></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 const storeKey='despesas-casal-profissional-v12';
 const SUPABASE_URL='https://fpcwnjlneaaarzeevgpl.supabase.co';
@@ -1994,8 +2300,8 @@ function resetMobileFilters(type){
 }
 function filterAllows(value,selection){if(Array.isArray(selection))return !selection.length||selection.some(item=>norm(item)===norm(value));return !selection||selection==='todos'||norm(selection)===norm(value)}
 function budgetMeta(b){const city=b.city||cityOf(b.sub||'');return {city,owner:ownerOf(city),name:cleanName(b.sub||cat(b.cat).name),cat:b.cat}} function budgetMatches(b,filters=expenseFilters){const meta=budgetMeta(b);return filterAllows(b.cat,filters.cat)&&filterAllows(meta.owner,filters.owner)&&filterAllows(meta.city,filters.city)} function txMatches(t,filters=txRealizedFilters){const f=normalizeRealizedFilters(filters),payment=paymentFilterKey(t.card);return (f.cat==='todos'||t.cat===f.cat)&&(f.owner==='todos'||t.responsible===f.owner)&&(f.city==='todos'||t.city===f.city)&&(f.payment==='todos'||norm(payment)===norm(f.payment))} function monthNameFull(n){return ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'][n-1]} function monthShort(n){return ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'][n-1]} function periodMonths(){const m=state.month,list=months(),year=m.slice(0,4),mm=Number(m.slice(5,7));if(periodMode==='mes')return[m];if(periodMode==='tri'){const q=Math.floor((mm-1)/3);return list.filter(x=>x.startsWith(year)&&Number(x.slice(5,7))>=q*3+1&&Number(x.slice(5,7))<=q*3+3)}if(periodMode==='sem'){const start=mm<=6?1:7,end=mm<=6?6:12;return list.filter(x=>x.startsWith(year)&&Number(x.slice(5,7))>=start&&Number(x.slice(5,7))<=end)}if(periodMode==='ano')return list.filter(x=>x.startsWith(year));if(periodMode==='aa'){const prev=(Number(year)-1)+'-'+String(mm).padStart(2,'0');return[prev,m].filter(x=>list.includes(x))}return[m]} function periodLabel(){const p=metricMonths();if(view==='estrategia'&&periodMode==='aa')return 'Mesmo mês do ano anterior';if(p.length===1)return labelMonth(p[0]);return labelMonth(p[0])+' a '+labelMonth(p[p.length-1])} function metricMonths(){if(view==='receitas')return monthYearList(revenueScope);if(view==='despesas')return monthYearList(expenseScope);if(view==='rxd')return monthYearList(rxdScope);if(view==='estrategia')return periodMonths();return[state.month]} function scopeRevenue(){return metricMonths().reduce((s,m)=>s+revenueTotal(m),0)} function plannedExpenseTotal(m){return budgetBase(m)} function scopeExpense(){return metricMonths().reduce((s,m)=>s+plannedExpenseTotal(m),0)}
-const viewLabels={receitas:'Receitas',despesas:'Despesas',rxd:'R x D',lancamentos:'Lançamentos',estrategia:'Visão Gerencial',config:'Configurações'};
-const viewShortLabels={receitas:'Receitas',despesas:'Despesas',rxd:'R x D',lancamentos:'Lançar',estrategia:'Gestão',config:'Ajustes'};
+const viewLabels={receitas:'Receitas',despesas:'Despesas',rxd:'R x D',lancamentos:'Lançamentos',estrategia:'Visão Geral',config:'Configurações'};
+const viewShortLabels={receitas:'Receitas',despesas:'Despesas',rxd:'R x D',lancamentos:'Lançar',estrategia:'Geral',config:'Ajustes'};
 const viewIconPaths={
   receitas:'<path d="M12 3v18m0 0 6-6m-6 6-6-6"/>',
   despesas:'<path d="M12 21V3m0 0 6 6m-6-6-6 6"/>',
@@ -2225,7 +2531,7 @@ function layout(content){
   const app=document.getElementById('app');
   sortSelectOptions(app);
   initMobileTopNavFreeze();
-  requestAnimationFrame(()=>{enhanceResponsiveTables();enhanceMobileCollapsibles();requestAnimationFrame(()=>{initColumnWidthEditors(app);applyViewSearch(view);syncSelectionTrayState();postRenderV75();initDesktopTableWheelPassthrough(app)})})
+  requestAnimationFrame(()=>{enhanceResponsiveTables();enhanceMobileCollapsibles();enhanceModernDesktopTables(app);requestAnimationFrame(()=>{initColumnWidthEditors(app);applyViewSearch(view);syncSelectionTrayState();postRenderV75();initDesktopTableWheelPassthrough(app)})})
 }
 
 function kpis(){const rec=scopeRevenue(), exp=scopeExpense(), bal=rec-exp;return `<div class="grid cols3 kpi-strip"><div class="card metric income"><div class="label">Receita</div><div class="value">${fmt(rec)}</div><div class="subtxt">${periodLabel()}</div></div><div class="card metric expense"><div class="label">Despesas</div><div class="value">${fmt(exp)}</div><div class="subtxt">${pct(exp,rec)} da receita</div></div><div class="card metric balance"><div class="label">Saldo</div><div class="value">${fmt(bal)}</div><div class="subtxt">${pct(bal,rec)} da receita</div></div></div>`}
@@ -2236,60 +2542,67 @@ function revenueMobileBlocks(list){
 function expenseSummaryMobileBlocks(cats,list,periodTotal){
   return `<div class="finance-blocks-active mobile-finance-list expense-summary-mobile-blocks">${cats.map(({c,vals,total})=>`<article class="mobile-finance-card" style="--item-color:${c.color}"><div class="mobile-finance-card-head"><div class="mobile-finance-card-title"><strong>${escapeHtml(c.name)}</strong><small>${pct(total,periodTotal)} do período</small></div><div class="mobile-finance-card-total"><small>Total</small><strong>${fmt(total)}</strong></div></div><div class="mobile-month-grid">${list.map((m,index)=>`<div class="mobile-month-cell ${Math.abs(vals[index]||0)<.005?'is-empty':''}"><small>${labelMonth(m)}</small><strong>${vals[index]?fmt(vals[index]):'-'}</strong></div>`).join('')}</div></article>`).join('')||'<div class="empty">Sem dados</div>'}</div>`
 }
+
+function reportPercentValue(part,total){const denominator=Number(total||0);return denominator?Number(part||0)/denominator*100:0}
+function reportPercentLabel(value){const number=Number(value||0);return `${number.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}%`}
+function reportProgress(value,tone='green',status='neutral',customColor=''){
+  const raw=Number(value||0),width=Math.max(0,Math.min(100,raw)),style=customColor?` style="--report-color:${escapeHtml(customColor)}"`:'';
+  return `<div class="report-progress tone-${tone} status-${status}"${style}><span class="report-progress-track"><i class="report-progress-fill" style="width:${width.toFixed(2)}%"></i></span><b>${reportPercentLabel(raw)}</b><i class="report-progress-dot" aria-hidden="true"></i></div>`
+}
+function reportCommitmentStatus(value){const n=Number(value||0);return n>100?'danger':n>=90?'warning':'good'}
+
 function renderReceitas(){
   const list=monthYearList(revenueScope);
   const mobile=useMobileFinanceBlocks();
-  const rows=list.map(m=>{const r=revObj(m),total=revenueTotal(m);return `<tr class="clickable" onclick="openRevenue('${m}')"><td data-label="Mês" class="revenue-month">${labelMonth(m)}</td><td data-label="Cícero" class="rev-cicero">${fmt(r.cicero)}</td><td class="revenue-percent rev-cicero">${pct(r.cicero,total)}</td><td data-label="Nilce" class="rev-nilce">${fmt(r.nilce)}</td><td class="revenue-percent rev-nilce">${pct(r.nilce,total)}</td><td data-label="Outras receitas" class="rev-reserva other-revenue-cell" onclick="event.stopPropagation()"><button class="other-revenue-cell-button" type="button" onclick="openOtherRevenueMonth('${m}')" title="Ver e editar outras receitas"><strong>${fmt(r.reserva)}</strong></button></td><td class="revenue-percent rev-reserva">${pct(r.reserva,total)}</td><td data-label="Total" class="revenue-total"><b>${fmt(total)}</b></td><td class="revenue-percent">100,0%</td></tr>`}).join('');
-  const periodContent=mobile
-    ? revenueMobileBlocks(list)
-    : `<div class="table-wrap revenue-table"><table><thead><tr><th>Mês</th><th>Cícero</th><th>%</th><th>Nilce</th><th>%</th><th>Outras receitas</th><th>%</th><th>Total</th><th>%</th></tr></thead><tbody>${rows}</tbody></table></div>`;
-  layout(`<div class="head"><div><h2>Receitas</h2><p>Resumo do valor total de cada mês, com participação percentual e edição direta.</p></div><div class="actions"><button class="btn" onclick="openFillRevenues()">Cadastrar receitas</button></div></div><div class="card compact-period-card"><div class="section-title"><h3>Período</h3><span>Selecione o ano ou um mês específico</span></div>${simpleControls('receita')}</div><div style="margin-top:16px">${revenueKpis()}</div><div class="card" style="margin-top:16px"><div class="section-title"><h3>Resumo do período</h3></div>${periodContent}</div>`)
+  const totals=list.reduce((acc,m)=>{const r=revObj(m);acc.cicero+=Number(r.cicero||0);acc.nilce+=Number(r.nilce||0);acc.reserva+=Number(r.reserva||0);return acc},{cicero:0,nilce:0,reserva:0});
+  const periodTotal=totals.cicero+totals.nilce+totals.reserva;
+  const sourceCell=(value,total,cls='')=>`<div class="finance-value-stack ${cls}"><strong>${fmt(value)}</strong><small>${total?reportPercentLabel(reportPercentValue(value,total)):'0%'} do mês</small></div>`;
+  const rows=list.map(m=>{
+    const r=revObj(m),total=revenueTotal(m),isCurrent=m===state.month?' is-current-period':'';
+    return `<tr class="clickable${isCurrent}" onclick="openRevenue('${m}')"><td><div class="finance-table-primary"><span class="finance-table-primary__marker" style="--item-color:#2854E8"></span><div class="finance-table-primary__copy"><strong>${labelMonth(m)}</strong><small>${m===state.month?'Período selecionado':'Clique para editar'}</small></div></div></td><td>${sourceCell(r.cicero,total,'finance-source-cicero')}</td><td>${sourceCell(r.nilce,total,'finance-source-nilce')}</td><td class="other-revenue-cell" onclick="event.stopPropagation()"><button class="other-revenue-cell-button" type="button" onclick="openOtherRevenueMonth('${m}')" title="Ver e editar outras receitas">${sourceCell(r.reserva,total,'finance-source-other')}</button></td><td class="is-total"><div class="finance-value-stack"><strong>${fmt(total)}</strong><small>100% do mês</small></div></td></tr>`;
+  }).join('');
+  const totalCell=(value,cls='')=>`<div class="finance-value-stack ${cls}"><strong>${fmt(value)}</strong><small>${periodTotal?reportPercentLabel(reportPercentValue(value,periodTotal)):'0%'} do período</small></div>`;
+  const periodContent=mobile?revenueMobileBlocks(list):`<div class="finance-table-toolbar"><div class="finance-table-toolbar__copy"><strong>Composição mensal</strong><small>Percentuais aparecem junto dos valores, sem colunas extras.</small></div><div class="finance-table-toolbar__meta"><span class="finance-table-toolbar__pill">${list.length} ${list.length===1?'mês':'meses'}</span></div></div><div class="finance-table-shell"><table class="finance-table finance-table--revenue"><thead><tr><th>Mês</th><th>Cícero</th><th>Nilce</th><th>Outras receitas</th><th>Total</th></tr></thead><tbody>${rows}</tbody><tfoot><tr><td>Total do período</td><td>${totalCell(totals.cicero,'finance-source-cicero')}</td><td>${totalCell(totals.nilce,'finance-source-nilce')}</td><td>${totalCell(totals.reserva,'finance-source-other')}</td><td class="is-total"><div class="finance-value-stack"><strong>${fmt(periodTotal)}</strong><small>100% do período</small></div></td></tr></tfoot></table></div>`;
+  layout(`<div class="head"><div><h2>Receitas</h2><p>Resumo do valor total de cada mês, com participação percentual e edição direta.</p></div><div class="actions"><button class="btn" onclick="openFillRevenues()">Cadastrar receitas</button></div></div><div class="card compact-period-card"><div class="section-title"><h3>Período</h3><span>Selecione o ano ou um mês específico</span></div>${simpleControls('receita')}</div><div style="margin-top:16px">${revenueKpis()}</div><div class="card" style="margin-top:16px"><div class="section-title"><h3>Resumo do período</h3><span>Visão executiva por origem</span></div>${periodContent}</div>`)
 }
 function plannedFilteredByCat(m,catId){return (state.budgets[m]||[]).filter(b=>b.cat===catId&&budgetMatches(b,expenseFilters)).reduce((s,b)=>s+Number(b.planned||0),0)}
 function renderDespesas(){
-  const list=monthYearList(expenseScope);
-  const mobile=useMobileFinanceBlocks();
-  const monthHeaders=list.map(m=>`<th class="month-head">${labelMonth(m)}</th>`).join('');
-  const cats=state.categories.filter(c=>expenseFilters.cat==='todos'||c.id===expenseFilters.cat).map(c=>{const vals=list.map(m=>plannedFilteredByCat(m,c.id));const total=vals.reduce((s,v)=>s+v,0);return{c,vals,total}}).filter(x=>x.total>0).sort((a,b)=>textCmp(a.c.name,b.c.name)||(b.total-a.total));
-  const periodTotal=cats.reduce((acc,x)=>acc+x.total,0);
-  const rows=cats.map(({c,vals,total})=>`<tr class="cat-total-row category-tinted" style="--cat-color:${c.color};--cat-soft:${c.color}12"><td><span class="cat-tag" style="background:${c.color}18;color:${c.color}"><span class="row-accent" style="background:${c.color}"></span>${c.name}</span></td>${vals.map(v=>`<td class="soft-cell despesa-cell" style="--cat-color:${c.color}">${fmt(v)}</td>`).join('')}<td class="total-col total-highlight" style="color:${c.color}">${fmt(total)}</td><td>${pct(total,periodTotal)}</td></tr>`).join('');
-  const summaryContent=mobile
-    ? expenseSummaryMobileBlocks(cats,list,periodTotal)
-    : `<div class="table-wrap wide summary-colorized"><table><thead><tr><th>Categoria</th>${monthHeaders}<th>Total</th><th>% do período</th></tr></thead><tbody>${rows||'<tr><td colspan="9">Sem dados</td></tr>'}</tbody></table></div>`;
+  const list=monthYearList(expenseScope),mobile=useMobileFinanceBlocks();
+  const cats=state.categories.filter(c=>expenseFilters.cat==='todos'||c.id===expenseFilters.cat).map(c=>{const vals=list.map(m=>plannedFilteredByCat(m,c.id));const total=vals.reduce((s,v)=>s+v,0);return{c,vals,total}}).filter(x=>x.total>0).sort((a,b)=>b.total-a.total||textCmp(a.c.name,b.c.name));
+  const periodTotal=cats.reduce((acc,x)=>acc+x.total,0),monthTotals=list.map((m,index)=>cats.reduce((sum,item)=>sum+Number(item.vals[index]||0),0));
+  const monthHeaders=list.map(m=>`<th class="${m===state.month?'is-current-period':''}">${labelMonth(m)}</th>`).join('');
+  const rows=cats.map(({c,vals,total})=>`<tr><td><div class="finance-table-primary"><span class="finance-table-primary__marker" style="--item-color:${c.color}"></span><div class="finance-table-primary__copy"><strong>${escapeHtml(c.name)}</strong><small>${reportPercentLabel(reportPercentValue(total,periodTotal))} do período</small></div></div></td>${vals.map((v,index)=>`<td class="${list[index]===state.month?'is-current-period':''}"><span class="money">${Math.abs(v)>.005?fmt(v):'—'}</span></td>`).join('')}<td class="is-total"><span class="money">${fmt(total)}</span></td><td><div class="finance-category-share"><strong>${reportPercentLabel(reportPercentValue(total,periodTotal))}</strong><small>participação</small></div></td></tr>`).join('');
+  const summaryContent=mobile?expenseSummaryMobileBlocks(cats,list,periodTotal):`<div class="finance-table-toolbar"><div class="finance-table-toolbar__copy"><strong>Distribuição do orçamento</strong><small>Cores identificam categorias; valores zerados aparecem como travessão.</small></div><div class="finance-table-toolbar__meta"><span class="finance-table-toolbar__pill">${cats.length} categorias</span></div></div><div class="finance-table-shell"><table class="finance-table finance-table--summary"><thead><tr><th>Categoria</th>${monthHeaders}<th>Total</th><th>% do período</th></tr></thead><tbody>${rows||`<tr><td colspan="${list.length+3}">Sem dados</td></tr>`}</tbody>${cats.length?`<tfoot><tr><td>Total planejado</td>${monthTotals.map((v,index)=>`<td class="${list[index]===state.month?'is-current-period':''}"><span class="money">${fmt(v)}</span></td>`).join('')}<td class="is-total"><span class="money">${fmt(periodTotal)}</span></td><td><div class="finance-category-share"><strong>100%</strong><small>do período</small></div></td></tr></tfoot>`:''}</table></div>`;
   const detail=renderExpenseDetail(list,mobile);
-  layout(`<div class="head"><div><h2>Despesas</h2><p>Resumo consolidado do planejamento financeiro.</p></div><div class="actions"><button class="btn" onclick="openNewBudgetLine()">Nova despesa prevista</button></div></div>${kpis()}<div class="card" style="margin-top:16px"><div class="section-title"><h3>Filtros</h3><span>Selecione o período e refine os resultados</span></div>${expenseFilterControls()}</div><div class="card" style="margin-top:16px"><div class="section-title"><h3>Resumo consolidado de despesas</h3><span>${expenseScope==='ano'?'Ano completo':labelMonth(state.month)}</span></div>${summaryContent}</div><div class="card" style="margin-top:16px"><div class="section-title"><h3>Visão expandida das despesas</h3><span>${mobile?'Toque na despesa para editar o ano ou em um mês para editar o valor':'Clique no nome da despesa para editar o ano inteiro · clique em um valor para editar somente aquele mês'}</span></div>${detail}</div>`)
+  layout(`<div class="head"><div><h2>Despesas</h2><p>Resumo consolidado do planejamento financeiro.</p></div><div class="actions"><button class="btn" onclick="openNewBudgetLine()">Nova despesa prevista</button></div></div>${kpis()}<div class="card" style="margin-top:16px"><div class="section-title"><h3>Filtros</h3><span>Selecione o período e refine os resultados</span></div>${expenseFilterControls()}</div><div class="card" style="margin-top:16px"><div class="section-title"><h3>Resumo consolidado de despesas</h3><span>${expenseScope==='ano'?'Ano completo':labelMonth(state.month)}</span></div>${summaryContent}</div><div class="card" style="margin-top:16px"><div class="section-title"><h3>Visão expandida das despesas</h3><span>${mobile?'Toque na despesa para editar o ano ou em um mês para editar o valor':'Categorias recolhíveis · nome edita o ano · valor edita apenas o mês'}</span></div>${detail}</div>`)
 }
 function renderExpenseDetail(list,mobile=useMobileFinanceBlocks()){
-  const monthHeaders=list.map(m=>`<th class="month-head">${labelMonth(m)}</th>`).join('');
   const grouped={};
   list.forEach(m=>(state.budgets[m]||[]).forEach(b=>{
     if(!budgetMatches(b,expenseFilters))return;
-    const city=b.city||cityOf(b.sub||'');
-    const owner=ownerOf(city);
-    const name=cleanName(b.sub||cat(b.cat).name);
-    const key=[b.cat,name,city].join('|');
+    const city=b.city||cityOf(b.sub||''),owner=ownerOf(city),name=cleanName(b.sub||cat(b.cat).name),key=[b.cat,name,city].join('|');
     if(!grouped[key])grouped[key]={catId:b.cat,name,sub:name,city,owner,vals:{},ids:{},total:0};
-    const plannedLine=Number(b.planned||0);
-    grouped[key].vals[m]=(grouped[key].vals[m]||0)+plannedLine;
-    grouped[key].ids[m]=grouped[key].ids[m]||b.id;
-    grouped[key].total+=plannedLine;
+    const plannedLine=Number(b.planned||0);grouped[key].vals[m]=(grouped[key].vals[m]||0)+plannedLine;grouped[key].ids[m]=grouped[key].ids[m]||b.id;grouped[key].total+=plannedLine;
   }));
   const items=Object.values(grouped).filter(x=>x.total>0).sort(compareExpenseItems);
   if(!items.length)return '<div class="empty">Sem despesas na seleção atual.</div>';
   if(mobile){
-    const mobileCards=items.map(b=>{
-      const annualKey=encodeURIComponent(JSON.stringify({catId:b.catId,sub:b.sub,city:b.city}));
-      return `<article class="mobile-finance-card" style="--item-color:${cat(b.catId).color}"><div class="mobile-finance-card-head"><button class="mobile-finance-action mobile-finance-card-title" type="button" onclick="openAnnualBudgetEditor('${annualKey}')"><strong>${escapeHtml(b.sub)}</strong><div class="mobile-expense-meta"><span style="color:${cat(b.catId).color}">${escapeHtml(cat(b.catId).name)}</span><span>${escapeHtml(shortLabel(b.owner))}</span><span>${escapeHtml(shortLabel(b.city))}</span></div></button><div class="mobile-finance-card-total"><small>Total</small><strong>${fmt(b.total)}</strong></div></div><div class="mobile-month-grid">${list.map(m=>{const v=b.vals[m]||0,id=b.ids[m];return id&&Math.abs(v)>.005?`<button class="mobile-month-cell" type="button" onclick="openBudgetItem('${id}','${m}')"><small>${labelMonth(m)}</small><strong>${fmt(v)}</strong></button>`:`<div class="mobile-month-cell is-empty"><small>${labelMonth(m)}</small><strong>-</strong></div>`}).join('')}</div></article>`
-    }).join('');
+    const mobileCards=items.map(b=>{const annualKey=encodeURIComponent(JSON.stringify({catId:b.catId,sub:b.sub,city:b.city}));return `<article class="mobile-finance-card" style="--item-color:${cat(b.catId).color}"><div class="mobile-finance-card-head"><button class="mobile-finance-action mobile-finance-card-title" type="button" onclick="openAnnualBudgetEditor('${annualKey}')"><strong>${escapeHtml(b.sub)}</strong><div class="mobile-expense-meta"><span style="color:${cat(b.catId).color}">${escapeHtml(cat(b.catId).name)}</span><span>${escapeHtml(shortLabel(b.owner))}</span><span>${escapeHtml(shortLabel(b.city))}</span></div></button><div class="mobile-finance-card-total"><small>Total</small><strong>${fmt(b.total)}</strong></div></div><div class="mobile-month-grid">${list.map(m=>{const v=b.vals[m]||0,id=b.ids[m];return id&&Math.abs(v)>.005?`<button class="mobile-month-cell" type="button" onclick="openBudgetItem('${id}','${m}')"><small>${labelMonth(m)}</small><strong>${fmt(v)}</strong></button>`:`<div class="mobile-month-cell is-empty"><small>${labelMonth(m)}</small><strong>-</strong></div>`}).join('')}</div></article>`}).join('');
     return `<div class="finance-blocks-active mobile-finance-list expense-detail-mobile-blocks">${mobileCards}</div>`;
   }
-  const desktopRows=items.map(b=>{
-    const cells=list.map(m=>{const v=b.vals[m]||0,id=b.ids[m];return Math.abs(v)>.005?`<td data-label="${labelMonth(m)}" class="soft-cell clickable despesa-cell month-value" style="--cat-color:${cat(b.catId).color}" onclick="event.stopPropagation();openBudgetItem('${id}','${m}')">${fmt(v)}</td>`:`<td data-label="${labelMonth(m)}" class="soft-cell muted-cell despesa-cell month-value" style="--cat-color:${cat(b.catId).color}">-</td>`}).join('');
-    const ownerClass=b.owner==='Cícero'?'cicero':b.owner==='Nilce'?'nilce':'compartilhado';
-    const annualKey=encodeURIComponent(JSON.stringify({catId:b.catId,sub:b.sub,city:b.city}));
-    return `<tr class="category-tinted" style="--cat-color:${cat(b.catId).color};--cat-soft:${cat(b.catId).color}12"><td><button class="expense-line-button" type="button" onclick="openAnnualBudgetEditor('${annualKey}')" title="Abrir detalhes desta despesa"><span class="expense-item-main"><strong><span class="row-accent" style="background:${cat(b.catId).color}"></span><span class="expense-name-text">${b.sub}</span></strong><small class="expense-meta"><span class="category-text" style="color:${cat(b.catId).color}">${cat(b.catId).name}</span><span>•</span><span class="owner-inline ${ownerClass}">${shortLabel(b.owner)}</span><span>•</span><span class="expense-meta-city">${shortLabel(b.city)}</span></small></span></button></td>${cells}<td data-label="Total" class="total-col total-highlight" style="color:${cat(b.catId).color}">${fmt(b.total)}</td></tr>`
+  const byCategory=new Map();
+  items.forEach(item=>{if(!byCategory.has(item.catId))byCategory.set(item.catId,[]);byCategory.get(item.catId).push(item)});
+  const monthHeaders=list.map(m=>`<th>${labelMonth(m)}</th>`).join('');
+  const groups=[...byCategory.entries()].map(([catId,catItems])=>{
+    const category=cat(catId),categoryTotal=catItems.reduce((sum,item)=>sum+item.total,0),monthTotals=list.map(m=>catItems.reduce((sum,item)=>sum+Number(item.vals[m]||0),0));
+    const rows=catItems.map(b=>{
+      const annualKey=encodeURIComponent(JSON.stringify({catId:b.catId,sub:b.sub,city:b.city}));
+      const cells=list.map(m=>{const v=b.vals[m]||0,id=b.ids[m];return Math.abs(v)>.005?`<td class="finance-expense-month-cell is-editable" onclick="event.stopPropagation();openBudgetItem('${id}','${m}')"><span class="money">${fmt(v)}</span></td>`:`<td class="finance-expense-month-cell is-muted">—</td>`}).join('');
+      return `<tr class="finance-expense-item-row"><td><div class="finance-table-primary"><span class="finance-table-primary__marker" style="--item-color:${category.color}"></span><div class="finance-table-primary__copy"><strong>${escapeHtml(b.sub)}</strong><small>${escapeHtml(category.name)} · ${escapeHtml(shortLabel(b.city))} · ${escapeHtml(shortLabel(b.owner))}</small></div><button class="finance-inline-action" type="button" onclick="event.stopPropagation();openAnnualBudgetEditor('${annualKey}')" title="Editar planejamento anual" aria-label="Editar planejamento anual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg></button></div></td>${cells}<td class="is-total"><span class="money">${fmt(b.total)}</span></td></tr>`;
+    }).join('');
+    return `<tbody class="finance-expense-group" data-expense-cat="${escapeHtml(catId)}"><tr class="finance-expense-group-row"><td colspan="${list.length+2}"><button type="button" onclick="toggleExpenseCategoryGroup('${escapeHtml(catId)}')"><span class="finance-expense-group-row__title" style="--group-color:${category.color}"><i></i>${escapeHtml(category.name)}</span><span class="finance-expense-group-row__meta">${catItems.length} ${catItems.length===1?'despesa':'despesas'} · ${fmt(categoryTotal)} <span class="finance-expense-group-row__chevron">⌄</span></span></button></td></tr>${rows}<tr class="finance-subtotal-row"><td>Subtotal ${escapeHtml(category.name)}</td>${monthTotals.map(v=>`<td><span class="money">${fmt(v)}</span></td>`).join('')}<td class="is-total"><span class="money">${fmt(categoryTotal)}</span></td></tr></tbody>`;
   }).join('');
-  return `<div class="table-wrap expanded compact expense-enhanced expense-grouped sticky-months"><table><thead><tr><th>Despesa</th>${monthHeaders}<th class="total-head">Total</th></tr></thead><tbody>${desktopRows}</tbody></table></div>`
+  return `<div class="finance-table-toolbar"><div class="finance-table-toolbar__copy"><strong>Despesas agrupadas por categoria</strong><small>Informações de categoria, cidade e responsável foram reunidas na primeira coluna.</small></div><div class="finance-table-toolbar__meta"><span class="finance-table-toolbar__pill">${items.length} itens</span></div></div><div class="finance-table-shell"><table class="finance-table finance-table--expense-detail"><thead><tr><th>Despesa</th>${monthHeaders}<th>Total</th></tr></thead>${groups}</table></div>`
 }
 function renderRxDMobileBlocks(periodMonthsList,cumulativeByMonth){
   return `<div class="rxd-mobile-blocks">${periodMonthsList.map(m=>{
@@ -2304,35 +2617,18 @@ function renderRxDMobileBlocks(periodMonthsList,cumulativeByMonth){
   }).join('')}</div>`
 }
 function renderRxD(){
-  const p=monthYearList(rxdScope);
-  const mobile=useMobileFinanceBlocks();
+  const p=monthYearList(rxdScope),mobile=useMobileFinanceBlocks();
   const max=Math.max(...p.map(m=>Math.max(revenueTotal(m),plannedExpenseTotal(m),Math.abs(revenueTotal(m)-plannedExpenseTotal(m)))),1);
-  const bars=p.map(m=>{
-    const r=revenueTotal(m),e=plannedExpenseTotal(m),b=r-e;
-    return `<div class="bar-group"><div class="bar" style="height:${Math.max(2,r/max*100)}%"></div><div class="bar expense" style="height:${Math.max(2,e/max*100)}%"></div><div class="bar balance" style="height:${Math.max(2,Math.abs(b)/max*100)}%"></div><span>${labelMonth(m).slice(0,3)}</span></div>`
-  }).join('');
-
-  const year=state.month.slice(0,4);
-  const cumulativeByMonth={};
-  let accumulated=0;
-  months().filter(m=>m.startsWith(year)).slice().sort().forEach(m=>{
-    accumulated+=revenueTotal(m)-plannedExpenseTotal(m);
-    cumulativeByMonth[m]=Math.abs(accumulated)<.005?0:accumulated;
-  });
-
-  const rows=p.map(m=>{
-    const r=revenueTotal(m),e=plannedExpenseTotal(m);
-    const bRaw=r-e;
-    const b=Math.abs(bRaw)<.005?0:bRaw;
-    const accumulatedBalance=cumulativeByMonth[m]??b;
-    return `<tr><td data-label="Mês" class="month-name">${labelMonth(m)}</td><td data-label="Receita">${fmt(r)}</td><td data-label="Despesa">${fmt(e)}</td><td data-label="Saldo do mês" class="${b>=0?'pos':'neg'}">${fmt(b)}</td><td data-label="Saldo acumulado" class="${accumulatedBalance>=0?'pos':'neg'}">${fmt(accumulatedBalance)}</td></tr>`
-  }).join('');
-
-  const detailContent=mobile
-    ? renderRxDMobileBlocks(p,cumulativeByMonth)
-    : `<div class="table-wrap rxd-detail-table"><table><thead><tr><th>Mês</th><th>Receita</th><th>Despesa</th><th>Saldo do mês</th><th>Saldo acumulado</th></tr></thead><tbody>${rows}</tbody></table></div>`;
-
-  layout(`<div class="head"><div><h2>R x D</h2><p>Comparativo: receita total x despesa total, com saldo mensal e saldo acumulado.</p></div></div><div class="card"><div class="section-title"><h3>Filtros</h3><span>Selecione o ano ou um mês específico</span></div>${simpleControls('rxd')}</div>${kpis()}<div class="grid cols2" style="margin-top:16px"><div class="card"><div class="section-title"><h3>Comparativo do período</h3><span>Receita, despesa e saldo</span></div><div class="barwrap">${bars}</div><div class="note">Azul = receita, vermelho = despesa, verde = saldo absoluto.</div></div><div class="card"><div class="section-title"><h3>Detalhamento R x D</h3><span>${rxdScope==='ano'?'Ano completo':labelMonth(state.month)}</span></div>${detailContent}</div></div>`)
+  const bars=p.map(m=>{const r=revenueTotal(m),e=plannedExpenseTotal(m),b=r-e;return `<div class="bar-group"><div class="bar" style="height:${Math.max(2,r/max*100)}%"></div><div class="bar expense" style="height:${Math.max(2,e/max*100)}%"></div><div class="bar balance" style="height:${Math.max(2,Math.abs(b)/max*100)}%"></div><span>${labelMonth(m).slice(0,3)}</span></div>`}).join('');
+  const year=state.month.slice(0,4),cumulativeByMonth={};let accumulated=0;
+  months().filter(m=>m.startsWith(year)).slice().sort().forEach(m=>{accumulated+=revenueTotal(m)-plannedExpenseTotal(m);cumulativeByMonth[m]=Math.abs(accumulated)<.005?0:accumulated});
+  const totals=p.reduce((acc,m)=>{acc.revenue+=revenueTotal(m);acc.expense+=plannedExpenseTotal(m);return acc},{revenue:0,expense:0});totals.balance=totals.revenue-totals.expense;totals.commitment=reportPercentValue(totals.expense,totals.revenue);
+  const finalAccumulated=p.length?(cumulativeByMonth[p[p.length-1]]??totals.balance):totals.balance;
+  const statusMeta=value=>value>100?{label:'Acima da receita',cls:'is-danger'}:value>=90?{label:'Atenção',cls:'is-warning'}:{label:'Saudável',cls:'is-good'};
+  const rows=p.map(m=>{const r=revenueTotal(m),e=plannedExpenseTotal(m),bRaw=r-e,b=Math.abs(bRaw)<.005?0:bRaw,acc=cumulativeByMonth[m]??b,commitment=reportPercentValue(e,r),status=statusMeta(commitment);return `<tr class="${m===state.month?'is-current-period':''}"><td><div class="finance-table-primary"><span class="finance-table-primary__marker" style="--item-color:${b>=0?'#047857':'#C8104D'}"></span><div class="finance-table-primary__copy"><strong>${labelMonth(m)}</strong><small>${m===state.month?'Período selecionado':b>=0?'Resultado positivo':'Requer atenção'}</small></div></div></td><td><span class="money">${fmt(r)}</span></td><td><span class="money">${fmt(e)}</span></td><td><div class="finance-balance-stack"><strong class="${b>=0?'is-positive':'is-negative'}">${fmt(b)}</strong><small>Acumulado: ${fmt(acc)}</small></div></td><td><div class="finance-commitment-cell"><strong>${commitment.toLocaleString('pt-BR',{maximumFractionDigits:1})}%</strong><span class="finance-status-chip ${status.cls}">${status.label}</span></div></td></tr>`}).join('');
+  const totalStatus=statusMeta(totals.commitment);
+  const detailContent=mobile?renderRxDMobileBlocks(p,cumulativeByMonth):`<div class="finance-table-toolbar"><div class="finance-table-toolbar__copy"><strong>Receita e despesa por mês</strong><small>O saldo acumulado aparece como informação secundária na própria célula.</small></div><div class="finance-table-toolbar__meta"><span class="finance-table-toolbar__pill">${p.length} ${p.length===1?'mês':'meses'}</span></div></div><div class="finance-table-shell finance-table-shell--rxd"><table class="finance-table finance-table--rxd"><thead><tr><th>Mês</th><th>Receita</th><th>Despesa</th><th>Saldo</th><th>Comprometimento</th></tr></thead><tbody>${rows}</tbody><tfoot><tr><td>Total do período</td><td><span class="money">${fmt(totals.revenue)}</span></td><td><span class="money">${fmt(totals.expense)}</span></td><td><div class="finance-balance-stack"><strong class="${totals.balance>=0?'is-positive':'is-negative'}">${fmt(totals.balance)}</strong><small>Acumulado final: ${fmt(finalAccumulated)}</small></div></td><td><div class="finance-commitment-cell"><strong>${totals.commitment.toLocaleString('pt-BR',{maximumFractionDigits:1})}%</strong><span class="finance-status-chip ${totalStatus.cls}">${totalStatus.label}</span></div></td></tr></tfoot></table></div>`;
+  layout(`<div class="head"><div><h2>R x D</h2><p>Comparativo de receitas, despesas, saldo mensal e saldo acumulado.</p></div></div><div class="card"><div class="section-title"><h3>Filtros</h3><span>Selecione o ano ou um mês específico</span></div>${simpleControls('rxd')}</div>${kpis()}<div class="grid cols2" style="margin-top:16px"><div class="card"><div class="section-title"><h3>Comparativo do período</h3><span>Receita, despesa e saldo</span></div><div class="barwrap">${bars}</div><div class="note">Azul = receita, vermelho = despesa, verde = saldo absoluto.</div></div><div class="card"><div class="section-title"><h3>Detalhamento R x D</h3><span>${rxdScope==='ano'?'Ano completo':labelMonth(state.month)}</span></div>${detailContent}</div></div>`)
 }
 function ensureEnvelopeState(){
   if(!state.envelopes||typeof state.envelopes!=='object')state.envelopes={};
@@ -2448,25 +2744,29 @@ function renderLancamentos(){
 
 function renderEstrategia(){
   const list=periodMonths();
-  const totalReal=list.reduce((s,m)=>s+expenseTotal(m),0);
-  const totalRec=list.reduce((s,m)=>s+revenueTotal(m),0);
-  const totalBudget=list.reduce((s,m)=>s+plannedExpenseTotal(m),0);
-  const saldoProjetado=totalRec-totalBudget;
-  const saldoReal=totalRec-totalReal;
-  const pendente=totalBudget-totalReal;
-  const execPct=totalBudget?totalReal/totalBudget*100:0;
-  const catTotals=state.categories.map(c=>({id:c.id,name:c.name,color:c.color,total:list.reduce((s,m)=>s+(state.budgets[m]||[]).filter(b=>b.cat===c.id).reduce((a,b)=>a+Number(b.planned||0),0),0),real:list.reduce((s,m)=>s+txs(m).filter(t=>t.cat===c.id).reduce((a,t)=>a+Number(t.amount||0),0),0)})).filter(x=>x.total>0||x.real>0).sort((a,b)=>b.total-a.total);
-  const maxCat=Math.max(...catTotals.map(x=>Math.max(x.total,x.real)),1);
-  const catBars=catTotals.map(x=>`<div class="hbar-row executive-row"><div class="hbar-name"><span class="row-accent" style="background:${x.color}"></span>${shortLabel(x.name)}</div><div class="hbar-track dual"><div class="hbar-fill budget-fill" style="--bar-color:${x.color};width:${Math.max(2,x.total/maxCat*100)}%"></div><div class="hbar-fill actual-fill" style="width:${Math.max(0,x.real/maxCat*100)}%"></div></div><div class="hbar-value"><b style="color:${x.color}">${fmt(x.total)}</b><small>Real: ${fmt(x.real)}</small></div></div>`).join('');
-  const ownerTotals={cicero:0,nilce:0,comp:0};
-  list.forEach(m=>(state.budgets[m]||[]).forEach(b=>{const city=b.city||cityOf(b.sub||'');const val=Number(b.planned||0);if(city==='Fortaleza')ownerTotals.cicero+=val;else if(city==='Brasília')ownerTotals.nilce+=val;else ownerTotals.comp+=val;}));
-  const ownerTotal=ownerTotals.cicero+ownerTotals.nilce+ownerTotals.comp;
-  const monthly=list.map(m=>({m,real:expenseTotal(m),budget:plannedExpenseTotal(m),rec:revenueTotal(m)}));
-  const maxMonth=Math.max(...monthly.map(x=>Math.max(x.budget,x.real,x.rec)),1);
-  const trend=monthly.map(x=>{const saldo=x.rec-x.budget;return `<div class="mini-bar executive-trend"><span class="mini-value">${fmt(x.budget)}</span><i style="height:${Math.max(4,x.budget/maxMonth*100)}%"></i><b>${labelMonth(x.m).slice(0,3)}</b><small class="${saldo>=0?'pos':'neg'}">${fmt(saldo)}</small></div>`}).join('');
-  const compareChart=monthly.map(x=>{const dif=x.budget-x.real;return `<div class="compare-bar-group"><div class="compare-bars"><div class="compare-bar-wrap"><span class="compare-bar-value">${fmt(x.budget)}</span><div class="compare-bar budget" style="height:${Math.max(6,x.budget/maxMonth*100)}%"></div><span class="compare-bar-label">Orçado</span></div><div class="compare-bar-wrap"><span class="compare-bar-value">${fmt(x.real)}</span><div class="compare-bar actual" style="height:${Math.max(6,x.real/maxMonth*100)}%"></div><span class="compare-bar-label">Realizado</span></div></div><span class="compare-month">${labelMonth(x.m).slice(0,3)}</span><small class="compare-diff ${dif>=0?'pos':'neg'}">${dif>=0?'Livre ':'Estouro '}${fmt(Math.abs(dif))}</small></div>`}).join('');
-  const rows=list.map(m=>{const r=revenueTotal(m),e=plannedExpenseTotal(m),real=expenseTotal(m),b=r-e,exec=e?real/e*100:0;return `<tr><td>${labelMonth(m)}</td><td>${fmt(r)}</td><td>${fmt(e)}</td><td>${fmt(real)}</td><td class="${b>=0?'pos':'neg'}">${fmt(b)}</td><td>${pct(e,r)}</td><td>${exec.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}%</td></tr>`}).join('');
-  layout(`<div class="head executive-head"><div><h2>Visão Gerencial</h2><p>Painel executivo do período: orçamento original da aba Despesas versus valores realizados. Remanejamentos internos de Lançamentos não alteram esta visão.</p></div></div><div class="card"><div class="section-title"><h3>Filtros</h3><span>Filtro por ano e mês</span></div><div class="filterbar period-filterbar">${periodSelectFields('periodMode',periodMode)}</div></div><div class="executive-kpis"><div class="exec-card revenue"><span>Receita do período</span><strong>${fmt(totalRec)}</strong><small>${periodLabel()}</small></div><div class="exec-card budget"><span>Orçado</span><strong>${fmt(totalBudget)}</strong><small>${pct(totalBudget,totalRec)} da receita</small></div><div class="exec-card actual"><span>Realizado</span><strong>${fmt(totalReal)}</strong><small>${execPct.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}% do orçado</small></div><div class="exec-card balance"><span>Saldo projetado</span><strong class="${saldoProjetado>=0?'pos':'neg'}">${fmt(saldoProjetado)}</strong><small>Receita menos orçamento</small></div><div class="exec-card pending"><span>A realizar</span><strong class="${pendente>=0?'pos':'neg'}">${fmt(pendente)}</strong><small>Orçado menos realizado</small></div><div class="exec-card real"><span>Saldo real parcial</span><strong class="${saldoReal>=0?'pos':'neg'}">${fmt(saldoReal)}</strong><small>Receita menos realizado</small></div></div><div class="executive-grid"><div class="strategy-card chart-card"><div class="section-title"><h3>Orçado x realizado</h3><span>Orçamento original da aba Despesas versus realizado</span></div><div class="legend"><span class="legend-item"><i class="legend-dot budget"></i> Orçado</span><span class="legend-item"><i class="legend-dot actual"></i> Realizado</span></div><div class="strategy-chart-scroll"><div class="compare-chart executive-chart">${compareChart}</div></div></div><div class="strategy-card chart-card"><div class="section-title"><h3>Composição por categoria</h3><span>Barra cheia = orçado · barra escura = realizado</span></div><div class="strategy-chart-scroll"><div class="hbar-list executive-bars">${catBars||'<div class="empty">Sem categorias no período.</div>'}</div></div></div></div><div class="strategy-grid"><div class="strategy-card"><div class="section-title"><h3>Cícero/Fortaleza x Nilce/Brasília</h3><span>Distribuição do previsto por local/responsável</span></div><div class="split-wrap"><div class="split-card c-card"><h4>Cícero · Fort.</h4><strong>${fmt(ownerTotals.cicero)}</strong><span>${pct(ownerTotals.cicero,ownerTotal)} do total</span></div><div class="split-card n-card"><h4>Nilce · Bras.</h4><strong>${fmt(ownerTotals.nilce)}</strong><span>${pct(ownerTotals.nilce,ownerTotal)} do total</span></div><div class="split-card s-card"><h4>Compartil.</h4><strong>${fmt(ownerTotals.comp)}</strong><span>${pct(ownerTotals.comp,ownerTotal)} do total</span></div></div></div><div class="strategy-card"><div class="section-title"><h3>Evolução mensal do orçamento</h3><span>Valor orçado e saldo projetado por mês</span></div><div class="strategy-chart-scroll"><div class="mini-trend executive-mini">${trend}</div></div></div></div><div class="card" style="margin-top:16px"><div class="section-title"><h3>Detalhamento gerencial</h3><span>${periodLabel()}</span></div><div class="table-wrap manager-table"><table><thead><tr><th>Mês</th><th>Receita</th><th>Orçamento</th><th>Realizado</th><th>Saldo Projetado</th><th>Desp./Rec.</th><th>Execução</th></tr></thead><tbody>${rows}</tbody></table></div></div>`)
+  const totalReal=list.reduce((s,m)=>s+expenseTotal(m),0),totalRec=list.reduce((s,m)=>s+revenueTotal(m),0),totalBudget=list.reduce((s,m)=>s+plannedExpenseTotal(m),0);
+  const saldoProjetado=totalRec-totalBudget,saldoReal=totalRec-totalReal,pendente=totalBudget-totalReal,execPct=totalBudget?totalReal/totalBudget*100:0,commitment=totalRec?totalBudget/totalRec*100:0;
+  const catTotals=state.categories.map(c=>({id:c.id,name:c.name,color:c.color,total:list.reduce((s,m)=>s+(state.budgets[m]||[]).filter(b=>b.cat===c.id).reduce((a,b)=>a+Number(b.planned||0),0),0),real:list.reduce((s,m)=>s+txs(m).filter(t=>t.cat===c.id).reduce((a,t)=>a+Number(t.amount||0),0),0)})).filter(x=>x.total>0||x.real>0).sort((a,b)=>b.real-a.real||b.total-a.total);
+  const monthly=list.map(m=>({m,real:expenseTotal(m),budget:plannedExpenseTotal(m),rec:revenueTotal(m)})),maxMonth=Math.max(...monthly.map(x=>Math.max(x.budget,x.real,x.rec)),1);
+  if(useMobileFinanceBlocks()){
+    const mobileRows=monthly.map(x=>{const balance=x.rec-x.budget,exec=x.budget?x.real/x.budget*100:0;return `<tr><td>${labelMonth(x.m)}</td><td>${fmt(x.rec)}</td><td>${fmt(x.budget)}</td><td>${fmt(x.real)}</td><td class="${balance>=0?'pos':'neg'}">${fmt(balance)}</td><td>${exec.toLocaleString('pt-BR',{maximumFractionDigits:1})}%</td></tr>`}).join('');
+    layout(`<div class="head executive-head"><div><h2>Visão Geral</h2><p>Resumo executivo das receitas, do planejamento e dos valores realizados.</p></div></div><div class="card"><div class="section-title"><h3>Período</h3><span>Escolha o ano ou mês</span></div><div class="filterbar period-filterbar">${periodSelectFields('periodMode',periodMode)}</div></div><div class="executive-kpis"><div class="exec-card revenue"><span>Receita</span><strong>${fmt(totalRec)}</strong><small>${periodLabel()}</small></div><div class="exec-card budget"><span>Previsto</span><strong>${fmt(totalBudget)}</strong><small>${commitment.toLocaleString('pt-BR',{maximumFractionDigits:1})}% da receita</small></div><div class="exec-card actual"><span>Realizado</span><strong>${fmt(totalReal)}</strong><small>${execPct.toLocaleString('pt-BR',{maximumFractionDigits:1})}% do previsto</small></div><div class="exec-card balance"><span>Saldo projetado</span><strong class="${saldoProjetado>=0?'pos':'neg'}">${fmt(saldoProjetado)}</strong><small>Receita menos previsto</small></div><div class="exec-card pending"><span>A realizar</span><strong class="${pendente>=0?'pos':'neg'}">${fmt(pendente)}</strong><small>Previsto menos realizado</small></div><div class="exec-card real"><span>Saldo real parcial</span><strong class="${saldoReal>=0?'pos':'neg'}">${fmt(saldoReal)}</strong><small>Receita menos realizado</small></div></div><div class="card" style="margin-top:14px"><div class="section-title"><h3>Resumo mensal</h3><span>${periodLabel()}</span></div><div class="table-wrap manager-table"><table><thead><tr><th>Mês</th><th>Receita</th><th>Previsto</th><th>Realizado</th><th>Saldo</th><th>Execução</th></tr></thead><tbody>${mobileRows}</tbody></table></div></div>`);
+    return;
+  }
+  const chart=monthly.map(x=>{const balance=x.rec-x.budget;return `<div class="overview-chart-month"><div class="overview-chart-bars"><i class="overview-chart-bar" data-value="${fmt(x.rec)}" style="height:${Math.max(3,x.rec/maxMonth*100)}%"></i><i class="overview-chart-bar is-budget" data-value="${fmt(x.budget)}" style="height:${Math.max(3,x.budget/maxMonth*100)}%"></i><i class="overview-chart-bar is-real" data-value="${fmt(x.real)}" style="height:${Math.max(3,x.real/maxMonth*100)}%"></i></div><b>${labelMonth(x.m).slice(0,3)}</b><small class="${balance>=0?'pos':'neg'}">${fmt(balance)}</small></div>`}).join('');
+  const overCategories=catTotals.filter(x=>x.real>x.total+.005),negativeMonths=monthly.filter(x=>x.rec-x.budget<-.005),currentEnvelopes=envelopeSummaries(state.month),negativeEnvelopes=currentEnvelopes.filter(e=>e.currentAvailable<-.005||e.balance<-.005);
+  const health=[
+    {icon:'%',title:'Comprometimento da renda',copy:commitment<=90?'Orçamento em faixa confortável':commitment<=100?'Próximo do limite da receita':'Orçamento acima da receita',value:`${commitment.toLocaleString('pt-BR',{maximumFractionDigits:1})}%`,cls:commitment>100?'is-danger':commitment>=90?'is-warning':''},
+    {icon:'↗',title:'Execução do orçamento',copy:'Quanto do planejamento já foi realizado',value:`${execPct.toLocaleString('pt-BR',{maximumFractionDigits:1})}%`,cls:execPct>100?'is-danger':execPct>=90?'is-warning':''},
+    {icon:'!',title:'Categorias acima do previsto',copy:overCategories.length?'Exigem revisão no período':'Nenhuma categoria ultrapassou o previsto',value:String(overCategories.length),cls:overCategories.length?'is-danger':''},
+    {icon:'▦',title:'Envelopes em atenção',copy:negativeEnvelopes.length?'Saldo semanal ou mensal negativo':'Envelopes dentro do planejado',value:String(negativeEnvelopes.length),cls:negativeEnvelopes.length?'is-warning':''}
+  ].map(x=>`<div class="overview-health-item ${x.cls}"><span class="overview-health-icon">${x.icon}</span><div class="overview-health-copy"><strong>${x.title}</strong><small>${x.copy}</small></div><span class="overview-health-value">${x.value}</span></div>`).join('');
+  const rankRows=catTotals.slice(0,8).map(x=>{const diff=x.total-x.real;return `<div class="overview-rank-row"><div class="overview-rank-name" style="--rank-color:${x.color}"><i></i><span>${escapeHtml(x.name)}</span></div><span class="overview-rank-value">${fmt(x.real)}</span><span class="overview-rank-diff ${diff>=0?'pos':'neg'}">${diff>=0?'Livre ':'Excesso '}${fmt(Math.abs(diff))}</span></div>`}).join('')||'<div class="empty">Sem despesas no período.</div>';
+  const monthRows=monthly.map(x=>{const balance=x.rec-x.budget,exec=x.budget?x.real/x.budget*100:0;return `<tr><td><div class="finance-table-primary__copy"><strong>${labelMonth(x.m)}</strong><small>${exec.toLocaleString('pt-BR',{maximumFractionDigits:0})}% executado</small></div></td><td><span class="money">${fmt(x.rec)}</span></td><td><span class="money">${fmt(x.budget)}</span></td><td><span class="money">${fmt(x.real)}</span></td><td class="${balance>=0?'is-positive':'is-negative'}"><span class="money">${fmt(balance)}</span></td></tr>`}).join('');
+  const allPeriodTx=[];list.forEach(m=>txs(m).forEach(t=>allPeriodTx.push({...t,month:m})));allPeriodTx.sort(transactionDateSortDesc);
+  const installmentCount=allPeriodTx.filter(t=>Number(t.installmentTotal||0)>1).length,recentCount=allPeriodTx.length;
+  const actionCards=`<div class="overview-actions-grid"><div class="overview-action-card"><div class="overview-action-card__top"><strong>Meses com saldo negativo</strong><span class="overview-action-card__count">${negativeMonths.length}</span></div><p>${negativeMonths.length?'Há meses em que o orçamento previsto supera a receita.':'Todos os meses estão com saldo projetado positivo.'}</p><button onclick="setView('rxd')">Abrir R x D →</button></div><div class="overview-action-card"><div class="overview-action-card__top"><strong>Envelopes em atenção</strong><span class="overview-action-card__count">${negativeEnvelopes.length}</span></div><p>${negativeEnvelopes.length?'Existem envelopes com disponibilidade ou saldo negativo.':'Nenhum envelope exige ação neste momento.'}</p><button onclick="setView('lancamentos');setTxPanel('envelopes')">Abrir envelopes →</button></div><div class="overview-action-card"><div class="overview-action-card__top"><strong>Lançamentos do período</strong><span class="overview-action-card__count">${recentCount}</span></div><p>${installmentCount} lançamento(s) fazem parte de parcelamentos identificados.</p><button onclick="setView('lancamentos');setTxPanel('realizados')">Abrir realizados →</button></div></div>`;
+  layout(`<div class="head overview-head"><div><h2>Visão Geral</h2><p>Leitura executiva das receitas, orçamento, realizado e pontos que exigem atenção.</p></div><div class="head-actions"><div class="overview-period-filter">${periodSelectFields('periodMode',periodMode)}</div></div></div><div class="overview-kpis"><div class="overview-kpi" style="--kpi-color:#047857"><span>Receita do período</span><strong>${fmt(totalRec)}</strong><small>${periodLabel()}</small></div><div class="overview-kpi" style="--kpi-color:#2854E8"><span>Despesas previstas</span><strong>${fmt(totalBudget)}</strong><small>${commitment.toLocaleString('pt-BR',{maximumFractionDigits:1})}% da receita</small></div><div class="overview-kpi" style="--kpi-color:#C8104D"><span>Realizado</span><strong>${fmt(totalReal)}</strong><small>${execPct.toLocaleString('pt-BR',{maximumFractionDigits:1})}% do orçamento</small></div><div class="overview-kpi" style="--kpi-color:#7C3AED"><span>Saldo projetado</span><strong class="${saldoProjetado>=0?'pos':'neg'}">${fmt(saldoProjetado)}</strong><small>Receita menos previsto</small></div><div class="overview-kpi" style="--kpi-color:#B54708"><span>A realizar</span><strong class="${pendente>=0?'pos':'neg'}">${fmt(pendente)}</strong><small>Previsto menos realizado</small></div><div class="overview-kpi" style="--kpi-color:#0F766E"><span>Saldo real parcial</span><strong class="${saldoReal>=0?'pos':'neg'}">${fmt(saldoReal)}</strong><small>Receita menos realizado</small></div></div><div class="overview-grid-main"><section class="overview-card"><div class="overview-card__head"><div><strong>Evolução mensal</strong><small>Receita, despesas previstas e valores realizados.</small></div></div><div class="overview-chart" style="--months:${Math.max(monthly.length,1)}">${chart}</div><div class="overview-legend"><span><i></i>Receita</span><span><i class="is-budget"></i>Previsto</span><span><i class="is-real"></i>Realizado</span></div></section><section class="overview-card"><div class="overview-card__head"><div><strong>Situação atual</strong><small>Indicadores que merecem leitura rápida.</small></div></div><div class="overview-health">${health}</div></section></div><div class="overview-grid-half"><section class="overview-card"><div class="overview-card__head"><div><strong>Maiores despesas</strong><small>Ranking por valor realizado no período.</small></div><button class="overview-card__link" onclick="setView('despesas')">Ver despesas</button></div><div class="overview-rank-list">${rankRows}</div></section><section class="overview-card"><div class="overview-card__head"><div><strong>Resumo mensal</strong><small>Comparativo compacto por mês.</small></div><button class="overview-card__link" onclick="setView('rxd')">Abrir R x D</button></div><div class="finance-table-shell"><table class="finance-table overview-table"><thead><tr><th>Mês</th><th>Receita</th><th>Previsto</th><th>Realizado</th><th>Saldo</th></tr></thead><tbody>${monthRows}</tbody></table></div></section></div>${actionCards}`)
 }
 function renderConfig(){const activeEnvelopes=activeEnvelopeCount();const catRows=state.categories.slice().sort((a,b)=>textCmp(a.name,b.name)).map(c=>`<tr><td><span class="cat-tag" style="background:${c.color}18;color:${c.color}"><span class="row-accent" style="background:${c.color}"></span>${c.name}</span></td><td>${c.id}</td><td>${(state.subs[c.id]||[]).length}</td><td><button class="tiny" onclick="openCategory('${c.id}')">Editar</button> <button class="tiny" onclick="openSubcategory('${c.id}')">Nova subcategoria</button></td></tr>`).join('');const subRows=state.categories.slice().sort((a,b)=>textCmp(a.name,b.name)).flatMap(c=>(state.subs[c.id]||[]).slice().sort(textCmp).map(sub=>`<tr><td>${c.name}</td><td>${sub}</td><td><span class="envelope-pill ${isEnvelopeEnabled(c.id,sub)?'on':'off'}">${isEnvelopeEnabled(c.id,sub)?'Ativo':'Não'}</span></td><td><button class="tiny" onclick="openSubcategory('${c.id}','${encodeURIComponent(sub)}')">Editar</button></td></tr>`)).join('');layout(`<div class="head"><div><h2>Configurações</h2><p>Segurança dos dados, formas de pagamento, anos, categorias, subcategorias e envelopes.</p></div><div class="actions"><button class="btn" onclick="openCreateYear('config')">Criar novo ano</button><button class="btn secondary" onclick="openCategory()">Nova categoria</button></div></div><div class="grid cols2"><div class="card"><div class="section-title"><h3>Backup completo independente</h3><span>Arquivo JSON para guardar no Drive</span></div><div class="actions" style="justify-content:flex-start"><button class="btn" onclick="exportJSON()">Exportar backup completo (JSON)</button><label class="btn secondary">Importar backup JSON<input type="file" accept="application/json" style="display:none" onchange="importJSON(event)"></label></div><div class="note" style="margin-top:12px">O arquivo inclui todo o estado financeiro e pode ser restaurado mesmo fora deste navegador.</div></div><div class="card"><div class="section-title"><h3>Anos disponíveis</h3><span>${years().join(', ')}</span></div><div class="actions" style="justify-content:flex-start"><button class="btn secondary" onclick="openCreateYear('config')">Criar ano</button><button class="btn danger" onclick="resetData()">Restaurar base inicial</button></div></div></div>${backupManagerCard()}${columnWidthConfigCard()}${cardsConfigCard()}<div class="card" style="margin-top:16px"><div class="envelope-config-summary"><div><div class="section-title" style="margin-bottom:5px"><h3>Envelopes semanais</h3><span>${activeEnvelopes} subcategoria(s) ativa(s)</span></div><p class="muted" style="font-weight:700;line-height:1.45">Ative ou desative o envelope ao editar uma subcategoria. O cálculo usa semanas de domingo a sábado e redistribui sobras ou excessos após o encerramento.</p></div><button class="btn secondary" onclick="setView('lancamentos');setTxPanel('envelopes')">Ver envelopes</button></div></div><div class="card" style="margin-top:16px"><div class="section-title"><h3>Categorias</h3><span>Editar ou criar categorias</span></div><div class="table-wrap"><table><thead><tr><th>Categoria</th><th>ID</th><th>Subcategorias</th><th>Ações</th></tr></thead><tbody>${catRows}</tbody></table></div></div><div class="card" style="margin-top:16px"><div class="section-title"><h3>Subcategorias</h3><span>Editar, criar e definir quais usam envelope semanal</span></div><div class="table-wrap"><table><thead><tr><th>Categoria</th><th>Subcategoria</th><th>Envelope semanal</th><th>Ações</th></tr></thead><tbody>${subRows||'<tr><td colspan="4">Sem subcategorias</td></tr>'}</tbody></table></div></div>`) } function render(){if(!authUser){renderAuthGate('login');return}if(recoveryMode){renderAuthGate('reset');return}if(!cloudSynced){renderCloudGate(cloudLoadError?'error':'loading',cloudLoadError);return}({receitas:renderReceitas,despesas:renderDespesas,rxd:renderRxD,lancamentos:renderLancamentos,estrategia:renderEstrategia,config:renderConfig}[view]||renderReceitas)()}
 function modal(html){const modalEl=document.getElementById('modal');modalEl.innerHTML=`<div class="sheet">${html}</div>`;modalEl.classList.add('open');const panel=/Editar|Novo lançamento|Nova despesa|Receitas de|Filtros|Colunas da tabela|Filtros salvos|Ações rápidas|Detalhamento mensal|Orçado versus realizado/i.test(String(html));modalEl.classList.toggle('side-panel-mode',panel);sortSelectOptions(modalEl);requestAnimationFrame(()=>initColumnWidthEditors(modalEl))}function closeModal(){const modalEl=document.getElementById('modal');modalEl.classList.remove('open','side-panel-mode');modalEl.innerHTML=''}function catOptions(sel=''){return state.categories.slice().sort((a,b)=>textCmp(a.name,b.name)).map(c=>`<option value="${c.id}" ${c.id===sel?'selected':''}>${c.name}</option>`).join('')}function subOptions(catId,sel=''){return (state.subs[catId]||[]).slice().sort(textCmp).map(s=>`<option value="${s}" ${s===sel?'selected':''}>${s}</option>`).join('')}function txSubOptions(catId,sel=''){const selected=cleanName(sel);const unique=new Map();(state.subs[catId]||[]).forEach(s=>{const label=cleanName(s);if(label&&!unique.has(norm(label)))unique.set(norm(label),label)});return [...unique.values()].sort(textCmp).map(label=>`<option value="${label}" ${norm(label)===norm(selected)?'selected':''}>${label}</option>`).join('')}
@@ -2542,7 +2842,7 @@ function openSubcategory(catId,enc=''){const old=enc?decodeURIComponent(enc):'';
 }
 function downloadJSONFile(content,filename){const blob=new Blob([JSON.stringify(content,null,2)],{type:'application/json'});const a=document.createElement('a');const url=URL.createObjectURL(blob);a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1200)}
 function safeFileStamp(){const d=new Date(),pad=n=>String(n).padStart(2,'0');return `${localDateId(d)}_${pad(d.getHours())}-${pad(d.getMinutes())}`}
-function exportJSON(){if(!cloudSynced)return alert('Aguarde a sincronização da nuvem.');downloadJSONFile({app:'Finanças Cícero & Nilce',version:'v103',exportedAt:new Date().toISOString(),source:'estado-sincronizado-da-nuvem',state:clone(state)},`backup-completo-financas-cicero-nilce-${safeFileStamp()}.json`)}
+function exportJSON(){if(!cloudSynced)return alert('Aguarde a sincronização da nuvem.');downloadJSONFile({app:'Finanças Cícero & Nilce',version:'v2.2',exportedAt:new Date().toISOString(),source:'estado-sincronizado-da-nuvem',state:clone(state)},`backup-completo-financas-cicero-nilce-${safeFileStamp()}.json`)}
 function importJSON(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=async()=>{try{const parsed=JSON.parse(reader.result),payload=parsed&&parsed.state?parsed.state:parsed,next=merge(clone(baseData),payload);if(!confirm('Importar este backup e substituir o estado atual na nuvem?'))return;setCloudStatus('Importando backup...','loading');lastCloudUpdatedAt=await writeCloudRow(SUPABASE_ROW_ID,next);state=next;cacheCloudState();setCloudStatus('Backup importado','ok');closeModal();render();alert('Backup importado e salvo na nuvem.')}catch(err){console.error(err);setCloudStatus('Erro na importação','error');alert('Arquivo inválido ou não foi possível salvar na nuvem.')}};reader.readAsText(file);e.target.value=''}
 async function resetData(){if(!confirm('Restaurar a base inicial? Isso substituirá também o estado principal da nuvem.'))return;setCloudStatus('Restaurando base...','loading');try{const next=clone(baseData);lastCloudUpdatedAt=await writeCloudRow(SUPABASE_ROW_ID,next);state=next;cacheCloudState();setCloudStatus('Base restaurada','ok');render()}catch(err){setCloudStatus('Erro ao restaurar','error');alert('Não foi possível restaurar a base na nuvem.')}}
 
@@ -2578,7 +2878,7 @@ function integritySubExists(catId,sub,city=''){const values=state.subs?.[catId]|
 function integrityBudgetNaturalKey(month,b){const city=b.city||cityOf(b.sub||'');return [month,b.cat,norm(cleanName(b.sub||'')),city].join('|')}
 function integrityTransactionNaturalKey(month,t){const city=t.city||cityOf(t.sub||'');return [month,t.date,norm(t.description||t.desc||''),Number(t.amount||0).toFixed(2),t.cat,norm(cleanName(t.sub||'')),city].join('|')}
 function runIntegrityChecks(){
-  const report={generatedAt:new Date().toISOString(),checks:[],meta:{version:'v103'}};
+  const report={generatedAt:new Date().toISOString(),checks:[],meta:{version:'v2.2'}};
   const allowedCities=new Set(['Fortaleza','Brasília','Compartilhado']);
   const requiredTypes={months:'array',categories:'array',subs:'object',revenues:'object',budgets:'object',transactions:'object',reallocations:'object'};
 
@@ -3111,9 +3411,38 @@ function finishColumnDrag(){
   columnWidthProfile()[drag.key]={title:drag.table.dataset.columnTitle||'Tabela',headers:drag.headers.map(th=>(th.textContent||'').trim()),widths:drag.widths.slice(),updatedAt:new Date().toISOString(),method:'drag'};
   save();activeColumnDrag=null;
 }
+
+function toggleExpenseCategoryGroup(catId){
+  const group=document.querySelector(`.finance-expense-group[data-expense-cat="${String(catId).replace(/"/g,'\\"')}"]`);
+  if(group)group.classList.toggle('is-collapsed');
+}
+function financeBalanceMeta(value){
+  const amount=Number(value||0);
+  if(amount<-.005)return{label:'Excedido',cls:'is-danger'};
+  if(Math.abs(amount)<=.005)return{label:'Zerado',cls:'is-neutral'};
+  return{label:'Com saldo',cls:'is-good'};
+}
+function enhanceModernDesktopTables(root=document){
+  if(!window.matchMedia||!window.matchMedia('(min-width:761px)').matches)return;
+  const forecast=root.querySelector('.tx-forecast-table');
+  if(forecast&&!forecast.dataset.modernFinance){
+    forecast.dataset.modernFinance='true';forecast.classList.add('finance-table-shell');
+    const table=forecast.querySelector('table');if(table){table.classList.add('finance-table','finance-table--forecast');
+      const head=table.querySelector('thead tr');if(head&&!head.querySelector('[data-modern-status-head]')){const th=document.createElement('th');th.dataset.modernStatusHead='true';th.textContent='Situação';head.appendChild(th)}
+      const body=table.querySelector('tbody'),rows=[...body.querySelectorAll('tr.tx-forecast-row')];let current='',groupRows=[];
+      const flush=()=>{if(!groupRows.length)return;const first=groupRows[0],category=first.querySelector('.category-text')?.textContent?.trim()||'Outras',color=getComputedStyle(first).getPropertyValue('--cat-color').trim()||'#94A3B8',totals=groupRows.reduce((a,row)=>({planned:a.planned+Number(row.dataset.planned||0),used:a.used+Number(row.dataset.used||0),balance:a.balance+Number(row.dataset.balance||0)}),{planned:0,used:0,balance:0});
+        const group=document.createElement('tr');group.className='finance-group-row';group.innerHTML=`<td colspan="6"><div class="finance-group-row__content"><span class="finance-group-row__name" style="--group-color:${color}"><i></i>${escapeHtml(category)}</span><small>${groupRows.length} ${groupRows.length===1?'item':'itens'}</small></div></td>`;body.insertBefore(group,first);
+        const subtotal=document.createElement('tr'),meta=financeBalanceMeta(totals.balance);subtotal.className='finance-subtotal-row-modern';subtotal.innerHTML=`<td></td><td>Subtotal ${escapeHtml(category)}</td><td>${fmt(totals.planned)}</td><td>${fmt(totals.used)}</td><td class="${totals.balance<0?'neg':totals.balance>0?'pos':'muted'}">${fmt(totals.balance)}</td><td><span class="finance-status-chip ${meta.cls}">${meta.label}</span></td>`;body.insertBefore(subtotal,groupRows[groupRows.length-1].nextSibling);groupRows=[]};
+      rows.forEach(row=>{const category=row.querySelector('.category-text')?.textContent?.trim()||'Outras';if(current&&category!==current)flush();current=category;groupRows.push(row);const balance=Number(row.dataset.balance||0),meta=financeBalanceMeta(balance);if(!row.querySelector('[data-modern-status-cell]')){const td=document.createElement('td');td.dataset.modernStatusCell='true';td.innerHTML=`<span class="finance-status-chip ${meta.cls}">${meta.label}</span>`;row.appendChild(td)}});flush();
+    }}
+  const envelopes=root.querySelector('.tx-envelope-table');
+  if(envelopes&&!envelopes.dataset.modernFinance){envelopes.dataset.modernFinance='true';envelopes.classList.add('finance-table-shell');const table=envelopes.querySelector('table');if(table){table.classList.add('finance-table','finance-table--envelopes');const heads=table.querySelectorAll('thead th'),labels=['Envelope','Planejado','Utilizado','Saldo mensal','Disponível na semana','Situação'];heads.forEach((th,i)=>{if(labels[i])th.textContent=labels[i]})}}
+}
+
 // v103 — parcelamento manual de lançamentos existentes e filtros múltiplos no Acompanhamento.
 
 // v104 — filtros simples no Acompanhamento e seleção múltipla somente em Realizados.
+// v2.2 — sistema moderno unificado para tabelas no computador e nova Visão Geral.
 function firstFilterValue(value){
   const values=Array.isArray(value)?value:[value];
   const found=values.find(item=>item&&item!=='todos');
