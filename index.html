@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.1 -->
+<!-- Despesas Casal - Controle Financeiro | versão 1.104 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -1688,149 +1688,6 @@ html[data-theme="dark"] .realized-filter-chip button{background:#172033!importan
 }
 </style>
 
-
-<style id="v21-professional-finance-tables">
-/* 2.1 — tabelas financeiras com leitura executiva e barras de desempenho */
-.report-table-shell{
-  --report-accent:#2854E8;
-  position:relative!important;
-  overflow:auto!important;
-  border:1px solid #D8E0EA!important;
-  border-top:4px solid var(--report-accent)!important;
-  border-radius:16px!important;
-  background:#FFFFFF!important;
-  box-shadow:0 10px 28px rgba(15,23,42,.065)!important;
-}
-.report-table-shell.report-tone-revenue{--report-accent:#0EAAA1}
-.report-table-shell.report-tone-expense{--report-accent:#F06A6A}
-.report-table-shell.report-tone-balance{--report-accent:#2854E8}
-.report-table-shell .professional-report-table{
-  width:100%!important;
-  min-width:760px!important;
-  border-collapse:separate!important;
-  border-spacing:0!important;
-  table-layout:auto!important;
-  font-variant-numeric:tabular-nums;
-}
-.report-table-shell .professional-report-table thead th{
-  position:sticky!important;
-  top:0!important;
-  z-index:24!important;
-  height:42px!important;
-  padding:10px 12px!important;
-  border:0!important;
-  border-right:1px solid #E2E8F0!important;
-  border-bottom:1px solid #CBD5E1!important;
-  border-radius:0!important;
-  background:linear-gradient(180deg,#F8FAFC 0%,#EEF2F6 100%)!important;
-  color:#344054!important;
-  box-shadow:none!important;
-  font-size:9.5px!important;
-  line-height:1.15!important;
-  font-weight:950!important;
-  letter-spacing:.055em!important;
-  text-transform:uppercase!important;
-  white-space:nowrap!important;
-}
-.report-table-shell .professional-report-table thead th:last-child{border-right:0!important}
-.report-table-shell .professional-report-table tbody td,
-.report-table-shell .professional-report-table tfoot td{
-  height:42px!important;
-  padding:9px 12px!important;
-  border:0!important;
-  border-right:1px solid #E6EAF0!important;
-  border-bottom:1px solid #E1E6ED!important;
-  border-radius:0!important;
-  background:#FFFFFF!important;
-  color:#253044!important;
-  font-size:11px!important;
-  line-height:1.25!important;
-  vertical-align:middle!important;
-}
-.report-table-shell .professional-report-table tbody tr:nth-child(even) td{background:#FBFCFD!important}
-.report-table-shell .professional-report-table tbody tr:hover td{background:#F3F7FC!important}
-.report-table-shell .professional-report-table tbody td:last-child,
-.report-table-shell .professional-report-table tfoot td:last-child{border-right:0!important}
-.report-table-shell .professional-report-table tbody tr:last-child td{border-bottom:1px solid #D5DDE7!important}
-.report-table-shell .professional-report-table tfoot td{
-  position:sticky!important;
-  bottom:0!important;
-  z-index:18!important;
-  min-height:44px!important;
-  border-top:2px solid var(--report-accent)!important;
-  border-bottom:0!important;
-  background:linear-gradient(180deg,#F8FAFC,#EEF3F8)!important;
-  color:#172033!important;
-  font-weight:950!important;
-  box-shadow:0 -5px 14px rgba(15,23,42,.055)!important;
-}
-.report-primary-cell{min-width:116px!important;text-align:left!important}
-.report-primary{display:flex;flex-direction:column;gap:2px;min-width:0}
-.report-primary strong{color:#253044;font-size:11.5px;font-weight:950;white-space:nowrap}
-.report-primary small{color:#7A8496;font-size:8.5px;font-weight:750;white-space:nowrap}
-.report-money-cell{text-align:right!important;white-space:nowrap!important}
-.report-money-cell .money{font-size:11.3px!important;font-weight:900!important;color:#172033!important}
-.report-total-cell{background:#F5F8FC!important;font-weight:950!important}
-.report-total-cell .money{font-size:11.8px!important}
-.report-progress-cell{min-width:154px!important;width:176px!important}
-.report-progress{
-  --report-color:#0EAAA1;
-  display:grid;
-  grid-template-columns:minmax(72px,1fr) 42px 9px;
-  gap:8px;
-  align-items:center;
-  min-width:138px;
-}
-.report-progress.tone-blue{--report-color:#2F67D8}
-.report-progress.tone-pink{--report-color:#D8518D}
-.report-progress.tone-green{--report-color:#0EAAA1}
-.report-progress.tone-coral{--report-color:#F06A6A}
-.report-progress.tone-purple{--report-color:#7C5CE5}
-.report-progress.tone-amber{--report-color:#D78B28}
-.report-progress-track{height:16px;border-radius:2px;background:#E9EEF4;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(148,163,184,.2)}
-.report-progress-fill{display:block;height:100%;min-width:2px;background:var(--report-color);transition:width .2s ease}
-.report-progress b{color:#344054;font-size:9.5px;font-weight:950;text-align:right;white-space:nowrap}
-.report-progress-dot{width:7px;height:7px;border-radius:50%;background:var(--report-color);box-shadow:0 0 0 3px color-mix(in srgb,var(--report-color) 13%,transparent)}
-.report-progress.status-warning{--report-color:#E29A35}
-.report-progress.status-danger{--report-color:#F06A6A}
-.report-progress.status-good{--report-color:#0EAAA1}
-.report-balance-positive{color:#047857!important;font-weight:950!important}
-.report-balance-negative{color:#B42318!important;font-weight:950!important}
-.report-total-label{display:flex;align-items:center;gap:8px;font-weight:950;white-space:nowrap}
-.report-total-label:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--report-accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--report-accent) 12%,transparent)}
-.report-table-caption{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  margin:0 0 10px;
-  padding:0 2px;
-}
-.report-table-caption strong{color:#344054;font-size:11px;font-weight:950}
-.report-table-caption span{color:#7A8496;font-size:9.5px;font-weight:750}
-.report-table-shell .expense-detail-report-table td:first-child{min-width:250px!important}
-.report-table-shell .expense-detail-report-table .total-highlight{background:#F3F6FA!important;color:#172033!important}
-.report-table-shell .expense-detail-report-table tbody td{border-color:#E3E8EF!important}
-html[data-theme="dark"] .report-table-shell{background:#111827!important;border-color:#344054!important}
-html[data-theme="dark"] .report-table-shell .professional-report-table thead th{background:#1B2638!important;color:#D7DFEA!important;border-color:#3A4659!important}
-html[data-theme="dark"] .report-table-shell .professional-report-table tbody td{background:#111827!important;color:#E8EDF5!important;border-color:#2E3A4C!important}
-html[data-theme="dark"] .report-table-shell .professional-report-table tbody tr:nth-child(even) td{background:#141D2B!important}
-html[data-theme="dark"] .report-table-shell .professional-report-table tbody tr:hover td{background:#172033!important}
-html[data-theme="dark"] .report-table-shell .professional-report-table tfoot td{background:#1B2638!important;color:#F8FAFC!important;border-color:#465267!important}
-html[data-theme="dark"] .report-primary strong,
-html[data-theme="dark"] .report-money-cell .money,
-html[data-theme="dark"] .report-progress b{color:#F1F5F9!important}
-html[data-theme="dark"] .report-primary small{color:#AEB8C7!important}
-html[data-theme="dark"] .report-progress-track{background:#253044}
-@media(max-width:1120px){
-  .report-table-shell .professional-report-table{min-width:720px!important}
-  .report-progress-cell{min-width:142px!important;width:156px!important}
-}
-@media(max-width:900px){
-  .report-table-caption{align-items:flex-start;flex-direction:column;gap:2px}
-}
-</style>
-
 </head><body><div id="app"></div><div id="modal" class="modal"></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 const storeKey='despesas-casal-profissional-v12';
 const SUPABASE_URL='https://fpcwnjlneaaarzeevgpl.supabase.co';
@@ -2379,25 +2236,14 @@ function revenueMobileBlocks(list){
 function expenseSummaryMobileBlocks(cats,list,periodTotal){
   return `<div class="finance-blocks-active mobile-finance-list expense-summary-mobile-blocks">${cats.map(({c,vals,total})=>`<article class="mobile-finance-card" style="--item-color:${c.color}"><div class="mobile-finance-card-head"><div class="mobile-finance-card-title"><strong>${escapeHtml(c.name)}</strong><small>${pct(total,periodTotal)} do período</small></div><div class="mobile-finance-card-total"><small>Total</small><strong>${fmt(total)}</strong></div></div><div class="mobile-month-grid">${list.map((m,index)=>`<div class="mobile-month-cell ${Math.abs(vals[index]||0)<.005?'is-empty':''}"><small>${labelMonth(m)}</small><strong>${vals[index]?fmt(vals[index]):'-'}</strong></div>`).join('')}</div></article>`).join('')||'<div class="empty">Sem dados</div>'}</div>`
 }
-
-function reportPercentValue(part,total){const denominator=Number(total||0);return denominator?Number(part||0)/denominator*100:0}
-function reportPercentLabel(value){const number=Number(value||0);return `${number.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}%`}
-function reportProgress(value,tone='green',status='neutral',customColor=''){
-  const raw=Number(value||0),width=Math.max(0,Math.min(100,raw)),style=customColor?` style="--report-color:${escapeHtml(customColor)}"`:'';
-  return `<div class="report-progress tone-${tone} status-${status}"${style}><span class="report-progress-track"><i class="report-progress-fill" style="width:${width.toFixed(2)}%"></i></span><b>${reportPercentLabel(raw)}</b><i class="report-progress-dot" aria-hidden="true"></i></div>`
-}
-function reportCommitmentStatus(value){const n=Number(value||0);return n>100?'danger':n>=90?'warning':'good'}
-
 function renderReceitas(){
   const list=monthYearList(revenueScope);
   const mobile=useMobileFinanceBlocks();
-  const totals=list.reduce((acc,m)=>{const r=revObj(m);acc.cicero+=Number(r.cicero||0);acc.nilce+=Number(r.nilce||0);acc.reserva+=Number(r.reserva||0);return acc},{cicero:0,nilce:0,reserva:0});
-  const periodTotal=totals.cicero+totals.nilce+totals.reserva;
-  const rows=list.map(m=>{const r=revObj(m),total=revenueTotal(m);return `<tr class="clickable" onclick="openRevenue('${m}')"><td class="report-primary-cell"><div class="report-primary"><strong>${labelMonth(m)}</strong><small>Clique para editar</small></div></td><td class="report-money-cell rev-cicero"><span class="money">${fmt(r.cicero)}</span></td><td class="report-progress-cell rev-cicero">${reportProgress(reportPercentValue(r.cicero,total),'blue')}</td><td class="report-money-cell rev-nilce"><span class="money">${fmt(r.nilce)}</span></td><td class="report-progress-cell rev-nilce">${reportProgress(reportPercentValue(r.nilce,total),'pink')}</td><td class="report-money-cell rev-reserva other-revenue-cell" onclick="event.stopPropagation()"><button class="other-revenue-cell-button" type="button" onclick="openOtherRevenueMonth('${m}')" title="Ver e editar outras receitas"><strong>${fmt(r.reserva)}</strong></button></td><td class="report-progress-cell rev-reserva">${reportProgress(reportPercentValue(r.reserva,total),'green')}</td><td class="report-money-cell report-total-cell"><span class="money">${fmt(total)}</span></td></tr>`}).join('');
+  const rows=list.map(m=>{const r=revObj(m),total=revenueTotal(m);return `<tr class="clickable" onclick="openRevenue('${m}')"><td data-label="Mês" class="revenue-month">${labelMonth(m)}</td><td data-label="Cícero" class="rev-cicero">${fmt(r.cicero)}</td><td class="revenue-percent rev-cicero">${pct(r.cicero,total)}</td><td data-label="Nilce" class="rev-nilce">${fmt(r.nilce)}</td><td class="revenue-percent rev-nilce">${pct(r.nilce,total)}</td><td data-label="Outras receitas" class="rev-reserva other-revenue-cell" onclick="event.stopPropagation()"><button class="other-revenue-cell-button" type="button" onclick="openOtherRevenueMonth('${m}')" title="Ver e editar outras receitas"><strong>${fmt(r.reserva)}</strong></button></td><td class="revenue-percent rev-reserva">${pct(r.reserva,total)}</td><td data-label="Total" class="revenue-total"><b>${fmt(total)}</b></td><td class="revenue-percent">100,0%</td></tr>`}).join('');
   const periodContent=mobile
     ? revenueMobileBlocks(list)
-    : `<div class="report-table-caption"><strong>Composição mensal das receitas</strong><span>Barras indicam a participação de cada origem no total do mês</span></div><div class="table-wrap report-table-shell report-tone-revenue revenue-table"><table class="professional-report-table"><thead><tr><th>Mês</th><th>Cícero</th><th>Participação</th><th>Nilce</th><th>Participação</th><th>Outras receitas</th><th>Participação</th><th>Total</th></tr></thead><tbody>${rows}</tbody><tfoot><tr><td><span class="report-total-label">Total do período</span></td><td class="report-money-cell"><span class="money">${fmt(totals.cicero)}</span></td><td class="report-progress-cell">${reportProgress(reportPercentValue(totals.cicero,periodTotal),'blue')}</td><td class="report-money-cell"><span class="money">${fmt(totals.nilce)}</span></td><td class="report-progress-cell">${reportProgress(reportPercentValue(totals.nilce,periodTotal),'pink')}</td><td class="report-money-cell"><span class="money">${fmt(totals.reserva)}</span></td><td class="report-progress-cell">${reportProgress(reportPercentValue(totals.reserva,periodTotal),'green')}</td><td class="report-money-cell report-total-cell"><span class="money">${fmt(periodTotal)}</span></td></tr></tfoot></table></div>`;
-  layout(`<div class="head"><div><h2>Receitas</h2><p>Resumo do valor total de cada mês, com participação percentual e edição direta.</p></div><div class="actions"><button class="btn" onclick="openFillRevenues()">Cadastrar receitas</button></div></div><div class="card compact-period-card"><div class="section-title"><h3>Período</h3><span>Selecione o ano ou um mês específico</span></div>${simpleControls('receita')}</div><div style="margin-top:16px">${revenueKpis()}</div><div class="card" style="margin-top:16px"><div class="section-title"><h3>Resumo do período</h3><span>Visão executiva por origem</span></div>${periodContent}</div>`)
+    : `<div class="table-wrap revenue-table"><table><thead><tr><th>Mês</th><th>Cícero</th><th>%</th><th>Nilce</th><th>%</th><th>Outras receitas</th><th>%</th><th>Total</th><th>%</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  layout(`<div class="head"><div><h2>Receitas</h2><p>Resumo do valor total de cada mês, com participação percentual e edição direta.</p></div><div class="actions"><button class="btn" onclick="openFillRevenues()">Cadastrar receitas</button></div></div><div class="card compact-period-card"><div class="section-title"><h3>Período</h3><span>Selecione o ano ou um mês específico</span></div>${simpleControls('receita')}</div><div style="margin-top:16px">${revenueKpis()}</div><div class="card" style="margin-top:16px"><div class="section-title"><h3>Resumo do período</h3></div>${periodContent}</div>`)
 }
 function plannedFilteredByCat(m,catId){return (state.budgets[m]||[]).filter(b=>b.cat===catId&&budgetMatches(b,expenseFilters)).reduce((s,b)=>s+Number(b.planned||0),0)}
 function renderDespesas(){
@@ -2406,11 +2252,10 @@ function renderDespesas(){
   const monthHeaders=list.map(m=>`<th class="month-head">${labelMonth(m)}</th>`).join('');
   const cats=state.categories.filter(c=>expenseFilters.cat==='todos'||c.id===expenseFilters.cat).map(c=>{const vals=list.map(m=>plannedFilteredByCat(m,c.id));const total=vals.reduce((s,v)=>s+v,0);return{c,vals,total}}).filter(x=>x.total>0).sort((a,b)=>textCmp(a.c.name,b.c.name)||(b.total-a.total));
   const periodTotal=cats.reduce((acc,x)=>acc+x.total,0);
-  const monthTotals=list.map((m,index)=>cats.reduce((sum,item)=>sum+Number(item.vals[index]||0),0));
-  const rows=cats.map(({c,vals,total})=>`<tr style="--cat-color:${c.color};--cat-soft:${c.color}12"><td class="report-primary-cell"><div class="report-primary"><strong style="color:${c.color}">${escapeHtml(c.name)}</strong><small>${reportPercentLabel(reportPercentValue(total,periodTotal))} do período</small></div></td>${vals.map(v=>`<td class="report-money-cell"><span class="money">${fmt(v)}</span></td>`).join('')}<td class="report-money-cell report-total-cell"><span class="money">${fmt(total)}</span></td><td class="report-progress-cell">${reportProgress(reportPercentValue(total,periodTotal),'green','neutral',c.color)}</td></tr>`).join('');
+  const rows=cats.map(({c,vals,total})=>`<tr class="cat-total-row category-tinted" style="--cat-color:${c.color};--cat-soft:${c.color}12"><td><span class="cat-tag" style="background:${c.color}18;color:${c.color}"><span class="row-accent" style="background:${c.color}"></span>${c.name}</span></td>${vals.map(v=>`<td class="soft-cell despesa-cell" style="--cat-color:${c.color}">${fmt(v)}</td>`).join('')}<td class="total-col total-highlight" style="color:${c.color}">${fmt(total)}</td><td>${pct(total,periodTotal)}</td></tr>`).join('');
   const summaryContent=mobile
     ? expenseSummaryMobileBlocks(cats,list,periodTotal)
-    : `<div class="report-table-caption"><strong>Distribuição do orçamento por categoria</strong><span>A barra mostra o peso de cada categoria no período selecionado</span></div><div class="table-wrap wide summary-colorized report-table-shell report-tone-expense"><table class="professional-report-table"><thead><tr><th>Categoria</th>${monthHeaders}<th>Total</th><th>% do período</th></tr></thead><tbody>${rows||`<tr><td colspan="${list.length+3}">Sem dados</td></tr>`}</tbody>${cats.length?`<tfoot><tr><td><span class="report-total-label">Total planejado</span></td>${monthTotals.map(v=>`<td class="report-money-cell"><span class="money">${fmt(v)}</span></td>`).join('')}<td class="report-money-cell report-total-cell"><span class="money">${fmt(periodTotal)}</span></td><td class="report-progress-cell">${reportProgress(100,'coral')}</td></tr></tfoot>`:''}</table></div>`;
+    : `<div class="table-wrap wide summary-colorized"><table><thead><tr><th>Categoria</th>${monthHeaders}<th>Total</th><th>% do período</th></tr></thead><tbody>${rows||'<tr><td colspan="9">Sem dados</td></tr>'}</tbody></table></div>`;
   const detail=renderExpenseDetail(list,mobile);
   layout(`<div class="head"><div><h2>Despesas</h2><p>Resumo consolidado do planejamento financeiro.</p></div><div class="actions"><button class="btn" onclick="openNewBudgetLine()">Nova despesa prevista</button></div></div>${kpis()}<div class="card" style="margin-top:16px"><div class="section-title"><h3>Filtros</h3><span>Selecione o período e refine os resultados</span></div>${expenseFilterControls()}</div><div class="card" style="margin-top:16px"><div class="section-title"><h3>Resumo consolidado de despesas</h3><span>${expenseScope==='ano'?'Ano completo':labelMonth(state.month)}</span></div>${summaryContent}</div><div class="card" style="margin-top:16px"><div class="section-title"><h3>Visão expandida das despesas</h3><span>${mobile?'Toque na despesa para editar o ano ou em um mês para editar o valor':'Clique no nome da despesa para editar o ano inteiro · clique em um valor para editar somente aquele mês'}</span></div>${detail}</div>`)
 }
@@ -2444,7 +2289,7 @@ function renderExpenseDetail(list,mobile=useMobileFinanceBlocks()){
     const annualKey=encodeURIComponent(JSON.stringify({catId:b.catId,sub:b.sub,city:b.city}));
     return `<tr class="category-tinted" style="--cat-color:${cat(b.catId).color};--cat-soft:${cat(b.catId).color}12"><td><button class="expense-line-button" type="button" onclick="openAnnualBudgetEditor('${annualKey}')" title="Abrir detalhes desta despesa"><span class="expense-item-main"><strong><span class="row-accent" style="background:${cat(b.catId).color}"></span><span class="expense-name-text">${b.sub}</span></strong><small class="expense-meta"><span class="category-text" style="color:${cat(b.catId).color}">${cat(b.catId).name}</span><span>•</span><span class="owner-inline ${ownerClass}">${shortLabel(b.owner)}</span><span>•</span><span class="expense-meta-city">${shortLabel(b.city)}</span></small></span></button></td>${cells}<td data-label="Total" class="total-col total-highlight" style="color:${cat(b.catId).color}">${fmt(b.total)}</td></tr>`
   }).join('');
-  return `<div class="report-table-caption"><strong>Detalhamento mensal das despesas</strong><span>Valores alinhados por mês e total do período</span></div><div class="table-wrap expanded compact expense-enhanced expense-grouped sticky-months report-table-shell report-tone-expense"><table class="professional-report-table expense-detail-report-table"><thead><tr><th>Despesa</th>${monthHeaders}<th class="total-head">Total</th></tr></thead><tbody>${desktopRows}</tbody></table></div>`
+  return `<div class="table-wrap expanded compact expense-enhanced expense-grouped sticky-months"><table><thead><tr><th>Despesa</th>${monthHeaders}<th class="total-head">Total</th></tr></thead><tbody>${desktopRows}</tbody></table></div>`
 }
 function renderRxDMobileBlocks(periodMonthsList,cumulativeByMonth){
   return `<div class="rxd-mobile-blocks">${periodMonthsList.map(m=>{
@@ -2475,22 +2320,17 @@ function renderRxD(){
     cumulativeByMonth[m]=Math.abs(accumulated)<.005?0:accumulated;
   });
 
-  const totals=p.reduce((acc,m)=>{acc.revenue+=revenueTotal(m);acc.expense+=plannedExpenseTotal(m);return acc},{revenue:0,expense:0});
-  totals.balance=totals.revenue-totals.expense;
-  totals.commitment=reportPercentValue(totals.expense,totals.revenue);
-  const finalAccumulated=p.length?(cumulativeByMonth[p[p.length-1]]??totals.balance):totals.balance;
   const rows=p.map(m=>{
     const r=revenueTotal(m),e=plannedExpenseTotal(m);
     const bRaw=r-e;
     const b=Math.abs(bRaw)<.005?0:bRaw;
     const accumulatedBalance=cumulativeByMonth[m]??b;
-    const commitment=reportPercentValue(e,r);
-    return `<tr><td class="report-primary-cell"><div class="report-primary"><strong>${labelMonth(m)}</strong><small>${b>=0?'Resultado positivo':'Atenção ao orçamento'}</small></div></td><td class="report-money-cell"><span class="money">${fmt(r)}</span></td><td class="report-money-cell"><span class="money">${fmt(e)}</span></td><td class="report-money-cell ${b>=0?'report-balance-positive':'report-balance-negative'}"><span class="money">${fmt(b)}</span></td><td class="report-progress-cell">${reportProgress(commitment,'green',reportCommitmentStatus(commitment))}</td><td class="report-money-cell ${accumulatedBalance>=0?'report-balance-positive':'report-balance-negative'}"><span class="money">${fmt(accumulatedBalance)}</span></td></tr>`
+    return `<tr><td data-label="Mês" class="month-name">${labelMonth(m)}</td><td data-label="Receita">${fmt(r)}</td><td data-label="Despesa">${fmt(e)}</td><td data-label="Saldo do mês" class="${b>=0?'pos':'neg'}">${fmt(b)}</td><td data-label="Saldo acumulado" class="${accumulatedBalance>=0?'pos':'neg'}">${fmt(accumulatedBalance)}</td></tr>`
   }).join('');
 
   const detailContent=mobile
     ? renderRxDMobileBlocks(p,cumulativeByMonth)
-    : `<div class="report-table-caption"><strong>Receita x despesa por mês</strong><span>Até 90%: confortável · 90% a 100%: atenção · acima de 100%: excedido</span></div><div class="table-wrap rxd-detail-table report-table-shell report-tone-balance"><table class="professional-report-table"><thead><tr><th>Mês</th><th>Receita</th><th>Despesa</th><th>Diferença</th><th>% comprometido</th><th>Saldo acumulado</th></tr></thead><tbody>${rows}</tbody><tfoot><tr><td><span class="report-total-label">Total do período</span></td><td class="report-money-cell"><span class="money">${fmt(totals.revenue)}</span></td><td class="report-money-cell"><span class="money">${fmt(totals.expense)}</span></td><td class="report-money-cell ${totals.balance>=0?'report-balance-positive':'report-balance-negative'}"><span class="money">${fmt(totals.balance)}</span></td><td class="report-progress-cell">${reportProgress(totals.commitment,'green',reportCommitmentStatus(totals.commitment))}</td><td class="report-money-cell ${finalAccumulated>=0?'report-balance-positive':'report-balance-negative'}"><span class="money">${fmt(finalAccumulated)}</span></td></tr></tfoot></table></div>`;
+    : `<div class="table-wrap rxd-detail-table"><table><thead><tr><th>Mês</th><th>Receita</th><th>Despesa</th><th>Saldo do mês</th><th>Saldo acumulado</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 
   layout(`<div class="head"><div><h2>R x D</h2><p>Comparativo: receita total x despesa total, com saldo mensal e saldo acumulado.</p></div></div><div class="card"><div class="section-title"><h3>Filtros</h3><span>Selecione o ano ou um mês específico</span></div>${simpleControls('rxd')}</div>${kpis()}<div class="grid cols2" style="margin-top:16px"><div class="card"><div class="section-title"><h3>Comparativo do período</h3><span>Receita, despesa e saldo</span></div><div class="barwrap">${bars}</div><div class="note">Azul = receita, vermelho = despesa, verde = saldo absoluto.</div></div><div class="card"><div class="section-title"><h3>Detalhamento R x D</h3><span>${rxdScope==='ano'?'Ano completo':labelMonth(state.month)}</span></div>${detailContent}</div></div>`)
 }
@@ -2702,7 +2542,7 @@ function openSubcategory(catId,enc=''){const old=enc?decodeURIComponent(enc):'';
 }
 function downloadJSONFile(content,filename){const blob=new Blob([JSON.stringify(content,null,2)],{type:'application/json'});const a=document.createElement('a');const url=URL.createObjectURL(blob);a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1200)}
 function safeFileStamp(){const d=new Date(),pad=n=>String(n).padStart(2,'0');return `${localDateId(d)}_${pad(d.getHours())}-${pad(d.getMinutes())}`}
-function exportJSON(){if(!cloudSynced)return alert('Aguarde a sincronização da nuvem.');downloadJSONFile({app:'Finanças Cícero & Nilce',version:'v2.1',exportedAt:new Date().toISOString(),source:'estado-sincronizado-da-nuvem',state:clone(state)},`backup-completo-financas-cicero-nilce-${safeFileStamp()}.json`)}
+function exportJSON(){if(!cloudSynced)return alert('Aguarde a sincronização da nuvem.');downloadJSONFile({app:'Finanças Cícero & Nilce',version:'v103',exportedAt:new Date().toISOString(),source:'estado-sincronizado-da-nuvem',state:clone(state)},`backup-completo-financas-cicero-nilce-${safeFileStamp()}.json`)}
 function importJSON(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=async()=>{try{const parsed=JSON.parse(reader.result),payload=parsed&&parsed.state?parsed.state:parsed,next=merge(clone(baseData),payload);if(!confirm('Importar este backup e substituir o estado atual na nuvem?'))return;setCloudStatus('Importando backup...','loading');lastCloudUpdatedAt=await writeCloudRow(SUPABASE_ROW_ID,next);state=next;cacheCloudState();setCloudStatus('Backup importado','ok');closeModal();render();alert('Backup importado e salvo na nuvem.')}catch(err){console.error(err);setCloudStatus('Erro na importação','error');alert('Arquivo inválido ou não foi possível salvar na nuvem.')}};reader.readAsText(file);e.target.value=''}
 async function resetData(){if(!confirm('Restaurar a base inicial? Isso substituirá também o estado principal da nuvem.'))return;setCloudStatus('Restaurando base...','loading');try{const next=clone(baseData);lastCloudUpdatedAt=await writeCloudRow(SUPABASE_ROW_ID,next);state=next;cacheCloudState();setCloudStatus('Base restaurada','ok');render()}catch(err){setCloudStatus('Erro ao restaurar','error');alert('Não foi possível restaurar a base na nuvem.')}}
 
@@ -2738,7 +2578,7 @@ function integritySubExists(catId,sub,city=''){const values=state.subs?.[catId]|
 function integrityBudgetNaturalKey(month,b){const city=b.city||cityOf(b.sub||'');return [month,b.cat,norm(cleanName(b.sub||'')),city].join('|')}
 function integrityTransactionNaturalKey(month,t){const city=t.city||cityOf(t.sub||'');return [month,t.date,norm(t.description||t.desc||''),Number(t.amount||0).toFixed(2),t.cat,norm(cleanName(t.sub||'')),city].join('|')}
 function runIntegrityChecks(){
-  const report={generatedAt:new Date().toISOString(),checks:[],meta:{version:'v2.1'}};
+  const report={generatedAt:new Date().toISOString(),checks:[],meta:{version:'v103'}};
   const allowedCities=new Set(['Fortaleza','Brasília','Compartilhado']);
   const requiredTypes={months:'array',categories:'array',subs:'object',revenues:'object',budgets:'object',transactions:'object',reallocations:'object'};
 
@@ -3274,7 +3114,6 @@ function finishColumnDrag(){
 // v103 — parcelamento manual de lançamentos existentes e filtros múltiplos no Acompanhamento.
 
 // v104 — filtros simples no Acompanhamento e seleção múltipla somente em Realizados.
-// v2.1 — tabelas profissionais em Receitas, Despesas e R x D.
 function firstFilterValue(value){
   const values=Array.isArray(value)?value:[value];
   const found=values.find(item=>item&&item!=='todos');
