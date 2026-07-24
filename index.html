@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.5 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.6 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -2362,6 +2362,52 @@ html[data-theme="dark"][data-ui="v23"] .v23-main>.card,html[data-theme="dark"][d
 html[data-theme="dark"][data-ui="v23"] .v23-mobile-nav{background:rgba(17,24,39,.97);border-color:#344054;}
 html[data-theme="dark"][data-ui="v23"] .sheet{background:#111827!important;border-color:#344054!important;}
 
+
+/* =========================================================
+   V2.6 — MOVIMENTAÇÕES COMPACTAS E ORDEM OPERACIONAL
+   ========================================================= */
+html[data-ui="v23"] .view-lancamentos.v26-movements-compact{padding-top:20px!important;}
+html[data-ui="v23"] .view-lancamentos.v26-movements-compact>.tx-tabs{margin:0 0 10px!important;}
+html[data-ui="v23"] .view-lancamentos .v26-movement-toolbar{margin:0 0 10px!important;padding:12px 14px!important;border-radius:15px!important;background:#f8fafc!important;box-shadow:none!important;}
+html[data-ui="v23"] .v26-movement-toolbar-grid{display:grid;grid-template-columns:minmax(330px,.95fr) minmax(300px,1.05fr);gap:12px;align-items:end;}
+html[data-ui="v23"] .v26-movement-control{min-width:0;}
+html[data-ui="v23"] .v26-movement-control>label,
+html[data-ui="v23"] .v26-movement-label{display:block;margin:0 0 6px;color:var(--v23-muted);font-size:9px;font-weight:900;letter-spacing:.065em;text-transform:uppercase;}
+html[data-ui="v23"] .v26-movement-period .tx-period-controls{margin:0!important;}
+html[data-ui="v23"] .v26-movement-period .filterbar{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;overflow:visible!important;}
+html[data-ui="v23"] .v26-movement-period .select,
+html[data-ui="v23"] .v26-movement-period button{width:100%!important;min-width:0!important;}
+html[data-ui="v23"] .v26-movement-search .view-search-field{width:100%;}
+html[data-ui="v23"] .v26-movement-search .view-search-input{width:100%;min-height:40px!important;background:#fff!important;}
+html[data-ui="v23"] .view-lancamentos.v26-movements-compact>.view-search-empty{margin:0 0 10px!important;}
+html[data-ui="v23"] .view-lancamentos.v26-movements-compact>.tx-summary{margin:0 0 10px!important;gap:10px!important;}
+html[data-ui="v23"] .view-lancamentos.v26-movements-compact .tx-summary .metric{min-height:86px!important;padding:12px 14px!important;border-radius:15px!important;}
+html[data-ui="v23"] .view-lancamentos.v26-movements-compact .tx-summary .metric .label{font-size:8.5px!important;}
+html[data-ui="v23"] .view-lancamentos.v26-movements-compact .tx-summary .metric .value{margin-top:7px!important;font-size:20px!important;}
+html[data-ui="v23"] .view-lancamentos.v26-movements-compact .tx-summary .metric .subtxt{margin-top:5px!important;font-size:8.5px!important;}
+html[data-ui="v23"] .view-lancamentos.v26-movements-compact .tx-panel{padding:14px!important;}
+html[data-ui="v23"] .view-lancamentos.v26-movements-compact .tx-panel>.section-title{margin-bottom:9px!important;}
+html[data-ui="v23"] .view-lancamentos.v26-movements-compact .tx-dedicated-filters{margin:0 0 9px!important;padding:9px 10px!important;border-radius:13px!important;}
+html[data-ui="v23"] .view-lancamentos.v26-movements-compact .realized-filter-toolbar-head{gap:8px!important;}
+html[data-ui="v23"] .view-lancamentos.v26-movements-compact .tx-filter-label{margin-bottom:7px!important;}
+html[data-ui="v23"] .view-lancamentos.v26-movements-compact .table-wrap{margin-top:0!important;}
+html[data-theme="dark"][data-ui="v23"] .view-lancamentos .v26-movement-toolbar{background:#0f172a!important;border-color:#2b3648!important;}
+html[data-theme="dark"][data-ui="v23"] .v26-movement-search .view-search-input{background:#111827!important;}
+@media (max-width:900px){
+  html[data-ui="v23"] .v26-movement-toolbar-grid{grid-template-columns:1fr;gap:9px;}
+}
+@media (max-width:760px){
+  html[data-ui="v23"] .view-lancamentos.v26-movements-compact{padding-top:10px!important;}
+  html[data-ui="v23"] .view-lancamentos.v26-movements-compact>.tx-tabs{order:0;margin-bottom:8px!important;}
+  html[data-ui="v23"] .view-lancamentos .v26-movement-toolbar{padding:9px!important;margin-bottom:8px!important;}
+  html[data-ui="v23"] .v26-movement-toolbar-grid{gap:7px;}
+  html[data-ui="v23"] .v26-movement-control>label,
+  html[data-ui="v23"] .v26-movement-label{margin-bottom:4px;font-size:8px;}
+  html[data-ui="v23"] .v26-movement-period .filterbar{gap:5px!important;}
+  html[data-ui="v23"] .view-lancamentos.v26-movements-compact>.tx-summary{margin-bottom:8px!important;}
+  html[data-ui="v23"] .view-lancamentos.v26-movements-compact .tx-panel{padding:10px!important;}
+}
+
 </style></head><body><div id="app"></div><div id="modal" class="modal"></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 const storeKey='despesas-casal-profissional-v12';
 const SUPABASE_URL='https://fpcwnjlneaaarzeevgpl.supabase.co';
@@ -2642,9 +2688,9 @@ function txPeriodControls(){return `<div class="filterbar tx-filterbar tx-period
 function setTxPanel(panel){txPanel=panel;if(panel==='envelopes')txScope='mes';selectedForecastKeys.clear();render()}
 function forecastMultiTrigger(key,label){const count=forecastMultiSelection(key).length;return `<button class="select payment-multi-trigger" type="button" onclick="openForecastMultiFilter('${key}')"><span>${escapeHtml(label)}</span><strong>${escapeHtml(forecastFilterSummary(key))}</strong><b>${count||''}</b></button>`}
 function txForecastFilterControls(){txForecastFilters=normalizeForecastFilters(txForecastFilters);return `<div class="tx-dedicated-filters"><div class="tx-filter-label"><strong>Filtros das previsões</strong><span>É possível combinar várias opções em cada filtro</span></div><div class="filterbar tx-filterbar">${forecastMultiTrigger('cat','Categoria')}${forecastMultiTrigger('owner','Responsável')}${forecastMultiTrigger('city','Cidade')}${forecastMultiTrigger('balance','Saldo')}${forecastMultiTrigger('payments','Forma de pagamento')}<button class="tiny tx-reset-filter" onclick="txForecastFilters={cat:[],owner:[],city:[],balance:[],payments:[]};selectedForecastKeys.clear();render()">Limpar</button></div>${activeFilterChips('forecast')}</div>`}
-function txRealizedFilterControls(){txRealizedFilters=normalizeRealizedFilters(txRealizedFilters);return `<div class="tx-dedicated-filters realized"><div class="tx-filter-label"><strong>Filtros dos realizados</strong><span>Afetam somente os lançamentos realizados</span></div><div class="filterbar tx-filterbar"><select class="select" onchange="txRealizedFilters.cat=this.value;render()">${categoryFilterOptions(txRealizedFilters.cat)}</select><select class="select" onchange="txRealizedFilters.owner=this.value;render()">${ownerOptions(txRealizedFilters.owner)}</select><select class="select" onchange="txRealizedFilters.city=this.value;render()">${cityOptions(txRealizedFilters.city)}</select><select class="select" onchange="txRealizedFilters.payment=this.value;render()">${realizedPaymentOptions(txRealizedFilters.payment)}</select><button class="tiny tx-reset-filter" onclick="txRealizedFilters={cat:'todos',owner:'todos',city:'todos',payment:'todos'};render()">Limpar</button></div>${activeFilterChips('realized')}</div>`}
+function txRealizedFilterControls(){txRealizedFilters=normalizeRealizedFilters(txRealizedFilters);return `<div class="tx-dedicated-filters realized"><div class="tx-filter-label"><strong>Filtros do extrato</strong><span>Afetam somente os lançamentos realizados</span></div><div class="filterbar tx-filterbar"><select class="select" onchange="txRealizedFilters.cat=this.value;render()">${categoryFilterOptions(txRealizedFilters.cat)}</select><select class="select" onchange="txRealizedFilters.owner=this.value;render()">${ownerOptions(txRealizedFilters.owner)}</select><select class="select" onchange="txRealizedFilters.city=this.value;render()">${cityOptions(txRealizedFilters.city)}</select><select class="select" onchange="txRealizedFilters.payment=this.value;render()">${realizedPaymentOptions(txRealizedFilters.payment)}</select><button class="tiny tx-reset-filter" onclick="txRealizedFilters={cat:'todos',owner:'todos',city:'todos',payment:'todos'};render()">Limpar</button></div>${activeFilterChips('realized')}</div>`}
 function openMobileFilters(type){
-  const title=type==='expense'?'Filtros de despesas':type==='forecast'?'Filtros do acompanhamento':'Filtros dos realizados';
+  const title=type==='expense'?'Filtros de despesas':type==='forecast'?'Filtros do acompanhamento':'Filtros do extrato';
   const obj=type==='expense'?expenseFilters:type==='forecast'?normalizeForecastFilters(txForecastFilters):txRealizedFilters;
   if(type==='forecast'){
     const sections=[['cat','Categorias'],['owner','Responsáveis'],['city','Cidades'],['balance','Saldos'],['payments','Formas de pagamento']].map(([key,label])=>`<div class="field"><label>${label} <small class="payment-filter-hint">pode marcar mais de uma</small></label><div class="payment-filter-grid mobile">${forecastFilterCheckboxes(key,forecastMultiSelection(key,obj),key)}</div></div>`).join('');
@@ -3211,7 +3257,7 @@ function openSubcategory(catId,enc=''){const old=enc?decodeURIComponent(enc):'';
 }
 function downloadJSONFile(content,filename){const blob=new Blob([JSON.stringify(content,null,2)],{type:'application/json'});const a=document.createElement('a');const url=URL.createObjectURL(blob);a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1200)}
 function safeFileStamp(){const d=new Date(),pad=n=>String(n).padStart(2,'0');return `${localDateId(d)}_${pad(d.getHours())}-${pad(d.getMinutes())}`}
-function exportJSON(){if(!cloudSynced)return alert('Aguarde a sincronização da nuvem.');downloadJSONFile({app:'Finanças Cícero & Nilce',version:'v2.5',exportedAt:new Date().toISOString(),source:'estado-sincronizado-da-nuvem',state:clone(state)},`backup-completo-financas-cicero-nilce-${safeFileStamp()}.json`)}
+function exportJSON(){if(!cloudSynced)return alert('Aguarde a sincronização da nuvem.');downloadJSONFile({app:'Finanças Cícero & Nilce',version:'v2.6',exportedAt:new Date().toISOString(),source:'estado-sincronizado-da-nuvem',state:clone(state)},`backup-completo-financas-cicero-nilce-${safeFileStamp()}.json`)}
 function importJSON(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=async()=>{try{const parsed=JSON.parse(reader.result),payload=parsed&&parsed.state?parsed.state:parsed,next=merge(clone(baseData),payload);if(!confirm('Importar este backup e substituir o estado atual na nuvem?'))return;setCloudStatus('Importando backup...','loading');lastCloudUpdatedAt=await writeCloudRow(SUPABASE_ROW_ID,next);state=next;cacheCloudState();setCloudStatus('Backup importado','ok');closeModal();render();alert('Backup importado e salvo na nuvem.')}catch(err){console.error(err);setCloudStatus('Erro na importação','error');alert('Arquivo inválido ou não foi possível salvar na nuvem.')}};reader.readAsText(file);e.target.value=''}
 async function resetData(){if(!confirm('Restaurar a base inicial? Isso substituirá também o estado principal da nuvem.'))return;setCloudStatus('Restaurando base...','loading');try{const next=clone(baseData);lastCloudUpdatedAt=await writeCloudRow(SUPABASE_ROW_ID,next);state=next;cacheCloudState();setCloudStatus('Base restaurada','ok');render()}catch(err){setCloudStatus('Erro ao restaurar','error');alert('Não foi possível restaurar a base na nuvem.')}}
 
@@ -3247,7 +3293,7 @@ function integritySubExists(catId,sub,city=''){const values=state.subs?.[catId]|
 function integrityBudgetNaturalKey(month,b){const city=b.city||cityOf(b.sub||'');return [month,b.cat,norm(cleanName(b.sub||'')),city].join('|')}
 function integrityTransactionNaturalKey(month,t){const city=t.city||cityOf(t.sub||'');return [month,t.date,norm(t.description||t.desc||''),Number(t.amount||0).toFixed(2),t.cat,norm(cleanName(t.sub||'')),city].join('|')}
 function runIntegrityChecks(){
-  const report={generatedAt:new Date().toISOString(),checks:[],meta:{version:'v2.5'}};
+  const report={generatedAt:new Date().toISOString(),checks:[],meta:{version:'v2.6'}};
   const allowedCities=new Set(['Fortaleza','Brasília','Compartilhado']);
   const requiredTypes={months:'array',categories:'array',subs:'object',revenues:'object',budgets:'object',transactions:'object',reallocations:'object'};
 
@@ -3930,7 +3976,7 @@ function realizedFilterChips(){
 function txRealizedFilterControls(){
   txRealizedFilters=normalizeRealizedFilters(txRealizedFilters);
   const count=filterCount('realized');
-  return `<div class="tx-dedicated-filters realized realized-filter-toolbar"><div class="realized-filter-toolbar-head"><div class="realized-filter-toolbar-copy"><strong>Filtros dos realizados</strong><span>Selecione uma ou várias opções sem ocupar a tela inteira.</span></div><div class="realized-filter-actions"><button class="btn secondary realized-filter-open" type="button" onclick="openRealizedFilters()"><span>Filtrar realizados</span>${count?`<b>${count}</b>`:''}</button><button class="tiny saved-filter-button" type="button" onclick="openSavedFilterManager('realized')">Filtros salvos</button>${count?'<button class="tiny" type="button" onclick="clearRealizedFilters()">Limpar</button>':''}</div></div>${realizedFilterChips()}</div>`;
+  return `<div class="tx-dedicated-filters realized realized-filter-toolbar"><div class="realized-filter-toolbar-head"><div class="realized-filter-toolbar-copy"><strong>Filtros do extrato</strong><span>Selecione uma ou várias opções sem ocupar a tela inteira.</span></div><div class="realized-filter-actions"><button class="btn secondary realized-filter-open" type="button" onclick="openRealizedFilters()"><span>Filtrar extrato</span>${count?`<b>${count}</b>`:''}</button><button class="tiny saved-filter-button" type="button" onclick="openSavedFilterManager('realized')">Filtros salvos</button>${count?'<button class="tiny" type="button" onclick="clearRealizedFilters()">Limpar</button>':''}</div></div>${realizedFilterChips()}</div>`;
 }
 function openMobileFilters(type){
   if(type==='realized'){openRealizedFilters();return}
@@ -4045,7 +4091,7 @@ function setMainView(target){
   if(target==='estrategia'){
     view='estrategia';periodMode='mes';state.month=validMonth(state.month||currentMonthId());
   }else if(target==='lancamentos'){
-    view='lancamentos';txScope='mes';txPanel='realizados';state.month=validMonth(state.month||currentMonthId());
+    view='lancamentos';txScope='mes';txPanel='acompanhamento';state.month=validMonth(state.month||currentMonthId());
   }else if(target==='despesas'){
     view='despesas';expenseScope='mes';state.month=validMonth(state.month||currentMonthId());
   }else if(target==='rxd'){
@@ -4062,7 +4108,7 @@ function v23ViewMeta(){
   const group=v23MainGroup();
   return {
     estrategia:['Visão do mês','Resumo financeiro e pontos de atenção'],
-    lancamentos:['Movimentações','Extrato, orçamento e envelopes'],
+    lancamentos:['Movimentações','Planejado, extrato, envelopes e remanejamentos'],
     despesas:['Planejamento','Organize receitas e despesas previstas'],
     rxd:['Análises','Entenda o comportamento das finanças'],
     config:['Mais','Configurações e segurança dos dados']
@@ -4071,7 +4117,7 @@ function v23ViewMeta(){
 
 layout=function(content){
   migrateRevenueAutoSizingV81();
-  const meta=v23ViewMeta(),accountTitle=escapeHtml(authUser?.email||''),search=['lancamentos','despesas','receitas'].includes(view)?viewSearchBar(view):'';
+  const meta=v23ViewMeta(),accountTitle=escapeHtml(authUser?.email||''),search=['despesas','receitas'].includes(view)?viewSearchBar(view):'';
   document.getElementById('app').innerHTML=`<div class="v23-app view-${view}">
     <aside class="v23-sidebar">
       <div class="v23-brand"><div class="v23-brand-mark">CN</div><div class="v23-brand-copy"><strong>Finanças CN</strong><small>Cícero &amp; Nilce</small></div></div>
@@ -4198,10 +4244,10 @@ renderEstrategia=function(){
   }).join('');
   const unplannedRows=unplannedCategories.length?`<div class="v24-unplanned-title"><span>Não planejadas</span><small>Valores realizados sem orçamento na categoria</small></div>${unplannedCategories.map(x=>`<div class="v24-unplanned-row"><div><strong>${escapeHtml(x.c.name)}</strong><small>Sem valor planejado para ${labelMonth(month)}</small></div><strong>${fmt(x.real)}</strong></div>`).join('')}`:'';
 
-  layout(`${v23PageHead('Olá, '+v24GreetingName(),'Acompanhe o resultado de '+labelMonth(month)+' de '+year+' e os pontos que precisam de atenção.',v24HomePeriodControls())}
+  layout(`${v23PageHead('Olá, '+v24GreetingName(),'Acompanhe o resultado de '+labelMonth(month)+' de '+year+'.',v24HomePeriodControls())}
     <section class="v23-hero"><div class="v23-hero-copy"><span>Saldo atual · ${labelMonth(month)} de ${year}</span><strong class="v23-hero-value">${fmt(currentBalance)}</strong><p>Orçamento planejado menos o valor já utilizado.</p><div class="v24-hero-commitment"><i></i><span>${commitment.toLocaleString('pt-BR',{maximumFractionDigits:1})}% da renda já está comprometida</span></div></div><div class="v23-hero-metrics"><div class="v23-hero-metric"><span>Receitas</span><strong>${fmt(revenue)}</strong></div><div class="v23-hero-metric"><span>Planejado</span><strong>${fmt(planned)}</strong></div><div class="v23-hero-metric"><span>Despesas realizadas</span><strong>${fmt(real)}</strong></div><div class="v23-hero-metric"><span>Saldo projetado</span><strong>${fmt(projected)}</strong></div></div></section>
-    <div class="v23-grid two v23-gap-top"><section class="v23-panel v23-panel-pad"><div class="v23-panel-head"><div><h2>Evolução financeira</h2><p>Receitas, planejamento e despesas realizadas ao longo de ${year}.</p></div><button class="v23-panel-link" onclick="setMainView('rxd')">Abrir análises</button></div>${v23TrendChart(monthly)}</section><section class="v23-panel v23-panel-pad"><div class="v23-panel-head"><div><h2>Atenções do mês</h2><p>${orderedAlerts.length?`${orderedAlerts.length} ${orderedAlerts.length===1?'ponto encontrado':'pontos encontrados'} em ${labelMonth(month)}.`:'Nenhum desvio relevante encontrado.'}</p></div></div>${alertsHtml}</section></div>
-    <div class="v23-grid equal v23-gap-top"><section class="v23-panel v23-panel-pad"><div class="v23-panel-head"><div><h2>Maiores despesas planejadas</h2><p>Ranking pelo orçamento do mês e avanço do valor realizado.</p></div><button class="v23-panel-link" onclick="view='despesas';expenseScope='mes';render()">Ver planejamento</button></div><div class="v24-plan-list">${plannedRows||'<div class="v23-empty">Nenhuma despesa planejada neste mês.</div>'}${unplannedRows}</div></section><section class="v23-panel v23-panel-pad"><div class="v23-panel-head"><div><h2>Movimentações recentes</h2><p>Últimos registros de ${labelMonth(month)}.</p></div><button class="v23-panel-link" onclick="setMainView('lancamentos')">Ver extrato</button></div>${v23RecentTransactions(7,[month])}</section></div>`);
+    <section class="v23-panel v23-panel-pad v23-gap-top"><div class="v23-panel-head"><div><h2>Evolução financeira</h2><p>Receitas, planejamento e despesas realizadas ao longo de ${year}.</p></div><button class="v23-panel-link" onclick="setMainView('rxd')">Abrir análises</button></div>${v23TrendChart(monthly)}</section>
+    <div class="v23-grid equal v23-gap-top"><section class="v23-panel v23-panel-pad"><div class="v23-panel-head"><div><h2>Maiores despesas planejadas</h2><p>Ranking pelo orçamento do mês e avanço do valor realizado.</p></div><button class="v23-panel-link" onclick="view='despesas';expenseScope='mes';render()">Ver planejamento</button></div><div class="v24-plan-list">${plannedRows||'<div class="v23-empty">Nenhuma despesa planejada neste mês.</div>'}${unplannedRows}</div></section><section class="v23-panel v23-panel-pad"><div class="v23-panel-head"><div><h2>Movimentações recentes</h2><p>Últimos registros de ${labelMonth(month)}.</p></div><button class="v23-panel-link" onclick="view='lancamentos';txScope='mes';txPanel='realizados';render()">Ver extrato</button></div>${v23RecentTransactions(7,[month])}</section></div>`);
 };
 
 renderReceitas=function(){
@@ -4230,21 +4276,52 @@ renderRxD=function(){
   layout(`${v23PageHead('Análises','Compare receita, planejamento e realizado para entender a saúde financeira do casal.')}<section class="v23-panel v23-panel-pad"><div class="v23-panel-head"><div><h2>Período analisado</h2><p>Escolha um mês ou veja o ano completo.</p></div></div>${v23MonthOptionControls('analysis')}</section><div class="v23-analysis-summary v23-gap-top"><div class="v23-stat is-brand"><span>Receitas</span><strong>${fmt(totals.revenue)}</strong><small>Total do período</small></div><div class="v23-stat"><span>Planejado</span><strong>${fmt(totals.planned)}</strong><small>${reportPercentLabel(reportPercentValue(totals.planned,totals.revenue))} da receita</small></div><div class="v23-stat is-negative"><span>Realizado</span><strong>${fmt(totals.real)}</strong><small>${commitment.toLocaleString('pt-BR',{maximumFractionDigits:1})}% da receita</small></div><div class="v23-stat ${totals.balance>=0?'is-positive':'is-negative'}"><span>Saldo realizado</span><strong>${fmt(totals.balance)}</strong><small>Receita menos realizado</small></div><div class="v23-stat is-warning"><span>Diferença do plano</span><strong>${fmt(totals.planned-totals.real)}</strong><small>Planejado menos realizado</small></div></div><div class="v23-grid two v23-gap-top"><section class="v23-panel v23-panel-pad"><div class="v23-panel-head"><div><h2>Evolução mensal</h2><p>Comparação entre os principais indicadores.</p></div></div>${v23TrendChart(monthly)}</section><section class="v23-panel v23-panel-pad"><div class="v23-panel-head"><div><h2>Distribuição por categoria</h2><p>Maiores despesas realizadas no período.</p></div></div><div class="v23-category-list">${catTotals.slice(0,8).map(x=>`<div class="v23-category-row"><div class="v23-category-row-head"><div><strong>${escapeHtml(x.c.name)}</strong><small>${reportPercentLabel(reportPercentValue(x.total,totals.real))} do realizado</small></div><div class="v23-category-row-value"><strong>${fmt(x.total)}</strong></div></div><div class="v23-progress" style="--progress-color:${x.c.color}"><i style="width:${x.total/maxCat*100}%"></i></div></div>`).join('')||'<div class="v23-empty">Sem despesas realizadas.</div>'}</div></section></div><div class="v23-grid equal v23-gap-top"><section class="v23-panel v23-panel-pad"><div class="v23-panel-head"><div><h2>Responsabilidade financeira</h2><p>Distribuição dos lançamentos realizados.</p></div></div><div class="v23-list">${ownerTotals.map(x=>`<div class="v23-list-row"><div><strong>${x.owner}</strong><small>${reportPercentLabel(reportPercentValue(x.total,totals.real))} do total</small></div><div class="v23-list-value"><strong>${fmt(x.total)}</strong></div></div>`).join('')}</div></section><section class="v23-panel v23-panel-pad"><div class="v23-panel-head"><div><h2>Detalhamento mensal</h2><p>Clique em um mês para aprofundar a análise.</p></div></div><div class="v23-table-wrap"><table class="v23-table"><thead><tr><th>Mês</th><th>Receitas</th><th>Planejado</th><th>Realizado</th><th>Saldo</th><th>Comprometimento</th></tr></thead><tbody>${rows}</tbody><tfoot><tr><td>Total</td><td>${fmt(totals.revenue)}</td><td>${fmt(totals.planned)}</td><td>${fmt(totals.real)}</td><td>${fmt(totals.balance)}</td><td>${commitment.toLocaleString('pt-BR',{maximumFractionDigits:1})}%</td></tr></tfoot></table></div></section></div>`);
 };
 
+function v26MovementSearchMarkup(){
+  const value=escapeHtml(viewSearchTerms.lancamentos||'');
+  return `<div class="v26-movement-control v26-movement-search"><label for="viewSearchInput">Buscar</label><div class="view-search-field"><svg class="view-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="viewSearchInput" class="view-search-input" type="search" autocomplete="off" value="${value}" placeholder="${viewSearchPlaceholder('lancamentos')}" oninput="setViewSearch('lancamentos',this.value)" onkeydown="if(event.key==='Escape'){clearViewSearch('lancamentos')}" aria-label="Buscar nas movimentações"><button id="viewSearchClear" class="view-search-clear" type="button" onclick="clearViewSearch('lancamentos')" title="Limpar busca" style="${value?'':'display:none'}">×</button></div></div>`;
+}
+
 renderLancamentos=function(){
   v23LegacyRenderLancamentos();
   const main=document.querySelector('.v23-main');if(!main)return;
+  main.classList.add('v26-movements-compact');
   const oldHead=main.querySelector('.head');if(oldHead)oldHead.remove();
-  const entry=`<div class="v23-movement-head"><div><h1>Movimentações</h1><p>Consulte o extrato, acompanhe o orçamento e gerencie os envelopes.</p></div><button class="v23-btn" onclick="openTx()">${v23Icon('plus')} Novo lançamento</button></div>`;
-  main.insertAdjacentHTML('afterbegin',entry);
+
   const tabs=main.querySelector('.tx-tabs');
+  const periodCard=main.querySelector('.tx-period-card');
+  const summary=main.querySelector('.tx-summary');
+  const panel=main.querySelector('.tx-panel');
   if(tabs){
     const buttons=[...tabs.querySelectorAll('button')],byText=text=>buttons.find(b=>b.textContent.includes(text));
-    const realized=byText('Realizados'),forecast=byText('Acompanhamento'),env=byText('Envelopes'),rem=byText('Remanejamentos');
-    if(realized){realized.querySelector('span').textContent='Extrato';tabs.insertBefore(realized,tabs.firstChild)}
-    if(forecast)forecast.querySelector('span').textContent='Orçamento';
-    if(env)env.querySelector('span').textContent='Envelopes';
-    if(rem)rem.querySelector('span').textContent='Remanejamentos';
+    const forecast=byText('Acompanhamento'),realized=byText('Realizados'),env=byText('Envelopes'),rem=byText('Remanejamentos');
+    if(forecast)forecast.querySelector('span').textContent='Planejado';
+    if(realized)realized.querySelector('span').textContent='Extrato';
+    [forecast,realized,env,rem].filter(Boolean).forEach(button=>tabs.appendChild(button));
+    main.insertBefore(tabs,main.firstChild);
   }
+
+  if(periodCard){
+    const controls=periodCard.querySelector('.tx-period-controls');
+    periodCard.classList.add('v26-movement-toolbar');
+    periodCard.innerHTML='';
+    const grid=document.createElement('div');grid.className='v26-movement-toolbar-grid';
+    const period=document.createElement('div');period.className='v26-movement-control v26-movement-period';
+    const label=document.createElement('span');label.className='v26-movement-label';label.textContent='Período';period.appendChild(label);
+    if(controls)period.appendChild(controls);
+    grid.appendChild(period);
+    const search=document.createElement('div');search.innerHTML=v26MovementSearchMarkup();grid.appendChild(search.firstElementChild);
+    periodCard.appendChild(grid);
+    if(tabs)tabs.insertAdjacentElement('afterend',periodCard);
+  }
+  if(summary&&periodCard)periodCard.insertAdjacentElement('afterend',summary);
+  if(panel&&summary)summary.insertAdjacentElement('afterend',panel);
+  const emptyAnchor=panel||summary||periodCard;
+  if(emptyAnchor)emptyAnchor.insertAdjacentHTML('afterend','<div id="viewSearchEmpty" class="view-search-empty">Nenhum item encontrado para esta busca.</div>');
+
+  const plannedMetric=summary?.querySelector('.metric.planned .subtxt');if(plannedMetric)plannedMetric.textContent='Planejado no período';
+  const title=panel?.querySelector('.section-title h3');
+  if(title&&txPanel==='acompanhamento')title.textContent=title.textContent.replace(/^Acompanhamento/,'Planejado');
+  if(title&&txPanel==='realizados')title.textContent=title.textContent.replace(/^Lançamentos realizados/,'Extrato');
 };
 
 renderConfig=function(){
