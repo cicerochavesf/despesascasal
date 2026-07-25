@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.16 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.18 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -2882,6 +2882,125 @@ html[data-theme="dark"][data-ui="v23"] .v216-glance-item strong,html[data-theme=
   html[data-ui="v23"] .v216-extreme-value{min-width:78px;font-size:9.5px;}
 }
 </style>
+
+<style id="v217-final-adjustments">
+/* =========================================================
+   V2.17 — KPIs UNIFICADOS, EDIÇÃO POR NOME E ANÁLISE ANUAL
+   ========================================================= */
+html[data-ui="v23"] .v217-planning-kpis{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:11px!important;margin-top:12px!important;align-items:stretch!important;}
+html[data-ui="v23"] .v217-planning-kpis .v23-stat{min-height:116px!important;padding:16px!important;}
+html[data-ui="v23"] .v217-planning-kpis .v23-stat strong{font-size:clamp(19px,1.65vw,24px)!important;overflow:visible!important;text-overflow:clip!important;}
+html[data-ui="v23"] .v217-row-name-button{display:block!important;width:100%!important;min-width:0!important;border:0!important;background:transparent!important;color:inherit!important;padding:0!important;text-align:left!important;border-radius:10px!important;box-shadow:none!important;}
+html[data-ui="v23"] .v217-row-name-button:hover .v215-row-copy strong{color:var(--v23-brand)!important;}
+html[data-ui="v23"] .v217-row-name-button:focus-visible{outline:3px solid rgba(53,89,224,.18)!important;outline-offset:3px!important;}
+html[data-ui="v23"] .v215-income-name .v217-row-name-button{flex:1 1 auto!important;}
+html[data-ui="v23"] .v217-annual-largest{width:100%!important;padding:16px!important;}
+html[data-ui="v23"] .v217-annual-largest .v216-extreme-row{grid-template-columns:minmax(180px,.85fr) minmax(180px,1.8fr) minmax(105px,auto)!important;}
+@media(max-width:1180px){html[data-ui="v23"] .v217-planning-kpis{grid-template-columns:repeat(3,minmax(0,1fr))!important;}}
+@media(max-width:760px){
+  html[data-ui="v23"] .v217-planning-kpis{grid-template-columns:none!important;grid-auto-flow:column!important;grid-auto-columns:minmax(210px,78vw)!important;overflow-x:auto!important;overflow-y:hidden!important;padding-bottom:7px!important;scroll-snap-type:x mandatory!important;-webkit-overflow-scrolling:touch!important;}
+  html[data-ui="v23"] .v217-planning-kpis .v23-stat{min-height:110px!important;scroll-snap-align:start!important;}
+  html[data-ui="v23"] .v217-annual-largest .v216-extreme-row{grid-template-columns:minmax(118px,.9fr) minmax(80px,1fr) auto!important;}
+}
+html[data-theme="dark"][data-ui="v23"] .v217-row-name-button:hover .v215-row-copy strong{color:#AFC3FF!important;}
+</style>
+
+<style id="v218-final-adjustments">
+/* =========================================================
+   V2.18 — PARTICIPAÇÕES E TOP 6 PLANEJADO
+   Bloco final ativo. Substitui somente a composição de Análises.
+   ========================================================= */
+html[data-ui="v23"] .v218-participation-grid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:14px!important;
+  align-items:start!important;
+}
+html[data-ui="v23"] .v218-donut-layout{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  justify-items:center!important;
+  gap:18px!important;
+  min-height:0!important;
+}
+html[data-ui="v23"] .v218-donut-list{
+  width:100%!important;
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:8px!important;
+}
+html[data-ui="v23"] .v218-donut-item{
+  min-width:0!important;
+  display:grid!important;
+  grid-template-columns:12px minmax(0,1fr) auto!important;
+  gap:10px!important;
+  align-items:center!important;
+  padding:10px 11px!important;
+  border:1px solid var(--v23-line,#E2E8F0)!important;
+  border-radius:12px!important;
+  background:var(--v23-surface-2,#F8FAFC)!important;
+}
+html[data-ui="v23"] .v218-donut-item>i{
+  width:10px!important;
+  height:10px!important;
+  border-radius:999px!important;
+  background:var(--dot,#64748B)!important;
+}
+html[data-ui="v23"] .v218-donut-copy{min-width:0!important;}
+html[data-ui="v23"] .v218-donut-copy strong{
+  display:block!important;
+  color:var(--v23-ink)!important;
+  font-size:12px!important;
+  line-height:1.22!important;
+  font-weight:950!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+}
+html[data-ui="v23"] .v218-donut-copy small{
+  display:block!important;
+  margin-top:3px!important;
+  color:var(--v23-muted)!important;
+  font-size:9.5px!important;
+  line-height:1.2!important;
+  font-weight:800!important;
+  white-space:nowrap!important;
+}
+html[data-ui="v23"] .v218-donut-share{
+  min-width:58px!important;
+  text-align:right!important;
+  color:var(--v23-ink)!important;
+  font-size:11px!important;
+  font-weight:950!important;
+  white-space:nowrap!important;
+}
+html[data-ui="v23"] .v218-top-planned .v216-extreme-row{
+  grid-template-columns:minmax(185px,.9fr) minmax(180px,1.8fr) minmax(105px,auto)!important;
+}
+html[data-ui="v23"] .v218-top-planned .v216-extreme-name strong{
+  white-space:normal!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  line-height:1.22!important;
+}
+html[data-theme="dark"][data-ui="v23"] .v218-donut-item{
+  background:#111827!important;
+  border-color:#2D3748!important;
+}
+html[data-theme="dark"][data-ui="v23"] .v218-donut-copy strong,
+html[data-theme="dark"][data-ui="v23"] .v218-donut-share{color:#F8FAFC!important;}
+@media(max-width:980px){
+  html[data-ui="v23"] .v218-participation-grid{grid-template-columns:1fr!important;}
+}
+@media(max-width:760px){
+  html[data-ui="v23"] .v218-donut-layout{gap:14px!important;}
+  html[data-ui="v23"] .v218-donut-item{padding:9px 10px!important;}
+  html[data-ui="v23"] .v218-donut-copy strong{font-size:11.5px!important;}
+  html[data-ui="v23"] .v218-top-planned .v216-extreme-row{
+    grid-template-columns:minmax(122px,.95fr) minmax(82px,1fr) auto!important;
+  }
+}
+</style>
+
 </head><body><div id="app"></div><div id="modal" class="modal"></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 const storeKey='despesas-casal-profissional-v12';
 const SUPABASE_URL='https://fpcwnjlneaaarzeevgpl.supabase.co';
@@ -3770,7 +3889,7 @@ function openSubcategory(catId,enc=''){const old=enc?decodeURIComponent(enc):'';
 }
 function downloadJSONFile(content,filename){const blob=new Blob([JSON.stringify(content,null,2)],{type:'application/json'});const a=document.createElement('a');const url=URL.createObjectURL(blob);a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1200)}
 function safeFileStamp(){const d=new Date(),pad=n=>String(n).padStart(2,'0');return `${localDateId(d)}_${pad(d.getHours())}-${pad(d.getMinutes())}`}
-function exportJSON(){if(!cloudSynced)return alert('Aguarde a sincronização da nuvem.');downloadJSONFile({app:'Finanças Cícero & Nilce',version:'v2.16',exportedAt:new Date().toISOString(),source:'estado-sincronizado-da-nuvem',state:clone(state)},`backup-completo-financas-cicero-nilce-${safeFileStamp()}.json`)}
+function exportJSON(){if(!cloudSynced)return alert('Aguarde a sincronização da nuvem.');downloadJSONFile({app:'Finanças Cícero & Nilce',version:'v2.18',exportedAt:new Date().toISOString(),source:'estado-sincronizado-da-nuvem',state:clone(state)},`backup-completo-financas-cicero-nilce-${safeFileStamp()}.json`)}
 function importJSON(e){const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=async()=>{try{const parsed=JSON.parse(reader.result),payload=parsed&&parsed.state?parsed.state:parsed,next=merge(clone(baseData),payload);if(!confirm('Importar este backup e substituir o estado atual na nuvem?'))return;setCloudStatus('Importando backup...','loading');lastCloudUpdatedAt=await writeCloudRow(SUPABASE_ROW_ID,next);state=next;cacheCloudState();setCloudStatus('Backup importado','ok');closeModal();render();alert('Backup importado e salvo na nuvem.')}catch(err){console.error(err);setCloudStatus('Erro na importação','error');alert('Arquivo inválido ou não foi possível salvar na nuvem.')}};reader.readAsText(file);e.target.value=''}
 async function resetData(){if(!confirm('Restaurar a base inicial? Isso substituirá também o estado principal da nuvem.'))return;setCloudStatus('Restaurando base...','loading');try{const next=clone(baseData);lastCloudUpdatedAt=await writeCloudRow(SUPABASE_ROW_ID,next);state=next;cacheCloudState();setCloudStatus('Base restaurada','ok');render()}catch(err){setCloudStatus('Erro ao restaurar','error');alert('Não foi possível restaurar a base na nuvem.')}}
 
@@ -3806,7 +3925,7 @@ function integritySubExists(catId,sub,city=''){const values=state.subs?.[catId]|
 function integrityBudgetNaturalKey(month,b){const city=b.city||cityOf(b.sub||'');return [month,b.cat,norm(cleanName(b.sub||'')),city].join('|')}
 function integrityTransactionNaturalKey(month,t){const city=t.city||cityOf(t.sub||'');return [month,t.date,norm(t.description||t.desc||''),Number(t.amount||0).toFixed(2),t.cat,norm(cleanName(t.sub||'')),city].join('|')}
 function runIntegrityChecks(){
-  const report={generatedAt:new Date().toISOString(),checks:[],meta:{version:'v2.16'}};
+  const report={generatedAt:new Date().toISOString(),checks:[],meta:{version:'v2.18'}};
   const allowedCities=new Set(['Fortaleza','Brasília','Compartilhado']);
   const requiredTypes={months:'array',categories:'array',subs:'object',revenues:'object',budgets:'object',transactions:'object',reallocations:'object'};
 
@@ -4982,8 +5101,8 @@ function periodMonths(){const m=state.month,list=v213MonthsForYear(m.slice(0,4))
 
 function v213AnalysisPeriodControls(year,data){
   const list=v213MonthsForYear(year),monthOptions=list.map(month=>`<option value="${month}" ${rxdScope==='mes'&&state.month===month?'selected':''}>${labelMonth(month)}</option>`).join('');
-  const scopeMonths=data?.monthIds||v213AnalysisScopeMonths(year),revenue=scopeMonths.reduce((sum,month)=>sum+Number(revenueTotal(month)||0),0),expense=Number(data?.totals?.real||0),result=revenue-expense,commitment=revenue?expense/revenue*100:0;
-  return `<div class="v213-analysis-period v216-analysis-period"><div class="v216-analysis-glance"><div class="v216-glance-item"><span>Receitas do período</span><strong>${fmt(revenue)}</strong><small>${scopeMonths.length} ${scopeMonths.length===1?'mês analisado':'meses analisados'}</small></div><div class="v216-glance-item"><span>Despesas realizadas</span><strong>${fmt(expense)}</strong><small>${commitment.toLocaleString('pt-BR',{maximumFractionDigits:1})}% das receitas</small></div><div class="v216-glance-item ${result<0?'is-negative':'is-positive'}"><span>Resultado realizado</span><strong>${fmt(result)}</strong><small>${result<0?'Despesas acima das receitas':'Receitas acima das despesas'}</small></div></div><div class="v216-analysis-controls"><div class="v213-period-field"><label>Ano analisado</label>${yearSelectHTML()}</div><div class="v213-period-field"><label>Mês analisado</label><select class="select period-select" onchange="setAnalysisPeriod(this.value)"><option value="ano" ${rxdScope==='ano'?'selected':''}>Todos os meses</option>${monthOptions}</select></div></div></div>`;
+  const scopeMonths=data?.monthIds||v213AnalysisScopeMonths(year),revenue=scopeMonths.reduce((sum,month)=>sum+Number(revenueTotal(month)||0),0),expense=Number(data?.totals?.planned||0),result=revenue-expense;
+  return `<div class="v213-analysis-period v216-analysis-period"><div class="v216-analysis-glance"><div class="v216-glance-item"><span>Receitas no período</span><strong>${fmt(revenue)}</strong><small>${scopeMonths.length} ${scopeMonths.length===1?'mês analisado':'meses analisados'}</small></div><div class="v216-glance-item"><span>Despesas no período</span><strong>${fmt(expense)}</strong><small>Valores planejados no período</small></div><div class="v216-glance-item ${result<0?'is-negative':'is-positive'}"><span>Saldo final</span><strong>${fmt(result)}</strong><small>Receitas menos despesas planejadas</small></div></div><div class="v216-analysis-controls"><div class="v213-period-field"><label>Ano analisado</label>${yearSelectHTML()}</div><div class="v213-period-field"><label>Mês analisado</label><select class="select period-select" onchange="setAnalysisPeriod(this.value)"><option value="ano" ${rxdScope==='ano'?'selected':''}>Todos os meses</option>${monthOptions}</select></div></div></div>`;
 }
 function setAnalysisPeriod(value){if(value==='ano')rxdScope='ano';else{state.month=validMonth(value);rxdScope='mes'}save();render()}
 function v213AnalysisScopeMonths(year){const list=v213MonthsForYear(year);return rxdScope==='mes'&&list.includes(state.month)?[state.month]:list}
@@ -5014,13 +5133,23 @@ function v212AnnualMatrix(data){
   const totals=data.monthIds.map((month,index)=>data.rows.reduce((sum,row)=>sum+v212MatrixValue(row,index),0)),grand=totals.reduce((a,b)=>a+b,0),periodLabel=data.monthIds.length===1?labelMonth(data.monthIds[0]):'período';
   return `<div class="v212-matrix-toolbar"><div class="v212-mode-switch">${Object.entries(modeLabels).map(([key,label])=>`<button type="button" class="${analysisMatrixMode===key?'active':''}" onclick="setAnalysisMatrixMode('${key}')">${label}</button>`).join('')}</div><div class="v212-matrix-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" placeholder="Buscar subcategoria, categoria, cidade ou responsável" oninput="v212FilterMatrix(this.value)"></div></div><div class="v212-annual-matrix"><table><thead><tr><th>Despesa</th>${data.monthIds.map(month=>`<th>${monthShort(Number(month.slice(5,7)))}</th>`).join('')}<th>Total</th></tr></thead><tbody>${rows}</tbody><tfoot><tr><td>Total do ${periodLabel}</td>${totals.map(value=>`<td>${fmt(value)}</td>`).join('')}<td>${fmt(grand)}</td></tr></tfoot></table><div id="analysisMatrixEmpty" class="v23-empty" hidden>Nenhuma despesa encontrada nesta busca.</div></div>`;
 }
-function v216ExtremeSubcategoryChart(rows,direction='largest'){
-  const eligible=rows.filter(row=>Number(row.realTotal||0)>.005).slice().sort((a,b)=>direction==='largest'?b.realTotal-a.realTotal:a.realTotal-b.realTotal).slice(0,6),max=Math.max(...eligible.map(row=>Number(row.realTotal||0)),1);
+function v216ExtremeSubcategoryChart(rows,direction='largest',limit=6){
+  const eligible=rows.filter(row=>Number(row.realTotal||0)>.005).slice().sort((a,b)=>direction==='largest'?b.realTotal-a.realTotal:a.realTotal-b.realTotal).slice(0,limit),max=Math.max(...eligible.map(row=>Number(row.realTotal||0)),1);
   if(!eligible.length)return '<div class="v23-empty">Nenhuma despesa realizada encontrada no período.</div>';
   return `<div class="v216-extreme-list">${eligible.map(row=>`<div class="v216-extreme-row"><div class="v216-extreme-name"><strong title="${escapeHtml(row.name)}">${escapeHtml(row.name)}</strong><small>${escapeHtml(cat(row.catId).name)} · ${escapeHtml(shortLabel(row.owner))}</small></div><div class="v216-extreme-track"><i style="--bar-color:${cat(row.catId).color};width:${Math.max(7,row.realTotal/max*100)}%"></i></div><div class="v216-extreme-value">${fmt(row.realTotal)}</div></div>`).join('')}</div>`;
 }
+function v217AnnualRealizedRows(year){
+  const rowsMap=new Map();
+  v213MonthsForYear(year).forEach(month=>txs(month).forEach(t=>{
+    const value=Number(t.amount||0);if(Math.abs(value)<=.005)return;
+    const name=cleanName(t.sub||t.description||t.desc||cat(t.cat).name),city=t.city||cityOf(name),owner=t.responsible||ownerOf(city),key=[t.cat,norm(name),city,owner].join('|');
+    if(!rowsMap.has(key))rowsMap.set(key,{key,catId:t.cat,name,city,owner,realTotal:0});
+    rowsMap.get(key).realTotal+=value;
+  }));
+  return [...rowsMap.values()].filter(row=>row.realTotal>.005).sort((a,b)=>b.realTotal-a.realTotal);
+}
 renderRxD=function(){
-  const year=String(state.month||currentMonthId()).slice(0,4),data=v212AnalysisData(year),sortedCategories=data.categories.slice().sort((a,b)=>b.planned-a.planned),scopeCopy=data.monthIds.length===1?labelMonth(data.monthIds[0])+' de '+year:v213PeriodDescription(year).split(' · ')[0]+' de '+year;
+  const year=String(state.month||currentMonthId()).slice(0,4),data=v212AnalysisData(year),annualRealizedRows=v217AnnualRealizedRows(year),sortedCategories=data.categories.slice().sort((a,b)=>b.planned-a.planned),scopeCopy=data.monthIds.length===1?labelMonth(data.monthIds[0])+' de '+year:v213PeriodDescription(year).split(' · ')[0]+' de '+year;
   const categoryRows=data.categories.map(item=>`<tr><td><div class="v212-category-name"><i style="--cat-color:${item.c.color}"></i><strong>${escapeHtml(item.c.name)}</strong></div></td><td>${fmt(item.planned)}</td><td>${fmt(item.real)}</td><td class="${item.balance<0?'v23-negative':item.balance>0?'v23-positive':''}">${fmt(item.balance)}</td><td>${v212ExecutionChip(item.planned,item.real)}</td></tr>`).join(''),totals=data.totals;
   layout(`${v213AnalysisPeriodControls(year,data)}
     <section class="v23-panel v23-panel-pad v23-gap-top"><div class="v23-panel-head"><div><h2>Evolução financeira</h2><p>Receitas e despesas realizadas ao longo do período disponível de ${year}.</p></div></div>${v212MonthlyExpenseChart(data.monthly)}</section>
@@ -5029,7 +5158,7 @@ renderRxD=function(){
       <section class="v23-panel v23-panel-pad"><div class="v23-panel-head"><div><h2>Participação por categoria</h2><p>Distribuição do orçamento planejado no período analisado.</p></div></div>${v212CategoryDonut(sortedCategories,totals.planned)}</section>
     </section>
     <section class="v23-panel v23-panel-pad v23-gap-top"><div class="v23-panel-head"><div><h2>Top 5 subcategorias planejadas</h2><p>As maiores parcelas do orçamento no período analisado.</p></div></div>${v212TopSubcategories(data.rows)}</section>
-    <section class="v23-panel v23-panel-pad v23-gap-top"><div class="v23-panel-head"><div><h2>Extremos das despesas realizadas</h2><p>Comparação visual entre os maiores e os menores valores efetivamente registrados no período.</p></div></div><div class="v216-extremes-grid"><div class="v216-extreme-card"><h3>Maiores valores realizados</h3><p>As seis subcategorias com maior impacto financeiro.</p>${v216ExtremeSubcategoryChart(data.rows,'largest')}</div><div class="v216-extreme-card"><h3>Menores valores realizados</h3><p>As seis menores despesas com valor acima de zero.</p>${v216ExtremeSubcategoryChart(data.rows,'smallest')}</div></div></section>`);
+    <section class="v23-panel v23-panel-pad v23-gap-top"><div class="v23-panel-head"><div><h2>Maiores despesas realizadas no ano</h2><p>Consolidado anual de ${year}, independentemente do mês selecionado nos filtros acima.</p></div></div><div class="v216-extreme-card v217-annual-largest"><h3>Subcategorias com maior impacto anual</h3><p>Os oito maiores valores acumulados em todos os meses disponíveis de ${year}.</p>${v216ExtremeSubcategoryChart(annualRealizedRows,'largest',8)}</div></section>`);
 };
 
 
@@ -5042,11 +5171,11 @@ function v215ExpenseFilters(){
   return `<section class="v23-panel v215-year-filter-panel"><div class="v215-year-filter-row"><div class="v215-filter-field"><label>Ano</label>${yearSelectHTML()}</div><div class="v215-filter-field"><label>Categoria</label><select class="select" onchange="expenseFilters.cat=this.value;selectedExpenseCat=null;render()">${categoryFilterOptions(expenseFilters.cat)}</select></div><div class="v215-filter-field"><label>Responsável</label><select class="select" onchange="expenseFilters.owner=this.value;render()">${ownerOptions(expenseFilters.owner)}</select></div><div class="v215-filter-field"><label>Cidade</label><select class="select" onchange="expenseFilters.city=this.value;render()">${cityOptions(expenseFilters.city)}</select></div></div>${activeFilterChips('expense')}</section>`
 }
 function v215IncomeFilters(){return `<section class="v23-panel v215-year-filter-panel"><div class="v215-year-filter-row is-income"><div class="v215-filter-field"><label>Ano</label>${yearSelectHTML()}</div><span class="v215-year-badge">Visão do ano todo</span></div></section>`}
-function v215PlanningBudgetData(monthIds=v215PlanningMonths()){
+function v215PlanningBudgetData(monthIds=v215PlanningMonths(),filters=expenseFilters){
   const rowsMap=new Map();
   monthIds.forEach((month,index)=>{
     (state.budgets[month]||[]).forEach(b=>{
-      if(!budgetMatches(b,expenseFilters))return;
+      if(!budgetMatches(b,filters))return;
       const meta=budgetMeta(b),key=[b.cat,norm(meta.name),meta.city,meta.owner].join('|');
       if(!rowsMap.has(key))rowsMap.set(key,{key,catId:b.cat,name:meta.name,city:meta.city,owner:meta.owner,values:Array(monthIds.length).fill(0),ids:Array.from({length:monthIds.length},()=>[])});
       const row=rowsMap.get(key);row.values[index]+=Number(b.planned||0);if(b.id)row.ids[index].push(b.id);
@@ -5065,9 +5194,7 @@ function v215FullSub(identity){
 }
 function v215OpenBudgetMonth(encodedIdentity,month){
   const identity=annualBudgetIdentity(encodedIdentity);if(!identity)return alert('Não foi possível identificar esta despesa.');
-  const lines=annualBudgetMatchingLines(month,identity);
-  if(lines.length===1)return openBudgetItem(lines[0].id,month);
-  const amount=lines.reduce((sum,line)=>sum+Number(line.planned||0),0);
+  const lines=annualBudgetMatchingLines(month,identity),amount=lines.reduce((sum,line)=>sum+Number(line.planned||0),0);
   modal(`<div class="sheet-head"><div><h3>${lines.length?'Editar':'Planejar'} despesa — ${labelMonth(month)}</h3><p class="muted" style="margin-top:4px;font-weight:750">${escapeHtml(identity.sub)} · ${escapeHtml(cat(identity.catId).name)} · ${escapeHtml(identity.city)} · ${escapeHtml(identity.owner||ownerOf(identity.city))}</p></div><button class="close" type="button" onclick="closeModal()">×</button></div><form class="form" onsubmit="v215SaveBudgetMonth(event,'${encodedIdentity}','${month}')"><div class="field"><label>Valor planejado neste mês</label><input type="number" min="0" step="0.01" name="planned" value="${amount}" required></div><div class="note">Esta alteração afeta somente ${labelMonth(month)}. Para alterar o ano inteiro, use o botão abaixo.</div><div class="actions"><button class="btn secondary" type="button" onclick="closeModal();openAnnualBudgetEditor('${encodedIdentity}')">Editar todos os meses</button><button class="btn secondary" type="button" onclick="closeModal()">Cancelar</button><button class="btn">Salvar este mês</button></div></form>`)
 }
 function v215SaveBudgetMonth(event,encodedIdentity,month){
@@ -5093,7 +5220,7 @@ function v215CategoryTable(data){
   return `<div class="table-wrap v215-table-wrap v215-category-table-wrap"><table class="v215-annual-table"><thead><tr><th>Categoria</th>${data.monthIds.map(month=>`<th>${monthShort(Number(month.slice(5,7)))}</th>`).join('')}<th>Total</th></tr></thead><tbody>${rows||`<tr><td colspan="${data.monthIds.length+2}">Nenhuma categoria planejada neste ano.</td></tr>`}</tbody><tfoot><tr><td>Total planejado</td>${monthly.map(value=>`<td>${fmt(value)}</td>`).join('')}<td>${fmt(data.total)}</td></tr></tfoot></table></div>`
 }
 function v215SubcategoryTable(data){
-  const rows=data.rows.map(row=>{const identity=v215Identity(row);return `<tr data-search-item data-search="${escapeHtml([row.name,cat(row.catId).name,row.city,row.owner].join(' '))}"><td><div class="v215-row-primary"><div class="v215-row-copy" style="--row-color:${cat(row.catId).color}"><i></i><div><strong>${escapeHtml(row.name)}</strong><small>${escapeHtml(cat(row.catId).name)} · ${escapeHtml(row.city)} · ${escapeHtml(shortLabel(row.owner))}</small></div></div><button class="v215-row-edit" type="button" onclick="event.stopPropagation();openAnnualBudgetEditor('${identity}')" title="Editar planejamento anual" aria-label="Editar planejamento anual"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg></button></div></td>${row.values.map((value,index)=>`<td><button class="v215-cell-button ${Math.abs(value)<=.005?'is-zero':''}" type="button" onclick="v215OpenBudgetMonth('${identity}','${data.monthIds[index]}')" title="Editar ${labelMonth(data.monthIds[index])}">${Math.abs(value)>.005?fmt(value):'—'}</button></td>`).join('')}<td>${fmt(row.total)}</td></tr>`}).join('');
+  const rows=data.rows.map(row=>{const identity=v215Identity(row);return `<tr data-search-item data-search="${escapeHtml([row.name,cat(row.catId).name,row.city,row.owner].join(' '))}"><td><div class="v215-row-primary"><button class="v217-row-name-button" type="button" onclick="openAnnualBudgetEditor('${identity}')" title="Editar ${escapeHtml(row.name)} no ano inteiro"><div class="v215-row-copy" style="--row-color:${cat(row.catId).color}"><i></i><div><strong>${escapeHtml(row.name)}</strong><small>${escapeHtml(cat(row.catId).name)} · ${escapeHtml(row.city)} · ${escapeHtml(shortLabel(row.owner))}</small></div></div></button></div></td>${row.values.map((value,index)=>`<td><button class="v215-cell-button ${Math.abs(value)<=.005?'is-zero':''}" type="button" onclick="v215OpenBudgetMonth('${identity}','${data.monthIds[index]}')" title="Editar ${labelMonth(data.monthIds[index])}">${Math.abs(value)>.005?fmt(value):'—'}</button></td>`).join('')}<td>${fmt(row.total)}</td></tr>`}).join('');
   const monthly=data.monthIds.map((_,index)=>data.rows.reduce((sum,row)=>sum+row.values[index],0));
   return `<div class="table-wrap v215-table-wrap v215-subcategory-table-wrap"><table class="v215-annual-table"><thead><tr><th>Subcategoria</th>${data.monthIds.map(month=>`<th>${monthShort(Number(month.slice(5,7)))}</th>`).join('')}<th>Total</th></tr></thead><tbody>${rows||`<tr><td colspan="${data.monthIds.length+2}">Nenhuma despesa prevista encontrada com os filtros atuais.</td></tr>`}</tbody><tfoot><tr><td>Total planejado</td>${monthly.map(value=>`<td>${fmt(value)}</td>`).join('')}<td>${fmt(data.total)}</td></tr></tfoot></table></div>`
 }
@@ -5109,7 +5236,7 @@ function v215RevenueData(monthIds=v215PlanningMonths()){
 }
 function v215RevenueCellAction(source,month){return source.key==='reserva'?`openOtherRevenueMonth('${month}')`:`openRevenue('${month}')`}
 function v215RevenueTable(data){
-  const year=v215PlanningYear(),rows=data.sources.map(source=>`<tr data-search-item><td><div class="v215-income-name"><div class="v215-row-copy" style="--row-color:${source.color}"><i></i><div><strong>${escapeHtml(source.label)}</strong><small>${escapeHtml(source.note)}</small></div></div><button class="v215-row-edit" type="button" onclick="event.stopPropagation();openAnnualRevenueEditor('${year}')" title="Editar receitas anuais" aria-label="Editar receitas anuais"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z"/></svg></button></div></td>${source.values.map((value,index)=>`<td><button class="v215-cell-button ${Math.abs(value)<=.005?'is-zero':''}" type="button" onclick="${v215RevenueCellAction(source,data.monthIds[index])}" title="Editar ${source.label} em ${labelMonth(data.monthIds[index])}">${Math.abs(value)>.005?fmt(value):'—'}</button></td>`).join('')}<td>${fmt(source.total)}</td></tr>`).join('');
+  const year=v215PlanningYear(),rows=data.sources.map(source=>`<tr data-search-item><td><div class="v215-income-name"><button class="v217-row-name-button" type="button" onclick="openAnnualRevenueEditor('${year}')" title="Editar ${escapeHtml(source.label)} no ano inteiro"><div class="v215-row-copy" style="--row-color:${source.color}"><i></i><div><strong>${escapeHtml(source.label)}</strong><small>${escapeHtml(source.note)}</small></div></div></button></div></td>${source.values.map((value,index)=>`<td><button class="v215-cell-button ${Math.abs(value)<=.005?'is-zero':''}" type="button" onclick="${v215RevenueCellAction(source,data.monthIds[index])}" title="Editar ${source.label} em ${labelMonth(data.monthIds[index])}">${Math.abs(value)>.005?fmt(value):'—'}</button></td>`).join('')}<td>${fmt(source.total)}</td></tr>`).join('');
   return `<div class="table-wrap v215-table-wrap"><table class="v215-annual-table"><thead><tr><th>Origem da receita</th>${data.monthIds.map(month=>`<th>${monthShort(Number(month.slice(5,7)))}</th>`).join('')}<th>Total</th></tr></thead><tbody>${rows}</tbody><tfoot><tr><td>Total previsto</td>${data.monthly.map(item=>`<td>${fmt(item.total)}</td>`).join('')}<td>${fmt(data.total)}</td></tr></tfoot></table></div>`
 }
 
@@ -5125,20 +5252,79 @@ setMainView=function(target){
 };
 v23PlanningTabs=function(active){return `<div class="v23-planning-tabs"><button class="${active==='expenses'?'active':''}" onclick="view='despesas';expenseScope='ano';render()">Despesas</button><button class="${active==='income'?'active':''}" onclick="view='receitas';revenueScope='ano';render()">Receitas</button></div>`};
 
+function v217PlanningKpis(){
+  const monthIds=v215PlanningMonths(),monthCount=Math.max(1,monthIds.length),year=v215PlanningYear(),scope=v213PeriodDescription(year).split(' · ')[0];
+  const revenue=v215RevenueData(monthIds),expenses=v215PlanningBudgetData(monthIds,{cat:'todos',owner:'todos',city:'todos'}),balance=revenue.total-expenses.total;
+  return `<div class="v217-planning-kpis"><div class="v23-stat is-brand"><span>Total de receita planejada</span><strong>${fmt(revenue.total)}</strong><small>${scope} de ${year}</small></div><div class="v23-stat is-negative"><span>Total de despesa planejada</span><strong>${fmt(expenses.total)}</strong><small>${scope} de ${year}</small></div><div class="v23-stat ${balance<0?'is-negative':'is-positive'}"><span>Saldo final</span><strong>${fmt(balance)}</strong><small>Receitas menos despesas planejadas</small></div><div class="v23-stat is-brand"><span>Média mensal de receitas</span><strong>${fmt(revenue.total/monthCount)}</strong><small>Considerando ${monthCount} ${monthCount===1?'mês':'meses'}</small></div><div class="v23-stat is-warning"><span>Média mensal de despesas</span><strong>${fmt(expenses.total/monthCount)}</strong><small>Considerando ${monthCount} ${monthCount===1?'mês':'meses'}</small></div></div>`;
+}
 renderDespesas=function(){
-  expenseScope='ano';const data=v215PlanningBudgetData(),monthCount=Math.max(1,data.monthIds.length),average=data.total/monthCount,largest=data.categories.slice().sort((a,b)=>b.total-a.total)[0];
-  layout(`${v210PlanningToolbar('expenses')}${v215ExpenseFilters()}
-    <div class="v23-grid three v215-planning-kpis"><div class="v23-stat is-brand"><span>Orçamento planejado</span><strong>${fmt(data.total)}</strong><small>${v213PeriodDescription(v215PlanningYear())}</small></div><div class="v23-stat"><span>Média mensal</span><strong>${fmt(average)}</strong><small>${monthCount} meses disponíveis no ano</small></div><div class="v23-stat is-positive"><span>Maior categoria</span><strong>${largest?fmt(largest.total):fmt(0)}</strong><small>${largest?escapeHtml(largest.c.name):'Nenhuma categoria planejada'}</small></div></div>
+  expenseScope='ano';const data=v215PlanningBudgetData();
+  layout(`${v210PlanningToolbar('expenses')}${v215ExpenseFilters()}${v217PlanningKpis()}
     <section class="v23-panel v23-panel-pad v215-planning-section"><div class="v23-panel-head"><div><h2>Planejado por categoria</h2><p>Visão mensal do orçamento agrupado por categoria em ${v215PlanningYear()}.</p></div></div>${v215CategoryTable(data)}</section>
-    <section class="v23-panel v23-panel-pad v215-planning-section"><div class="v23-panel-head"><div><h2>Consolidado por subcategoria</h2><p>Clique em um mês para editar somente aquele valor ou no ícone ao lado da subcategoria para alterar o ano inteiro.</p></div></div>${v215SubcategoryTable(data)}</section>`);
+    <section class="v23-panel v23-panel-pad v215-planning-section"><div class="v23-panel-head"><div><h2>Consolidado por subcategoria</h2><p>Clique no nome da subcategoria para editar o ano inteiro ou em um valor mensal para editar somente aquele mês.</p></div></div>${v215SubcategoryTable(data)}</section>`);
 };
 renderReceitas=function(){
-  revenueScope='ano';const data=v215RevenueData(),monthCount=Math.max(1,data.monthIds.length),average=data.total/monthCount,largest=data.monthly.slice().sort((a,b)=>b.total-a.total)[0];
-  layout(`${v210PlanningToolbar('income')}${v215IncomeFilters()}
-    <div class="v23-grid three v215-planning-kpis"><div class="v23-stat is-brand"><span>Receitas previstas</span><strong>${fmt(data.total)}</strong><small>${v213PeriodDescription(v215PlanningYear())}</small></div><div class="v23-stat"><span>Média mensal</span><strong>${fmt(average)}</strong><small>${monthCount} meses disponíveis no ano</small></div><div class="v23-stat is-positive"><span>Maior mês previsto</span><strong>${largest?fmt(largest.total):fmt(0)}</strong><small>${largest?labelMonth(largest.month):'Nenhum valor previsto'}</small></div></div>
-    <section class="v23-panel v23-panel-pad v215-planning-section"><div class="v23-panel-head"><div><h2>Receitas previstas no ano</h2><p>Visão de Cícero, Nilce e Outras receitas em todos os meses disponíveis.</p></div></div>${v215RevenueTable(data)}</section>`);
+  revenueScope='ano';const data=v215RevenueData();
+  layout(`${v210PlanningToolbar('income')}${v215IncomeFilters()}${v217PlanningKpis()}
+    <section class="v23-panel v23-panel-pad v215-planning-section"><div class="v23-panel-head"><div><h2>Receitas previstas no ano</h2><p>Clique no nome da origem para editar o ano inteiro ou em um valor mensal para editar somente aquele mês.</p></div></div>${v215RevenueTable(data)}</section>`);
 };
 
+</script>
+
+<script id="v218-analysis-script">
+/* =========================================================
+   V2.18 — DEFINIÇÕES FINAIS ATIVAS DE ANÁLISES
+   ========================================================= */
+function v218ParticipationDonut(items,centerLabel){
+  const usable=(items||[]).filter(item=>Number(item.value||0)>.005).slice().sort((a,b)=>b.value-a.value);
+  const total=usable.reduce((sum,item)=>sum+Number(item.value||0),0);
+  if(!usable.length)return '<div class="v23-empty">Nenhum valor planejado encontrado no período.</div>';
+  let cursor=0;
+  const segments=usable.map(item=>{const start=cursor,end=cursor+Number(item.value||0)/Math.max(total,1)*100;cursor=end;return `${item.color||'#64748B'} ${start}% ${end}%`}).join(',');
+  const list=usable.map(item=>{
+    const share=total?Number(item.value||0)/total*100:0;
+    return `<div class="v218-donut-item"><i style="--dot:${item.color||'#64748B'}"></i><div class="v218-donut-copy"><strong>${escapeHtml(item.label)}</strong><small>${fmt(item.value)}</small></div><span class="v218-donut-share">${share.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}%</span></div>`;
+  }).join('');
+  return `<div class="v218-donut-layout"><div class="v212-donut" style="background:conic-gradient(${segments})"><div><strong>${fmt(total)}</strong><small>${escapeHtml(centerLabel)}</small></div></div><div class="v218-donut-list">${list}</div></div>`;
+}
+function v218ExpenseParticipation(data){
+  return v218ParticipationDonut((data.categories||[]).map(item=>({label:item.c.name,value:Number(item.planned||0),color:item.c.color||'#64748B'})),'despesas planejadas');
+}
+function v218RevenueParticipation(monthIds){
+  const items=[
+    {label:'Cícero',key:'cicero',color:'#4F46E5'},
+    {label:'Nilce',key:'nilce',color:'#DB2777'},
+    {label:'Outras receitas',key:'reserva',color:'#047857'}
+  ].map(item=>({...item,value:(monthIds||[]).reduce((sum,month)=>sum+Number(revObj(month)[item.key]||0),0)}));
+  return v218ParticipationDonut(items,'receitas planejadas');
+}
+function v218AnnualPlannedRows(year){
+  const rowsMap=new Map();
+  v213MonthsForYear(year).forEach(month=>(state.budgets[month]||[]).forEach(b=>{
+    const value=Number(budgetLineAdjusted(month,b)||0);if(Math.abs(value)<=.005)return;
+    const name=cleanName(b.sub||cat(b.cat).name),city=b.city||cityOf(name),owner=budgetOwner(b),key=[b.cat,norm(name),city,owner].join('|');
+    if(!rowsMap.has(key))rowsMap.set(key,{key,catId:b.cat,name,city,owner,plannedTotal:0});
+    rowsMap.get(key).plannedTotal+=value;
+  }));
+  return [...rowsMap.values()].filter(row=>row.plannedTotal>.005).sort((a,b)=>b.plannedTotal-a.plannedTotal);
+}
+function v218TopPlannedChart(rows,limit=6){
+  const eligible=(rows||[]).filter(row=>Number(row.plannedTotal||0)>.005).slice().sort((a,b)=>b.plannedTotal-a.plannedTotal).slice(0,limit),max=Math.max(...eligible.map(row=>Number(row.plannedTotal||0)),1);
+  if(!eligible.length)return '<div class="v23-empty">Nenhuma despesa planejada encontrada no ano.</div>';
+  return `<div class="v216-extreme-list">${eligible.map((row,index)=>`<div class="v216-extreme-row"><div class="v216-extreme-name"><strong title="${escapeHtml(row.name)}">${index+1}. ${escapeHtml(row.name)}</strong><small>${escapeHtml(cat(row.catId).name)} · ${escapeHtml(row.city)} · ${escapeHtml(shortLabel(row.owner))}</small></div><div class="v216-extreme-track"><i style="--bar-color:${cat(row.catId).color};width:${Math.max(7,row.plannedTotal/max*100)}%"></i></div><div class="v216-extreme-value">${fmt(row.plannedTotal)}</div></div>`).join('')}</div>`;
+}
+renderRxD=function(){
+  const year=String(state.month||currentMonthId()).slice(0,4),data=v212AnalysisData(year),annualPlannedRows=v218AnnualPlannedRows(year),scopeCopy=data.monthIds.length===1?labelMonth(data.monthIds[0])+' de '+year:v213PeriodDescription(year).split(' · ')[0]+' de '+year;
+  const categoryRows=data.categories.map(item=>`<tr><td><div class="v212-category-name"><i style="--cat-color:${item.c.color}"></i><strong>${escapeHtml(item.c.name)}</strong></div></td><td>${fmt(item.planned)}</td><td>${fmt(item.real)}</td><td class="${item.balance<0?'v23-negative':item.balance>0?'v23-positive':''}">${fmt(item.balance)}</td><td>${v212ExecutionChip(item.planned,item.real)}</td></tr>`).join(''),totals=data.totals;
+  layout(`${v213AnalysisPeriodControls(year,data)}
+    <section class="v23-panel v23-panel-pad v23-gap-top"><div class="v23-panel-head"><div><h2>Evolução financeira</h2><p>Receitas e despesas realizadas ao longo do período disponível de ${year}.</p></div></div>${v212MonthlyExpenseChart(data.monthly)}</section>
+    <section class="v23-panel v23-panel-pad v23-gap-top v212-category-summary"><div class="v23-panel-head"><div><h2>Orçado versus realizado</h2><p>Resumo por categoria em ${scopeCopy}, com saldo e percentual de execução.</p></div></div><div class="table-wrap v212-summary-table"><table><thead><tr><th>Categoria</th><th>Orçado</th><th>Realizado</th><th>Saldo</th><th>Execução</th></tr></thead><tbody>${categoryRows||'<tr><td colspan="5">Nenhuma despesa encontrada no período.</td></tr>'}</tbody><tfoot><tr><td>Total do período</td><td>${fmt(totals.planned)}</td><td>${fmt(totals.real)}</td><td class="${totals.balance<0?'v23-negative':totals.balance>0?'v23-positive':''}">${fmt(totals.balance)}</td><td>${v212ExecutionChip(totals.planned,totals.real)}</td></tr></tfoot></table></div></section>
+    <section class="v218-participation-grid v23-gap-top">
+      <section class="v23-panel v23-panel-pad"><div class="v23-panel-head"><div><h2>Participação das despesas</h2><p>Distribuição das despesas planejadas por categoria no período analisado.</p></div></div>${v218ExpenseParticipation(data)}</section>
+      <section class="v23-panel v23-panel-pad"><div class="v23-panel-head"><div><h2>Participação das receitas</h2><p>Quanto da receita planejada vem de Cícero, Nilce e outras origens.</p></div></div>${v218RevenueParticipation(data.monthIds)}</section>
+    </section>
+    <section class="v23-panel v23-panel-pad v23-gap-top"><div class="v23-panel-head"><div><h2>Top 6 despesas planejadas</h2><p>As seis subcategorias com maior impacto no planejamento anual de ${year}, independentemente do mês selecionado.</p></div></div><div class="v216-extreme-card v217-annual-largest v218-top-planned"><h3>Maiores valores do planejamento anual</h3><p>Valores consolidados em todos os meses disponíveis de ${year}.</p>${v218TopPlannedChart(annualPlannedRows,6)}</div></section>`);
+};
 </script>
 
 </body></html>
