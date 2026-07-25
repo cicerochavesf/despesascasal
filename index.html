@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.19 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.23 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -3050,6 +3050,108 @@ html[data-theme="dark"][data-ui="v23"] .v219-top-row{background:#111827!importan
 }
 </style>
 
+
+<style id="v220-analysis-adjustments">
+/* =========================================================
+   V2.20 — ANÁLISES: ALINHAMENTO E FECHAMENTO AUTOMÁTICO
+   Bloco final ativo. Sobrescreve somente os ajustes da V2.19.
+   ========================================================= */
+html[data-ui="v23"] .v218-donut-item,
+html[data-ui="v23"] .v218-donut-item.v219-clickable{
+  width:100%!important;
+  text-align:left!important;
+  justify-items:stretch!important;
+}
+html[data-ui="v23"] .v218-donut-copy,
+html[data-ui="v23"] .v218-donut-copy strong,
+html[data-ui="v23"] .v218-donut-copy small{
+  width:100%!important;
+  text-align:left!important;
+}
+html[data-ui="v23"] .v219-month-chart{
+  grid-template-columns:repeat(var(--month-count,6),minmax(154px,1fr))!important;
+  min-width:var(--chart-mobile-min,924px)!important;
+  height:350px!important;
+  gap:12px!important;
+  padding-top:16px!important;
+}
+html[data-ui="v23"] .v219-month-column{
+  padding:10px 8px 9px!important;
+}
+html[data-ui="v23"] .v219-month-bars{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  height:252px!important;
+  gap:8px!important;
+}
+html[data-ui="v23"] .v219-month-column.has-actual .v219-month-bars{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:6px!important;
+}
+html[data-ui="v23"] .v219-bar-button{
+  width:100%!important;
+  overflow:hidden!important;
+  gap:5px!important;
+}
+html[data-ui="v23"] .v219-bar-label{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:100%!important;
+  min-height:29px!important;
+  padding:3px 2px!important;
+  border:1px solid color-mix(in srgb,var(--bar-color,#64748B) 18%,#E2E8F0)!important;
+  border-radius:8px!important;
+  background:color-mix(in srgb,var(--bar-color,#64748B) 7%,#FFFFFF)!important;
+  color:var(--v23-ink-2)!important;
+  font-size:7.8px!important;
+  line-height:1.08!important;
+  font-weight:950!important;
+  text-align:center!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+}
+html[data-ui="v23"] .v219-bar{
+  width:min(34px,78%)!important;
+}
+html[data-ui="v23"] .v219-bar-caption{
+  min-height:18px!important;
+  font-size:7.2px!important;
+  line-height:1.05!important;
+  white-space:normal!important;
+}
+html[data-ui="v23"] .v219-month-name{
+  margin-top:8px!important;
+  font-size:10.5px!important;
+}
+html[data-ui="v23"] .v219-month-balance{
+  margin-top:6px!important;
+  font-size:7.8px!important;
+  white-space:normal!important;
+  text-align:center!important;
+}
+html[data-ui="v23"] .v219-month-status,
+html[data-ui="v23"] .v219-actual-pending{
+  display:none!important;
+}
+html[data-theme="dark"][data-ui="v23"] .v219-bar-label{
+  background:color-mix(in srgb,var(--bar-color,#64748B) 14%,#111827)!important;
+  border-color:color-mix(in srgb,var(--bar-color,#64748B) 32%,#344054)!important;
+  color:#F8FAFC!important;
+}
+@media(max-width:760px){
+  html[data-ui="v23"] .v219-month-chart{
+    grid-template-columns:repeat(var(--month-count,6),150px)!important;
+    min-width:var(--chart-mobile-min,900px)!important;
+    height:334px!important;
+    gap:8px!important;
+  }
+  html[data-ui="v23"] .v219-month-bars{height:236px!important;gap:6px!important;}
+  html[data-ui="v23"] .v219-month-column.has-actual .v219-month-bars{gap:4px!important;}
+  html[data-ui="v23"] .v219-bar-label{font-size:7.1px!important;min-height:28px!important;}
+  html[data-ui="v23"] .v219-bar-caption{font-size:6.7px!important;}
+}
+</style>
+
 </head><body><div id="app"></div><div id="modal" class="modal"></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 const storeKey='despesas-casal-profissional-v12';
 const SUPABASE_URL='https://fpcwnjlneaaarzeevgpl.supabase.co';
@@ -3749,8 +3851,10 @@ function renderRealizedStatement(items){
 }
 function addDateDays(date,days){const d=new Date(date);d.setDate(d.getDate()+days);return d}
 function firstSundayOfMonth(monthId){const [y,m]=String(monthId).split('-').map(Number),d=new Date(y,m-1,1,12);d.setDate(1+((7-d.getDay())%7));return d}
+/* Regra mensal única do app: cada mês financeiro começa no primeiro domingo do mês civil. */
+function financialMonthStart(monthId){return firstSundayOfMonth(monthId)}
 function nextMonthId(monthId){const [y,m]=String(monthId).split('-').map(Number),d=new Date(y,m,1,12);return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`}
-function envelopePeriod(monthId){const start=firstSundayOfMonth(monthId),endExclusive=firstSundayOfMonth(nextMonthId(monthId)),count=Math.max(1,Math.round((endExclusive-start)/(7*86400000))),weeks=[];for(let i=0;i<count;i++){const weekStart=addDateDays(start,i*7),weekEnd=addDateDays(weekStart,6);weeks.push({index:i,start:weekStart,end:weekEnd})}return{start,endExclusive,weeks}}
+function envelopePeriod(monthId){const start=financialMonthStart(monthId),endExclusive=financialMonthStart(nextMonthId(monthId)),count=Math.max(1,Math.round((endExclusive-start)/(7*86400000))),weeks=[];for(let i=0;i<count;i++){const weekStart=addDateDays(start,i*7),weekEnd=addDateDays(weekStart,6);weeks.push({index:i,start:weekStart,end:weekEnd})}return{start,endExclusive,weeks}}
 function envelopeDateLabel(date){return new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'2-digit'}).format(date)}
 function distributeCents(total,count){if(count<=0)return[];const base=Math.trunc(total/count),out=Array(count).fill(base);let remainder=total-base*count,step=remainder>=0?1:-1;for(let i=0;i<Math.abs(remainder);i++)out[count-1-(i%count)]+=step;return out}
 function envelopeTransactions(period,env){return Object.values(state.transactions||{}).flat().filter(t=>{const d=parseDateLocal(t.date);return d&&d>=period.start&&d<period.endExclusive&&sameBudgetTarget(t,env.cat,env.sub,env.city)})}
@@ -5473,4 +5577,247 @@ renderRxD=function(){
 };
 </script>
 
+
+<script id="v220-analysis-script">
+/* =========================================================
+   V2.22 — DEFINIÇÕES FINAIS ATIVAS DE ANÁLISES
+   ========================================================= */
+function v221FinancialMonthStart(month){
+  /* Mesma regra dos envelopes: o mês começa no primeiro domingo.
+     Assim, o mês anterior termina no sábado imediatamente anterior. */
+  return financialMonthStart(month);
+}
+function v219IsMonthClosed(month){
+  const monthId=String(month||'');
+  if(!/^\d{4}-\d{2}$/.test(monthId))return false;
+  const today=new Date();
+  today.setHours(12,0,0,0);
+  return today>=v221FinancialMonthStart(nextMonthId(monthId));
+}
+function v220CompactChartMoney(value){
+  const n=Number(value)||0,abs=Math.abs(n),sign=n<0?'−':'';
+  if(abs>=1000000)return `${sign}R$ ${(abs/1000000).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})} mi`;
+  if(abs>=1000)return `${sign}R$ ${(abs/1000).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})} mil`;
+  return `${sign}R$ ${abs.toLocaleString('pt-BR',{minimumFractionDigits:0,maximumFractionDigits:0})}`;
+}
+function v220OpenLatestActual(){
+  const available=v213MonthsForYear(String(state.month||currentMonthId()).slice(0,4)).filter(v219IsMonthClosed).sort();
+  if(!available.length)return;
+  v219OpenAnalysisSeries('actual',available[available.length-1]);
+}
+function v212MonthlyExpenseChart(monthly){
+  const list=monthly||[],visibleActual=list.filter(item=>v219IsMonthClosed(item.month)).map(item=>item.actual),max=Math.max(...list.flatMap(item=>[item.revenue,item.planned]),...visibleActual,1),count=Math.max(1,list.length),mobileMin=Math.max(900,count*150),hasAnyActual=visibleActual.length>0;
+  const actualLegend=hasAnyActual?`<button type="button" onclick="v220OpenLatestActual()"><i style="--legend-color:#D92D55"></i>Realizado</button>`:'';
+  const legend=`<div class="v219-chart-legend"><button type="button" onclick="v219OpenAnalysisSeries('revenue',state.month)"><i style="--legend-color:#2563EB"></i>Receitas planejadas</button><button type="button" onclick="v219OpenAnalysisSeries('planned',state.month)"><i style="--legend-color:#F59E0B"></i>Despesas planejadas</button>${actualLegend}</div>`;
+  const columns=list.map(item=>{
+    const closed=v219IsMonthClosed(item.month),balance=item.revenue-item.planned;
+    const actual=closed?`<button class="v219-bar-button" type="button" style="--bar-color:#D92D55" onclick="v219OpenAnalysisSeries('actual','${item.month}')" title="Abrir realizado de ${labelMonth(item.month)}: ${v23MoneyNumber(item.actual)}"><span class="v219-bar-label">${v220CompactChartMoney(item.actual)}</span><i class="v219-bar" style="--bar-color:#D92D55;height:${Math.max(2,item.actual/max*100)}%"></i><small class="v219-bar-caption">Realizado</small></button>`:'';
+    return `<div class="v219-month-column ${closed?'has-actual':''} ${item.selected?'is-selected':''}"><div class="v219-month-bars"><button class="v219-bar-button" type="button" style="--bar-color:#2563EB" onclick="v219OpenAnalysisSeries('revenue','${item.month}')" title="Abrir receitas planejadas de ${labelMonth(item.month)}: ${v23MoneyNumber(item.revenue)}"><span class="v219-bar-label">${v220CompactChartMoney(item.revenue)}</span><i class="v219-bar" style="--bar-color:#2563EB;height:${Math.max(2,item.revenue/max*100)}%"></i><small class="v219-bar-caption">Receitas</small></button><button class="v219-bar-button" type="button" style="--bar-color:#F59E0B" onclick="v219OpenAnalysisSeries('planned','${item.month}')" title="Abrir despesas planejadas de ${labelMonth(item.month)}: ${v23MoneyNumber(item.planned)}"><span class="v219-bar-label">${v220CompactChartMoney(item.planned)}</span><i class="v219-bar" style="--bar-color:#F59E0B;height:${Math.max(2,item.planned/max*100)}%"></i><small class="v219-bar-caption">Despesas</small></button>${actual}</div><strong class="v219-month-name">${monthShort(Number(item.month.slice(5,7)))}</strong><small class="v219-month-balance">Saldo planejado: ${v220CompactChartMoney(balance)}</small></div>`;
+  }).join('');
+  return `${legend}<div class="v219-month-chart" style="--month-count:${count};--chart-mobile-min:${mobileMin}px">${columns}</div>`;
+}
+renderRxD=function(){
+  const year=String(state.month||currentMonthId()).slice(0,4),data=v212AnalysisData(year),annualPlannedRows=v218AnnualPlannedRows(year),scopeCopy=data.monthIds.length===1?labelMonth(data.monthIds[0])+' de '+year:v213PeriodDescription(year).split(' · ')[0]+' de '+year;
+  const categoryRows=data.categories.map(item=>`<tr><td><div class="v212-category-name"><i style="--cat-color:${item.c.color}"></i><strong>${escapeHtml(item.c.name)}</strong></div></td><td>${fmt(item.planned)}</td><td>${fmt(item.real)}</td><td class="${item.balance<0?'v23-negative':item.balance>0?'v23-positive':''}">${fmt(item.balance)}</td><td>${v212ExecutionChip(item.planned,item.real)}</td></tr>`).join(''),totals=data.totals;
+  layout(`${v213AnalysisPeriodControls(year,data)}
+    <section class="v23-panel v23-panel-pad v23-gap-top"><div class="v23-panel-head"><div><h2>Evolução financeira</h2><p>Receitas e despesas planejadas. O realizado aparece automaticamente no primeiro domingo do mês seguinte, quando o mês anterior já terminou no sábado, seguindo a mesma virada dos envelopes.</p></div></div>${v212MonthlyExpenseChart(data.monthly)}</section>
+    <section class="v23-panel v23-panel-pad v23-gap-top v212-category-summary"><div class="v23-panel-head"><div><h2>Orçado versus realizado</h2><p>Resumo por categoria em ${scopeCopy}, com saldo e percentual de execução.</p></div></div><div class="table-wrap v212-summary-table"><table><thead><tr><th>Categoria</th><th>Orçado</th><th>Realizado</th><th>Saldo</th><th>Execução</th></tr></thead><tbody>${categoryRows||'<tr><td colspan="5">Nenhuma despesa encontrada no período.</td></tr>'}</tbody><tfoot><tr><td>Total do período</td><td>${fmt(totals.planned)}</td><td>${fmt(totals.real)}</td><td class="${totals.balance<0?'v23-negative':totals.balance>0?'v23-positive':''}">${fmt(totals.balance)}</td><td>${v212ExecutionChip(totals.planned,totals.real)}</td></tr></tfoot></table></div></section>
+    <section class="v218-participation-grid v23-gap-top">
+      <section class="v23-panel v23-panel-pad"><div class="v23-panel-head"><div><h2>Participação das despesas</h2><p>Clique em uma categoria para abri-la no Planejamento.</p></div></div>${v218ExpenseParticipation(data)}</section>
+      <section class="v23-panel v23-panel-pad"><div class="v23-panel-head"><div><h2>Participação das receitas</h2><p>Clique em uma origem para abri-la no Planejamento.</p></div></div>${v218RevenueParticipation(data.monthIds)}</section>
+    </section>
+    <section class="v23-panel v23-panel-pad v23-gap-top"><div class="v23-panel-head"><div><h2>Top 10 despesas planejadas</h2><p>As dez subcategorias com maior impacto no planejamento anual de ${year}. Clique em uma linha para abri-la no Planejamento.</p></div></div><div class="v216-extreme-card v217-annual-largest v218-top-planned"><h3>Maiores valores do planejamento anual</h3><p>Valores consolidados em todos os meses disponíveis de ${year}.</p>${v218TopPlannedChart(annualPlannedRows,10)}</div></section>`);
+};
+</script>
+
+
+<script id="v223-financial-calendar-script">
+/* =========================================================
+   V2.23 — CALENDÁRIO FINANCEIRO ÚNICO DO APP
+   Regra: cada mês começa no primeiro domingo e termina no
+   sábado anterior ao primeiro domingo do mês seguinte.
+   ========================================================= */
+const v223LegacyOpenTx=openTx;
+const v223LegacyRender=render;
+const v223LegacySaveInstallmentSeries=saveInstallmentSeries;
+
+function v223DateId(date){
+  const d=date instanceof Date?date:parseDateLocal(date);
+  if(!d||Number.isNaN(d.getTime()))return '';
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function v223PreviousMonthId(monthId){
+  const [year,month]=String(monthId||'').split('-').map(Number),d=new Date(year,month-2,1,12);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+}
+function v223AddMonthId(monthId,offset){
+  const [year,month]=String(monthId||'').split('-').map(Number),d=new Date(year,month-1+Number(offset||0),1,12);
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+}
+function v223FinancialBounds(monthId){
+  const start=financialMonthStart(monthId),endExclusive=financialMonthStart(nextMonthId(monthId));
+  return{start,endExclusive,last:addDateDays(endExclusive,-1)};
+}
+function v223FinancialMonthForDate(dateId){
+  const date=parseDateLocal(dateId);
+  if(!date)return String(dateId||'').slice(0,7);
+  const civilMonth=v223DateId(date).slice(0,7);
+  return date<financialMonthStart(civilMonth)?v223PreviousMonthId(civilMonth):civilMonth;
+}
+function v223DateBelongsToMonth(dateId,monthId){
+  const date=parseDateLocal(dateId),bounds=v223FinancialBounds(monthId);
+  return !!date&&date>=bounds.start&&date<bounds.endExclusive;
+}
+function v223FinancialPeriodLabel(monthId){
+  const bounds=v223FinancialBounds(monthId);
+  return `${fmtDate(v223DateId(bounds.start))} a ${fmtDate(v223DateId(bounds.last))}`;
+}
+function v223ResolveFinancialDate(dateId,intendedMonth){
+  const date=parseDateLocal(dateId);
+  if(!date)return null;
+  const monthId=String(intendedMonth||state.month),bounds=v223FinancialBounds(monthId);
+  if(date>=bounds.start&&date<bounds.endExclusive)return{date:v223DateId(date),month:monthId,adjusted:false};
+  const belongsTo=v223FinancialMonthForDate(dateId),before=date<bounds.start,adjustedDate=v223DateId(before?bounds.start:bounds.last),canUseBelongs=months().includes(belongsTo);
+  const relation=before?'ainda pertence ao mês financeiro anterior':'já pertence ao mês financeiro seguinte';
+  if(!canUseBelongs){
+    const accept=confirm(`A data ${fmtDate(dateId)} ${relation}.\n\n${labelMonth(monthId)} está configurado para o período de ${v223FinancialPeriodLabel(monthId)}. O mês financeiro correspondente à data não está cadastrado no app.\n\nPressione OK para ajustar a data para ${fmtDate(adjustedDate)} e manter o lançamento em ${labelMonth(monthId)}. Pressione Cancelar para voltar ao formulário.`);
+    return accept?{date:adjustedDate,month:monthId,adjusted:true}:null;
+  }
+  const answer=prompt(`A data ${fmtDate(dateId)} ${relation}.\n\n${labelMonth(monthId)} está configurado para o período de ${v223FinancialPeriodLabel(monthId)}.\n\nDigite 1 para ajustar a data para ${fmtDate(adjustedDate)} e manter o lançamento em ${labelMonth(monthId)}.\nDigite 2 para manter a data ${fmtDate(dateId)} e lançar no mês financeiro de ${labelMonth(belongsTo)}.\n\nDeixe em branco para cancelar.`,`1`);
+  if(answer===null||String(answer).trim()==='')return null;
+  if(String(answer).trim()==='1')return{date:adjustedDate,month:monthId,adjusted:true};
+  if(String(answer).trim()==='2')return{date:v223DateId(date),month:belongsTo,adjusted:false};
+  alert('Escolha 1 para ajustar a data ou 2 para usar o mês financeiro correspondente.');
+  return null;
+}
+function v223ClampDateToFinancialMonth(dateId,monthId){
+  const date=parseDateLocal(dateId),bounds=v223FinancialBounds(monthId);
+  if(!date)return v223DateId(bounds.start);
+  if(date<bounds.start)return v223DateId(bounds.start);
+  if(date>=bounds.endExclusive)return v223DateId(bounds.last);
+  return v223DateId(date);
+}
+
+/* O mês corrente de todas as telas passa a ser o mês financeiro. */
+currentMonthId=function(date=new Date()){return v223FinancialMonthForDate(localDateId(date))};
+
+/* Parcelas avançam por mês financeiro, e não apenas pelo mês civil da data. */
+buildInstallmentPlan=function(date,total,count){
+  const cents=distributeCents(Math.round(Number(total||0)*100),count),baseMonth=v223FinancialMonthForDate(date);
+  return cents.map((value,index)=>{
+    const month=v223AddMonthId(baseMonth,index),candidate=addMonthsToDate(date,index),resolvedDate=v223ClampDateToFinancialMonth(candidate,month);
+    return{date:resolvedDate,month,amount:value/100,number:index+1,count};
+  });
+};
+
+/* O realizado só é liberado quando começa o mês financeiro seguinte. */
+v219IsMonthClosed=function(month){
+  const monthId=String(month||'');
+  if(!/^\d{4}-\d{2}$/.test(monthId))return false;
+  const today=parseDateLocal(localDateId())||new Date();
+  return today>=financialMonthStart(nextMonthId(monthId));
+};
+
+/* Datas antigas são corrigidas dentro do próprio mês em que já estão guardadas. */
+function v223NormalizeExistingTransactionDates(){
+  if(!state||!state.transactions)return 0;
+  let changed=0;
+  const groups=new Map();
+  Object.entries(state.transactions).forEach(([monthId,list])=>{
+    if(!/^\d{4}-\d{2}$/.test(monthId)||!Array.isArray(list))return;
+    const bounds=v223FinancialBounds(monthId);
+    list.forEach(tx=>{
+      const original=String(tx.date||''),date=parseDateLocal(original);
+      if(date&&date>=bounds.start&&date<bounds.endExclusive){
+        if(tx.installmentGroupId){if(!groups.has(tx.installmentGroupId))groups.set(tx.installmentGroupId,[]);groups.get(tx.installmentGroupId).push(tx)}
+        return;
+      }
+      const corrected=v223DateId(!date||date<bounds.start?bounds.start:bounds.last);
+      if(original!==corrected){
+        if(!tx.financialDateAdjustedFrom)tx.financialDateAdjustedFrom=original||null;
+        tx.date=corrected;tx.updatedAt=new Date().toISOString();changed++;
+      }
+      if(tx.installmentGroupId){if(!groups.has(tx.installmentGroupId))groups.set(tx.installmentGroupId,[]);groups.get(tx.installmentGroupId).push(tx)}
+    });
+  });
+  groups.forEach(parts=>{
+    const first=parts.slice().sort((a,b)=>Number(a.installmentNumber||0)-Number(b.installmentNumber||0)||String(a.date||'').localeCompare(String(b.date||'')))[0];
+    if(!first)return;
+    parts.forEach(tx=>{if(tx.purchaseDate!==first.date){tx.purchaseDate=first.date;changed++}});
+  });
+  return changed;
+}
+
+openTx=function(id){
+  let found=null;if(id)found=findTransactionById(id);
+  const intendedMonth=found?.month||state.month;
+  v223LegacyOpenTx(id);
+  const form=document.querySelector('#modal form[onsubmit="saveTx(event)"]');if(!form)return;
+  let hidden=form.querySelector('input[name="financialMonth"]');if(!hidden){hidden=document.createElement('input');hidden.type='hidden';hidden.name='financialMonth';form.appendChild(hidden)}hidden.value=intendedMonth;
+  const dateInput=form.querySelector('input[name="date"]');
+  if(dateInput&&!id){const today=localDateId(),suggested=v223DateBelongsToMonth(today,intendedMonth)?today:v223DateId(v223FinancialBounds(intendedMonth).start);dateInput.value=suggested}
+};
+
+saveTx=function(e){
+  e.preventDefault();const f=new FormData(e.target),rawDate=String(f.get('date')||''),catId=String(f.get('cat')||''),sub=String(f.get('sub')||''),city=String(f.get('city')||''),responsible=String(f.get('responsible')||ownerOf(city)),amount=Number(f.get('amount')||0),card=cardOf(f.get('card'));
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(rawDate))return alert('Informe uma data válida.');
+  if(amount<=0)return alert('Informe um valor maior que zero.');
+  let existing=null,existingMonth=null,existingIndex=-1;for(const mm of months()){const i=(state.transactions[mm]||[]).findIndex(x=>x.id===editTxId);if(i>=0){existing=state.transactions[mm][i];existingMonth=mm;existingIndex=i;break}}
+  const intendedMonth=String(f.get('financialMonth')||existingMonth||state.month),resolved=v223ResolveFinancialDate(rawDate,intendedMonth);if(!resolved)return;
+  const date=resolved.date,m=resolved.month,description=String(f.get('description')||'').trim();
+  if(!months().includes(m))ensureYearMonths(m.slice(0,4));if(!state.transactions[m])state.transactions[m]=[];
+  if(existing){
+    const snap=txBudgetSnapshot(m,catId,sub,city,existingMonth===m?existing.id:null),proposedBalance=snap.planned-(snap.used+amount);
+    if(proposedBalance<-.005)return alert(`Este lançamento deixaria o saldo negativo.\n\nSaldo disponível: ${currencyText(Math.max(0,snap.planned-snap.used))}\nValor informado: ${currencyText(amount)}\n\nAumente a previsão ou faça um remanejamento antes de salvar.`);
+    const obj={...existing,date,desc:description,description,cat:catId,sub,payer:responsible,responsible,city,card,amount,updatedAt:new Date().toISOString()};
+    if(existingMonth===m)state.transactions[m][existingIndex]=obj;else{state.transactions[existingMonth].splice(existingIndex,1);state.transactions[m].push(obj)}
+  }else{
+    const mode=card!=='-'?String(f.get('paymentMode')||'avista'):'avista',count=mode==='parcelado'?Math.max(2,Math.min(48,Number(f.get('installmentCount')||2))):1;
+    if(count>Math.round(amount*100))return alert('O valor total é muito baixo para essa quantidade de parcelas. Reduza o número de parcelas.');
+    const plan=buildInstallmentPlan(date,amount,count);
+    for(const part of plan){
+      if(!months().includes(part.month))ensureYearMonths(part.month.slice(0,4));
+      const snap=txBudgetSnapshot(part.month,catId,sub,city),available=snap.planned-snap.used;
+      if(part.amount>available+.005)return alert(`Não há saldo suficiente para criar a parcela ${part.number}/${part.count} em ${labelMonth(part.month)}.\n\nSaldo disponível: ${currencyText(Math.max(0,available))}\nValor da parcela: ${currencyText(part.amount)}\n\nAumente a previsão ou faça um remanejamento nesse mês antes de lançar.`)
+    }
+    const groupId=count>1?'installment_'+Date.now()+'_'+Math.random().toString(36).slice(2):null,createdAt=new Date().toISOString();
+    plan.forEach(part=>{if(!state.transactions[part.month])state.transactions[part.month]=[];state.transactions[part.month].push({id:'tx_'+Date.now()+'_'+part.number+'_'+Math.random().toString(36).slice(2),date:part.date,desc:description,description,cat:catId,sub,payer:responsible,responsible,city,card,amount:part.amount,createdAt,updatedAt:createdAt,paymentMode:count>1?'parcelado':card!=='-'?'avista':'outro',installmentGroupId:groupId,installmentNumber:part.number,installmentCount:part.count,purchaseTotal:amount,purchaseDate:date})});
+  }
+  state.month=m;txScope='mes';txPanel='realizados';txRealizedFilters={cat:'todos',owner:'todos',city:'todos',payment:'todos'};selectedRealizedIds.clear();save();closeModal();render();
+};
+
+saveManualInstallment=function(event,sourceId){
+  event.preventDefault();const found=findTransactionById(sourceId||editTxId);if(!found)return alert('O lançamento original não foi encontrado.');
+  const f=new FormData(event.target),rawDate=String(f.get('date')||''),description=String(f.get('description')||'').trim(),catId=String(f.get('cat')||''),sub=String(f.get('sub')||''),city=String(f.get('city')||''),card=cardOf(f.get('card')),amount=Number(f.get('amount')||0),number=Math.max(1,Math.min(48,Number(f.get('installmentNumber')||1))),count=Math.max(2,Math.min(48,Number(f.get('installmentCount')||2))),purchaseTotal=Number(f.get('purchaseTotal')||0);
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(rawDate))return alert('Informe uma data válida.');
+  if(!description||!catId||!sub||!city)return alert('Preencha a descrição, categoria, subcategoria e cidade.');
+  if(card==='-')return alert('Escolha uma Forma de Pagamento para o parcelamento.');
+  if(amount<=0||purchaseTotal<=0)return alert('Informe valores maiores que zero.');
+  if(number>count)return alert('O número desta parcela não pode ser maior que o total de parcelas.');
+  if(amount>purchaseTotal+.005)return alert('O valor desta parcela não pode ser maior que o valor total da compra.');
+  const resolved=v223ResolveFinancialDate(rawDate,found.month);if(!resolved)return;const date=resolved.date,targetMonth=resolved.month;
+  if(!months().includes(targetMonth))ensureYearMonths(targetMonth.slice(0,4));if(!state.transactions[targetMonth])state.transactions[targetMonth]=[];
+  const snap=txBudgetSnapshot(targetMonth,catId,sub,city,found.month===targetMonth?found.tx.id:null),available=snap.planned-snap.used;if(amount>available+.005)return alert(`Não há saldo suficiente em ${labelMonth(targetMonth)}.\n\nSaldo disponível: ${currencyText(Math.max(0,available))}\nValor da parcela: ${currencyText(amount)}\n\nAumente a previsão ou faça um remanejamento antes de salvar.`);
+  const updatedAt=new Date().toISOString(),groupId=found.tx.installmentManual&&found.tx.installmentGroupId?found.tx.installmentGroupId:'manual_installment_'+Date.now()+'_'+Math.random().toString(36).slice(2),obj={...found.tx,date,desc:description,description,cat:catId,sub,payer:ownerOf(city),responsible:ownerOf(city),city,card,amount,updatedAt,paymentMode:'parcelado',installmentGroupId:groupId,installmentNumber:number,installmentCount:count,purchaseTotal,purchaseDate:date,installmentManual:true};
+  if(found.month===targetMonth)state.transactions[targetMonth][found.index]=obj;else{state.transactions[found.month].splice(found.index,1);state.transactions[targetMonth].push(obj)}
+  state.month=targetMonth;txScope='mes';txPanel='realizados';selectedRealizedIds.clear();save();closeModal();render();
+};
+
+saveInstallmentSeries=async function(event,groupId,sourceId){
+  event.preventDefault();const found=findTransactionById(sourceId||editTxId);if(!found)return alert('O lançamento original não foi encontrado.');
+  const parts=getInstallmentSeries(groupId),first=parts.slice().sort((a,b)=>Number(a.tx.installmentNumber||0)-Number(b.tx.installmentNumber||0)||String(a.tx.date||'').localeCompare(String(b.tx.date||'')))[0],intendedMonth=first?.month||found.month;
+  const field=event.target.querySelector('[name="purchaseDate"]'),rawDate=String(field?.value||''),resolved=v223ResolveFinancialDate(rawDate,intendedMonth);if(!resolved)return;
+  if(field)field.value=resolved.date;
+  return v223LegacySaveInstallmentSeries(event,groupId,sourceId);
+};
+
+let v223MigrationSaveQueued=false;
+render=function(){
+  if(cloudSynced&&state?.transactions){
+    const changed=v223NormalizeExistingTransactionDates();
+    if(changed&&!v223MigrationSaveQueued){v223MigrationSaveQueued=true;cacheCloudState();scheduleCloudSave();setTimeout(()=>{v223MigrationSaveQueued=false},1200)}
+  }
+  return v223LegacyRender();
+};
+</script>
 </body></html>
