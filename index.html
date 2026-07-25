@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.18 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.19 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -3001,6 +3001,55 @@ html[data-theme="dark"][data-ui="v23"] .v218-donut-share{color:#F8FAFC!important
 }
 </style>
 
+<style id="v219-analysis-style">
+/* =========================================================
+   V2.19 — EVOLUÇÃO CLICÁVEL, PARTICIPAÇÕES E TOP 10
+   Bloco final ativo.
+   ========================================================= */
+html[data-ui="v23"] .v219-chart-legend{display:flex!important;justify-content:flex-end!important;gap:10px!important;flex-wrap:wrap!important;margin:0 0 12px!important;}
+html[data-ui="v23"] .v219-chart-legend button{display:inline-flex!important;align-items:center!important;gap:7px!important;min-height:34px!important;padding:7px 10px!important;border:1px solid var(--v23-line)!important;border-radius:999px!important;background:var(--v23-surface-2)!important;color:var(--v23-ink-2)!important;font-size:10px!important;font-weight:900!important;box-shadow:none!important;}
+html[data-ui="v23"] .v219-chart-legend button:hover{transform:translateY(-1px)!important;border-color:#AFC3FF!important;background:#F4F7FF!important;}
+html[data-ui="v23"] .v219-chart-legend i{width:10px!important;height:10px!important;border-radius:3px!important;background:var(--legend-color)!important;}
+html[data-ui="v23"] .v219-month-chart{display:grid!important;grid-template-columns:repeat(var(--month-count,6),minmax(128px,1fr))!important;gap:10px!important;align-items:end!important;width:100%!important;min-width:var(--chart-mobile-min,760px)!important;height:330px!important;padding:18px 8px 4px!important;border-top:1px solid var(--v23-line)!important;background:linear-gradient(180deg,var(--v23-surface-2),transparent 68%)!important;}
+html[data-ui="v23"] .v219-month-column{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-end!important;height:100%!important;min-width:0!important;padding:9px 7px 8px!important;border:1px solid transparent!important;border-radius:15px!important;}
+html[data-ui="v23"] .v219-month-column.is-selected{border-color:#B9C8F6!important;background:rgba(238,242,255,.72)!important;}
+html[data-ui="v23"] .v219-month-bars{height:226px!important;display:grid!important;grid-template-columns:repeat(3,minmax(30px,1fr))!important;align-items:end!important;gap:7px!important;width:100%!important;}
+html[data-ui="v23"] .v219-bar-button{height:100%!important;min-width:0!important;display:flex!important;flex-direction:column!important;justify-content:flex-end!important;align-items:center!important;gap:5px!important;padding:0!important;border:0!important;background:transparent!important;color:var(--v23-ink)!important;box-shadow:none!important;overflow:visible!important;}
+html[data-ui="v23"] .v219-bar-button:hover .v219-bar{filter:brightness(.93)!important;transform:translateY(-2px)!important;}
+html[data-ui="v23"] .v219-bar-label{display:block!important;max-width:100%!important;color:var(--v23-ink-2)!important;font-size:8px!important;line-height:1.08!important;font-weight:950!important;text-align:center!important;white-space:nowrap!important;}
+html[data-ui="v23"] .v219-bar{display:block!important;width:min(31px,86%)!important;min-height:4px!important;border-radius:8px 8px 3px 3px!important;background:var(--bar-color)!important;transition:transform .15s ease,filter .15s ease!important;box-shadow:0 5px 12px color-mix(in srgb,var(--bar-color) 20%,transparent)!important;}
+html[data-ui="v23"] .v219-bar-caption{display:block!important;min-height:19px!important;color:var(--v23-muted)!important;font-size:7.5px!important;line-height:1.05!important;font-weight:900!important;text-align:center!important;}
+html[data-ui="v23"] .v219-actual-pending{height:100%!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-end!important;gap:5px!important;}
+html[data-ui="v23"] .v219-actual-pending i{display:grid!important;place-items:center!important;width:min(31px,86%)!important;height:48px!important;border:1px dashed #CBD5E1!important;border-radius:8px 8px 3px 3px!important;background:repeating-linear-gradient(135deg,#F8FAFC,#F8FAFC 5px,#EEF2F7 5px,#EEF2F7 10px)!important;color:#98A2B3!important;font-style:normal!important;font-size:14px!important;font-weight:950!important;}
+html[data-ui="v23"] .v219-month-name{margin-top:7px!important;color:var(--v23-ink)!important;font-size:10px!important;font-weight:950!important;}
+html[data-ui="v23"] .v219-month-status{margin-top:5px!important;min-height:28px!important;padding:5px 8px!important;border:1px solid var(--v23-line)!important;border-radius:999px!important;background:#FFFFFF!important;color:#667085!important;font-size:8px!important;line-height:1!important;font-weight:900!important;box-shadow:none!important;}
+html[data-ui="v23"] .v219-month-status.is-closed{border-color:#A7F3D0!important;background:#ECFDF5!important;color:#047857!important;}
+html[data-ui="v23"] .v219-month-status.is-future{cursor:default!important;border-color:#E5E7EB!important;background:#F8FAFC!important;color:#98A2B3!important;}
+html[data-ui="v23"] .v219-month-balance{margin-top:5px!important;color:var(--v23-muted)!important;font-size:8px!important;font-weight:900!important;white-space:nowrap!important;}
+html[data-ui="v23"] .v218-donut-item.v219-clickable{cursor:pointer!important;transition:transform .15s ease,border-color .15s ease,background .15s ease!important;}
+html[data-ui="v23"] .v218-donut-item.v219-clickable:hover{transform:translateX(3px)!important;border-color:#AFC3FF!important;background:#F4F7FF!important;}
+html[data-ui="v23"] .v219-donut-button{display:grid!important;place-items:center!important;padding:0!important;border:0!important;border-radius:50%!important;background:transparent!important;box-shadow:none!important;}
+html[data-ui="v23"] .v219-donut-button:hover{transform:scale(1.02)!important;}
+html[data-ui="v23"] .v219-top-row{cursor:pointer!important;padding:9px!important;border:1px solid color-mix(in srgb,var(--row-color) 24%,var(--v23-line))!important;border-radius:13px!important;background:linear-gradient(90deg,color-mix(in srgb,var(--row-color) 8%,#FFFFFF),#FFFFFF 42%)!important;transition:transform .15s ease,border-color .15s ease!important;}
+html[data-ui="v23"] .v219-top-row:hover{transform:translateX(3px)!important;border-color:color-mix(in srgb,var(--row-color) 52%,#CBD5E1)!important;}
+html[data-ui="v23"] .v219-category-chip{display:inline-flex!important;align-items:center!important;gap:5px!important;margin-top:3px!important;padding:3px 6px!important;border-radius:999px!important;background:color-mix(in srgb,var(--row-color) 12%,#FFFFFF)!important;color:color-mix(in srgb,var(--row-color) 82%,#172033)!important;font-size:8px!important;font-weight:950!important;}
+html[data-ui="v23"] .v219-category-chip i{width:7px!important;height:7px!important;border-radius:999px!important;background:var(--row-color)!important;}
+html[data-ui="v23"] .v219-top-note{display:flex!important;align-items:center!important;gap:7px!important;margin:0 0 12px!important;color:var(--v23-muted)!important;font-size:9px!important;font-weight:800!important;}
+html[data-ui="v23"] .v219-top-note i{width:10px!important;height:10px!important;border-radius:999px!important;background:linear-gradient(90deg,#2563EB,#B45309,#DC2626,#059669)!important;}
+html[data-theme="dark"][data-ui="v23"] .v219-chart-legend button,html[data-theme="dark"][data-ui="v23"] .v219-month-status{background:#111827!important;border-color:#344054!important;color:#D7DFEA!important;}
+html[data-theme="dark"][data-ui="v23"] .v219-month-column.is-selected{background:#172554!important;border-color:#294A9A!important;}
+html[data-theme="dark"][data-ui="v23"] .v219-bar-label,html[data-theme="dark"][data-ui="v23"] .v219-month-name{color:#F8FAFC!important;}
+html[data-theme="dark"][data-ui="v23"] .v219-actual-pending i{background:#172033!important;border-color:#465267!important;color:#9CA3AF!important;}
+html[data-theme="dark"][data-ui="v23"] .v219-top-row{background:#111827!important;border-color:#344054!important;}
+@media(max-width:760px){
+  html[data-ui="v23"] .v219-month-chart{grid-template-columns:repeat(var(--month-count,6),126px)!important;height:314px!important;min-width:var(--chart-mobile-min,760px)!important;padding-left:5px!important;padding-right:5px!important;}
+  html[data-ui="v23"] .v219-month-bars{height:210px!important;gap:5px!important;}
+  html[data-ui="v23"] .v219-bar-label{font-size:7.2px!important;}
+  html[data-ui="v23"] .v219-bar-caption{font-size:6.8px!important;}
+  html[data-ui="v23"] .v219-top-row{padding:8px!important;}
+}
+</style>
+
 </head><body><div id="app"></div><div id="modal" class="modal"></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 const storeKey='despesas-casal-profissional-v12';
 const SUPABASE_URL='https://fpcwnjlneaaarzeevgpl.supabase.co';
@@ -5324,6 +5373,103 @@ renderRxD=function(){
       <section class="v23-panel v23-panel-pad"><div class="v23-panel-head"><div><h2>Participação das receitas</h2><p>Quanto da receita planejada vem de Cícero, Nilce e outras origens.</p></div></div>${v218RevenueParticipation(data.monthIds)}</section>
     </section>
     <section class="v23-panel v23-panel-pad v23-gap-top"><div class="v23-panel-head"><div><h2>Top 6 despesas planejadas</h2><p>As seis subcategorias com maior impacto no planejamento anual de ${year}, independentemente do mês selecionado.</p></div></div><div class="v216-extreme-card v217-annual-largest v218-top-planned"><h3>Maiores valores do planejamento anual</h3><p>Valores consolidados em todos os meses disponíveis de ${year}.</p>${v218TopPlannedChart(annualPlannedRows,6)}</div></section>`);
+};
+</script>
+<script id="v219-analysis-script">
+/* =========================================================
+   V2.19 — DEFINIÇÕES FINAIS ATIVAS DE ANÁLISES
+   ========================================================= */
+function v219EnsureClosedMonths(){
+  if(!state.ui||typeof state.ui!=='object')state.ui={};
+  if(!state.ui.closedMonths||typeof state.ui.closedMonths!=='object'||Array.isArray(state.ui.closedMonths))state.ui.closedMonths={};
+  return state.ui.closedMonths;
+}
+function v219IsMonthClosed(month){
+  const record=(state.months||[]).find(item=>item&&item.id===month)||{},status=norm(record.status||record.situacao||'');
+  return !!(record.closed===true||record.completed===true||record.concluded===true||record.encerrado===true||record.concluido===true||['closed','completed','concluded','encerrado','concluido','fechado'].includes(status)||v219EnsureClosedMonths()[month]===true);
+}
+function v219ToggleMonthClosed(month){
+  const closed=v219IsMonthClosed(month),current=currentMonthId();
+  if(!closed&&month>current)return alert('Um mês futuro não pode ser concluído antes de chegar ao período.');
+  if(closed&&!confirm(`Reabrir ${labelMonth(month)}? O valor realizado deixará de aparecer no gráfico até o mês ser concluído novamente.`))return;
+  const map=v219EnsureClosedMonths();map[month]=!closed;
+  const record=(state.months||[]).find(item=>item&&item.id===month);if(record)record.closed=!closed;
+  save();render();
+}
+function v219OpenAnalysisSeries(type,month){
+  state.month=validMonth(month);
+  if(type==='revenue'){view='receitas';revenueScope='ano';viewSearchTerms.receitas='';}
+  else if(type==='planned'){view='despesas';expenseScope='ano';expenseFilters={cat:'todos',owner:'todos',city:'todos'};selectedExpenseCat=null;viewSearchTerms.despesas='';}
+  else if(type==='actual'){view='lancamentos';txScope='mes';txPanel='realizados';txRealizedFilters={cat:'todos',owner:'todos',city:'todos',payment:'todos'};viewSearchTerms.lancamentos='';}
+  save();render();
+}
+function v219OpenExpenseParticipation(catId){
+  view='despesas';expenseScope='ano';expenseFilters={cat:catId||'todos',owner:'todos',city:'todos'};selectedExpenseCat=null;viewSearchTerms.despesas='';save();render();
+}
+function v219OpenRevenueParticipation(label){
+  view='receitas';revenueScope='ano';viewSearchTerms.receitas=label&&label!=='Todas' ? label : '';save();render();
+}
+function v219OpenTopExpense(encodedRow){
+  try{const row=JSON.parse(decodeURIComponent(encodedRow));view='despesas';expenseScope='ano';expenseFilters={cat:row.catId||'todos',owner:'todos',city:'todos'};selectedExpenseCat=null;viewSearchTerms.despesas=row.name||'';save();render();}catch(_error){view='despesas';expenseScope='ano';render();}
+}
+function v219CompactMoney(value){
+  const n=Number(value)||0,abs=Math.abs(n),sign=n<0?'−':'';
+  if(abs>=1000000)return `${sign}R$ ${(abs/1000000).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})} mi`;
+  if(abs>=1000)return `${sign}R$ ${(abs/1000).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})} mil`;
+  return `${sign}R$ ${abs.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}`;
+}
+function v212AnalysisData(year){
+  const yearMonthIds=v213MonthsForYear(year),monthIds=v213AnalysisScopeMonths(year),rowsMap=new Map();
+  const ensure=(catId,name,city,owner)=>{const clean=cleanName(name||cat(catId).name),resolvedCity=city||cityOf(clean),resolvedOwner=owner||ownerOf(resolvedCity),key=[catId,norm(clean),resolvedCity,resolvedOwner].join('|');if(!rowsMap.has(key))rowsMap.set(key,{key,catId,name:clean,city:resolvedCity,owner:resolvedOwner,planned:Array(monthIds.length).fill(0),real:Array(monthIds.length).fill(0)});return rowsMap.get(key)};
+  monthIds.forEach((month,index)=>{
+    (state.budgets[month]||[]).forEach(b=>{const value=Number(budgetLineAdjusted(month,b)||0);if(Math.abs(value)<=.005)return;const city=b.city||cityOf(b.sub||''),owner=budgetOwner(b);ensure(b.cat,b.sub||cat(b.cat).name,city,owner).planned[index]+=value});
+    txs(month).forEach(t=>{const value=Number(t.amount||0);if(Math.abs(value)<=.005)return;const name=t.sub||t.description||t.desc||cat(t.cat).name,city=t.city||cityOf(name),owner=t.responsible||ownerOf(city);ensure(t.cat,name,city,owner).real[index]+=value});
+  });
+  const rows=[...rowsMap.values()].map(row=>({...row,plannedTotal:row.planned.reduce((a,b)=>a+b,0),realTotal:row.real.reduce((a,b)=>a+b,0)})).filter(row=>Math.abs(row.plannedTotal)>.005||Math.abs(row.realTotal)>.005).sort((a,b)=>textCmp(cat(a.catId).name,cat(b.catId).name)||textCmp(a.name,b.name)||textCmp(a.city,b.city)||textCmp(a.owner,b.owner));
+  const categories=state.categories.map(c=>{const related=rows.filter(row=>row.catId===c.id),planned=related.reduce((sum,row)=>sum+row.plannedTotal,0),real=related.reduce((sum,row)=>sum+row.realTotal,0);return{c,planned,real,balance:planned-real,execution:planned>0?real/planned*100:(real>0?Infinity:0)}}).filter(item=>Math.abs(item.planned)>.005||Math.abs(item.real)>.005).sort((a,b)=>textCmp(a.c.name,b.c.name));
+  const monthly=yearMonthIds.map(month=>({month,revenue:Number(revenueTotal(month)||0),planned:Number(plannedExpenseTotal(month)||0),actual:Number(expenseTotal(month)||0),closed:v219IsMonthClosed(month),selected:rxdScope==='mes'&&month===state.month}));
+  const totals={planned:rows.reduce((sum,row)=>sum+row.plannedTotal,0),real:rows.reduce((sum,row)=>sum+row.realTotal,0)};totals.balance=totals.planned-totals.real;totals.execution=totals.planned>0?totals.real/totals.planned*100:0;
+  return{yearMonthIds,monthIds,rows,categories,monthly,totals};
+}
+function v212MonthlyExpenseChart(monthly){
+  const visibleActual=(monthly||[]).filter(item=>item.closed).map(item=>item.actual),max=Math.max(...(monthly||[]).flatMap(item=>[item.revenue,item.planned]),...visibleActual,1),count=Math.max(1,(monthly||[]).length),mobileMin=Math.max(760,count*136);
+  const legend=`<div class="v219-chart-legend"><button type="button" onclick="v219OpenAnalysisSeries('revenue',state.month)"><i style="--legend-color:#2563EB"></i>Receitas planejadas</button><button type="button" onclick="v219OpenAnalysisSeries('planned',state.month)"><i style="--legend-color:#F59E0B"></i>Despesas planejadas</button><button type="button" onclick="v219OpenAnalysisSeries('actual',state.month)"><i style="--legend-color:#D92D55"></i>Realizado após conclusão</button></div>`;
+  const columns=(monthly||[]).map(item=>{
+    const future=item.month>currentMonthId(),status=item.closed?'Concluído':future?'Mês futuro':'Concluir mês',balance=item.revenue-item.planned;
+    const actual=item.closed?`<button class="v219-bar-button" type="button" onclick="v219OpenAnalysisSeries('actual','${item.month}')" title="Abrir realizado de ${labelMonth(item.month)}: ${v23MoneyNumber(item.actual)}"><span class="v219-bar-label">${v219CompactMoney(item.actual)}</span><i class="v219-bar" style="--bar-color:#D92D55;height:${Math.max(2,item.actual/max*100)}%"></i><small class="v219-bar-caption">Realizado</small></button>`:`<div class="v219-actual-pending" title="O realizado aparecerá depois que ${labelMonth(item.month)} for concluído"><span class="v219-bar-label">—</span><i>·</i><small class="v219-bar-caption">Realizado</small></div>`;
+    return `<div class="v219-month-column ${item.selected?'is-selected':''}"><div class="v219-month-bars"><button class="v219-bar-button" type="button" onclick="v219OpenAnalysisSeries('revenue','${item.month}')" title="Abrir receitas planejadas de ${labelMonth(item.month)}: ${v23MoneyNumber(item.revenue)}"><span class="v219-bar-label">${v219CompactMoney(item.revenue)}</span><i class="v219-bar" style="--bar-color:#2563EB;height:${Math.max(2,item.revenue/max*100)}%"></i><small class="v219-bar-caption">Receitas</small></button><button class="v219-bar-button" type="button" onclick="v219OpenAnalysisSeries('planned','${item.month}')" title="Abrir despesas planejadas de ${labelMonth(item.month)}: ${v23MoneyNumber(item.planned)}"><span class="v219-bar-label">${v219CompactMoney(item.planned)}</span><i class="v219-bar" style="--bar-color:#F59E0B;height:${Math.max(2,item.planned/max*100)}%"></i><small class="v219-bar-caption">Planejado</small></button>${actual}</div><strong class="v219-month-name">${monthShort(Number(item.month.slice(5,7)))}</strong><button type="button" class="v219-month-status ${item.closed?'is-closed':future?'is-future':''}" ${future?'disabled':''} onclick="v219ToggleMonthClosed('${item.month}')">${status}</button><small class="v219-month-balance">Saldo planejado: ${v219CompactMoney(balance)}</small></div>`;
+  }).join('');
+  return `${legend}<div class="v219-month-chart" style="--month-count:${count};--chart-mobile-min:${mobileMin}px">${columns}</div>`;
+}
+function v219ParticipationDonut(items,centerLabel,type){
+  const usable=(items||[]).filter(item=>Number(item.value||0)>.005).slice().sort((a,b)=>b.value-a.value),total=usable.reduce((sum,item)=>sum+Number(item.value||0),0);
+  if(!usable.length)return '<div class="v23-empty">Nenhum valor planejado encontrado no período.</div>';
+  let cursor=0;const segments=usable.map(item=>{const start=cursor,end=cursor+Number(item.value||0)/Math.max(total,1)*100;cursor=end;return `${item.color||'#64748B'} ${start}% ${end}%`}).join(',');
+  const genericAction=type==='expense'?"v219OpenExpenseParticipation('todos')":"v219OpenRevenueParticipation('Todas')";
+  const list=usable.map(item=>{const share=total?Number(item.value||0)/total*100:0,action=type==='expense'?`v219OpenExpenseParticipation('${item.id||'todos'}')`:`v219OpenRevenueParticipation('${escapeHtml(item.label)}')`;return `<button type="button" class="v218-donut-item v219-clickable" onclick="${action}" title="Abrir ${escapeHtml(item.label)} no Planejamento"><i style="--dot:${item.color||'#64748B'}"></i><div class="v218-donut-copy"><strong>${escapeHtml(item.label)}</strong><small>${fmt(item.value)}</small></div><span class="v218-donut-share">${share.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}%</span></button>`}).join('');
+  return `<div class="v218-donut-layout"><button type="button" class="v219-donut-button" onclick="${genericAction}" title="Abrir no Planejamento"><div class="v212-donut" style="background:conic-gradient(${segments})"><div><strong>${fmt(total)}</strong><small>${escapeHtml(centerLabel)}</small></div></div></button><div class="v218-donut-list">${list}</div></div>`;
+}
+function v218ExpenseParticipation(data){return v219ParticipationDonut((data.categories||[]).map(item=>({id:item.c.id,label:item.c.name,value:Number(item.planned||0),color:item.c.color||'#64748B'})),'despesas planejadas','expense')}
+function v218RevenueParticipation(monthIds){
+  const items=[{label:'Cícero',key:'cicero',color:'#4F46E5'},{label:'Nilce',key:'nilce',color:'#DB2777'},{label:'Outras receitas',key:'reserva',color:'#047857'}].map(item=>({...item,value:(monthIds||[]).reduce((sum,month)=>sum+Number(revObj(month)[item.key]||0),0)}));
+  return v219ParticipationDonut(items,'receitas planejadas','revenue');
+}
+function v218TopPlannedChart(rows,limit=10){
+  const eligible=(rows||[]).filter(row=>Number(row.plannedTotal||0)>.005).slice().sort((a,b)=>b.plannedTotal-a.plannedTotal).slice(0,limit),max=Math.max(...eligible.map(row=>Number(row.plannedTotal||0)),1);
+  if(!eligible.length)return '<div class="v23-empty">Nenhuma despesa planejada encontrada no ano.</div>';
+  return `<div class="v219-top-note"><i></i>As cores das barras e dos marcadores representam a categoria de cada despesa.</div><div class="v216-extreme-list">${eligible.map((row,index)=>{const color=cat(row.catId).color||'#64748B',encoded=encodeURIComponent(JSON.stringify({catId:row.catId,name:row.name,city:row.city,owner:row.owner}));return `<div class="v216-extreme-row v219-top-row" style="--row-color:${color}" role="button" tabindex="0" onclick="v219OpenTopExpense('${encoded}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();v219OpenTopExpense('${encoded}')}" title="Abrir ${escapeHtml(row.name)} no Planejamento"><div class="v216-extreme-name"><strong title="${escapeHtml(row.name)}">${index+1}. ${escapeHtml(row.name)}</strong><span class="v219-category-chip"><i></i>${escapeHtml(cat(row.catId).name)}</span><small>${escapeHtml(row.city)} · ${escapeHtml(shortLabel(row.owner))}</small></div><div class="v216-extreme-track"><i style="--bar-color:${color};width:${Math.max(7,row.plannedTotal/max*100)}%"></i></div><div class="v216-extreme-value">${fmt(row.plannedTotal)}</div></div>`}).join('')}</div>`;
+}
+renderRxD=function(){
+  const year=String(state.month||currentMonthId()).slice(0,4),data=v212AnalysisData(year),annualPlannedRows=v218AnnualPlannedRows(year),scopeCopy=data.monthIds.length===1?labelMonth(data.monthIds[0])+' de '+year:v213PeriodDescription(year).split(' · ')[0]+' de '+year;
+  const categoryRows=data.categories.map(item=>`<tr><td><div class="v212-category-name"><i style="--cat-color:${item.c.color}"></i><strong>${escapeHtml(item.c.name)}</strong></div></td><td>${fmt(item.planned)}</td><td>${fmt(item.real)}</td><td class="${item.balance<0?'v23-negative':item.balance>0?'v23-positive':''}">${fmt(item.balance)}</td><td>${v212ExecutionChip(item.planned,item.real)}</td></tr>`).join(''),totals=data.totals;
+  layout(`${v213AnalysisPeriodControls(year,data)}
+    <section class="v23-panel v23-panel-pad v23-gap-top"><div class="v23-panel-head"><div><h2>Evolução financeira</h2><p>Receitas planejadas, despesas planejadas e realizado. O realizado só aparece após a conclusão do mês.</p></div></div>${v212MonthlyExpenseChart(data.monthly)}</section>
+    <section class="v23-panel v23-panel-pad v23-gap-top v212-category-summary"><div class="v23-panel-head"><div><h2>Orçado versus realizado</h2><p>Resumo por categoria em ${scopeCopy}, com saldo e percentual de execução.</p></div></div><div class="table-wrap v212-summary-table"><table><thead><tr><th>Categoria</th><th>Orçado</th><th>Realizado</th><th>Saldo</th><th>Execução</th></tr></thead><tbody>${categoryRows||'<tr><td colspan="5">Nenhuma despesa encontrada no período.</td></tr>'}</tbody><tfoot><tr><td>Total do período</td><td>${fmt(totals.planned)}</td><td>${fmt(totals.real)}</td><td class="${totals.balance<0?'v23-negative':totals.balance>0?'v23-positive':''}">${fmt(totals.balance)}</td><td>${v212ExecutionChip(totals.planned,totals.real)}</td></tr></tfoot></table></div></section>
+    <section class="v218-participation-grid v23-gap-top">
+      <section class="v23-panel v23-panel-pad"><div class="v23-panel-head"><div><h2>Participação das despesas</h2><p>Clique em uma categoria para abri-la no Planejamento.</p></div></div>${v218ExpenseParticipation(data)}</section>
+      <section class="v23-panel v23-panel-pad"><div class="v23-panel-head"><div><h2>Participação das receitas</h2><p>Clique em uma origem para abri-la no Planejamento.</p></div></div>${v218RevenueParticipation(data.monthIds)}</section>
+    </section>
+    <section class="v23-panel v23-panel-pad v23-gap-top"><div class="v23-panel-head"><div><h2>Top 10 despesas planejadas</h2><p>As dez subcategorias com maior impacto no planejamento anual de ${year}. Clique em uma linha para abri-la no Planejamento.</p></div></div><div class="v216-extreme-card v217-annual-largest v218-top-planned"><h3>Maiores valores do planejamento anual</h3><p>Valores consolidados em todos os meses disponíveis de ${year}.</p>${v218TopPlannedChart(annualPlannedRows,10)}</div></section>`);
 };
 </script>
 
