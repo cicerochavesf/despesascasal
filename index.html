@@ -1,11 +1,11 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.23 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.24 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
 <meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#07111F">
 <title>Despesas Casal - Controle Financeiro</title>
 <meta name="description" content="Controle financeiro compartilhado de Cícero e Nilce">
-<link rel="manifest" href="./manifest.webmanifest?v=216">
+<link rel="manifest" href="./manifest.webmanifest?v=224">
 <meta name="application-name" content="Finanças Cícero & Nilce">
 <meta name="apple-mobile-web-app-title" content="Finanças CN">
 <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
@@ -5231,12 +5231,8 @@ renderConfig=function(){
 view='estrategia';periodMode='mes';
 
 
-function releaseAppOrientationLock(){
-  try{if(window.screen?.orientation&&typeof window.screen.orientation.unlock==='function')window.screen.orientation.unlock()}catch(_error){}
-}
-window.addEventListener('pageshow',releaseAppOrientationLock,{passive:true});
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)releaseAppOrientationLock()},{passive:true});
-releaseAppOrientationLock();
+// V2.24 — O app não interfere na orientação da tela.
+// A rotação fica totalmente sob controle da configuração do aparelho.
 
 applySavedTheme();
 initPwa();
