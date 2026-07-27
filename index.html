@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.29 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.30 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -6481,6 +6481,141 @@ async function v229EnforceInstalledPortrait(){
 window.addEventListener('pageshow',v229EnforceInstalledPortrait);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)v229EnforceInstalledPortrait()});
 window.addEventListener('load',v229EnforceInstalledPortrait,{once:true});
+</script>
+
+
+<style id="v230-analysis-planning-style">
+/* =========================================================
+   V2.30 — MOVIMENTAÇÕES SOMENTE CONSULTA + GRÁFICO MENSAL
+   ========================================================= */
+html[data-ui="v23"] .v230-monthly-chart-panel{overflow:hidden!important;}
+html[data-ui="v23"] .v230-chart-legend{
+  display:flex!important;align-items:center!important;justify-content:flex-end!important;
+  gap:9px!important;flex-wrap:wrap!important;margin:0 0 10px!important;
+}
+html[data-ui="v23"] .v230-chart-legend span{
+  display:inline-flex!important;align-items:center!important;gap:6px!important;
+  color:var(--v23-ink-2)!important;font-size:9.5px!important;font-weight:900!important;
+}
+html[data-ui="v23"] .v230-chart-legend i{width:16px!important;height:5px!important;border-radius:999px!important;background:var(--legend-color)!important;}
+html[data-ui="v23"] .v230-chart-legend i.is-line{height:3px!important;position:relative!important;}
+html[data-ui="v23"] .v230-chart-legend i.is-line:after{content:"";position:absolute;left:5px;top:-3px;width:7px;height:7px;border-radius:999px;background:inherit;}
+html[data-ui="v23"] .v230-monthly-chart-scroll{
+  display:block!important;width:100%!important;max-width:100%!important;overflow-x:auto!important;overflow-y:hidden!important;
+  -webkit-overflow-scrolling:touch!important;overscroll-behavior-inline:contain!important;scrollbar-gutter:stable!important;
+  padding:0 0 6px!important;border:1px solid var(--v23-line)!important;border-radius:16px!important;background:linear-gradient(180deg,var(--v23-surface-2),transparent)!important;
+}
+html[data-ui="v23"] .v230-monthly-chart-svg{display:block!important;width:100%!important;min-width:760px!important;height:auto!important;}
+html[data-ui="v23"] .v230-grid-line{stroke:#D8E0EA;stroke-width:1;stroke-dasharray:4 5;}
+html[data-ui="v23"] .v230-zero-line{stroke:#98A2B3;stroke-width:1.35;}
+html[data-ui="v23"] .v230-axis-label{fill:#7A8496;font-size:9px;font-weight:800;}
+html[data-ui="v23"] .v230-month-label{fill:#344054;font-size:10px;font-weight:950;}
+html[data-ui="v23"] .v230-line-balance{fill:none;stroke:#7C3AED;stroke-width:3;stroke-linejoin:round;stroke-linecap:round;}
+html[data-ui="v23"] .v230-line-accumulated{fill:none;stroke:#047857;stroke-width:3.2;stroke-linejoin:round;stroke-linecap:round;}
+html[data-ui="v23"] .v230-point-balance{fill:#FFFFFF;stroke:#7C3AED;stroke-width:2.5;}
+html[data-ui="v23"] .v230-point-accumulated{fill:#FFFFFF;stroke:#047857;stroke-width:2.5;}
+html[data-ui="v23"] .v230-forecast-readonly-hint{
+  margin:8px 0 0!important;padding:9px 11px!important;border:1px solid #DDE6F2!important;border-radius:12px!important;
+  background:#F7FAFF!important;color:#526071!important;font-size:9.5px!important;font-weight:800!important;line-height:1.35!important;
+}
+@media(min-width:761px){
+  html[data-ui="v23"] .v227-analysis-chart-scroll{
+    display:block!important;width:100%!important;max-width:100%!important;overflow-x:auto!important;overflow-y:hidden!important;
+    scrollbar-gutter:stable!important;padding:0 12px 8px 0!important;box-sizing:border-box!important;
+  }
+  html[data-ui="v23"] .v227-analysis-chart-scroll .v219-month-chart{
+    width:max(100%,var(--chart-mobile-min,900px))!important;max-width:none!important;min-width:var(--chart-mobile-min,900px)!important;
+    padding-left:8px!important;padding-right:18px!important;box-sizing:border-box!important;
+  }
+}
+@media(max-width:760px){
+  html[data-ui="v23"] .v230-monthly-chart-svg{width:max-content!important;min-width:760px!important;}
+  html[data-ui="v23"] .v230-chart-legend{justify-content:flex-start!important;}
+}
+html[data-theme="dark"][data-ui="v23"] .v230-monthly-chart-scroll{border-color:#344054!important;background:#0F172A!important;}
+html[data-theme="dark"][data-ui="v23"] .v230-grid-line{stroke:#344054;}
+html[data-theme="dark"][data-ui="v23"] .v230-zero-line{stroke:#667085;}
+html[data-theme="dark"][data-ui="v23"] .v230-axis-label{fill:#AEB6C4;}
+html[data-theme="dark"][data-ui="v23"] .v230-month-label{fill:#F8FAFC;}
+html[data-theme="dark"][data-ui="v23"] .v230-point-balance,
+html[data-theme="dark"][data-ui="v23"] .v230-point-accumulated{fill:#111827;}
+html[data-theme="dark"][data-ui="v23"] .v230-forecast-readonly-hint{background:#0F172A!important;border-color:#344054!important;color:#CBD5E1!important;}
+</style>
+<script id="v230-analysis-planning-script">
+/* =========================================================
+   V2.30 — BLOCO FINAL ATIVO
+   - Previsões só são editadas em Planejamento
+   - Evolução financeira não corta o último mês no computador
+   - Novo gráfico abaixo do Resumo mensal planejado
+   ========================================================= */
+function v230CompactAxisMoney(value){
+  const n=Number(value)||0,abs=Math.abs(n),sign=n<0?'−':'';
+  if(abs>=1000000)return `${sign}R$ ${(abs/1000000).toLocaleString('pt-BR',{maximumFractionDigits:1})} mi`;
+  if(abs>=1000)return `${sign}R$ ${(abs/1000).toLocaleString('pt-BR',{maximumFractionDigits:1})} mil`;
+  return `${sign}R$ ${abs.toLocaleString('pt-BR',{maximumFractionDigits:0})}`;
+}
+function v230PlanningTargetFromElement(element){
+  const key=String(element?.dataset?.forecastKey||''),parts=key.split('|'),catId=parts[0]||'todos',city=parts[parts.length-1]||'todos';
+  const name=cleanName(element?.querySelector('.tx-row-main strong,.tx-forecast-card-title strong')?.textContent||'');
+  return {catId,sub:name,city};
+}
+function v230OpenForecastInPlanning(group={}){
+  view='despesas';expenseScope=txScope==='ano'?'ano':'mes';
+  expenseFilters={cat:group.catId||'todos',sub:group.sub||'todos',owner:'todos',city:group.city||'todos'};
+  selectedExpenseCat=null;viewSearchTerms.despesas='';save();render();
+}
+function v230SecureForecastNavigation(){
+  if(view!=='lancamentos'||txPanel!=='acompanhamento')return;
+  const root=document.getElementById('app');if(!root)return;
+  root.querySelectorAll('[data-forecast-key].tx-forecast-row,[data-forecast-key].tx-forecast-card').forEach(element=>{
+    const group=v230PlanningTargetFromElement(element),used=Number(element.dataset.used||0);
+    element.removeAttribute('onclick');
+    element.onclick=event=>{
+      if(event.target.closest('input,label,button'))return;
+      if(used>.005){
+        openForecastGroupInStatement(encodeURIComponent(JSON.stringify({cat:group.catId,sub:group.sub,city:group.city})));
+      }else{
+        v230OpenForecastInPlanning(group);
+      }
+    };
+    element.title=used>.005?'Abrir o Extrato filtrado deste grupo':'Abrir este item no Planejamento para editar a previsão';
+  });
+  const heading=root.querySelector('.tx-panel .section-title');
+  if(heading&&!heading.querySelector('.v230-forecast-readonly-hint')){
+    const note=document.createElement('div');note.className='v230-forecast-readonly-hint';
+    note.textContent='As previsões são editadas somente em Planejamento. Aqui, clique em um item sem consumo para abri-lo no Planejamento; itens consumidos abrem o Extrato filtrado.';
+    heading.insertAdjacentElement('afterend',note);
+  }
+}
+const v230LegacyRender=render;
+render=function(){
+  const result=v230LegacyRender();
+  requestAnimationFrame(v230SecureForecastNavigation);
+  return result;
+};
+
+function v230MonthlyPlanningChart(data,year){
+  const rows=v229MonthlyPlanningRows(data?.monthly||[]);
+  if(!rows.length)return `<section class="v23-panel v23-panel-pad v23-gap-top v230-monthly-chart-panel"><div class="v23-panel-head"><div><h2>Evolução do planejamento mensal</h2><p>Comparação gráfica dos dados do resumo mensal planejado.</p></div></div><div class="v23-empty">Nenhum mês disponível neste ano.</div></section>`;
+  const width=Math.max(760,rows.length*126+90),height=350,left=66,right=24,top=38,bottom=52,plotWidth=width-left-right,plotHeight=height-top-bottom;
+  const values=rows.flatMap(row=>[row.revenue,row.expense,row.balance,row.accumulated]),min=Math.min(0,...values),max=Math.max(1,...values),range=Math.max(1,max-min);
+  const y=value=>top+(max-Number(value||0))/range*plotHeight;
+  const zeroY=y(0),step=plotWidth/rows.length,barWidth=Math.min(23,step*.22);
+  const ticks=Array.from({length:5},(_,i)=>max-(range*i/4));
+  const grid=ticks.map(value=>{const yy=y(value);return `<g><line class="v230-grid-line" x1="${left}" y1="${yy.toFixed(2)}" x2="${width-right}" y2="${yy.toFixed(2)}"></line><text class="v230-axis-label" x="${left-8}" y="${(yy+3).toFixed(2)}" text-anchor="end">${escapeHtml(v230CompactAxisMoney(value))}</text></g>`}).join('');
+  const bars=rows.map((row,index)=>{
+    const center=left+step*(index+.5),revenueY=y(row.revenue),expenseY=y(row.expense),revenueH=Math.max(1,Math.abs(zeroY-revenueY)),expenseH=Math.max(1,Math.abs(zeroY-expenseY));
+    return `<g><rect x="${(center-barWidth-3).toFixed(2)}" y="${Math.min(zeroY,revenueY).toFixed(2)}" width="${barWidth.toFixed(2)}" height="${revenueH.toFixed(2)}" rx="5" fill="#2563EB"><title>Receitas planejadas de ${escapeHtml(labelMonth(row.month))}: ${escapeHtml(fmt(row.revenue))}</title></rect><rect x="${(center+3).toFixed(2)}" y="${Math.min(zeroY,expenseY).toFixed(2)}" width="${barWidth.toFixed(2)}" height="${expenseH.toFixed(2)}" rx="5" fill="#F59E0B"><title>Despesas planejadas de ${escapeHtml(labelMonth(row.month))}: ${escapeHtml(fmt(row.expense))}</title></rect><text class="v230-month-label" x="${center.toFixed(2)}" y="${height-22}" text-anchor="middle">${escapeHtml(monthShort(Number(row.month.slice(5,7))))}</text></g>`;
+  }).join('');
+  const balancePoints=rows.map((row,index)=>`${(left+step*(index+.5)).toFixed(2)},${y(row.balance).toFixed(2)}`).join(' '),accumulatedPoints=rows.map((row,index)=>`${(left+step*(index+.5)).toFixed(2)},${y(row.accumulated).toFixed(2)}`).join(' ');
+  const points=rows.map((row,index)=>{const x=left+step*(index+.5),yb=y(row.balance),ya=y(row.accumulated);return `<circle class="v230-point-balance" cx="${x.toFixed(2)}" cy="${yb.toFixed(2)}" r="4"><title>Saldo do mês em ${escapeHtml(labelMonth(row.month))}: ${escapeHtml(fmt(row.balance))}</title></circle><circle class="v230-point-accumulated" cx="${x.toFixed(2)}" cy="${ya.toFixed(2)}" r="4"><title>Saldo acumulado em ${escapeHtml(labelMonth(row.month))}: ${escapeHtml(fmt(row.accumulated))}</title></circle>`}).join('');
+  return `<section class="v23-panel v23-panel-pad v23-gap-top v230-monthly-chart-panel"><div class="v23-panel-head"><div><h2>Evolução do planejamento mensal</h2><p>Receitas, despesas, saldo do mês e saldo acumulado com os mesmos dados da tabela de ${escapeHtml(year)}.</p></div></div><div class="v230-chart-legend"><span><i style="--legend-color:#2563EB"></i>Receitas planejadas</span><span><i style="--legend-color:#F59E0B"></i>Despesas planejadas</span><span><i class="is-line" style="--legend-color:#7C3AED"></i>Saldo do mês</span><span><i class="is-line" style="--legend-color:#047857"></i>Saldo acumulado</span></div><div class="v230-monthly-chart-scroll"><svg class="v230-monthly-chart-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="Evolução do planejamento mensal de ${escapeHtml(year)}">${grid}<line class="v230-zero-line" x1="${left}" y1="${zeroY.toFixed(2)}" x2="${width-right}" y2="${zeroY.toFixed(2)}"></line>${bars}<polyline class="v230-line-balance" points="${balancePoints}"></polyline><polyline class="v230-line-accumulated" points="${accumulatedPoints}"></polyline>${points}</svg></div></section>`;
+}
+const v230LegacyMonthlyPlanningTable=v229MonthlyPlanningTable;
+v229MonthlyPlanningTable=function(data,year){
+  return v230LegacyMonthlyPlanningTable(data,year)+v230MonthlyPlanningChart(data,year);
+};
+requestAnimationFrame(v230SecureForecastNavigation);
 </script>
 
 </body></html>
