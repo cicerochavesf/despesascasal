@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.30 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.31 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -4079,7 +4079,7 @@ function nextMonthId(monthId){const [y,m]=String(monthId).split('-').map(Number)
 function envelopePeriod(monthId){const start=financialMonthStart(monthId),endExclusive=financialMonthStart(nextMonthId(monthId)),count=Math.max(1,Math.round((endExclusive-start)/(7*86400000))),weeks=[];for(let i=0;i<count;i++){const weekStart=addDateDays(start,i*7),weekEnd=addDateDays(weekStart,6);weeks.push({index:i,start:weekStart,end:weekEnd})}return{start,endExclusive,weeks}}
 function envelopeDateLabel(date){return new Intl.DateTimeFormat('pt-BR',{day:'2-digit',month:'2-digit'}).format(date)}
 function distributeCents(total,count){if(count<=0)return[];const base=Math.trunc(total/count),out=Array(count).fill(base);let remainder=total-base*count,step=remainder>=0?1:-1;for(let i=0;i<Math.abs(remainder);i++)out[count-1-(i%count)]+=step;return out}
-function envelopeTransactions(period,env){return Object.values(state.transactions||{}).flat().filter(t=>{const d=parseDateLocal(t.date);return d&&d>=period.start&&d<period.endExclusive&&sameBudgetTarget(t,env.cat,env.sub,env.city)})}
+function envelopeTransactions(period,env){return Object.values(state.transactions||{}).flat().filter(t=>{const d=parseDateLocal(t.date);return d&&d>=period.start&&d<period.endExclusive&&sameBudgetTarget(t,env.cat,env.sub,env.city,env.owner)})}
 function calculateEnvelopeWeeks(planned,transactions,period){
   const today=parseDateLocal(localDateId())||new Date(),totalCents=Math.round(Number(planned||0)*100),initial=distributeCents(totalCents,period.weeks.length),adjusted=initial.slice();
   const spent=period.weeks.map(w=>transactions.filter(t=>{const d=parseDateLocal(t.date);return d&&d>=w.start&&d<=w.end}).reduce((sum,t)=>sum+Math.round(Number(t.amount||0)*100),0));
@@ -4092,13 +4092,13 @@ function calculateEnvelopeWeeks(planned,transactions,period){
 }
 function envelopeSummaries(monthId=state.month){
   ensureEnvelopeState();const period=envelopePeriod(monthId),map={};
-  (state.budgets[monthId]||[]).filter(b=>isEnvelopeEnabled(b.cat,b.sub)).forEach(b=>{const city=b.city||cityOf(b.sub||''),name=cleanName(b.sub||cat(b.cat).name),key=[b.cat,norm(name),city].join('|');if(!map[key])map[key]={key,cat:b.cat,sub:b.sub,name,city,owner:budgetOwner(b),planned:0};map[key].planned+=budgetLineAdjusted(monthId,b)});
+  (state.budgets[monthId]||[]).filter(b=>isEnvelopeEnabled(b.cat,b.sub)).forEach(b=>{const city=b.city||cityOf(b.sub||''),owner=budgetOwner(b),name=cleanName(b.sub||cat(b.cat).name),key=[b.cat,norm(name),city,owner].join('|');if(!map[key])map[key]={key,cat:b.cat,sub:b.sub,name,city,owner,planned:0};map[key].planned+=budgetLineAdjusted(monthId,b)});
   return Object.values(map).filter(env=>env.planned>0).map(env=>{const transactions=envelopeTransactions(period,env),weeks=calculateEnvelopeWeeks(env.planned,transactions,period),used=transactions.reduce((s,t)=>s+Number(t.amount||0),0),activeWeek=weeks.find(w=>w.status==='atual')||weeks.find(w=>w.status==='futura')||null;return{...env,period,transactions,weeks,used,balance:env.planned-used,currentAvailable:activeWeek?activeWeek.balance:0,currentWeek:activeWeek,status:weeks.some(w=>w.status==='atual')?'atual':weeks.every(w=>w.status==='encerrada')?'encerrada':'futura'}}).sort(compareExpenseItems)
 }
 function envelopeStatusLabel(status){return status==='atual'?'Atual':status==='futura'?'Futuro':'Encerrado'}
 function openEnvelopeDetail(encodedKey){const key=decodeURIComponent(encodedKey),env=envelopeSummaries(state.month).find(x=>x.key===key);if(!env)return alert('Envelope não encontrado para este mês.');const rows=env.weeks.map(w=>`<tr><td>Semana ${w.number}</td><td>${envelopeDateLabel(w.start)} a ${envelopeDateLabel(w.end)}</td><td>${fmt(w.initial)}</td><td>${fmt(w.adjusted)}</td><td>${fmt(w.used)}</td><td class="${w.balance<-.005?'neg':w.balance>.005?'pos':'muted'}">${fmt(w.balance)}</td><td><span class="envelope-status ${w.status}">${envelopeStatusLabel(w.status)}</span></td></tr>`).join('');modal(`<div class="sheet-head"><div><h3>${env.name} — ${env.city}</h3><p class="muted" style="margin-top:5px;font-weight:700">Envelope de ${labelMonth(state.month)} · ${envelopeDateLabel(env.period.start)} a ${envelopeDateLabel(addDateDays(env.period.endExclusive,-1))}</p></div><button class="close" onclick="closeModal()">×</button></div><div class="envelope-summary"><div class="envelope-stat"><span>Previsto no mês</span><strong>${fmt(env.planned)}</strong></div><div class="envelope-stat"><span>Utilizado</span><strong>${fmt(env.used)}</strong></div><div class="envelope-stat"><span>Saldo do envelope</span><strong class="${env.balance<0?'neg':'pos'}">${fmt(env.balance)}</strong></div><div class="envelope-stat"><span>Semana disponível</span><strong class="${env.currentAvailable<0?'neg':'pos'}">${fmt(env.currentAvailable)}</strong><small>${env.currentWeek?'Semana '+env.currentWeek.number:envelopeStatusLabel(env.status)}</small></div></div><div class="note" style="margin-bottom:12px">A semana vai de domingo a sábado. Ao encerrar, sua sobra ou excesso é redistribuído igualmente entre as semanas restantes.</div><div class="table-wrap envelope-week-table"><table><thead><tr><th>Semana</th><th>Período</th><th>Orçado inicial</th><th>Orçado ajustado</th><th>Utilizado</th><th>Saldo</th><th>Situação</th></tr></thead><tbody>${rows}</tbody></table></div>`)}
 
-function forecastSelectionKey(b){return [b.cat,norm(b.name||cleanName(b.sub||'')),b.city].join('|')}
+function forecastSelectionKey(b){return [b.cat,norm(b.name||cleanName(b.sub||'')),b.city,b.owner||budgetOwner(b)].join('|')}
 function budgetUsagePercent(planned,used){if(Number(planned)<=0)return 0;return Math.max(0,Math.min(100,Number(used||0)/Number(planned||0)*100))}
 function selectionTray(kind,count,totals){
   if(kind==='forecast')return `<div id="forecastSelectionTray" class="selection-tray forecast ${count?'is-visible':''}"><div class="selection-tray-heading"><span>${count} selecionado(s)</span><strong>Somatório do acompanhamento</strong></div><div class="selection-tray-totals"><div><small>Previsto</small><b id="forecastSelectedPlanned">${currencyText(totals.planned)}</b></div><div><small>Utilizado</small><b id="forecastSelectedUsed">${currencyText(totals.used)}</b></div><div><small>Saldo</small><b id="forecastSelectedBalance" class="${totals.balance<0?'negative-value':''}">${currencyText(totals.balance)}</b></div></div><button class="selection-clear" type="button" onclick="clearForecastSelection()">Limpar</button></div>`;
@@ -4107,7 +4107,7 @@ function selectionTray(kind,count,totals){
 function openForecastGroupInStatement(encodedGroup){
   try{
     const group=JSON.parse(decodeURIComponent(encodedGroup));
-    txRealizedFilters=normalizeRealizedFilters({cat:group.cat?[group.cat]:[],sub:group.sub?[cleanName(group.sub)]:[],owner:[],city:group.city?[group.city]:[],payments:[]});
+    txRealizedFilters=normalizeRealizedFilters({cat:group.cat?[group.cat]:[],sub:group.sub?[cleanName(group.sub)]:[],owner:group.owner?[group.owner]:[],city:group.city?[group.city]:[],payments:[]});
     selectedRealizedIds.clear();
     viewSearchTerms.lancamentos='';
     view='lancamentos';
@@ -4124,11 +4124,11 @@ function renderLancamentos(){
   selectedRealizedIds=new Set([...selectedRealizedIds].filter(id=>visibleIds.has(id)));
   const selectedTotal=txList.filter(t=>selectedRealizedIds.has(t.id)).reduce((s,t)=>s+Number(t.amount||0),0),allVisibleSelected=txList.length>0&&txList.every(t=>selectedRealizedIds.has(t.id));
   const selectedPaymentTypes=forecastPaymentSelection(),forecastPaymentActive=selectedPaymentTypes.length>0,forecastTx=allTx.filter(t=>txMatchesForecastPayment(t,txForecastFilters));
-  const forecastPaymentMonthKeys=new Set(forecastTx.map(t=>[t.month,t.cat,norm(cleanName(t.sub||t.description||'')),t.city].join('|'))),usedByKey={};
-  forecastTx.forEach(t=>{const key=[t.month,t.cat,norm(cleanName(t.sub||t.description||'')),t.city].join('|');usedByKey[key]=(usedByKey[key]||0)+Number(t.amount||0)});
+  const forecastPaymentMonthKeys=new Set(forecastTx.map(t=>[t.month,t.cat,norm(cleanName(t.sub||t.description||'')),t.city,t.responsible].join('|'))),usedByKey={};
+  forecastTx.forEach(t=>{const key=[t.month,t.cat,norm(cleanName(t.sub||t.description||'')),t.city,t.responsible].join('|');usedByKey[key]=(usedByKey[key]||0)+Number(t.amount||0)});
   const budgetMap={};
   selectedMonths.forEach(m=>(state.budgets[m]||[]).filter(b=>budgetLineAdjusted(m,b)>0).filter(b=>budgetMatches(b,txForecastFilters)).forEach(b=>{
-    const city=b.city||cityOf(b.sub||''),name=cleanName(b.sub||cat(b.cat).name),monthKey=[m,b.cat,norm(name),city].join('|');if(forecastPaymentActive&&!forecastPaymentMonthKeys.has(monthKey))return;const key=[b.cat,norm(name),city].join('|'),used=usedByKey[monthKey]||0;
+    const city=b.city||cityOf(b.sub||''),owner=budgetOwner(b),name=cleanName(b.sub||cat(b.cat).name),monthKey=[m,b.cat,norm(name),city,owner].join('|');if(forecastPaymentActive&&!forecastPaymentMonthKeys.has(monthKey))return;const key=[b.cat,norm(name),city,owner].join('|'),used=usedByKey[monthKey]||0;
     if(!budgetMap[key])budgetMap[key]={...b,city,owner:budgetOwner(b),name,planned:0,used:0,balance:0,firstMonth:m};
     budgetMap[key].planned+=budgetLineAdjusted(m,b);budgetMap[key].used+=used;budgetMap[key].balance=budgetMap[key].planned-budgetMap[key].used;
   }));
@@ -4138,11 +4138,11 @@ function renderLancamentos(){
   const plannedTotal=allBudgets.reduce((s,b)=>s+Number(b.planned||0),0),usedTotal=allBudgets.reduce((s,b)=>s+b.used,0),openTotal=plannedTotal-usedTotal,withBalance=allBudgets.filter(b=>b.balance>.005).length,noBalance=allBudgets.filter(b=>Math.abs(b.balance)<=.005).length,negativeCount=allBudgets.filter(b=>b.balance<-.005).length;
   const forecastCards=budgets.map(b=>{
     const key=forecastSelectionKey(b),encoded=encodeURIComponent(key),selected=selectedForecastKeys.has(key);
-    const editAction=txScope==='mes'?`openBudgetItem('${b.id}','${state.month}')`:`alert('Para editar, filtre por mês selecionado.')`,groupAction=`openForecastGroupInStatement('${encodeURIComponent(JSON.stringify({cat:b.cat,sub:b.name,city:b.city}))}')`,action=Number(b.used||0)>.005?groupAction:editAction;
+    const editAction=txScope==='mes'?`openBudgetItem('${b.id}','${state.month}')`:`alert('Para editar, filtre por mês selecionado.')`,groupAction=`openForecastGroupInStatement('${encodeURIComponent(JSON.stringify({cat:b.cat,sub:b.name,city:b.city,owner:b.owner}))}')`,action=Number(b.used||0)>.005?groupAction:editAction;
     return `<article data-search-item data-forecast-key="${escapeHtml(key)}" data-planned="${Number(b.planned||0)}" data-used="${Number(b.used||0)}" data-balance="${Number(b.balance||0)}" class="tx-forecast-card ${selected?'is-selected':''}" style="--cat-color:${cat(b.cat).color};--cat-soft:${cat(b.cat).color}10" onclick="${action}"><div class="tx-forecast-card-head"><label class="tx-forecast-card-check" onclick="event.stopPropagation()"><input class="tx-select-box" type="checkbox" data-forecast-key="${escapeHtml(key)}" ${selected?'checked':''} onchange="toggleForecastSelection('${encoded}',this.checked)"></label><div class="tx-forecast-card-title"><strong>${escapeHtml(b.name)}</strong><small><span class="category-text" style="color:${cat(b.cat).color}">${escapeHtml(cat(b.cat).name)}</span> · ${escapeHtml(shortLabel(b.owner))} / ${escapeHtml(shortLabel(b.city))}</small></div></div><div class="tx-forecast-card-values"><div class="tx-forecast-card-value planned"><small>Previsto</small><strong>${fmt(b.planned)}</strong></div><div class="tx-forecast-card-value used"><small>Utilizado</small><strong>${fmt(b.used)}</strong></div><div class="tx-forecast-card-value balance"><small>Saldo</small><strong class="${b.balance<0?'neg':Math.abs(b.balance)<=.005?'muted':'pos'}">${fmt(b.balance)}</strong></div></div>${v28AvailabilityIndicator(b.planned,b.used,b.balance)}</article>`
   }).join('');
   const forecastRows=budgets.map(b=>{
-    const key=forecastSelectionKey(b),encoded=encodeURIComponent(key),selected=selectedForecastKeys.has(key),editAction=txScope==='mes'?`openBudgetItem('${b.id}','${state.month}')`:`alert('Para editar, filtre por mês selecionado.')`,groupAction=`openForecastGroupInStatement('${encodeURIComponent(JSON.stringify({cat:b.cat,sub:b.name,city:b.city}))}')`,action=Number(b.used||0)>.005?groupAction:editAction;
+    const key=forecastSelectionKey(b),encoded=encodeURIComponent(key),selected=selectedForecastKeys.has(key),editAction=txScope==='mes'?`openBudgetItem('${b.id}','${state.month}')`:`alert('Para editar, filtre por mês selecionado.')`,groupAction=`openForecastGroupInStatement('${encodeURIComponent(JSON.stringify({cat:b.cat,sub:b.name,city:b.city,owner:b.owner}))}')`,action=Number(b.used||0)>.005?groupAction:editAction;
     return `<tr data-search-item data-forecast-key="${escapeHtml(key)}" data-planned="${Number(b.planned||0)}" data-used="${Number(b.used||0)}" data-balance="${Number(b.balance||0)}" class="clickable category-tinted tx-clean-row tx-forecast-row ${selected?'is-selected':''}" style="--cat-color:${cat(b.cat).color};--cat-soft:${cat(b.cat).color}10" onclick="${action}"><td class="tx-select-cell" onclick="event.stopPropagation()"><input class="tx-select-box" type="checkbox" data-forecast-key="${escapeHtml(key)}" ${selected?'checked':''} onchange="toggleForecastSelection('${encoded}',this.checked)"></td><td data-label="Despesa"><div class="tx-row-main"><strong><span class="row-accent" style="background:${cat(b.cat).color}"></span>${escapeHtml(b.name)}</strong><small><span class="category-text" style="color:${cat(b.cat).color}">${escapeHtml(cat(b.cat).name)}</span> · ${escapeHtml(shortLabel(b.owner))} / ${escapeHtml(shortLabel(b.city))}</small></div></td><td data-label="Previsto">${fmt(b.planned)}</td><td data-label="Utilizado">${fmt(b.used)}</td><td data-label="Saldo" class="${b.balance<-.005?'neg':b.balance>.005?'pos':'muted'}">${fmt(b.balance)}</td><td data-label="Disponível">${v28AvailabilityIndicator(b.planned,b.used,b.balance)}</td></tr>`
   }).join('');
   const rows=txList.map(t=>{const ownerClass=t.responsible==='Cícero'?'cicero':t.responsible==='Nilce'?'nilce':'compartilhado',subLabel=cleanName(t.sub||'Sem subcategoria'),selected=selectedRealizedIds.has(t.id),description=String(t.description||t.desc||'Sem descrição').trim()||'Sem descrição';return `<tr data-tx-id="${escapeHtml(t.id)}" class="clickable category-tinted tx-clean-row tx-realized-row ${selected?'is-selected':''}" style="--cat-color:${cat(t.cat).color};--cat-soft:${cat(t.cat).color}10" onclick="openTx('${t.id}')"><td class="tx-select-cell" onclick="event.stopPropagation()"><input class="tx-select-box" type="checkbox" data-tx-id="${escapeHtml(t.id)}" ${selected?'checked':''} onchange="toggleRealizedSelection('${t.id}',this.checked)"></td><td data-label="Data" class="tx-date">${fmtDate(t.date)}</td><td data-label="Descrição" class="tx-description-cell"><div class="tx-description-text"><span class="row-accent" style="background:${cat(t.cat).color}"></span><strong>${escapeHtml(description)}</strong></div></td><td data-label="Categorização" class="tx-categorization-cell"><div class="tx-categorization"><strong class="category-text" style="color:${cat(t.cat).color}">${escapeHtml(cat(t.cat).name)}</strong><small>${escapeHtml(subLabel)} · <span class="owner-inline ${ownerClass}">${escapeHtml(shortLabel(t.responsible))}</span> / ${escapeHtml(shortLabel(t.city))}</small></div></td><td data-label="Forma de Pagamento" class="tx-payment">${escapeHtml(paymentDisplayName(t.card))}</td><td data-label="Parcela">${installmentBadge(t)}</td><td data-label="Valor" class="tx-amount">${fmt(t.amount)}</td></tr>`}).join('');
@@ -6293,11 +6293,11 @@ function v228ForecastKpiTotals(){
   const selectedMonths=monthYearList(txScope),f=normalizeForecastFilters(txForecastFilters),allTx=[];
   selectedMonths.forEach(month=>txs(month).forEach(tx=>allTx.push({...tx,month})));
   const paymentActive=forecastPaymentSelection(f).length>0,forecastTx=allTx.filter(tx=>txMatchesForecastPayment(tx,f)),paymentMonthKeys=new Set(),usedByKey={};
-  forecastTx.forEach(tx=>{const monthKey=[tx.month,tx.cat,norm(cleanName(tx.sub||tx.description||'')),tx.city].join('|');paymentMonthKeys.add(monthKey);usedByKey[monthKey]=(usedByKey[monthKey]||0)+Number(tx.amount||0)});
+  forecastTx.forEach(tx=>{const monthKey=[tx.month,tx.cat,norm(cleanName(tx.sub||tx.description||'')),tx.city,tx.responsible].join('|');paymentMonthKeys.add(monthKey);usedByKey[monthKey]=(usedByKey[monthKey]||0)+Number(tx.amount||0)});
   const budgetMap={};
   selectedMonths.forEach(month=>(state.budgets[month]||[]).filter(b=>budgetLineAdjusted(month,b)>0).filter(b=>budgetMatches(b,f)).forEach(b=>{
-    const meta=budgetMeta(b),monthKey=[month,b.cat,norm(meta.name),meta.city].join('|');if(paymentActive&&!paymentMonthKeys.has(monthKey))return;
-    const key=[b.cat,norm(meta.name),meta.city].join('|'),used=usedByKey[monthKey]||0;
+    const meta=budgetMeta(b),monthKey=[month,b.cat,norm(meta.name),meta.city,meta.owner].join('|');if(paymentActive&&!paymentMonthKeys.has(monthKey))return;
+    const key=[b.cat,norm(meta.name),meta.city,meta.owner].join('|'),used=usedByKey[monthKey]||0;
     if(!budgetMap[key])budgetMap[key]={planned:0,used:0,balance:0};
     budgetMap[key].planned+=Number(budgetLineAdjusted(month,b)||0);budgetMap[key].used+=used;budgetMap[key].balance=budgetMap[key].planned-budgetMap[key].used;
   }));
@@ -6616,6 +6616,127 @@ v229MonthlyPlanningTable=function(data,year){
   return v230LegacyMonthlyPlanningTable(data,year)+v230MonthlyPlanningChart(data,year);
 };
 requestAnimationFrame(v230SecureForecastNavigation);
+</script>
+
+<style id="v231-subcategory-dimensions-style">
+html[data-ui="v23"] .v231-dimension-note{margin-top:10px;padding:10px 12px;border:1px solid #DDE6F2;border-radius:13px;background:#F7FAFF;color:#526071;font-size:10.5px;font-weight:750;line-height:1.4}
+html[data-ui="v23"] .v231-dimension-chip{display:inline-flex;align-items:center;min-height:25px;padding:4px 8px;border:1px solid #DCE3EC;border-radius:999px;background:#F8FAFC;color:#475467;font-size:10px;font-weight:850;white-space:nowrap}
+html[data-ui="v23"] .v231-subcategory-table td:nth-child(3),html[data-ui="v23"] .v231-subcategory-table td:nth-child(4){white-space:nowrap}
+html[data-theme="dark"][data-ui="v23"] .v231-dimension-note{background:#0F172A;border-color:#344054;color:#CBD5E1}
+html[data-theme="dark"][data-ui="v23"] .v231-dimension-chip{background:#172033;border-color:#344054;color:#E5E7EB}
+</style>
+<script id="v231-subcategory-dimensions-script">
+/* =========================================================
+   V2.31 — BLOCO FINAL ATIVO
+   - Subcategorias com nome único
+   - Local e Pessoa independentes
+   - Edição de padrões e migração conservadora
+   ========================================================= */
+const V231_LOCALS=['Brasília','Fortaleza','Compartilhado'];
+const V231_PEOPLE=['Cícero','Nilce','Compartilhado'];
+const v231LegacyCityOf=cityOf;
+function v231ValidLocal(value){return V231_LOCALS.includes(String(value||''))?String(value):''}
+function v231ValidPerson(value){return V231_PEOPLE.includes(String(value||''))?String(value):''}
+function v231ProfileStore(){if(!state.subcategoryProfiles||typeof state.subcategoryProfiles!=='object'||Array.isArray(state.subcategoryProfiles))state.subcategoryProfiles={};return state.subcategoryProfiles}
+function v231ProfileKey(catId,sub){return `${catId}|${norm(cleanName(sub||''))}`}
+function v231FirstRecordProfile(catId,sub){
+  const clean=norm(cleanName(sub||''));
+  for(const month of months()){
+    const budget=(state.budgets?.[month]||[]).find(item=>item.cat===catId&&norm(cleanName(item.sub||''))===clean);
+    if(budget){const local=v231ValidLocal(budget.city)||v231LegacyCityOf(budget.sub||''),person=v231ValidPerson(budget.owner||budget.responsible)||ownerOf(local);return{local:v231ValidLocal(local)||'Compartilhado',person:v231ValidPerson(person)||'Compartilhado'}}
+    const tx=(state.transactions?.[month]||[]).find(item=>item.cat===catId&&norm(cleanName(item.sub||''))===clean);
+    if(tx){const local=v231ValidLocal(tx.city)||v231LegacyCityOf(tx.sub||''),person=v231ValidPerson(tx.responsible||tx.payer)||ownerOf(local);return{local:v231ValidLocal(local)||'Compartilhado',person:v231ValidPerson(person)||'Compartilhado'}}
+  }
+  const local=v231ValidLocal(v231LegacyCityOf(sub||''))||'Compartilhado';
+  return{local,person:v231ValidPerson(ownerOf(local))||'Compartilhado'};
+}
+function v231GetSubcategoryProfile(catId,sub){
+  const store=v231ProfileStore(),key=v231ProfileKey(catId,sub),current=store[key]||{},fallback=v231FirstRecordProfile(catId,sub);
+  return{local:v231ValidLocal(current.local)||fallback.local,person:v231ValidPerson(current.person)||fallback.person};
+}
+function v231SetSubcategoryProfile(catId,sub,local,person){v231ProfileStore()[v231ProfileKey(catId,sub)]={local:v231ValidLocal(local)||'Compartilhado',person:v231ValidPerson(person)||'Compartilhado'}}
+function v231SelectOptions(values,selected){return values.map(value=>`<option value="${escapeHtml(value)}" ${value===selected?'selected':''}>${escapeHtml(value)}</option>`).join('')}
+function v231MigrateCanonicalSubcategories(){
+  if(!state||state?.migrations?.v231CanonicalSubcategories)return 0;
+  if(!state.migrations||typeof state.migrations!=='object')state.migrations={};
+  ensureEnvelopeState();const envelopeFlags=new Map(),changed={count:0};
+  Object.entries(state.subs||{}).forEach(([catId,list])=>{
+    (Array.isArray(list)?list:[]).forEach(raw=>{const clean=cleanName(raw);if(!clean)return;const key=v231ProfileKey(catId,clean);if(!v231ProfileStore()[key])v231SetSubcategoryProfile(catId,clean,v231LegacyCityOf(raw),ownerOf(v231LegacyCityOf(raw)));if(isEnvelopeEnabled(catId,raw))envelopeFlags.set(key,true);if(raw!==clean)changed.count++});
+  });
+  const register=(catId,rawSub,local,person)=>{const clean=cleanName(rawSub);if(!clean)return '';if(!state.subs[catId])state.subs[catId]=[];if(!state.subs[catId].some(value=>norm(cleanName(value))===norm(clean))){state.subs[catId].push(clean);changed.count++}const key=v231ProfileKey(catId,clean);if(!v231ProfileStore()[key])v231SetSubcategoryProfile(catId,clean,local,person);return clean};
+  Object.entries(state.budgets||{}).forEach(([,list])=>(Array.isArray(list)?list:[]).forEach(item=>{const raw=item.sub||'',local=v231ValidLocal(item.city)||v231LegacyCityOf(raw)||'Compartilhado',person=v231ValidPerson(item.owner||item.responsible)||ownerOf(local)||'Compartilhado',clean=register(item.cat,raw,local,person);if(clean&&item.sub!==clean){item.sub=clean;changed.count++}if(item.city!==local){item.city=local;changed.count++}if(item.owner!==person||item.responsible!==person){item.owner=person;item.responsible=person;changed.count++}}));
+  Object.entries(state.transactions||{}).forEach(([,list])=>(Array.isArray(list)?list:[]).forEach(item=>{const raw=item.sub||'',local=v231ValidLocal(item.city)||v231LegacyCityOf(raw)||'Compartilhado',person=v231ValidPerson(item.responsible||item.payer)||ownerOf(local)||'Compartilhado',clean=register(item.cat,raw,local,person);if(clean&&item.sub!==clean){item.sub=clean;changed.count++}if(item.city!==local){item.city=local;changed.count++}if(item.responsible!==person||item.payer!==person){item.responsible=person;item.payer=person;changed.count++}}));
+  const seededProfiles=new Set();
+  const seedProfile=item=>{const sub=cleanName(item.sub||''),key=v231ProfileKey(item.cat,sub);if(!sub||seededProfiles.has(key))return;const local=v231ValidLocal(item.city)||'Compartilhado',person=v231ValidPerson(item.owner||item.responsible||item.payer)||'Compartilhado';v231SetSubcategoryProfile(item.cat,sub,local,person);seededProfiles.add(key)};
+  Object.values(state.budgets||{}).flat().forEach(seedProfile);Object.values(state.transactions||{}).flat().forEach(seedProfile);
+  Object.entries(state.subs||{}).forEach(([catId,list])=>{const unique=new Map();(Array.isArray(list)?list:[]).forEach(raw=>{const clean=cleanName(raw);if(clean&&!unique.has(norm(clean)))unique.set(norm(clean),clean)});state.subs[catId]=[...unique.values()].sort(textCmp)});
+  Object.entries(state.subs||{}).forEach(([catId,list])=>(list||[]).forEach(sub=>{const key=v231ProfileKey(catId,sub);setEnvelopeEnabled(catId,sub,envelopeFlags.get(key)===true||isEnvelopeEnabled(catId,sub));if(!v231ProfileStore()[key]){const fallback=v231FirstRecordProfile(catId,sub);v231SetSubcategoryProfile(catId,sub,fallback.local,fallback.person)}}));
+  const validEnvelopeKeys=new Set();Object.entries(state.subs||{}).forEach(([catId,list])=>(list||[]).forEach(sub=>validEnvelopeKeys.add(envelopeSettingKey(catId,sub))));Object.keys(state.envelopes.items||{}).forEach(key=>{if(!validEnvelopeKeys.has(key))delete state.envelopes.items[key]});
+  state.migrations.v231CanonicalSubcategories={at:new Date().toISOString(),changed:changed.count};return changed.count;
+}
+
+budgetOwner=function(item={}){const explicit=v231ValidPerson(item.owner||item.responsible);if(explicit)return explicit;const local=v231ValidLocal(item.city)||v231LegacyCityOf(item.sub||'');return v231ValidPerson(ownerOf(local))||'Compartilhado'};
+txs=function(m=state.month){return (state.transactions?.[m]||[]).map(item=>{const local=v231ValidLocal(item.city)||v231LegacyCityOf(item.sub||item.description||item.desc||'')||'Compartilhado',person=v231ValidPerson(item.responsible||item.payer)||v231ValidPerson(ownerOf(local))||'Compartilhado';return{...item,description:cleanName(item.description||item.desc||''),responsible:person,payer:person,city:local,card:cardOf(item.card),sub:cleanName(item.sub||'')}})};
+syncPlanningOwnerWithCity=function(){};
+const v231LegacySameBudgetTarget=sameBudgetTarget;
+sameBudgetTarget=function(item,catId,sub,city,person=''){const local=item.city||v231LegacyCityOf(item.sub||item.description||item.desc||'');return item.cat===catId&&norm(cleanName(item.sub||''))===norm(cleanName(sub||''))&&local===city&&(!person||budgetOwner(item)===person)};
+budgetLineUsed=function(m,b,excludeId=null){const local=b.city||v231LegacyCityOf(b.sub||''),person=budgetOwner(b);return (state.transactions?.[m]||[]).filter(item=>item.id!==excludeId&&sameBudgetTarget(item,b.cat,b.sub,local,person)).reduce((sum,item)=>sum+Number(item.amount||0),0)};
+txBudgetSnapshot=function(m,catId,sub,city,arg5=null,arg6=null){let person='',excludeId=null;if(v231ValidPerson(arg5)){person=arg5;excludeId=arg6}else{excludeId=arg5;person=v231ValidPerson(document.querySelector('#modal form select[name="responsible"]')?.value||document.querySelector('#modal form select[name="owner"]')?.value)||''}const lines=(state.budgets?.[m]||[]).filter(item=>sameBudgetTarget(item,catId,sub,city,person));const planned=lines.reduce((sum,item)=>sum+budgetLineAdjusted(m,item),0),used=(state.transactions?.[m]||[]).filter(item=>item.id!==excludeId&&sameBudgetTarget(item,catId,sub,city,person)).reduce((sum,item)=>sum+Number(item.amount||0),0);return{lines,planned,used,balance:planned-used}};
+v215FullSub=function(identity){return cleanName(identity?.sub||'')};
+
+openSubcategory=function(catId,enc=''){
+  const old=enc?decodeURIComponent(enc):'',profile=v231GetSubcategoryProfile(catId,old||''),title=old?'Editar':'Nova';
+  modal(`<div class="sheet-head"><div><h3>${title} subcategoria</h3><p class="mobile-sheet-copy">O nome fica único. Local e Pessoa são dimensões separadas.</p></div><button class="close" onclick="closeModal()">×</button></div><form class="form" onsubmit="saveSubcategory(event,'${catId}','${encodeURIComponent(old)}')"><div class="form two"><div class="field"><label>Categoria</label><select name="cat">${catOptions(catId)}</select></div><div class="field"><label>Subcategoria</label><input name="sub" value="${escapeHtml(cleanName(old))}" required></div><div class="field"><label>Local padrão</label><select name="local">${v231SelectOptions(V231_LOCALS,profile.local)}</select></div><div class="field"><label>Pessoa padrão</label><select name="person">${v231SelectOptions(V231_PEOPLE,profile.person)}</select></div></div><label class="envelope-toggle"><input type="checkbox" name="envelope" ${old&&isEnvelopeEnabled(catId,old)?'checked':''}> Controle por envelope semanal</label>${old?'<label class="envelope-toggle"><input type="checkbox" name="applyExisting"> Aplicar Local e Pessoa também às previsões e aos lançamentos existentes desta subcategoria</label>':''}<div class="v231-dimension-note">Local e Pessoa são independentes. Por exemplo, uma despesa pode ser <strong>Brasília + Compartilhado</strong> ou <strong>Fortaleza + Nilce</strong>. Sem marcar a aplicação aos registros existentes, os campos funcionam apenas como padrão para os próximos cadastros.</div><div class="actions">${old?'<button class="btn danger" type="button" onclick="deleteSubcategory(\''+catId+'\',\''+encodeURIComponent(old)+'\')">Excluir</button>':''}<button class="btn secondary" type="button" onclick="closeModal()">Cancelar</button><button class="btn">Salvar</button></div></form>`)
+};
+saveSubcategory=function(event,catId,encOld){
+  event.preventDefault();const form=new FormData(event.target),newCat=String(form.get('cat')||''),newSub=cleanName(form.get('sub')||''),old=cleanName(decodeURIComponent(encOld||'')),local=v231ValidLocal(form.get('local'))||'Compartilhado',person=v231ValidPerson(form.get('person'))||'Compartilhado',enabled=form.get('envelope')==='on',applyExisting=form.get('applyExisting')==='on';if(!newCat||!newSub)return alert('Informe a categoria e a subcategoria.');
+  if(!state.subs[newCat])state.subs[newCat]=[];if(old&&state.subs[catId])state.subs[catId]=state.subs[catId].filter(value=>norm(cleanName(value))!==norm(old));if(!state.subs[newCat].some(value=>norm(cleanName(value))===norm(newSub)))state.subs[newCat].push(newSub);state.subs[newCat].sort(textCmp);
+  if(old){deleteEnvelopeSetting(catId,old);delete v231ProfileStore()[v231ProfileKey(catId,old)]}
+  v231SetSubcategoryProfile(newCat,newSub,local,person);setEnvelopeEnabled(newCat,newSub,enabled);
+  if(old){Object.values(state.budgets||{}).flat().forEach(item=>{if(item.cat===catId&&norm(cleanName(item.sub||''))===norm(old)){item.cat=newCat;item.sub=newSub;if(applyExisting){item.city=local;item.owner=person;item.responsible=person}}});Object.values(state.transactions||{}).flat().forEach(item=>{if(item.cat===catId&&norm(cleanName(item.sub||''))===norm(old)){item.cat=newCat;item.sub=newSub;if(applyExisting){item.city=local;item.responsible=person;item.payer=person}}})}
+  save();closeModal();render();
+};
+deleteSubcategory=function(catId,enc){const old=cleanName(decodeURIComponent(enc||''));if(!confirm('Excluir esta subcategoria da lista de cadastros? As previsões e os lançamentos existentes não serão apagados.'))return;state.subs[catId]=(state.subs[catId]||[]).filter(value=>norm(cleanName(value))!==norm(old));deleteEnvelopeSetting(catId,old);delete v231ProfileStore()[v231ProfileKey(catId,old)];save();closeModal();render()};
+
+function v231EnhanceConfigSubcategoryTable(){
+  if(view!=='config')return;const heading=[...document.querySelectorAll('#app .section-title h3')].find(node=>node.textContent.trim()==='Subcategorias'),card=heading?.closest('.card'),table=card?.querySelector('table');if(!table)return;
+  heading.parentElement.querySelector('span').textContent='Nome único, Local e Pessoa independentes';table.classList.add('v231-subcategory-table');
+  table.querySelector('thead').innerHTML='<tr><th>Categoria</th><th>Subcategoria</th><th>Local padrão</th><th>Pessoa padrão</th><th>Envelope semanal</th><th>Ações</th></tr>';
+  const rows=state.categories.slice().sort((a,b)=>textCmp(a.name,b.name)).flatMap(category=>(state.subs[category.id]||[]).slice().sort(textCmp).map(sub=>{const profile=v231GetSubcategoryProfile(category.id,sub);return `<tr><td>${escapeHtml(category.name)}</td><td><strong>${escapeHtml(cleanName(sub))}</strong></td><td><span class="v231-dimension-chip">${escapeHtml(profile.local)}</span></td><td><span class="v231-dimension-chip">${escapeHtml(profile.person)}</span></td><td><span class="envelope-pill ${isEnvelopeEnabled(category.id,sub)?'on':'off'}">${isEnvelopeEnabled(category.id,sub)?'Ativo':'Não'}</span></td><td><button class="tiny" onclick="openSubcategory('${category.id}','${encodeURIComponent(cleanName(sub))}')">Editar</button></td></tr>`})).join('');
+  table.querySelector('tbody').innerHTML=rows||'<tr><td colspan="6">Sem subcategorias</td></tr>';
+}
+
+function v231ApplyBudgetDefaults(){const catId=document.getElementById('newBudgetCatSelect')?.value,sub=document.getElementById('newBudgetSubSelect')?.value;if(!catId||!sub)return;const profile=v231GetSubcategoryProfile(catId,sub),local=document.getElementById('newBudgetCitySelect'),person=document.getElementById('newBudgetOwnerSelect');if(local)local.value=profile.local;if(person)person.value=profile.person}
+function v231RefreshBudgetSub(catId){refreshPlanningSub(catId,'newBudgetSubSelect');requestAnimationFrame(v231ApplyBudgetDefaults)}
+openNewBudgetLine=function(){
+  const year=v215PlanningYear(),monthsList=v213MonthsForYear(year),defaultCat=state.categories.slice().sort((a,b)=>textCmp(a.name,b.name))[0]?.id||'',defaultSub=cleanName((state.subs[defaultCat]||[]).slice().sort(textCmp)[0]||''),profile=v231GetSubcategoryProfile(defaultCat,defaultSub),inputs=monthsList.map(month=>`<div class="field"><label>${labelMonth(month)}</label><input type="number" min="0" step="0.01" name="month_${month.slice(5,7)}" value="0"></div>`).join('');
+  modal(`<div class="sheet-head"><div><h3>Nova despesa prevista</h3><p class="muted" style="margin-top:4px;font-weight:750">A subcategoria tem nome único; Local e Pessoa são definidos separadamente.</p></div><button class="close" onclick="closeModal()">×</button></div><form class="form" onsubmit="saveNewBudgetLine(event)"><div class="form two"><div class="field"><label>Ano</label><input type="number" name="year" min="2020" max="2100" value="${year}" required></div><div class="field"><label>Categoria</label><select id="newBudgetCatSelect" name="cat" onchange="v231RefreshBudgetSub(this.value)">${catOptions(defaultCat)}</select></div><div class="field"><label>Subcategoria</label><select id="newBudgetSubSelect" name="sub" onchange="v231ApplyBudgetDefaults()" required>${planningSubOptions(defaultCat,defaultSub)}</select></div><div class="field"><label>Local</label><select id="newBudgetCitySelect" name="city">${v231SelectOptions(V231_LOCALS,profile.local)}</select></div><div class="field"><label>Pessoa</label><select id="newBudgetOwnerSelect" name="owner">${v231SelectOptions(V231_PEOPLE,profile.person)}</select></div></div><label class="envelope-toggle"><input type="checkbox" name="envelope" ${isEnvelopeEnabled(defaultCat,defaultSub)?'checked':''}> Controlar esta despesa por envelope semanal</label><div class="section-title" style="margin-top:8px"><h3>Valores por mês</h3><span>${v213PeriodDescription(year)}</span></div><div class="form three">${inputs}</div><div class="note">Uma mesma subcategoria pode existir em combinações diferentes de Local e Pessoa dentro do planejamento.</div><div class="actions"><button class="btn secondary" type="button" onclick="closeModal()">Cancelar</button><button class="btn">Salvar despesa prevista</button></div></form>`)
+};
+saveNewBudgetLine=function(event){
+  event.preventDefault();const form=new FormData(event.target),year=String(form.get('year')||'').trim();if(!/^\d{4}$/.test(year)||Number(year)<2020||Number(year)>2100)return alert('Informe um ano válido entre 2020 e 2100.');const catId=String(form.get('cat')||''),local=v231ValidLocal(form.get('city')),person=v231ValidPerson(form.get('owner')),sub=cleanName(form.get('sub')||''),yearMonths=ensureYearMonths(year);if(!catId||!sub||!local||!person)return alert('Selecione categoria, subcategoria, Local e Pessoa.');if(!state.subs[catId])state.subs[catId]=[];if(!state.subs[catId].some(value=>norm(cleanName(value))===norm(sub)))state.subs[catId].push(sub);setEnvelopeEnabled(catId,sub,form.get('envelope')==='on');let created=0;yearMonths.forEach(month=>{const value=Math.max(0,Number(form.get('month_'+month.slice(5,7)))||0);if(value<=0)return;const duplicate=(state.budgets[month]||[]).find(item=>sameBudgetTarget(item,catId,sub,local,person));if(duplicate)duplicate.planned=Number(duplicate.planned||0)+value;else state.budgets[month].push({id:'b_'+Date.now()+'_'+Math.random().toString(36).slice(2),cat:catId,sub,city:local,owner:person,responsible:person,planned:value});created++});if(!created)return alert('Informe um valor em pelo menos um mês.');state.month=validMonth(year+'-'+(String(state.month||'').slice(5,7)||'01'));save();closeModal();render();
+};
+
+function v231ApplyTxDefaults(){const form=document.querySelector('#modal form[onsubmit="saveTx(event)"]');if(!form)return;const catId=form.querySelector('[name="cat"]')?.value,sub=form.querySelector('[name="sub"]')?.value;if(!catId||!sub)return;const profile=v231GetSubcategoryProfile(catId,sub),local=form.querySelector('[name="city"]'),person=form.querySelector('[name="responsible"]');if(local)local.value=profile.local;if(person)person.value=profile.person}
+const v231LegacyOpenTx=openTx;
+openTx=function(id){v231LegacyOpenTx(id);const form=document.querySelector('#modal form[onsubmit="saveTx(event)"]');if(!form)return;const catSelect=form.querySelector('[name="cat"]'),subSelect=form.querySelector('[name="sub"]');if(catSelect)catSelect.setAttribute('onchange',"refreshSub(this.value);requestAnimationFrame(v231ApplyTxDefaults)");if(subSelect)subSelect.setAttribute('onchange','v231ApplyTxDefaults()');if(!id)requestAnimationFrame(v231ApplyTxDefaults)};
+
+function v231InsertResponsibleField(form,person){if(!form||form.querySelector('[name="responsible"]'))return;const cityField=form.querySelector('[name="city"]')?.closest('.field'),field=document.createElement('div');field.className='field';field.innerHTML=`<label>Pessoa</label><select name="responsible">${v231SelectOptions(V231_PEOPLE,v231ValidPerson(person)||'Compartilhado')}</select>`;if(cityField)cityField.insertAdjacentElement('afterend',field);else form.querySelector('.form.two')?.appendChild(field)}
+const v231LegacyOpenManualInstallmentEditor=openManualInstallmentEditor;
+openManualInstallmentEditor=function(found){v231LegacyOpenManualInstallmentEditor(found);v231InsertResponsibleField(document.querySelector('#modal form[onsubmit^="saveManualInstallment"]'),found?.tx?.responsible||found?.tx?.payer)};
+const v231LegacyOpenInstallmentSeriesEditor=openInstallmentSeriesEditor;
+openInstallmentSeriesEditor=function(){const found=findTransactionById(editTxId);v231LegacyOpenInstallmentSeriesEditor();v231InsertResponsibleField(document.querySelector('#modal form[onsubmit^="saveInstallmentSeries"]'),found?.tx?.responsible||found?.tx?.payer)};
+const v231LegacySaveManualInstallment=saveManualInstallment;
+saveManualInstallment=function(event,sourceId){const person=v231ValidPerson(new FormData(event.target).get('responsible'))||'Compartilhado',result=v231LegacySaveManualInstallment(event,sourceId),apply=()=>{if(document.getElementById('modal')?.classList.contains('open'))return;const found=findTransactionById(sourceId||editTxId);if(found){found.tx.responsible=person;found.tx.payer=person;save();render()}};if(result&&typeof result.then==='function')return result.then(value=>{apply();return value});apply();return result};
+const v231LegacySaveInstallmentSeries=saveInstallmentSeries;
+saveInstallmentSeries=async function(event,groupId,sourceId){const person=v231ValidPerson(new FormData(event.target).get('responsible'))||'Compartilhado',result=await v231LegacySaveInstallmentSeries(event,groupId,sourceId);if(document.getElementById('modal')?.classList.contains('open'))return result;getInstallmentSeries(groupId).forEach(item=>{item.tx.responsible=person;item.tx.payer=person});save();render();return result};
+
+v230PlanningTargetFromElement=function(element){const parts=String(element?.dataset?.forecastKey||'').split('|'),name=cleanName(element?.querySelector('.tx-row-main strong,.tx-forecast-card-title strong')?.textContent||'');return{catId:parts[0]||'todos',sub:name,city:parts[2]||'todos',owner:parts[3]||'todos'}};
+v230OpenForecastInPlanning=function(group={}){view='despesas';expenseScope=txScope==='ano'?'ano':'mes';expenseFilters={cat:group.catId||'todos',sub:group.sub||'todos',owner:group.owner||'todos',city:group.city||'todos'};selectedExpenseCat=null;viewSearchTerms.despesas='';save();render()};
+
+let v231MigrationSaveQueued=false;
+const v231LegacyRender=render;
+render=function(){if(cloudSynced&&state){const changed=v231MigrateCanonicalSubcategories();if(changed&&!v231MigrationSaveQueued){v231MigrationSaveQueued=true;cacheCloudState();scheduleCloudSave();setTimeout(()=>{v231MigrationSaveQueued=false},1500)}}const result=v231LegacyRender();requestAnimationFrame(v231EnhanceConfigSubcategoryTable);return result};
+requestAnimationFrame(v231EnhanceConfigSubcategoryTable);
 </script>
 
 </body></html>
