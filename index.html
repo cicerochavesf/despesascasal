@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.31 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.32 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -6736,6 +6736,74 @@ v230OpenForecastInPlanning=function(group={}){view='despesas';expenseScope=txSco
 let v231MigrationSaveQueued=false;
 const v231LegacyRender=render;
 render=function(){if(cloudSynced&&state){const changed=v231MigrateCanonicalSubcategories();if(changed&&!v231MigrationSaveQueued){v231MigrationSaveQueued=true;cacheCloudState();scheduleCloudSave();setTimeout(()=>{v231MigrationSaveQueued=false},1500)}}const result=v231LegacyRender();requestAnimationFrame(v231EnhanceConfigSubcategoryTable);return result};
+requestAnimationFrame(v231EnhanceConfigSubcategoryTable);
+</script>
+
+
+<script id="v232-subcategory-config-simplified-script">
+/* =========================================================
+   V2.32 — BLOCO FINAL ATIVO
+   - Configurações de subcategoria guardam apenas nome/categoria/envelope
+   - Local e Pessoa são escolhidos exclusivamente no Planejamento
+   - Nenhuma previsão existente é alterada
+   ========================================================= */
+function v232RequiredSelectOptions(values,label){
+  return `<option value="" selected disabled>${escapeHtml(label)}</option>`+values.map(value=>`<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`).join('');
+}
+
+openSubcategory=function(catId,enc=''){
+  const old=enc?decodeURIComponent(enc):'',title=old?'Editar':'Nova';
+  modal(`<div class="sheet-head"><div><h3>${title} subcategoria</h3><p class="mobile-sheet-copy">Cadastre somente o nome. Local e Pessoa serão definidos no Planejamento.</p></div><button class="close" onclick="closeModal()">×</button></div><form class="form" onsubmit="saveSubcategory(event,'${catId}','${encodeURIComponent(old)}')"><div class="form two"><div class="field"><label>Categoria</label><select name="cat">${catOptions(catId)}</select></div><div class="field"><label>Subcategoria</label><input name="sub" value="${escapeHtml(cleanName(old))}" required></div></div><label class="envelope-toggle"><input type="checkbox" name="envelope" ${old&&isEnvelopeEnabled(catId,old)?'checked':''}> Controle por envelope semanal</label><div class="v231-dimension-note">O cadastro da subcategoria não define Local nem Pessoa. Essas informações são escolhidas para cada despesa em <strong>Planejamento</strong>.</div><div class="actions">${old?'<button class="btn danger" type="button" onclick="deleteSubcategory(\''+catId+'\',\''+encodeURIComponent(old)+'\')">Excluir</button>':''}<button class="btn secondary" type="button" onclick="closeModal()">Cancelar</button><button class="btn">Salvar</button></div></form>`);
+};
+
+saveSubcategory=function(event,catId,encOld){
+  event.preventDefault();
+  const form=new FormData(event.target),newCat=String(form.get('cat')||''),newSub=cleanName(form.get('sub')||''),old=cleanName(decodeURIComponent(encOld||'')),enabled=form.get('envelope')==='on';
+  if(!newCat||!newSub)return alert('Informe a categoria e a subcategoria.');
+  if(!state.subs[newCat])state.subs[newCat]=[];
+  if(old&&state.subs[catId])state.subs[catId]=state.subs[catId].filter(value=>norm(cleanName(value))!==norm(old));
+  if(!state.subs[newCat].some(value=>norm(cleanName(value))===norm(newSub)))state.subs[newCat].push(newSub);
+  state.subs[newCat].sort(textCmp);
+  if(old){
+    deleteEnvelopeSetting(catId,old);
+    delete v231ProfileStore()[v231ProfileKey(catId,old)];
+    Object.values(state.budgets||{}).flat().forEach(item=>{
+      if(item.cat===catId&&norm(cleanName(item.sub||''))===norm(old)){
+        item.cat=newCat;
+        item.sub=newSub;
+      }
+    });
+    Object.values(state.transactions||{}).flat().forEach(item=>{
+      if(item.cat===catId&&norm(cleanName(item.sub||''))===norm(old)){
+        item.cat=newCat;
+        item.sub=newSub;
+      }
+    });
+  }
+  setEnvelopeEnabled(newCat,newSub,enabled);
+  save();closeModal();render();
+};
+
+v231EnhanceConfigSubcategoryTable=function(){
+  if(view!=='config')return;
+  const heading=[...document.querySelectorAll('#app .section-title h3')].find(node=>node.textContent.trim()==='Subcategorias'),card=heading?.closest('.card'),table=card?.querySelector('table');
+  if(!table)return;
+  const description=heading.parentElement.querySelector('span');
+  if(description)description.textContent='Local e Pessoa são definidos somente no Planejamento';
+  table.classList.remove('v231-subcategory-table');
+  table.querySelector('thead').innerHTML='<tr><th>Categoria</th><th>Subcategoria</th><th>Envelope semanal</th><th>Ações</th></tr>';
+  const rows=state.categories.slice().sort((a,b)=>textCmp(a.name,b.name)).flatMap(category=>(state.subs[category.id]||[]).slice().sort(textCmp).map(sub=>`<tr><td>${escapeHtml(category.name)}</td><td><strong>${escapeHtml(cleanName(sub))}</strong></td><td><span class="envelope-pill ${isEnvelopeEnabled(category.id,sub)?'on':'off'}">${isEnvelopeEnabled(category.id,sub)?'Ativo':'Não'}</span></td><td><button class="tiny" onclick="openSubcategory('${category.id}','${encodeURIComponent(cleanName(sub))}')">Editar</button></td></tr>`)).join('');
+  table.querySelector('tbody').innerHTML=rows||'<tr><td colspan="4">Sem subcategorias</td></tr>';
+};
+
+v231ApplyBudgetDefaults=function(){};
+v231RefreshBudgetSub=function(catId){refreshPlanningSub(catId,'newBudgetSubSelect');};
+
+openNewBudgetLine=function(){
+  const year=v215PlanningYear(),monthsList=v213MonthsForYear(year),defaultCat=state.categories.slice().sort((a,b)=>textCmp(a.name,b.name))[0]?.id||'',defaultSub=cleanName((state.subs[defaultCat]||[]).slice().sort(textCmp)[0]||''),inputs=monthsList.map(month=>`<div class="field"><label>${labelMonth(month)}</label><input type="number" min="0" step="0.01" name="month_${month.slice(5,7)}" value="0"></div>`).join('');
+  modal(`<div class="sheet-head"><div><h3>Nova despesa prevista</h3><p class="muted" style="margin-top:4px;font-weight:750">Escolha Local e Pessoa para esta despesa, independentemente da subcategoria.</p></div><button class="close" onclick="closeModal()">×</button></div><form class="form" onsubmit="saveNewBudgetLine(event)"><div class="form two"><div class="field"><label>Ano</label><input type="number" name="year" min="2020" max="2100" value="${year}" required></div><div class="field"><label>Categoria</label><select id="newBudgetCatSelect" name="cat" onchange="v231RefreshBudgetSub(this.value)">${catOptions(defaultCat)}</select></div><div class="field"><label>Subcategoria</label><select id="newBudgetSubSelect" name="sub" required>${planningSubOptions(defaultCat,defaultSub)}</select></div><div class="field"><label>Local</label><select id="newBudgetCitySelect" name="city" required>${v232RequiredSelectOptions(V231_LOCALS,'Selecione o local')}</select></div><div class="field"><label>Pessoa</label><select id="newBudgetOwnerSelect" name="owner" required>${v232RequiredSelectOptions(V231_PEOPLE,'Selecione a pessoa')}</select></div></div><label class="envelope-toggle"><input type="checkbox" name="envelope" ${isEnvelopeEnabled(defaultCat,defaultSub)?'checked':''}> Controlar esta despesa por envelope semanal</label><div class="section-title" style="margin-top:8px"><h3>Valores por mês</h3><span>${v213PeriodDescription(year)}</span></div><div class="form three">${inputs}</div><div class="note">Local e Pessoa pertencem à despesa planejada. Uma mesma subcategoria pode ser usada em combinações diferentes.</div><div class="actions"><button class="btn secondary" type="button" onclick="closeModal()">Cancelar</button><button class="btn">Salvar despesa prevista</button></div></form>`);
+};
+
 requestAnimationFrame(v231EnhanceConfigSubcategoryTable);
 </script>
 
