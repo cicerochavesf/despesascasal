@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.32 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.33 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -6805,6 +6805,121 @@ openNewBudgetLine=function(){
 };
 
 requestAnimationFrame(v231EnhanceConfigSubcategoryTable);
+</script>
+
+
+
+<script id="v233-budget-dimensions-edit-script">
+/* =========================================================
+   V2.33 — BLOCO FINAL ATIVO
+   - Permite corrigir Local e Pessoa em despesas já planejadas
+   - Edição mensal altera somente o mês escolhido
+   - Edição anual altera todos os meses da mesma despesa no ano
+   - Mantém os valores planejados e evita combinações duplicadas
+   ========================================================= */
+function v233DimensionOptions(values,selected){
+  return values.map(value=>`<option value="${escapeHtml(value)}" ${value===selected?'selected':''}>${escapeHtml(value)}</option>`).join('');
+}
+function v233RawTransactionMatches(item,identity){
+  const itemLocal=v231ValidLocal(item.city)||v231LegacyCityOf(item.sub||item.description||item.desc||'')||'Compartilhado';
+  const itemPerson=v231ValidPerson(item.responsible||item.payer)||v231ValidPerson(ownerOf(itemLocal))||'Compartilhado';
+  return item.cat===identity.catId&&norm(cleanName(item.sub||item.description||item.desc||''))===norm(cleanName(identity.sub||''))&&itemLocal===identity.city&&itemPerson===(identity.owner||ownerOf(identity.city));
+}
+function v233TargetConflict(month,identity,newLocal,newPerson,excludedIds=new Set()){
+  return (state.budgets[month]||[]).find(item=>{
+    if(item.id&&excludedIds.has(item.id))return false;
+    return sameBudgetTarget(item,identity.catId,identity.sub,newLocal,newPerson);
+  });
+}
+function v233ApplyBudgetDimensionsToTransactions(month,identity,newLocal,newPerson){
+  (state.transactions[month]||[]).forEach(item=>{
+    if(!v233RawTransactionMatches(item,identity))return;
+    item.sub=cleanName(identity.sub||item.sub||'');
+    item.city=newLocal;
+    item.responsible=newPerson;
+    item.payer=newPerson;
+    item.updatedAt=new Date().toISOString();
+  });
+}
+function v233NormalizeBudgetLine(line,identity,newLocal,newPerson,amount){
+  line.cat=identity.catId;
+  line.sub=cleanName(identity.sub||line.sub||'');
+  line.city=newLocal;
+  line.owner=newPerson;
+  line.responsible=newPerson;
+  line.planned=amount;
+}
+
+openAnnualBudgetEditor=function(encodedKey){
+  const identity=annualBudgetIdentity(encodedKey);if(!identity)return alert('Não foi possível identificar esta despesa.');
+  expenseReturnScrollY=window.scrollY||0;
+  const year=String(state.month||'').slice(0,4),yearMonths=annualBudgetMonths(year),currentLocal=v231ValidLocal(identity.city)||'Compartilhado',currentPerson=v231ValidPerson(identity.owner)||v231ValidPerson(ownerOf(currentLocal))||'Compartilhado';
+  const cards=yearMonths.map(month=>{const lines=annualBudgetMatchingLines(month,identity),planned=lines.reduce((sum,line)=>sum+Number(line.planned||0),0),adjusted=lines.reduce((sum,line)=>sum+budgetLineAdjusted(month,line),0),remDelta=adjusted-planned;return `<div class="annual-budget-month-card"><label for="annual_${month}">${labelMonth(month)}</label><input id="annual_${month}" data-annual-budget type="number" min="0" step="0.01" name="planned_${month}" value="${planned}" oninput="updateAnnualBudgetTotal()"><small>${Math.abs(remDelta)>.005?`Acompanhamento após remanejamento: ${fmt(adjusted)}`:'Sem remanejamento no acompanhamento'}</small></div>`}).join('');
+  const currentTotal=yearMonths.reduce((sum,month)=>sum+annualBudgetMatchingLines(month,identity).reduce((subtotal,line)=>subtotal+Number(line.planned||0),0),0);
+  modal(`<div class="sheet-head annual-budget-head"><div><h3>Editar despesa no ano</h3><p>${escapeHtml(identity.sub)} · ${escapeHtml(cat(identity.catId).name)} · ${year}</p></div><button class="close" onclick="closeModal()">×</button></div><form id="annualBudgetForm" class="form" onsubmit="saveAnnualBudgetEditor(event,'${encodedKey}')"><div class="form two"><div class="field"><label>Local</label><select name="city" required>${v233DimensionOptions(V231_LOCALS,currentLocal)}</select></div><div class="field"><label>Pessoa responsável</label><select name="owner" required>${v233DimensionOptions(V231_PEOPLE,currentPerson)}</select></div></div><label class="envelope-toggle"><input type="checkbox" name="updateTransactions" checked> Atualizar também os lançamentos realizados vinculados a esta despesa</label><div class="annual-budget-summary"><div><span>Planejado no ano</span><strong id="annualBudgetTotal">${fmt(currentTotal)}</strong></div><small>Local e Pessoa serão alterados em todos os meses desta despesa no ano. Os valores abaixo só mudam quando você editar cada campo.</small></div><div class="annual-budget-months">${cards}</div><div class="actions annual-budget-actions"><button class="btn secondary" type="button" onclick="closeModal()">Cancelar</button><button class="btn">Salvar todos os meses</button></div></form>`);
+};
+
+saveAnnualBudgetEditor=function(event,encodedKey){
+  event.preventDefault();
+  const identity=annualBudgetIdentity(encodedKey);if(!identity)return alert('Não foi possível identificar esta despesa.');
+  const form=new FormData(event.target),year=String(state.month||'').slice(0,4),yearMonths=annualBudgetMonths(year),newLocal=v231ValidLocal(form.get('city')),newPerson=v231ValidPerson(form.get('owner')),updateTransactions=form.get('updateTransactions')==='on';
+  if(!newLocal||!newPerson)return alert('Selecione Local e Pessoa.');
+  const conflicts=[];
+  yearMonths.forEach(month=>{
+    const oldLines=annualBudgetMatchingLines(month,identity),excludedIds=new Set(oldLines.map(line=>line.id).filter(Boolean)),amount=Math.max(0,Number(form.get('planned_'+month))||0);
+    if((oldLines.length||amount>0)&&v233TargetConflict(month,identity,newLocal,newPerson,excludedIds))conflicts.push(labelMonth(month));
+  });
+  if(conflicts.length)return alert(`Já existe outra despesa com a mesma subcategoria, Local e Pessoa em: ${conflicts.join(', ')}. Unifique ou edite essa outra linha antes de continuar.`);
+  if(!state.subs[identity.catId])state.subs[identity.catId]=[];
+  const cleanSub=cleanName(identity.sub||'');
+  if(cleanSub&&!state.subs[identity.catId].some(value=>norm(cleanName(value))===norm(cleanSub)))state.subs[identity.catId].push(cleanSub);
+  yearMonths.forEach(month=>{
+    const amount=Math.max(0,Number(form.get('planned_'+month))||0),lines=annualBudgetMatchingLines(month,identity);
+    if(updateTransactions)v233ApplyBudgetDimensionsToTransactions(month,identity,newLocal,newPerson);
+    if(lines.length){
+      const primary=lines[0];v233NormalizeBudgetLine(primary,identity,newLocal,newPerson,amount);
+      if(lines.length>1){
+        const duplicateIds=new Set(lines.slice(1).map(line=>line.id).filter(Boolean));
+        (state.reallocations[month]||[]).forEach(item=>{if(duplicateIds.has(item.fromBudgetId)){item.fromBudgetId=primary.id;item.from=primary.cat}if(duplicateIds.has(item.toBudgetId)){item.toBudgetId=primary.id;item.to=primary.cat}});
+        state.budgets[month]=(state.budgets[month]||[]).filter(line=>!duplicateIds.has(line.id));
+      }
+    }else if(amount>0){
+      if(!state.budgets[month])state.budgets[month]=[];
+      state.budgets[month].push({id:'b_'+Date.now()+'_'+Math.random().toString(36).slice(2),cat:identity.catId,sub:cleanSub,city:newLocal,owner:newPerson,responsible:newPerson,planned:amount});
+    }
+  });
+  save();closeModal();render();requestAnimationFrame(()=>requestAnimationFrame(()=>window.scrollTo({top:expenseReturnScrollY,behavior:'auto'})));
+};
+
+v215OpenBudgetMonth=function(encodedIdentity,month){
+  const identity=annualBudgetIdentity(encodedIdentity);if(!identity)return alert('Não foi possível identificar esta despesa.');
+  const lines=annualBudgetMatchingLines(month,identity),amount=lines.reduce((sum,line)=>sum+Number(line.planned||0),0),currentLocal=v231ValidLocal(identity.city)||'Compartilhado',currentPerson=v231ValidPerson(identity.owner)||v231ValidPerson(ownerOf(currentLocal))||'Compartilhado';
+  modal(`<div class="sheet-head"><div><h3>${lines.length?'Editar':'Planejar'} despesa — ${labelMonth(month)}</h3><p class="muted" style="margin-top:4px;font-weight:750">${escapeHtml(identity.sub)} · ${escapeHtml(cat(identity.catId).name)}</p></div><button class="close" type="button" onclick="closeModal()">×</button></div><form class="form" onsubmit="v215SaveBudgetMonth(event,'${encodedIdentity}','${month}')"><div class="form two"><div class="field"><label>Local</label><select name="city" required>${v233DimensionOptions(V231_LOCALS,currentLocal)}</select></div><div class="field"><label>Pessoa responsável</label><select name="owner" required>${v233DimensionOptions(V231_PEOPLE,currentPerson)}</select></div><div class="field"><label>Valor planejado neste mês</label><input type="number" min="0" step="0.01" name="planned" value="${amount}" required></div></div><label class="envelope-toggle"><input type="checkbox" name="updateTransactions" checked> Atualizar também os lançamentos realizados vinculados neste mês</label><div class="note">Esta alteração afeta somente ${labelMonth(month)}. Para corrigir Local, Pessoa ou valores no ano inteiro, use o botão abaixo.</div><div class="actions"><button class="btn secondary" type="button" onclick="closeModal();openAnnualBudgetEditor('${encodedIdentity}')">Editar todos os meses</button><button class="btn secondary" type="button" onclick="closeModal()">Cancelar</button><button class="btn">Salvar este mês</button></div></form>`);
+};
+
+v215SaveBudgetMonth=function(event,encodedIdentity,month){
+  event.preventDefault();
+  const identity=annualBudgetIdentity(encodedIdentity);if(!identity)return alert('Não foi possível identificar esta despesa.');
+  const form=new FormData(event.target),amount=Math.max(0,Number(form.get('planned'))||0),newLocal=v231ValidLocal(form.get('city')),newPerson=v231ValidPerson(form.get('owner')),updateTransactions=form.get('updateTransactions')==='on',lines=annualBudgetMatchingLines(month,identity),excludedIds=new Set(lines.map(line=>line.id).filter(Boolean));
+  if(!newLocal||!newPerson)return alert('Selecione Local e Pessoa.');
+  if((lines.length||amount>0)&&v233TargetConflict(month,identity,newLocal,newPerson,excludedIds))return alert('Já existe outra despesa com a mesma subcategoria, Local e Pessoa neste mês. Edite a linha existente ou use outra combinação.');
+  const cleanSub=cleanName(identity.sub||'');
+  if(!state.subs[identity.catId])state.subs[identity.catId]=[];
+  if(cleanSub&&!state.subs[identity.catId].some(value=>norm(cleanName(value))===norm(cleanSub)))state.subs[identity.catId].push(cleanSub);
+  if(updateTransactions)v233ApplyBudgetDimensionsToTransactions(month,identity,newLocal,newPerson);
+  if(lines.length){
+    const primary=lines[0];v233NormalizeBudgetLine(primary,identity,newLocal,newPerson,amount);
+    if(lines.length>1){
+      const duplicateIds=new Set(lines.slice(1).map(line=>line.id).filter(Boolean));
+      (state.reallocations[month]||[]).forEach(item=>{if(duplicateIds.has(item.fromBudgetId)){item.fromBudgetId=primary.id;item.from=primary.cat}if(duplicateIds.has(item.toBudgetId)){item.toBudgetId=primary.id;item.to=primary.cat}});
+      state.budgets[month]=(state.budgets[month]||[]).filter(line=>!duplicateIds.has(line.id));
+    }
+  }else if(amount>0){
+    if(!state.budgets[month])state.budgets[month]=[];
+    state.budgets[month].push({id:'b_'+Date.now()+'_'+Math.random().toString(36).slice(2),cat:identity.catId,sub:cleanSub,city:newLocal,owner:newPerson,responsible:newPerson,planned:amount});
+  }
+  save();closeModal();render();
+};
 </script>
 
 </body></html>
