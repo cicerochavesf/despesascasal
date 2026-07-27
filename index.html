@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.28 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.29 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -6349,6 +6349,138 @@ v213AnalysisPeriodControls=function(year,data){
 const v228LegacyRender=render;
 render=function(){v228EnsureFilterShapes();return v228LegacyRender()};
 v228EnsureFilterShapes();
+</script>
+
+
+<style id="v229-analysis-monthly-table-style">
+/* =========================================================
+   V2.29 — RESUMO MENSAL PLANEJADO EM ANÁLISES
+   ========================================================= */
+html[data-ui="v23"] .v229-monthly-planning-table table{
+  min-width:720px!important;
+  width:100%!important;
+}
+html[data-ui="v23"] .v229-monthly-planning-table th:not(:first-child),
+html[data-ui="v23"] .v229-monthly-planning-table td:not(:first-child){
+  text-align:right!important;
+  white-space:nowrap!important;
+}
+html[data-ui="v23"] .v229-monthly-planning-table th:first-child,
+html[data-ui="v23"] .v229-monthly-planning-table td:first-child{
+  min-width:118px!important;
+  white-space:nowrap!important;
+}
+html[data-ui="v23"] .v229-monthly-planning-table tbody td,
+html[data-ui="v23"] .v229-monthly-planning-table tfoot td{
+  font-variant-numeric:tabular-nums!important;
+}
+html[data-ui="v23"] .v229-monthly-planning-table .v229-balance-positive{color:#047857!important;font-weight:950!important;}
+html[data-ui="v23"] .v229-monthly-planning-table .v229-balance-negative{color:#C8104D!important;font-weight:950!important;}
+html[data-ui="v23"] .v229-monthly-planning-table tfoot td{background:#F2F6FC!important;font-weight:950!important;}
+@media(max-width:760px){
+  html[data-ui="v23"] .v229-monthly-summary .v23-panel-head{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    align-items:start!important;
+    gap:8px!important;
+  }
+  html[data-ui="v23"] .v229-monthly-planning-table{
+    display:block!important;
+    width:100%!important;
+    max-width:100%!important;
+    overflow-x:auto!important;
+    overflow-y:visible!important;
+    -webkit-overflow-scrolling:touch!important;
+    overscroll-behavior-inline:contain!important;
+    touch-action:pan-x pan-y!important;
+  }
+  html[data-ui="v23"] .v229-monthly-planning-table table{
+    min-width:690px!important;
+    width:690px!important;
+  }
+  html[data-ui="v23"] .v229-monthly-planning-table th:first-child,
+  html[data-ui="v23"] .v229-monthly-planning-table td:first-child{
+    position:sticky!important;
+    left:0!important;
+    z-index:61!important;
+    min-width:94px!important;
+    width:94px!important;
+    background:#FFFFFF!important;
+    border-right:2px solid #CBD5E1!important;
+    box-shadow:7px 0 12px -10px rgba(15,23,42,.65)!important;
+  }
+  html[data-ui="v23"] .v229-monthly-planning-table thead th:first-child{
+    z-index:81!important;
+    background:#E8EEF6!important;
+  }
+  html[data-ui="v23"] .v229-monthly-planning-table tbody tr:nth-child(even) td:first-child{background:#F9FBFD!important;}
+  html[data-ui="v23"] .v229-monthly-planning-table tfoot td:first-child{background:#F2F6FC!important;}
+}
+@media(max-width:390px){
+  html[data-ui="v23"] .v229-monthly-summary .v23-panel-head{grid-template-columns:1fr!important;}
+}
+html[data-theme="dark"][data-ui="v23"] .v229-monthly-planning-table tfoot td{background:#172033!important;}
+html[data-theme="dark"][data-ui="v23"] .v229-monthly-planning-table th:first-child,
+html[data-theme="dark"][data-ui="v23"] .v229-monthly-planning-table td:first-child{background:#111827!important;border-color:#465267!important;}
+html[data-theme="dark"][data-ui="v23"] .v229-monthly-planning-table thead th:first-child{background:#1B2638!important;}
+html[data-theme="dark"][data-ui="v23"] .v229-monthly-planning-table tbody tr:nth-child(even) td:first-child{background:#141D2B!important;}
+</style>
+<script id="v229-analysis-monthly-table-script">
+/* =========================================================
+   V2.29 — PRIMEIRA VISUALIZAÇÃO DE ANÁLISES + PWA VERTICAL
+   ========================================================= */
+const v229LegacyTableTitleFromContext=tableTitleFromContext;
+tableTitleFromContext=function(wrap){
+  if(wrap?.classList?.contains('v229-monthly-planning-table'))return 'Resumo mensal planejado';
+  return v229LegacyTableTitleFromContext(wrap);
+};
+
+function v229MonthlyPlanningRows(monthly=[]){
+  let accumulated=0;
+  return (monthly||[]).map(item=>{
+    const revenue=Number(item.revenue||0),expense=Number(item.planned||0),balance=revenue-expense;
+    accumulated+=balance;
+    return {...item,revenue,expense,balance,accumulated};
+  });
+}
+function v229BalanceClass(value){return Number(value)<-.005?'v229-balance-negative':Number(value)>.005?'v229-balance-positive':''}
+function v229MonthlyPlanningTable(data,year){
+  const rows=v229MonthlyPlanningRows(data?.monthly||[]),totalRevenue=rows.reduce((sum,row)=>sum+row.revenue,0),totalExpense=rows.reduce((sum,row)=>sum+row.expense,0),totalBalance=totalRevenue-totalExpense,finalAccumulated=rows.length?rows[rows.length-1].accumulated:0;
+  const body=rows.map(row=>`<tr><td><strong>${escapeHtml(labelMonth(row.month))}</strong></td><td>${fmt(row.revenue)}</td><td>${fmt(row.expense)}</td><td class="${v229BalanceClass(row.balance)}">${fmt(row.balance)}</td><td class="${v229BalanceClass(row.accumulated)}">${fmt(row.accumulated)}</td></tr>`).join('');
+  return `<section class="v23-panel v23-panel-pad v23-gap-top v229-monthly-summary"><div class="v23-panel-head"><div><h2>Resumo mensal planejado</h2><p>Receitas e despesas planejadas, com saldo do mês e evolução acumulada em ${escapeHtml(year)}.</p></div><button type="button" class="v227-column-config-btn" onclick="v229OpenMonthlyPlanningColumnWidth()">Ajustar colunas</button></div><div class="v227-mobile-scroll-hint">Arraste a tabela para o lado para ver todas as colunas</div><div class="table-wrap v229-monthly-planning-table"><table><thead><tr><th>Mês</th><th>Receitas planejadas</th><th>Despesas planejadas</th><th>Saldo do mês</th><th>Saldo acumulado</th></tr></thead><tbody>${body||'<tr><td colspan="5">Nenhum mês disponível neste ano.</td></tr>'}</tbody><tfoot><tr><td>Total do ano</td><td>${fmt(totalRevenue)}</td><td>${fmt(totalExpense)}</td><td class="${v229BalanceClass(totalBalance)}">${fmt(totalBalance)}</td><td class="${v229BalanceClass(finalAccumulated)}">${fmt(finalAccumulated)}</td></tr></tfoot></table></div></section>`;
+}
+function v229OpenMonthlyPlanningColumnWidth(){
+  const root=document.getElementById('app'),table=root?.querySelector('.v229-monthly-planning-table table');
+  if(!table)return alert('A tabela Resumo mensal planejado não está disponível nesta tela.');
+  if(!table.dataset.columnKey&&typeof initColumnWidthEditors==='function')initColumnWidthEditors(root);
+  if(!table.dataset.columnKey&&typeof decorateManagedTables==='function')decorateManagedTables(root);
+  const key=table.dataset.columnKey;
+  if(!key)return alert('Não foi possível abrir a configuração das colunas.');
+  openColumnWidthEditor(encodeURIComponent(key));
+}
+
+renderRxD=function(){
+  const year=String(state.month||currentMonthId()).slice(0,4),data=v212AnalysisData(year),annualPlannedRows=v218AnnualPlannedRows(year),scopeCopy=data.monthIds.length===1?labelMonth(data.monthIds[0])+' de '+year:v213PeriodDescription(year).split(' · ')[0]+' de '+year;
+  const categoryRows=data.categories.map(item=>`<tr><td><div class="v212-category-name"><i style="--cat-color:${item.c.color}"></i><strong>${escapeHtml(item.c.name)}</strong></div></td><td>${fmt(item.planned)}</td><td>${fmt(item.real)}</td><td class="${item.balance<0?'v23-negative':item.balance>0?'v23-positive':''}">${fmt(item.balance)}</td><td>${v212ExecutionChip(item.planned,item.real)}</td></tr>`).join(''),totals=data.totals;
+  layout(`${v213AnalysisPeriodControls(year,data)}
+    ${v229MonthlyPlanningTable(data,year)}
+    <section class="v23-panel v23-panel-pad v23-gap-top"><div class="v23-panel-head"><div><h2>Evolução financeira</h2><p>Receitas e despesas planejadas. O realizado aparece automaticamente no primeiro domingo do mês seguinte, quando o mês anterior já terminou no sábado, seguindo a mesma virada dos envelopes.</p></div></div>${v212MonthlyExpenseChart(data.monthly)}</section>
+    <section class="v23-panel v23-panel-pad v23-gap-top v212-category-summary"><div class="v23-panel-head"><div><h2>Orçado versus realizado</h2><p>Resumo por categoria em ${scopeCopy}, com saldo e percentual de execução.</p></div><button type="button" class="v227-column-config-btn" onclick="v227OpenAnalysisColumnWidth()">Ajustar colunas</button></div><div class="v227-mobile-scroll-hint v227-table-hint">Arraste a tabela para o lado para ver todas as colunas</div><div class="table-wrap v212-summary-table"><table><thead><tr><th>Categoria</th><th>Orçado</th><th>Realizado</th><th>Saldo</th><th>Execução</th></tr></thead><tbody>${categoryRows||'<tr><td colspan="5">Nenhuma despesa encontrada no período.</td></tr>'}</tbody><tfoot><tr><td>Total do período</td><td>${fmt(totals.planned)}</td><td>${fmt(totals.real)}</td><td class="${totals.balance<0?'v23-negative':totals.balance>0?'v23-positive':''}">${fmt(totals.balance)}</td><td>${v212ExecutionChip(totals.planned,totals.real)}</td></tr></tfoot></table></div></section>
+    <section class="v218-participation-grid v23-gap-top">
+      <section class="v23-panel v23-panel-pad"><div class="v23-panel-head"><div><h2>Participação das despesas</h2><p>Clique em uma categoria para abri-la no Planejamento.</p></div></div>${v218ExpenseParticipation(data)}</section>
+      <section class="v23-panel v23-panel-pad"><div class="v23-panel-head"><div><h2>Participação das receitas</h2><p>Clique em uma origem para abri-la no Planejamento.</p></div></div>${v218RevenueParticipation(data.monthIds)}</section>
+    </section>
+    <section class="v23-panel v23-panel-pad v23-gap-top"><div class="v23-panel-head"><div><h2>Top 10 despesas planejadas</h2><p>As dez subcategorias com maior impacto no planejamento anual de ${year}. Clique em uma linha para abri-la no Planejamento.</p></div></div><div class="v216-extreme-card v217-annual-largest v218-top-planned"><h3>Maiores valores do planejamento anual</h3><p>Valores consolidados em todos os meses disponíveis de ${year}.</p>${v218TopPlannedChart(annualPlannedRows,10)}</div></section>`);
+};
+
+function v229IsInstalledPwa(){return window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true}
+async function v229EnforceInstalledPortrait(){
+  if(!APP_MOBILE_DEVICE||!v229IsInstalledPwa()||!screen.orientation?.lock)return;
+  try{await screen.orientation.lock('portrait-primary')}catch(_error){}
+}
+window.addEventListener('pageshow',v229EnforceInstalledPortrait);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)v229EnforceInstalledPortrait()});
+window.addEventListener('load',v229EnforceInstalledPortrait,{once:true});
 </script>
 
 </body></html>
