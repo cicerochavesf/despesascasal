@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.33 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.34 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -6915,6 +6915,102 @@ v215SaveBudgetMonth=function(event,encodedIdentity,month){
       state.budgets[month]=(state.budgets[month]||[]).filter(line=>!duplicateIds.has(line.id));
     }
   }else if(amount>0){
+    if(!state.budgets[month])state.budgets[month]=[];
+    state.budgets[month].push({id:'b_'+Date.now()+'_'+Math.random().toString(36).slice(2),cat:identity.catId,sub:cleanSub,city:newLocal,owner:newPerson,responsible:newPerson,planned:amount});
+  }
+  save();closeModal();render();
+};
+</script>
+
+
+<script id="v234-budget-dimension-conflict-fix-script">
+/* V2.34 — corrige falsos conflitos ao alterar Local/Pessoa no Planejamento. */
+function v234SameBudgetRecord(a,b){
+  if(a===b)return true;
+  const aId=String(a?.id||''),bId=String(b?.id||'');
+  return !!aId&&aId===bId;
+}
+function v234SourceBudgetLines(month,identity){
+  return annualBudgetMatchingLines(month,identity);
+}
+function v234OtherTargetLines(month,identity,newLocal,newPerson,sourceLines){
+  return (state.budgets?.[month]||[]).filter(item=>{
+    if(sourceLines.some(source=>v234SameBudgetRecord(source,item)))return false;
+    return sameBudgetTarget(item,identity.catId,identity.sub,newLocal,newPerson);
+  });
+}
+function v234LineHasReallocation(month,line){
+  const id=String(line?.id||'');
+  if(!id)return false;
+  return (state.reallocations?.[month]||[]).some(item=>item.fromBudgetId===id||item.toBudgetId===id);
+}
+function v234MeaningfulBudgetLine(month,line){
+  const planned=Math.abs(Number(line?.planned||0));
+  const used=Math.abs(Number(budgetLineUsed(month,line)||0));
+  const adjusted=Math.abs(Number(budgetLineAdjusted(month,line)||0));
+  return planned>.005||used>.005||adjusted>.005||v234LineHasReallocation(month,line);
+}
+function v234TargetConflict(month,identity,newLocal,newPerson,sourceLines){
+  return v234OtherTargetLines(month,identity,newLocal,newPerson,sourceLines).find(line=>v234MeaningfulBudgetLine(month,line))||null;
+}
+function v234RemoveStaleTargetLines(month,identity,newLocal,newPerson,sourceLines){
+  const stale=new Set(v234OtherTargetLines(month,identity,newLocal,newPerson,sourceLines).filter(line=>!v234MeaningfulBudgetLine(month,line)));
+  if(!stale.size)return;
+  state.budgets[month]=(state.budgets[month]||[]).filter(line=>!stale.has(line));
+}
+function v234MergeSourceBudgetLines(month,lines,identity,newLocal,newPerson,amount){
+  if(!lines.length)return null;
+  const primary=lines[0];
+  v233NormalizeBudgetLine(primary,identity,newLocal,newPerson,amount);
+  const duplicates=new Set(lines.slice(1));
+  if(duplicates.size){
+    const duplicateIds=new Set([...duplicates].map(line=>line.id).filter(Boolean));
+    (state.reallocations?.[month]||[]).forEach(item=>{
+      if(duplicateIds.has(item.fromBudgetId)){item.fromBudgetId=primary.id;item.from=primary.cat}
+      if(duplicateIds.has(item.toBudgetId)){item.toBudgetId=primary.id;item.to=primary.cat}
+    });
+    state.budgets[month]=(state.budgets[month]||[]).filter(line=>!duplicates.has(line));
+  }
+  return primary;
+}
+saveAnnualBudgetEditor=function(event,encodedKey){
+  event.preventDefault();
+  const identity=annualBudgetIdentity(encodedKey);if(!identity)return alert('Não foi possível identificar esta despesa.');
+  const form=new FormData(event.target),year=String(state.month||'').slice(0,4),yearMonths=annualBudgetMonths(year),newLocal=v231ValidLocal(form.get('city')),newPerson=v231ValidPerson(form.get('owner')),updateTransactions=form.get('updateTransactions')==='on';
+  if(!newLocal||!newPerson)return alert('Selecione Local e Pessoa.');
+  const monthData=yearMonths.map(month=>{
+    const sourceLines=v234SourceBudgetLines(month,identity),amount=Math.max(0,Number(form.get('planned_'+month))||0);
+    return{month,sourceLines,amount,conflict:(sourceLines.length||amount>0)?v234TargetConflict(month,identity,newLocal,newPerson,sourceLines):null};
+  });
+  const conflicts=monthData.filter(item=>item.conflict).map(item=>labelMonth(item.month));
+  if(conflicts.length)return alert(`Já existe outra despesa ativa com a mesma subcategoria, Local e Pessoa em: ${conflicts.join(', ')}. Edite essa outra linha antes de continuar.`);
+  if(!state.subs[identity.catId])state.subs[identity.catId]=[];
+  const cleanSub=cleanName(identity.sub||'');
+  if(cleanSub&&!state.subs[identity.catId].some(value=>norm(cleanName(value))===norm(cleanSub)))state.subs[identity.catId].push(cleanSub);
+  monthData.forEach(({month,sourceLines,amount})=>{
+    v234RemoveStaleTargetLines(month,identity,newLocal,newPerson,sourceLines);
+    if(updateTransactions)v233ApplyBudgetDimensionsToTransactions(month,identity,newLocal,newPerson);
+    if(sourceLines.length)v234MergeSourceBudgetLines(month,sourceLines,identity,newLocal,newPerson,amount);
+    else if(amount>0){
+      if(!state.budgets[month])state.budgets[month]=[];
+      state.budgets[month].push({id:'b_'+Date.now()+'_'+Math.random().toString(36).slice(2),cat:identity.catId,sub:cleanSub,city:newLocal,owner:newPerson,responsible:newPerson,planned:amount});
+    }
+  });
+  save();closeModal();render();requestAnimationFrame(()=>requestAnimationFrame(()=>window.scrollTo({top:expenseReturnScrollY,behavior:'auto'})));
+};
+v215SaveBudgetMonth=function(event,encodedIdentity,month){
+  event.preventDefault();
+  const identity=annualBudgetIdentity(encodedIdentity);if(!identity)return alert('Não foi possível identificar esta despesa.');
+  const form=new FormData(event.target),amount=Math.max(0,Number(form.get('planned'))||0),newLocal=v231ValidLocal(form.get('city')),newPerson=v231ValidPerson(form.get('owner')),updateTransactions=form.get('updateTransactions')==='on',sourceLines=v234SourceBudgetLines(month,identity);
+  if(!newLocal||!newPerson)return alert('Selecione Local e Pessoa.');
+  if((sourceLines.length||amount>0)&&v234TargetConflict(month,identity,newLocal,newPerson,sourceLines))return alert('Já existe outra despesa ativa com a mesma subcategoria, Local e Pessoa neste mês. Edite a linha existente ou use outra combinação.');
+  const cleanSub=cleanName(identity.sub||'');
+  if(!state.subs[identity.catId])state.subs[identity.catId]=[];
+  if(cleanSub&&!state.subs[identity.catId].some(value=>norm(cleanName(value))===norm(cleanSub)))state.subs[identity.catId].push(cleanSub);
+  v234RemoveStaleTargetLines(month,identity,newLocal,newPerson,sourceLines);
+  if(updateTransactions)v233ApplyBudgetDimensionsToTransactions(month,identity,newLocal,newPerson);
+  if(sourceLines.length)v234MergeSourceBudgetLines(month,sourceLines,identity,newLocal,newPerson,amount);
+  else if(amount>0){
     if(!state.budgets[month])state.budgets[month]=[];
     state.budgets[month].push({id:'b_'+Date.now()+'_'+Math.random().toString(36).slice(2),cat:identity.catId,sub:cleanSub,city:newLocal,owner:newPerson,responsible:newPerson,planned:amount});
   }
