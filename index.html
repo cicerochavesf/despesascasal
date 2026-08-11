@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.36 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.38 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -7211,6 +7211,262 @@ forecastFilterOptions=function(key){
   return v236LegacyForecastFilterOptions.apply(this,arguments);
 };
 if(typeof txForecastFilters==='object'&&txForecastFilters&&txForecastFilters.balance==='negativo')txForecastFilters.balance='sem_saldo';
+</script>
+
+
+<script id="v237-cloud-sync-hardening-script">
+/* =========================================================
+   V2.37 — BLOCO FINAL ATIVO
+   Sincronização reforçada entre aparelhos
+   - salvamento começa imediatamente após qualquer edição
+   - fila garante que alterações feitas durante um envio sejam salvas depois
+   - cópia local pendente só é apagada após confirmação da nuvem
+   - ao reabrir, uma edição pendente é recuperada se a nuvem não mudou
+   - se a nuvem mudou, novos lançamentos locais ausentes são mesclados sem sobrescrever os demais dados
+   ========================================================= */
+(function(){
+  const PENDING_KEY=storeKey+'-cloud-pending-v237';
+  let dirty=false;
+  let generation=0;
+  let savedGeneration=0;
+  let activePromise=null;
+  let conflictAlertShown=false;
+
+  function readPending(){
+    try{return JSON.parse(localStorage.getItem(PENDING_KEY)||'null')}catch(e){return null}
+  }
+  function writePending(){
+    try{
+      localStorage.setItem(PENDING_KEY,JSON.stringify({
+        baseUpdatedAt:lastCloudUpdatedAt||'',
+        createdAt:new Date().toISOString(),
+        generation,
+        state:clone(state)
+      }));
+    }catch(e){console.warn('Não foi possível registrar a edição pendente local.',e)}
+  }
+  function clearPending(){try{localStorage.removeItem(PENDING_KEY)}catch(e){}}
+  function markDirty(){
+    generation++;
+    dirty=true;
+    cacheCloudState();
+    writePending();
+  }
+
+  /* O save de uma edição de dados deixa de aguardar o debounce de 650 ms. */
+  save=function(){
+    if(!authUser||!cloudSynced){
+      alert('A edição está bloqueada até o login e a sincronização da nuvem terminarem.');
+      return false;
+    }
+    markDirty();
+    clearTimeout(cloudSaveTimer);
+    void saveToCloud();
+    return true;
+  };
+
+  /* Chamadas internas que ainda usam scheduleCloudSave continuam funcionando,
+     mas com atraso curto e com proteção de pendência. */
+  scheduleCloudSave=function(delay=120){
+    if(!cloudSynced)return;
+    if(!dirty)markDirty();
+    clearTimeout(cloudSaveTimer);
+    cloudSaveTimer=setTimeout(()=>{void saveToCloud()},Math.max(0,Number(delay)||0));
+  };
+
+  saveToCloud=async function(){
+    if(!cloudSynced)return false;
+    clearTimeout(cloudSaveTimer);
+    if(activePromise)return activePromise;
+    activePromise=(async()=>{
+      let allOk=true;
+      while(dirty&&cloudSynced){
+        const targetGeneration=generation;
+        const payload=clone(state);
+        dirty=false;
+        cloudSaving=true;
+        setCloudStatus('Salvando...','loading');
+        try{
+          await writeMainCloudRowSafely(payload);
+          savedGeneration=targetGeneration;
+          localStorage.setItem(storeKey,JSON.stringify(payload));
+          if(generation<=targetGeneration){
+            clearPending();
+            setCloudStatus('Nuvem salva','ok');
+          }else{
+            dirty=true;
+            writePending();
+          }
+          conflictAlertShown=false;
+        }catch(err){
+          console.error('Erro ao salvar no Supabase',err);
+          allOk=false;
+          dirty=true;
+          writePending();
+          if(err?.code==='CLOUD_CONFLICT'){
+            setCloudStatus('Conflito entre aparelhos','error');
+            if(!conflictAlertShown){
+              conflictAlertShown=true;
+              alert('Outra pessoa ou aparelho salvou alterações antes de você. A sua edição ficou preservada neste celular e não será descartada silenciosamente. Reabra o app para sincronizar novamente.');
+            }
+          }else{
+            setCloudStatus('Pendente de sincronização','error');
+            if(!conflictAlertShown){
+              conflictAlertShown=true;
+              alert('A alteração ficou salva neste celular, mas a nuvem ainda não confirmou. Mantenha a internet ativa e reabra o app se necessário.');
+            }
+          }
+          break;
+        }finally{
+          cloudSaving=false;
+        }
+      }
+      return allOk&&!dirty;
+    })().finally(()=>{activePromise=null;if(dirty&&cloudSynced&&!cloudSaving){clearTimeout(cloudSaveTimer);cloudSaveTimer=setTimeout(()=>{void saveToCloud()},800)}});
+    return activePromise;
+  };
+
+  function txFingerprint(tx){
+    return [
+      String(tx?.date||''),
+      Number(tx?.amount||0).toFixed(2),
+      norm(tx?.cat||''),norm(cleanName(tx?.sub||'')),norm(tx?.city||''),
+      norm(tx?.responsible||tx?.payer||''),norm(tx?.description||tx?.desc||'')
+    ].join('|');
+  }
+  function mergeMissingPendingTransactions(pendingState){
+    if(!pendingState?.transactions)return 0;
+    const cloudIds=new Set(),cloudFingerprints=new Set();
+    Object.values(state.transactions||{}).forEach(arr=>(arr||[]).forEach(tx=>{
+      if(tx?.id)cloudIds.add(String(tx.id));
+      cloudFingerprints.add(txFingerprint(tx));
+    }));
+    let added=0;
+    Object.entries(pendingState.transactions||{}).forEach(([month,arr])=>{
+      (arr||[]).forEach(tx=>{
+        const id=String(tx?.id||''),fp=txFingerprint(tx);
+        if((id&&cloudIds.has(id))||cloudFingerprints.has(fp))return;
+        if(!state.transactions[month])state.transactions[month]=[];
+        state.transactions[month].push(clone(tx));
+        if(id)cloudIds.add(id);
+        cloudFingerprints.add(fp);
+        added++;
+      });
+    });
+    return added;
+  }
+
+  const legacyLoadFromCloud=loadFromCloud;
+  loadFromCloud=async function(){
+    const pendingBefore=readPending();
+    await legacyLoadFromCloud.apply(this,arguments);
+    if(!cloudSynced||!pendingBefore?.state)return;
+
+    const cloudVersion=lastCloudUpdatedAt||'';
+    if((pendingBefore.baseUpdatedAt||'')===cloudVersion){
+      /* A nuvem não mudou desde a edição local: recuperar o estado inteiro é seguro. */
+      state=merge(clone(baseData),pendingBefore.state);
+      ensureUiState();
+      cacheCloudState();
+      generation=Math.max(generation,Number(pendingBefore.generation||0))+1;
+      dirty=true;
+      writePending();
+      setCloudStatus('Recuperando edição pendente...','loading');
+      const ok=await saveToCloud();
+      render();
+      if(ok)alert('Uma alteração que ainda não tinha sido confirmada pela nuvem foi recuperada e sincronizada.');
+      return;
+    }
+
+    /* Outro aparelho alterou a nuvem. Para não sobrescrever nada, recupera apenas
+       novos lançamentos locais que realmente não existem no estado atual. */
+    const recovered=mergeMissingPendingTransactions(pendingBefore.state);
+    if(recovered>0){
+      cacheCloudState();
+      generation=Math.max(generation,Number(pendingBefore.generation||0))+1;
+      dirty=true;
+      writePending();
+      setCloudStatus('Mesclando lançamento pendente...','loading');
+      const ok=await saveToCloud();
+      render();
+      if(ok)alert(`${recovered} lançamento${recovered===1?'':'s'} pendente${recovered===1?'':'s'} deste celular ${recovered===1?'foi recuperado':'foram recuperados'} sem apagar as alterações do outro aparelho.`);
+      return;
+    }
+
+    /* Não há lançamento novo a recuperar automaticamente. Mantém a cópia por segurança,
+       mas evita que um estado antigo sobrescreva a nuvem atual. */
+    setCloudStatus('Nuvem sincronizada','ok');
+  };
+
+  /* Se o Android mandar o PWA para segundo plano, dispara imediatamente qualquer envio pendente. */
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden&&cloudSynced&&dirty)void saveToCloud();
+  });
+  window.addEventListener('pagehide',()=>{
+    if(cloudSynced&&dirty)void saveToCloud();
+  });
+
+  window.v237CloudPendingStatus=function(){
+    const p=readPending();
+    return {pending:!!p,createdAt:p?.createdAt||'',baseUpdatedAt:p?.baseUpdatedAt||'',dirty,generation,savedGeneration};
+  };
+})();
+</script>
+
+
+<script id="v238-user-expense-defaults-script">
+/* =========================================================
+   V2.38 — BLOCO FINAL ATIVO
+   Pré-preenchimento por usuário logado em NOVAS despesas
+   - Cícero: Pessoa Cícero + Local Fortaleza
+   - Nilce: Pessoa Nilce + Local Brasília
+   - não altera edições existentes e os campos continuam editáveis
+   ========================================================= */
+function v238LoggedExpenseDefaults(){
+  const meta=authUser?.user_metadata||{};
+  const identity=norm([
+    meta.full_name,meta.name,meta.display_name,meta.first_name,
+    authUser?.email
+  ].map(value=>String(value||'')).join(' '));
+  if(identity.includes('nilce'))return {person:'Nilce',local:'Brasília'};
+  if(identity.includes('cicero'))return {person:'Cícero',local:'Fortaleza'};
+  return null;
+}
+function v238ApplyBudgetUserDefaults(){
+  const profile=v238LoggedExpenseDefaults();if(!profile)return;
+  const form=document.querySelector('#modal form[onsubmit="saveNewBudgetLine(event)"]');if(!form)return;
+  const local=form.querySelector('[name="city"]'),person=form.querySelector('[name="owner"]');
+  if(local)local.value=profile.local;
+  if(person)person.value=profile.person;
+}
+function v238ApplyTxUserDefaults(force=false){
+  if(editTxId)return;
+  const profile=v238LoggedExpenseDefaults();if(!profile)return;
+  const form=document.querySelector('#modal form[onsubmit="saveTx(event)"]');if(!form)return;
+  if(form.dataset.v238UserDefaultsApplied==='true'&&!force)return;
+  const local=form.querySelector('[name="city"]'),person=form.querySelector('[name="responsible"]');
+  if(local)local.value=profile.local;
+  if(person)person.value=profile.person;
+  form.dataset.v238UserDefaultsApplied='true';
+}
+
+/* A antiga rotina de padrão por subcategoria não deve mais trocar Local/Pessoa.
+   Em lançamento novo, aplica apenas o padrão do usuário uma vez. */
+v231ApplyTxDefaults=function(){v238ApplyTxUserDefaults(false)};
+
+const v238LegacyOpenNewBudgetLine=openNewBudgetLine;
+openNewBudgetLine=function(){
+  const result=v238LegacyOpenNewBudgetLine.apply(this,arguments);
+  requestAnimationFrame(v238ApplyBudgetUserDefaults);
+  return result;
+};
+
+const v238LegacyOpenTx=openTx;
+openTx=function(id){
+  const result=v238LegacyOpenTx.apply(this,arguments);
+  if(!id)requestAnimationFrame(()=>v238ApplyTxUserDefaults(true));
+  return result;
+};
 </script>
 
 </body></html>
