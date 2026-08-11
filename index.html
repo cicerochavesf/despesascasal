@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.35 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.36 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -7110,6 +7110,107 @@ html[data-theme="dark"] .view-despesas .v215-subcategory-table-wrap::-webkit-scr
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bindPlanningTableWheel,{once:true});
   else requestAnimationFrame(bindPlanningTableWheel);
 })();
+</script>
+
+
+<script id="v236-envelope-remanejamento-mobile-filters-script">
+/* =========================================================
+   V2.36 — BLOCO FINAL ATIVO
+   - Envelope redistribui imediatamente excesso da semana atual
+   - Novos valores abrem vazios no celular
+   - Remanejamento mostra na origem apenas despesas com saldo positivo
+   - Remove "Saldo negativo" dos filtros
+   ========================================================= */
+
+function v236IsMobile(){return window.matchMedia('(max-width:760px)').matches;}
+
+/* A semana encerrada redistribui sobra/excesso como antes.
+   A semana ATUAL redistribui imediatamente apenas o excesso (saldo < 0),
+   preservando o total mensal do envelope. */
+calculateEnvelopeWeeks=function(planned,transactions,period){
+  const today=parseDateLocal(localDateId())||new Date(),totalCents=Math.round(Number(planned||0)*100),initial=distributeCents(totalCents,period.weeks.length),adjusted=initial.slice();
+  const spent=period.weeks.map(w=>transactions.filter(t=>{const d=parseDateLocal(t.date);return d&&d>=w.start&&d<=w.end}).reduce((sum,t)=>sum+Math.round(Number(t.amount||0)*100),0));
+  const status=period.weeks.map(w=>today>w.end?'encerrada':today<w.start?'futura':'atual');
+  for(let i=0;i<period.weeks.length;i++){
+    const remaining=period.weeks.length-i-1;
+    if(remaining<=0)continue;
+    const diff=adjusted[i]-spent[i];
+    const redistribute=status[i]==='encerrada'||(status[i]==='atual'&&diff<0);
+    if(!redistribute)continue;
+    adjusted[i]=spent[i];
+    const parts=distributeCents(diff,remaining);
+    for(let j=0;j<remaining;j++)adjusted[i+1+j]+=parts[j];
+  }
+  return period.weeks.map((w,i)=>({number:i+1,start:w.start,end:w.end,initial:initial[i]/100,adjusted:adjusted[i]/100,used:spent[i]/100,balance:(adjusted[i]-spent[i])/100,status:status[i]}));
+};
+
+openEnvelopeDetail=function(encodedKey){
+  const key=decodeURIComponent(encodedKey),env=envelopeSummaries(state.month).find(x=>x.key===key);if(!env)return alert('Envelope não encontrado para este mês.');
+  const rows=env.weeks.map(w=>`<tr><td>Semana ${w.number}</td><td>${envelopeDateLabel(w.start)} a ${envelopeDateLabel(w.end)}</td><td>${fmt(w.initial)}</td><td>${fmt(w.adjusted)}</td><td>${fmt(w.used)}</td><td class="${w.balance<-.005?'neg':w.balance>.005?'pos':'muted'}">${fmt(w.balance)}</td><td><span class="envelope-status ${w.status}">${envelopeStatusLabel(w.status)}</span></td></tr>`).join('');
+  modal(`<div class="sheet-head"><div><h3>${escapeHtml(env.name)} — ${escapeHtml(env.city)}</h3><p class="muted" style="margin-top:5px;font-weight:700">Envelope de ${labelMonth(state.month)} · ${envelopeDateLabel(env.period.start)} a ${envelopeDateLabel(addDateDays(env.period.endExclusive,-1))}</p></div><button class="close" onclick="closeModal()">×</button></div><div class="envelope-summary"><div class="envelope-stat"><span>Previsto no mês</span><strong>${fmt(env.planned)}</strong></div><div class="envelope-stat"><span>Utilizado</span><strong>${fmt(env.used)}</strong></div><div class="envelope-stat"><span>Saldo do envelope</span><strong class="${env.balance<0?'neg':'pos'}">${fmt(env.balance)}</strong></div><div class="envelope-stat"><span>Semana disponível</span><strong class="${env.currentAvailable<0?'neg':'pos'}">${fmt(env.currentAvailable)}</strong><small>${env.currentWeek?'Semana '+env.currentWeek.number:envelopeStatusLabel(env.status)}</small></div></div><div class="note" style="margin-bottom:12px">A semana vai de domingo a sábado. Se a semana atual ultrapassar o valor disponível, o excesso é descontado imediatamente das semanas futuras. Ao encerrar uma semana, qualquer sobra também é redistribuída entre as semanas restantes.</div><div class="table-wrap envelope-week-table"><table><thead><tr><th>Semana</th><th>Período</th><th>Orçado inicial</th><th>Orçado ajustado</th><th>Utilizado</th><th>Saldo</th><th>Situação</th></tr></thead><tbody>${rows}</tbody></table></div>`);
+};
+
+/* Novos cadastros: no celular, valor começa vazio em vez de 0. */
+const v236LegacyOpenTx=openTx;
+openTx=function(id){
+  const result=v236LegacyOpenTx.apply(this,arguments);
+  if(!id&&v236IsMobile())requestAnimationFrame(()=>{
+    const form=document.querySelector('#modal form[onsubmit="saveTx(event)"]'),input=form?.querySelector('input[name="amount"]');
+    if(input&&Math.abs(Number(input.value||0))<=.005){input.value='';if(typeof updateTxCardFields==='function')updateTxCardFields();}
+  });
+  return result;
+};
+
+const v236LegacyOpenNewBudgetLine=openNewBudgetLine;
+openNewBudgetLine=function(){
+  const result=v236LegacyOpenNewBudgetLine.apply(this,arguments);
+  if(v236IsMobile())requestAnimationFrame(()=>{
+    const form=document.querySelector('#modal form[onsubmit="saveNewBudgetLine(event)"]');
+    form?.querySelectorAll('input[type="number"][name^="month_"]').forEach(input=>{if(Math.abs(Number(input.value||0))<=.005)input.value='';});
+  });
+  return result;
+};
+
+/* Remanejamento: somente origens com saldo positivo aparecem. */
+function v236ReallocBalance(month,budget){return Number(budgetLineAdjusted(month,budget)||0)-Number(budgetLineUsed(month,budget)||0);}
+function v236ReallocOptionLabel(month,budget){
+  const city=budget.city||cityOf(budget.sub||''),owner=budgetOwner(budget),balance=v236ReallocBalance(month,budget);
+  return `${cat(budget.cat).name} — ${cleanName(budget.sub)} — ${shortLabel(city)} / ${shortLabel(owner)} — saldo ${Number(balance).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}`;
+}
+function v236ReallocOriginOptions(month,selected=''){
+  return (state.budgets[month]||[]).filter(b=>v236ReallocBalance(month,b)>.005).slice().sort(compareExpenseItems).map(b=>`<option value="${escapeHtml(b.id)}" ${b.id===selected?'selected':''}>${escapeHtml(v236ReallocOptionLabel(month,b))}</option>`).join('');
+}
+function v236ReallocDestinationOptions(month,fromId='',selected=''){
+  return (state.budgets[month]||[]).filter(b=>b.id!==fromId).slice().sort(compareExpenseItems).map(b=>`<option value="${escapeHtml(b.id)}" ${b.id===selected?'selected':''}>${escapeHtml(`${cat(b.cat).name} — ${cleanName(b.sub)} — ${shortLabel(b.city||cityOf(b.sub||''))} / ${shortLabel(budgetOwner(b))}`)}</option>`).join('');
+}
+function v236RefreshReallocDestination(select){
+  const form=select?.form,dest=form?.querySelector('[name="toBudgetId"]');if(!dest)return;
+  const previous=dest.value;dest.innerHTML=v236ReallocDestinationOptions(state.month,select.value,previous);
+  if(!dest.value&&dest.options.length)dest.selectedIndex=0;
+}
+reallocLineOptions=function(month,selected='',positiveOnly=false){return positiveOnly?v236ReallocOriginOptions(month,selected):v236ReallocDestinationOptions(month,'',selected);};
+openRealloc=function(){
+  const originOptions=v236ReallocOriginOptions(state.month);if(!originOptions)return alert('Não há saldo disponível para remanejar neste mês.');
+  const firstOriginId=(state.budgets[state.month]||[]).filter(b=>v236ReallocBalance(state.month,b)>.005).slice().sort(compareExpenseItems)[0]?.id||'',destinationOptions=v236ReallocDestinationOptions(state.month,firstOriginId);
+  if(!destinationOptions)return alert('É necessário existir outra despesa planejada no mês para receber o remanejamento.');
+  const amountValue=v236IsMobile()?'':'0';
+  modal(`<div class="sheet-head"><h3>Remanejar saldo — ${labelMonth(state.month)}</h3><button class="close" onclick="closeModal()">×</button></div><form class="form" onsubmit="saveRealloc(event)"><div class="form two"><div class="field"><label>Despesa de origem</label><select name="fromBudgetId" onchange="v236RefreshReallocDestination(this)">${originOptions}</select></div><div class="field"><label>Despesa de destino</label><select name="toBudgetId">${destinationOptions}</select></div><div class="field"><label>Valor</label><input type="number" min="0.01" step="0.01" name="amount" value="${amountValue}" placeholder="0,00"></div><div class="field"><label>Observação</label><input name="note" placeholder="Ex.: reforço em supermercado"></div></div><div class="note">Na origem aparecem somente despesas com saldo positivo disponível neste mês. O remanejamento altera o acompanhamento, sem modificar o orçamento original do Planejamento.</div><div class="actions"><button class="btn secondary" type="button" onclick="closeModal()">Cancelar</button><button class="btn">Salvar remanejamento</button></div></form>`);
+};
+
+/* Não existe mais a opção "Saldo negativo" nos filtros. Valores <= 0 são tratados como sem saldo. */
+balanceStatus=function(value){return Number(value)>.005?'com_saldo':'sem_saldo';};
+forecastBalanceOptions=function(selected='todos'){
+  const normalized=selected==='negativo'?'sem_saldo':selected,items=[['todos','Todos os saldos'],['com_saldo','Com saldo'],['sem_saldo','Sem saldo']];
+  return items.map(([value,label])=>`<option value="${value}" ${normalized===value?'selected':''}>${label}</option>`).join('');
+};
+const v236LegacyNormalizeForecastFilters=normalizeForecastFilters;
+normalizeForecastFilters=function(filters={}){const normalized=v236LegacyNormalizeForecastFilters(filters);if(normalized.balance==='negativo')normalized.balance='sem_saldo';return normalized;};
+const v236LegacyForecastFilterOptions=forecastFilterOptions;
+forecastFilterOptions=function(key){
+  if(key==='balance')return [{value:'com_saldo',label:'Com saldo'},{value:'sem_saldo',label:'Sem saldo'}];
+  return v236LegacyForecastFilterOptions.apply(this,arguments);
+};
+if(typeof txForecastFilters==='object'&&txForecastFilters&&txForecastFilters.balance==='negativo')txForecastFilters.balance='sem_saldo';
 </script>
 
 </body></html>
