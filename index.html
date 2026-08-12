@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.38 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.39 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -7467,6 +7467,146 @@ openTx=function(id){
   if(!id)requestAnimationFrame(()=>v238ApplyTxUserDefaults(true));
   return result;
 };
+</script>
+
+
+<style id="v239-extrato-origin-author-style">
+/* =========================================================
+   V2.39 — Extrato: origem do planejamento + autor do lançamento
+   ========================================================= */
+.v239-description-stack{display:flex;flex-direction:column;gap:3px;min-width:0}
+.v239-description-stack .tx-description-text{min-width:0}
+.v239-desktop-createdby{display:block;margin-left:11px;color:#98A2B3;font-size:9px;line-height:1.25;font-weight:750;white-space:normal;overflow-wrap:anywhere}
+.v239-desktop-subcategory{display:block!important;color:#667085!important;font-size:9.5px!important;font-weight:750!important}
+.v239-desktop-origin{display:block!important;color:#344054!important;font-size:9.5px!important;font-weight:850!important}
+.tx-statement-copy .v239-mobile-line{display:block;margin-top:2px;white-space:normal;overflow-wrap:anywhere;line-height:1.22}
+.tx-statement-copy .v239-mobile-subcategory{color:#667085;font-size:10px;font-weight:750}
+.tx-statement-copy .v239-mobile-origin{color:#344054;font-size:10px;font-weight:900}
+.tx-statement-copy .v239-mobile-payment{color:#667085;font-size:9.7px;font-weight:750}
+.tx-statement-copy .v239-mobile-createdby{color:#98A2B3;font-size:9px;font-weight:750}
+html[data-theme="dark"] .v239-desktop-createdby,
+html[data-theme="dark"] .tx-statement-copy .v239-mobile-createdby{color:#7F8A9A!important}
+html[data-theme="dark"] .v239-desktop-subcategory,
+html[data-theme="dark"] .tx-statement-copy .v239-mobile-subcategory,
+html[data-theme="dark"] .tx-statement-copy .v239-mobile-payment{color:#B8C1CE!important}
+html[data-theme="dark"] .v239-desktop-origin,
+html[data-theme="dark"] .tx-statement-copy .v239-mobile-origin{color:#E5E7EB!important}
+@media(max-width:560px){
+  .tx-statement-item{align-items:center!important;min-height:78px!important}
+  .tx-statement-copy .v239-mobile-subcategory{font-size:9.8px}
+  .tx-statement-copy .v239-mobile-origin{font-size:9.8px}
+  .tx-statement-copy .v239-mobile-payment{font-size:9.5px}
+  .tx-statement-copy .v239-mobile-createdby{font-size:8.8px}
+}
+</style>
+
+<script id="v239-extrato-origin-author-script">
+/* =========================================================
+   V2.39 — BLOCO FINAL ATIVO
+   - Celular: subcategoria abreviada, Pessoa/Local, pagamento compacto e autor
+   - PC: categoria/subcategoria + Pessoa/Local completos e autor sob a descrição
+   - Autor é gravado automaticamente somente em novos lançamentos
+   ========================================================= */
+function v239LoggedActor(){
+  try{
+    const profile=typeof v238LoggedExpenseDefaults==='function'?v238LoggedExpenseDefaults():null;
+    if(profile?.person==='Cícero'||profile?.person==='Nilce')return profile.person;
+  }catch(_){ }
+  const meta=authUser?.user_metadata||{};
+  const identity=norm([meta.full_name,meta.name,meta.display_name,meta.first_name,authUser?.email].map(v=>String(v||'')).join(' '));
+  if(identity.includes('nilce'))return 'Nilce';
+  if(identity.includes('cicero'))return 'Cícero';
+  return '';
+}
+function v239TransactionActor(tx){
+  const raw=String(tx?.createdBy||tx?.created_by||tx?.author||'').trim(),key=norm(raw);
+  if(key.includes('nilce'))return 'Nilce';
+  if(key.includes('cicero'))return 'Cícero';
+  return '';
+}
+function v239OriginLabel(tx,mobile=false){
+  const person=String(tx?.responsible||'Compartilhado').trim()||'Compartilhado';
+  const city=String(tx?.city||'Compartilhado').trim()||'Compartilhado';
+  const personShared=norm(person)==='compartilhado',cityShared=norm(city)==='compartilhado';
+  if(personShared&&cityShared)return '';
+  let cityLabel='';
+  if(!cityShared){
+    if(mobile)cityLabel=norm(city)==='fortaleza'?'FOR':norm(city)==='brasilia'?'BSB':city;
+    else cityLabel=city;
+  }
+  if(personShared)return cityLabel?`Compartilhado — ${cityLabel}`:'Compartilhado';
+  if(cityShared)return person;
+  return `${person} — ${cityLabel}`;
+}
+function v239MobileSubcategory(value){
+  let label=cleanName(String(value||'')).replace(/_/g,' • ').replace(/\s+/g,' ').trim();
+  if(!label)return '';
+  label=label
+    .replace(/\bRestaurantes\b/gi,'Rest.')
+    .replace(/\bDespesas\b/gi,'Desp.')
+    .replace(/\bProdutos de Higiene Pessoal\b/gi,'Higiene pessoal')
+    .replace(/\bRefeições no Trabalho\b/gi,'Refeições trabalho')
+    .replace(/\bOutras Desp\. c\/ Transporte\b/gi,'Outras desp. transporte')
+    .replace(/\bVeterinário e Medicações\b/gi,'Veterinário • Medicações')
+    .replace(/\bReserva de Emergência\b/gi,'Reserva emergência')
+    .replace(/\bCo-participação Planos\b/gi,'Copart. planos')
+    .replace(/\bPlano de Saúde\b/gi,'Plano saúde')
+    .replace(/\bParcela Casa \/ Aluguel\b/gi,'Casa / Aluguel')
+    .replace(/\bOutras Desp\. Diversas\b/gi,'Outras desp. diversas');
+  return label;
+}
+function v239MobilePayment(value){
+  if(cardOf(value)==='-')return '';
+  let label=paymentDisplayName(value);
+  label=String(label||'').replace(/^Cartão de crédito\s*[-–—:|]?\s+(.+)$/i,(all,name)=>String(name||'').trim()?`Cartão ${String(name).trim()}`:all);
+  return label
+    .replace(/Descontar na transferência/gi,'Desc. transf.')
+    .replace(/\bDébito\b/gi,'Déb.')
+    .replace(/\bTransferência\b/gi,'Transf.')
+    .replace(/\s+/g,' ').trim();
+}
+function v239EnhanceRealizedViews(){
+  if(view!=='lancamentos'||txPanel!=='realizados')return;
+  document.querySelectorAll('.tx-realized-row[data-tx-id]').forEach(row=>{
+    const found=findTransactionById(row.dataset.txId);if(!found)return;const tx=found.tx;
+    const description=String(tx.description||tx.desc||'Sem descrição').trim()||'Sem descrição';
+    const actor=v239TransactionActor(tx),origin=v239OriginLabel(tx,false),sub=cleanName(tx.sub||'Sem subcategoria');
+    const descCell=row.querySelector('.tx-description-cell');
+    if(descCell)descCell.innerHTML=`<div class="v239-description-stack"><div class="tx-description-text"><span class="row-accent" style="background:${cat(tx.cat).color}"></span><strong>${escapeHtml(description)}</strong></div>${actor?`<small class="v239-desktop-createdby">Lançado por ${escapeHtml(actor)}</small>`:''}</div>`;
+    const catCell=row.querySelector('.tx-categorization-cell .tx-categorization');
+    if(catCell)catCell.innerHTML=`<strong class="category-text" style="color:${cat(tx.cat).color}">${escapeHtml(cat(tx.cat).name)}</strong><small class="v239-desktop-subcategory">${escapeHtml(sub)}</small>${origin?`<small class="v239-desktop-origin">${escapeHtml(origin)}</small>`:''}`;
+  });
+  document.querySelectorAll('.tx-statement-item[data-tx-id]').forEach(item=>{
+    const found=findTransactionById(item.dataset.txId);if(!found)return;const tx=found.tx;
+    const copy=item.querySelector('.tx-statement-copy');if(!copy)return;
+    const description=String(tx.description||tx.desc||'Sem descrição').trim()||'Sem descrição';
+    const sub=v239MobileSubcategory(tx.sub||cat(tx.cat).name),origin=v239OriginLabel(tx,true),payment=v239MobilePayment(tx.card),actor=v239TransactionActor(tx);
+    copy.innerHTML=`<strong>${escapeHtml(description)}</strong>${sub?`<span class="v239-mobile-line v239-mobile-subcategory">${escapeHtml(sub)}</span>`:''}${origin?`<span class="v239-mobile-line v239-mobile-origin">${escapeHtml(origin)}</span>`:''}${payment?`<span class="v239-mobile-line v239-mobile-payment">${escapeHtml(payment)}</span>`:''}${actor?`<span class="v239-mobile-line v239-mobile-createdby">Lançado por ${escapeHtml(actor)}</span>`:''}`;
+  });
+}
+function v239AllTransactionIds(){
+  const ids=new Set();Object.values(state.transactions||{}).forEach(list=>(Array.isArray(list)?list:[]).forEach(tx=>{if(tx?.id)ids.add(tx.id)}));return ids;
+}
+const v239LegacySaveTx=saveTx;
+saveTx=function(event){
+  const editing=!!editTxId,before=editing?null:v239AllTransactionIds(),actor=editing?'':v239LoggedActor();
+  const result=v239LegacySaveTx.apply(this,arguments);
+  if(!editing&&actor&&before){
+    let changed=0;
+    Object.values(state.transactions||{}).forEach(list=>(Array.isArray(list)?list:[]).forEach(tx=>{
+      if(tx?.id&&!before.has(tx.id)&&!v239TransactionActor(tx)){tx.createdBy=actor;changed++}
+    }));
+    if(changed){save();render()}
+  }
+  return result;
+};
+const v239LegacyRender=render;
+render=function(){
+  const result=v239LegacyRender.apply(this,arguments);
+  requestAnimationFrame(v239EnhanceRealizedViews);
+  return result;
+};
+requestAnimationFrame(v239EnhanceRealizedViews);
 </script>
 
 </body></html>
