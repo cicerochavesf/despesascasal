@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.39 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.41 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -7607,6 +7607,128 @@ render=function(){
   return result;
 };
 requestAnimationFrame(v239EnhanceRealizedViews);
+</script>
+
+
+<style id="v240-mobile-author-badge-style">
+/* =========================================================
+   V2.40 — Extrato: autor no selo do celular
+   ========================================================= */
+@media(max-width:900px){
+  .tx-statement-icon.v240-author-badge{font-weight:900!important;letter-spacing:0!important}
+}
+</style>
+
+<script id="v240-mobile-author-badge-script">
+/* =========================================================
+   V2.40 — BLOCO FINAL ATIVO
+   - Celular: o selo mantém a cor da categoria, mas C/N identifica quem lançou
+   - Celular: remove a linha textual "Lançado por..."
+   - PC: permanece com a identificação da categoria e "Lançado por..." em texto
+   - Registros antigos sem autor confiável mantêm a letra da categoria
+   ========================================================= */
+function v240EnhanceMobileAuthorBadge(){
+  if(view!=='lancamentos'||txPanel!=='realizados')return;
+  document.querySelectorAll('.tx-statement-item[data-tx-id]').forEach(item=>{
+    const found=findTransactionById(item.dataset.txId);if(!found)return;
+    const tx=found.tx,actor=v239TransactionActor(tx),icon=item.querySelector('.tx-statement-icon');
+    if(icon){
+      if(actor==='Cícero'||actor==='Nilce'){
+        icon.textContent=actor==='Cícero'?'C':'N';
+        icon.classList.add('v240-author-badge');
+        icon.setAttribute('title',`Lançado por ${actor}`);
+        icon.setAttribute('aria-label',`Lançado por ${actor}`);
+      }else{
+        icon.innerHTML=realizedStatementIcon(tx.cat);
+        icon.classList.remove('v240-author-badge');
+        icon.removeAttribute('title');
+        icon.removeAttribute('aria-label');
+      }
+    }
+    item.querySelectorAll('.v239-mobile-createdby').forEach(el=>el.remove());
+  });
+}
+const v240LegacyRender=render;
+render=function(){
+  const result=v240LegacyRender.apply(this,arguments);
+  requestAnimationFrame(v240EnhanceMobileAuthorBadge);
+  return result;
+};
+requestAnimationFrame(v240EnhanceMobileAuthorBadge);
+</script>
+
+
+<script id="v241-legacy-transaction-authors-script">
+/* =========================================================
+   V2.41 — BLOCO FINAL ATIVO
+   Migração única de autoria dos lançamentos anteriores
+   - Ifood de 11/08/2026, R$ 21,89: Nilce
+   - Demais lançamentos antigos sem autor reconhecido: Cícero
+   - Novos lançamentos continuam usando o usuário autenticado (V2.39+)
+   ========================================================= */
+(function(){
+  let v241MigrationSaveQueued=false;
+
+  function v241IsNilceIfood(tx){
+    const description=norm(String(tx?.description||tx?.desc||''));
+    const date=String(tx?.date||'').slice(0,10);
+    const amount=Math.round((Number(tx?.amount)||0)*100);
+    return description==='ifood' && date==='2026-08-11' && amount===2189;
+  }
+
+  function v241MigrateLegacyAuthors(){
+    if(!state||state?.migrations?.v241LegacyTransactionAuthors)return 0;
+    if(!state.migrations||typeof state.migrations!=='object')state.migrations={};
+    let changed=0, cicero=0, nilce=0;
+
+    Object.values(state.transactions||{}).forEach(list=>{
+      (Array.isArray(list)?list:[]).forEach(tx=>{
+        if(!tx||typeof tx!=='object')return;
+        if(v241IsNilceIfood(tx)){
+          if(v239TransactionActor(tx)!=='Nilce' || String(tx.createdBy||'')!=='Nilce'){
+            tx.createdBy='Nilce';
+            changed++;
+          }
+          nilce++;
+          return;
+        }
+        if(!v239TransactionActor(tx)){
+          tx.createdBy='Cícero';
+          changed++;
+          cicero++;
+        }
+      });
+    });
+
+    state.migrations.v241LegacyTransactionAuthors={
+      at:new Date().toISOString(),
+      changed,
+      assignedCicero:cicero,
+      assignedNilceSpecial:nilce
+    };
+    return changed;
+  }
+
+  const v241LegacyRender=render;
+  render=function(){
+    if(cloudSynced&&state){
+      const changed=v241MigrateLegacyAuthors();
+      if((changed||state?.migrations?.v241LegacyTransactionAuthors)&&!v241MigrationSaveQueued){
+        const migration=state.migrations.v241LegacyTransactionAuthors;
+        if(migration&&!migration.savedQueued){
+          migration.savedQueued=true;
+          v241MigrationSaveQueued=true;
+          cacheCloudState();
+          scheduleCloudSave(0);
+          setTimeout(()=>{v241MigrationSaveQueued=false},1500);
+        }
+      }
+    }
+    return v241LegacyRender.apply(this,arguments);
+  };
+
+  if(cloudSynced&&state)render();
+})();
 </script>
 
 </body></html>
