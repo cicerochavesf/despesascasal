@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.43 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.42 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -7733,86 +7733,5 @@ requestAnimationFrame(v240EnhanceMobileAuthorBadge);
 
 
 <!-- V2.42 — Restaurar base inicial removido da interface (desktop e mobile) e ação desativada. -->
-
-<style id="v243-remove-home-analysis-style">
-/* =========================================================
-   V2.43 — Início e Análises removidos da navegação
-   ========================================================= */
-@media(max-width:760px){
-  html[data-ui="v23"] .v23-mobile-nav{grid-template-columns:repeat(3,minmax(0,1fr))!important;}
-}
-</style>
-<script id="v243-remove-home-analysis-script">
-/* =========================================================
-   V2.43 — BLOCO FINAL ATIVO
-   - Remove Início e Análises do celular e computador
-   - App abre diretamente em Movimentações > Extrato
-   - Tentativas antigas de abrir essas telas são redirecionadas
-   - Nenhum dado financeiro das telas removidas é apagado
-   ========================================================= */
-(function(){
-  const removedViews=new Set(['estrategia','rxd']);
-
-  v23MainItems=function(){return[
-    {key:'lancamentos',label:'Movimentações',icon:'movements'},
-    {key:'despesas',label:'Planejamento',icon:'planning'},
-    {key:'config',label:'Mais',icon:'more'}
-  ]};
-
-  setMainView=function(target){
-    selectedExpenseCat=null;
-    if(removedViews.has(target))target='lancamentos';
-    if(target==='lancamentos'){
-      view='lancamentos';
-      txScope='mes';
-      if(!['acompanhamento','realizados','envelopes','remanejamentos'].includes(txPanel))txPanel='realizados';
-      state.month=validMonth(state.month||currentMonthId());
-    }else if(target==='despesas'){
-      view='despesas';
-      expenseScope='ano';
-      revenueScope='ano';
-      state.month=validMonth(state.month||currentMonthId());
-    }else if(target==='config'){
-      view='config';
-    }else{
-      view='lancamentos';
-      txScope='mes';
-      txPanel='realizados';
-      state.month=validMonth(state.month||currentMonthId());
-    }
-    save();render();
-  };
-
-  const v243LegacySetView=setView;
-  setView=function(target){
-    if(removedViews.has(target))target='lancamentos';
-    return v243LegacySetView.call(this,target);
-  };
-
-  const v243LegacyOpenMonthInView=openMonthInView;
-  openMonthInView=function(month,target){
-    if(target==='rxd'||target==='estrategia')target='lancamentos';
-    return v243LegacyOpenMonthInView.call(this,month,target);
-  };
-
-  const v243LegacyRender=render;
-  render=function(){
-    if(removedViews.has(view)){
-      view='lancamentos';
-      txScope='mes';
-      if(!['acompanhamento','realizados','envelopes','remanejamentos'].includes(txPanel))txPanel='realizados';
-      state.month=validMonth(state.month||currentMonthId());
-    }
-    return v243LegacyRender.apply(this,arguments);
-  };
-
-  if(removedViews.has(view)){
-    view='lancamentos';
-    txScope='mes';
-    txPanel='realizados';
-    state.month=validMonth(state.month||currentMonthId());
-  }
-})();
-</script>
 
 </body></html>
