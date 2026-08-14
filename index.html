@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.49 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.51 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -7989,5 +7989,111 @@ requestAnimationFrame(v240EnhanceMobileAuthorBadge);
 
 
 <!-- V2.49 — Início: adicionados painéis Responsabilidade financeira e Despesas por localidade, com dados reais, filtros e layout responsivo. -->
+
+<style id="v250-home-matrices-style">
+/* V2.50 — Matrizes mensais por categoria e subcategoria na tela Início */
+.v250-matrices{display:grid;gap:14px;margin-top:14px}
+.v250-matrix-panel{background:var(--panel,#fff);border:1px solid var(--line,#e2e8f0);border-radius:20px;box-shadow:0 10px 28px rgba(15,23,42,.055);overflow:hidden;min-width:0}
+.v250-matrix-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:16px 16px 12px;border-bottom:1px solid var(--line,#e2e8f0)}
+.v250-matrix-head h2{margin:0;font-size:14px;line-height:1.2;font-weight:950;color:var(--text,#0f172a)}
+.v250-matrix-head p{margin:5px 0 0;font-size:10.5px;line-height:1.35;color:var(--muted,#64748b);font-weight:650}
+.v250-matrix-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.v250-column-btn{appearance:none;border:1px solid var(--line,#e2e8f0);background:var(--soft,#f8fafc);color:var(--text,#0f172a);border-radius:11px;padding:8px 11px;font-size:10.5px;font-weight:850;cursor:pointer}
+.v250-column-btn:hover{background:color-mix(in srgb,var(--brand,#4f46e5) 6%,var(--soft,#f8fafc));border-color:color-mix(in srgb,var(--brand,#4f46e5) 30%,var(--line,#e2e8f0))}
+.v250-matrix-wrap{overflow:auto;max-width:100%;-webkit-overflow-scrolling:touch}
+.v250-matrix-wrap table{width:100%;min-width:900px;border-collapse:separate;border-spacing:0;table-layout:fixed}
+.v250-matrix-wrap th,.v250-matrix-wrap td{padding:11px 12px;border-bottom:1px solid var(--line,#e2e8f0);white-space:nowrap;text-align:right;font-size:10.5px;color:var(--text,#0f172a)}
+.v250-matrix-wrap th{font-size:9.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted,#64748b);font-weight:900;background:color-mix(in srgb,var(--soft,#f8fafc) 82%,var(--panel,#fff));position:sticky;top:0;z-index:3}
+.v250-matrix-wrap th:first-child,.v250-matrix-wrap td:first-child{text-align:left;position:sticky;left:0;z-index:2;background:var(--panel,#fff);box-shadow:8px 0 12px -12px rgba(15,23,42,.28)}
+.v250-matrix-wrap th:first-child{z-index:4;background:color-mix(in srgb,var(--soft,#f8fafc) 82%,var(--panel,#fff))}
+.v250-matrix-wrap tfoot td{font-weight:950;background:color-mix(in srgb,var(--soft,#f8fafc) 70%,var(--panel,#fff));border-bottom:0}
+.v250-matrix-wrap tfoot td:first-child{background:color-mix(in srgb,var(--soft,#f8fafc) 70%,var(--panel,#fff))}
+.v250-matrix-name{display:flex;align-items:center;gap:8px;min-width:0}
+.v250-matrix-name i{width:9px;height:9px;border-radius:999px;background:var(--v250-color,#64748b);flex:0 0 auto}
+.v250-matrix-name div{min-width:0}
+.v250-matrix-name strong{display:block;max-width:240px;overflow:hidden;text-overflow:ellipsis;font-size:10.5px;font-weight:900;color:var(--text,#0f172a)}
+.v250-matrix-name small{display:block;margin-top:2px;max-width:240px;overflow:hidden;text-overflow:ellipsis;font-size:9px;color:var(--muted,#64748b);font-weight:650}
+.v250-total{font-weight:950}
+.v250-mobile-hint{display:none;padding:8px 12px 0;color:var(--muted,#64748b);font-size:9.5px;line-height:1.35}
+.v250-empty{padding:24px;text-align:center;color:var(--muted,#64748b);font-size:11px}
+@media(max-width:760px){
+  .v250-matrices{gap:12px;margin-top:12px}
+  .v250-matrix-panel{border-radius:16px}
+  .v250-matrix-head{padding:13px 12px 10px;gap:8px;align-items:center}
+  .v250-matrix-head h2{font-size:13px}
+  .v250-matrix-head p{font-size:9.5px}
+  .v250-column-btn{padding:7px 9px;font-size:9.5px}
+  .v250-mobile-hint{display:block}
+  .v250-matrix-wrap{padding-top:8px}
+  .v250-matrix-wrap table{min-width:760px}
+  .v250-matrix-wrap th,.v250-matrix-wrap td{padding:9px 10px;font-size:9.5px}
+  .v250-matrix-wrap th{font-size:8.8px}
+  .v250-matrix-name strong{max-width:150px;font-size:9.8px}
+  .v250-matrix-name small{max-width:150px;font-size:8.5px}
+}
+</style>
+
+<script id="v250-home-matrices-script">
+(function(){
+  function v250Months(monthIds){return (monthIds||[]).slice().sort()}
+  function v250MonthLabel(month){return `${monthShort(Number(String(month).slice(5,7)))}/${String(month).slice(2,4)}`}
+  function v250RowsByCategory(monthIds,rows){
+    const months=v250Months(monthIds),map=new Map();
+    (rows||[]).forEach(row=>{
+      const id=row.b?.cat||row.catId||''; if(!id)return;
+      if(!map.has(id))map.set(id,{id,name:cat(id)?.name||id,color:cat(id)?.color||'#64748b',values:new Map(months.map(m=>[m,0]))});
+      const item=map.get(id); item.values.set(row.month,(item.values.get(row.month)||0)+Number(row.planned||0));
+    });
+    return [...map.values()].map(item=>({...item,total:months.reduce((s,m)=>s+(item.values.get(m)||0),0)})).filter(item=>Math.abs(item.total)>.005).sort((a,b)=>textCmp(a.name,b.name));
+  }
+  function v250RowsBySubcategory(monthIds,rows){
+    const months=v250Months(monthIds),map=new Map();
+    (rows||[]).forEach(row=>{
+      const catId=row.b?.cat||row.catId||'',name=cleanName(row.b?.sub||row.name||row.sub||''); if(!catId||!name)return;
+      const key=[catId,norm(name)].join('|');
+      if(!map.has(key))map.set(key,{key,catId,name,category:cat(catId)?.name||catId,color:cat(catId)?.color||'#64748b',values:new Map(months.map(m=>[m,0]))});
+      const item=map.get(key); item.values.set(row.month,(item.values.get(row.month)||0)+Number(row.planned||0));
+    });
+    return [...map.values()].map(item=>({...item,total:months.reduce((s,m)=>s+(item.values.get(m)||0),0)})).filter(item=>Math.abs(item.total)>.005).sort((a,b)=>textCmp(a.category,b.category)||textCmp(a.name,b.name));
+  }
+  function v250MatrixTable(kind,monthIds,items){
+    const months=v250Months(monthIds),isSub=kind==='sub';
+    if(!items.length)return '<div class="v250-empty">Nenhum valor planejado encontrado neste recorte.</div>';
+    const body=items.map(item=>`<tr><td><div class="v250-matrix-name" style="--v250-color:${escapeHtml(item.color)}"><i></i><div><strong>${escapeHtml(item.name)}</strong>${isSub?`<small>${escapeHtml(item.category)}</small>`:''}</div></div></td>${months.map(m=>`<td>${Math.abs(item.values.get(m)||0)>.005?fmt(item.values.get(m)||0):'<span class="v212-zero">—</span>'}</td>`).join('')}<td class="v250-total">${fmt(item.total)}</td></tr>`).join('');
+    const monthTotals=months.map(m=>items.reduce((s,item)=>s+Number(item.values.get(m)||0),0)),grand=monthTotals.reduce((a,b)=>a+b,0);
+    return `<div class="v250-matrix-wrap v250-${kind}-matrix"><table><thead><tr><th>${isSub?'Subcategoria':'Categoria'}</th>${months.map(m=>`<th>${escapeHtml(v250MonthLabel(m))}</th>`).join('')}<th>Total</th></tr></thead><tbody>${body}</tbody><tfoot><tr><td>Total planejado</td>${monthTotals.map(v=>`<td>${fmt(v)}</td>`).join('')}<td>${fmt(grand)}</td></tr></tfoot></table></div>`;
+  }
+  function v250OpenWidth(kind){
+    const root=document.getElementById('app'),wrap=root?.querySelector(kind==='sub'?'.v250-sub-matrix':'.v250-cat-matrix'),table=wrap?.querySelector('table');
+    if(!table)return alert('Esta tabela não está disponível no recorte atual.');
+    if(!table.dataset.columnKey&&typeof initColumnWidthEditors==='function')initColumnWidthEditors(root);
+    const key=table.dataset.columnKey;if(!key)return alert('Não foi possível abrir a configuração das colunas.');
+    openColumnWidthEditor(encodeURIComponent(key));
+  }
+  window.v250OpenWidth=v250OpenWidth;
+  function v250Panel(kind,monthIds,items){
+    const isSub=kind==='sub';
+    return `<section class="v250-matrix-panel"><div class="v250-matrix-head"><div><h2>${isSub?'Visão mensal por subcategorias':'Visão mensal por categorias'}</h2><p>Valores planejados por ${isSub?'subcategoria':'categoria'} em cada mês do recorte atual</p></div><div class="v250-matrix-actions"><button type="button" class="v250-column-btn" onclick="v250OpenWidth('${kind}')">Ajustar colunas</button></div></div><div class="v250-mobile-hint">No celular, arraste a tabela para o lado. A primeira coluna fica fixa e as larguras são salvas para este usuário e dispositivo.</div>${v250MatrixTable(kind,monthIds,items)}</section>`;
+  }
+  function v250HomeMatrices(monthIds,rows){
+    return `<section class="v250-matrices">${v250Panel('cat',monthIds,v250RowsByCategory(monthIds,rows))}${v250Panel('sub',monthIds,v250RowsBySubcategory(monthIds,rows))}</section>`;
+  }
+  window.v250HomeMatrices=v250HomeMatrices;
+  const legacyTitle=tableTitleFromContext;
+  tableTitleFromContext=function(wrap){
+    if(wrap?.classList?.contains('v250-cat-matrix'))return 'Início — visão mensal por categorias';
+    if(wrap?.classList?.contains('v250-sub-matrix'))return 'Início — visão mensal por subcategorias';
+    return legacyTitle(wrap);
+  };
+  renderEstrategia=function(){
+    if(!v246HomeFilters.year)v246HomeFilters.year=v246HomeDefaultYear();
+    const monthIds=v246HomeMonthIds(),rows=v246HomeBudgetRows(monthIds);
+    layout(`<div class="v246-home-dashboard">${v246HomeFilterPanel(monthIds)}${v246HomeKpis(monthIds,rows)}${v248HomeInsights(monthIds,rows)}${v249HomeBreakdowns(monthIds,rows)}${v250HomeMatrices(monthIds,rows)}</div>`);
+  };
+})();
+</script>
+
+<!-- V2.51 — Início: consolidadas as visões mensais na ordem Categorias → Subcategorias, abaixo de Responsabilidade financeira e Despesas por localidade. -->
+
 
 </body></html>
