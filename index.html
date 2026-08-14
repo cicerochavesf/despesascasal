@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.51 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.50 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -3955,10 +3955,13 @@ function viewSearchCandidates(root){return [...root.querySelectorAll('tbody > tr
 function applyViewSearch(scope=view){const root=document.querySelector(`.main.view-${scope}`);if(!root)return;const raw=String(viewSearchTerms[scope]||'').trim(),tokens=norm(raw).split(/\s+/).filter(Boolean),candidates=viewSearchCandidates(root);let matched=0,total=0;candidates.forEach(el=>{const placeholder=el.matches('tr')&&el.querySelector('td[colspan]')&&/^(sem|nenhum|nenhuma|não há|nao ha)/i.test((el.innerText||'').trim());if(placeholder){el.classList.toggle('search-hidden',tokens.length>0);return}total++;const hay=searchCandidateText(el),ok=!tokens.length||tokens.every(token=>hay.includes(token));el.classList.toggle('search-hidden',!ok);if(ok)matched++});const clear=document.getElementById('viewSearchClear');if(clear)clear.style.display=raw?'grid':'none';const empty=document.getElementById('viewSearchEmpty');if(empty)empty.classList.toggle('show',!!raw&&matched===0);const visibleChecks=[...root.querySelectorAll('.tx-realized-grouped tbody tr:not(.search-hidden) input[data-tx-id]')];const all=document.getElementById('txSelectAll');if(all){const checked=visibleChecks.filter(x=>x.checked).length;all.checked=visibleChecks.length>0&&checked===visibleChecks.length;all.indeterminate=checked>0&&checked<visibleChecks.length}root.querySelectorAll('.tx-statement-group').forEach(group=>{const items=[...group.querySelectorAll('.tx-statement-item')];group.classList.toggle('search-hidden',items.length>0&&items.every(item=>item.classList.contains('search-hidden')))});const forecastChecks=[...root.querySelectorAll('.tx-forecast-card:not(.search-hidden) input[data-forecast-key]')],forecastAll=document.getElementById('forecastSelectAll');if(forecastAll){const checked=forecastChecks.filter(x=>x.checked).length;forecastAll.checked=forecastChecks.length>0&&checked===forecastChecks.length;forecastAll.indeterminate=checked>0&&checked<forecastChecks.length}}
 
 function mobileQuickAction(){
-  if(view==='rxd')return '';
-  const planning=view==='despesas'||view==='receitas';
-  const action=planning?'openPlanningQuickAction()':'openTx()';
-  const label=planning?'Nova previsão':'Novo lançamento';
+  let action='',label='';
+  if(view==='lancamentos'){
+    if(txPanel==='remanejamentos'){action='openRealloc()';label='Novo remanejamento'}
+    else{action='openTx()';label='Novo lançamento'}
+  }else if(view==='despesas'||view==='receitas'){
+    action='openPlanningQuickAction()';label='Nova previsão'
+  }else return '';
   return `<button class="v27-global-fab" type="button" onclick="${action}" aria-label="${label}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg><span>${label}</span></button>`
 }
 function openPlanningQuickAction(){
@@ -4250,8 +4253,9 @@ function renderLancamentos(){
   if(txPanel==='acompanhamento')panel=`<div class="card tx-panel"><div class="section-title"><div><h3>Acompanhamento — ${periodTitle}</h3><span>${budgets.length} item(ns) · ${withBalance} em aberto · ${noBalance} zerado(s)${negativeCount?' · '+negativeCount+' negativo(s)':''}</span></div></div><div class="mobile-list-toolbar">${mobileFilterTrigger('forecast','Filtros')}<button type="button" onclick="toggleAllForecastSelection(${allForecastSelected?'false':'true'})">${allForecastSelected?'Limpar seleção':'Selecionar todos'}</button></div>${txForecastFilterControls()}<div class="table-wrap tx-forecast-table tx-forecast-table-desktop"><table><thead><tr><th class="tx-select-cell"><input class="tx-select-box" type="checkbox" ${allForecastSelected?'checked':''} onchange="toggleAllForecastSelection(this.checked)" title="Selecionar todas as previsões exibidas"></th><th>Despesa</th><th>Previsto</th><th>Utilizado</th><th>Saldo</th><th>Disponível</th></tr></thead><tbody>${forecastRows||'<tr><td colspan="6">Nenhuma previsão encontrada para os filtros atuais.</td></tr>'}</tbody></table></div><div class="tx-forecast-cards">${forecastCards||'<div class="tx-forecast-empty">Nenhuma previsão encontrada para os filtros atuais.</div>'}</div></div>${selectionTray('forecast',forecastSelected.length,forecastTotals)}`;
   if(txPanel==='realizados')panel=`<div class="card tx-panel"><div class="section-title"><div><h3>Lançamentos realizados — ${periodTitle}</h3><span>${txList.length} item(ns) · marque as linhas para somar em tempo real.</span></div></div><div class="mobile-list-toolbar">${mobileFilterTrigger('realized','Filtros')}<button type="button" onclick="toggleAllRealizedSelection(true)">Selecionar todos</button></div>${txRealizedFilterControls()}<div class="table-wrap tx-realized-table tx-realized-grouped"><table><thead><tr><th class="tx-select-cell"><input id="txSelectAll" class="tx-select-box" type="checkbox" ${allVisibleSelected?'checked':''} onchange="toggleAllRealizedSelection(this.checked)" title="Selecionar todos os lançamentos exibidos"></th><th>Data</th><th>Descrição</th><th>Categorização</th><th>Forma de Pagamento</th><th>Parcela</th><th>Valor</th></tr></thead><tbody>${rows||'<tr><td colspan="7">Sem lançamentos realizados para os filtros atuais.</td></tr>'}</tbody></table><div class="tx-mobile-card-list tx-realized-statement-list">${realizedStatement}</div></div></div>${selectionTray('realized',selectedRealizedIds.size,{total:selectedTotal})}`;
   if(txPanel==='envelopes')panel=`<div class="card tx-panel"><div class="section-title"><div><h3>Envelopes semanais — ${labelMonth(state.month)}</h3><span>Domingo a sábado · clique em um envelope para ver as semanas.</span></div></div><div class="envelope-summary"><div class="envelope-stat"><span>Previsto nos envelopes</span><strong>${fmt(envelopePlanned)}</strong><small>${envelopes.length} envelope(s) ativo(s)</small></div><div class="envelope-stat"><span>Utilizado no período</span><strong class="neg">${fmt(envelopeUsed)}</strong><small>${envelopeDateLabel(envelopePeriod(state.month).start)} a ${envelopeDateLabel(addDateDays(envelopePeriod(state.month).endExclusive,-1))}</small></div><div class="envelope-stat"><span>Saldo dos envelopes</span><strong class="${envelopeBalance<0?'neg':'pos'}">${fmt(envelopeBalance)}</strong><small>Previsto menos realizado</small></div><div class="envelope-stat"><span>Disponível na semana</span><strong class="${envelopeCurrent<0?'neg':'pos'}">${fmt(envelopeCurrent)}</strong><small>Após redistribuições encerradas</small></div></div><div class="note" style="margin-bottom:12px">Lançamentos são vinculados automaticamente pela subcategoria, cidade e data. Sobras e excessos só são redistribuídos quando a semana termina.</div><div class="table-wrap tx-envelope-table"><table><thead><tr><th>Envelope</th><th>Previsto mês</th><th>Utilizado</th><th>Saldo mês</th><th>Semana disponível</th><th>Situação</th></tr></thead><tbody>${envelopeRows||'<tr><td colspan="6">Nenhuma subcategoria com envelope semanal possui previsão neste mês.</td></tr>'}</tbody></table><div class="tx-mobile-card-list">${envelopeCards||'<div class="tx-forecast-empty">Nenhuma subcategoria com envelope semanal possui previsão neste mês.</div>'}</div></div></div>`;
-  if(txPanel==='remanejamentos')panel=`<div class="card tx-panel"><div class="section-title"><div><h3>Remanejamentos — ${periodTitle}</h3><span>Transfira saldo somente dentro do acompanhamento. O orçamento original não será alterado.</span></div><button class="btn secondary" onclick="openRealloc()">Novo remanejamento</button></div><div class="table-wrap tx-rem-table"><table><thead><tr>${txScope==='ano'?'<th>Mês</th>':''}<th>Origem</th><th>Destino</th><th>Valor</th><th>Observação</th><th></th></tr></thead><tbody>${rem||'<tr><td colspan="6">Sem remanejamentos.</td></tr>'}</tbody></table><div class="tx-mobile-card-list">${remCards||'<div class="tx-forecast-empty">Sem remanejamentos.</div>'}</div></div></div>`;
-  layout(`<div class="head tx-head"><div><h2>Lançamentos</h2><p>Acompanhe o planejado, o realizado e os saldos sem perder espaço na tela.</p></div><div class="actions"><button class="btn" onclick="openTx()">Novo lançamento</button></div></div><div class="card tx-filter-card tx-period-card"><div class="section-title"><h3>Período</h3><span>Selecione o ano ou mês</span></div>${txPeriodControls()}</div><div class="tx-summary grid cols3 kpi-strip"><div class="card metric income planned"><div class="label">Previsto</div><div class="value">${fmt(plannedTotal)}</div><div class="subtxt">Orçamento do período</div></div><div class="card metric expense used"><div class="label">Utilizado</div><div class="value">${fmt(usedTotal)}</div><div class="subtxt">Lançamentos realizados</div></div><div class="card metric balance"><div class="label">Saldo</div><div class="value">${fmt(openTotal)}</div><div class="subtxt">Disponível no acompanhamento</div></div></div>${tabs}${panel}`)
+  if(txPanel==='remanejamentos')panel=`<div class="card tx-panel"><div class="section-title"><div><h3>Remanejamentos — ${periodTitle}</h3><span>Transfira saldo somente dentro do acompanhamento. O orçamento original não será alterado.</span></div></div><div class="table-wrap tx-rem-table"><table><thead><tr>${txScope==='ano'?'<th>Mês</th>':''}<th>Origem</th><th>Destino</th><th>Valor</th><th>Observação</th><th></th></tr></thead><tbody>${rem||'<tr><td colspan="6">Sem remanejamentos.</td></tr>'}</tbody></table><div class="tx-mobile-card-list">${remCards||'<div class="tx-forecast-empty">Sem remanejamentos.</div>'}</div></div></div>`;
+  const txPrimaryAction=txPanel==='remanejamentos'?`<button class="btn" onclick="openRealloc()">Novo remanejamento</button>`:`<button class="btn" onclick="openTx()">Novo lançamento</button>`;
+  layout(`<div class="head tx-head"><div><h2>Lançamentos</h2><p>Acompanhe o planejado, o realizado e os saldos sem perder espaço na tela.</p></div><div class="actions">${txPrimaryAction}</div></div><div class="card tx-filter-card tx-period-card"><div class="section-title"><h3>Período</h3><span>Selecione o ano ou mês</span></div>${txPeriodControls()}</div><div class="tx-summary grid cols3 kpi-strip"><div class="card metric income planned"><div class="label">Previsto</div><div class="value">${fmt(plannedTotal)}</div><div class="subtxt">Orçamento do período</div></div><div class="card metric expense used"><div class="label">Utilizado</div><div class="value">${fmt(usedTotal)}</div><div class="subtxt">Lançamentos realizados</div></div><div class="card metric balance"><div class="label">Saldo</div><div class="value">${fmt(openTotal)}</div><div class="subtxt">Disponível no acompanhamento</div></div></div>${tabs}${panel}`)
 }
 
 function renderEstrategia(){
@@ -8095,5 +8099,46 @@ requestAnimationFrame(v240EnhanceMobileAuthorBadge);
 
 <!-- V2.51 — Início: consolidadas as visões mensais na ordem Categorias → Subcategorias, abaixo de Responsabilidade financeira e Despesas por localidade. -->
 
+
+<style id="v250-home-fixes-style">
+/* V2.50 — correções finais do Início: distribuição sem rolagem interna e redimensionamento das tabelas no PC. */
+.v248-category-list{max-height:none!important;overflow:visible!important;overscroll-behavior:auto!important}
+.v248-category-body{height:auto!important;min-height:0!important}
+@media(min-width:761px){
+  .v248-insights-grid{grid-template-columns:minmax(0,1.48fr) minmax(360px,1.05fr)}
+  .v250-matrix-wrap.table-wrap{overflow:auto!important;max-width:100%}
+  .v250-matrix-panel>.column-width-toolbar{display:none!important}
+  .v250-matrix-wrap th.column-resizable{padding-right:13px!important}
+}
+@media(max-width:760px){
+  .v248-category-list{max-height:none!important;overflow:visible!important}
+}
+</style>
+<script id="v250-home-fixes-script">
+(function(){
+  /* 2026 no app começa em julho; o Início deve obedecer à mesma regra já usada no Planejamento/Análises. */
+  const legacyHomeMonthsForYear=v246HomeMonthsForYear;
+  v246HomeMonthsForYear=function(year){
+    const y=String(year),allowedNumbers=(typeof v213MonthNumbersForYear==='function')?v213MonthNumbersForYear(y):(y==='2026'?[7,8,9,10,11,12]:Array.from({length:12},(_,i)=>i+1));
+    const allowed=new Set(allowedNumbers.map(n=>String(n).padStart(2,'0')));
+    return legacyHomeMonthsForYear(y).filter(month=>allowed.has(String(month).slice(5,7)));
+  };
+
+  /* Garantia extra: após o render do Início, registrar as tabelas no sistema global e instalar as alças de arraste no desktop. */
+  const legacyPostRenderV75=postRenderV75;
+  postRenderV75=function(){
+    legacyPostRenderV75();
+    const app=document.getElementById('app');
+    if(view==='estrategia'&&app){
+      requestAnimationFrame(()=>{
+        if(typeof initColumnWidthEditors==='function')initColumnWidthEditors(app);
+        if(typeof installColumnDragResizers==='function'&&(!window.matchMedia||window.matchMedia('(min-width:761px)').matches))installColumnDragResizers(app);
+      });
+    }
+  };
+})();
+</script>
+<!-- V2.50 — Início: colunas redimensionáveis por arraste no PC; Distribuição por categoria sem rolagem interna; 2026 limitado a julho–dezembro. -->
+<!-- V2.50 — Ações contextuais: Novo lançamento somente em Movimentações; em Remanejamentos vira Novo remanejamento; Planejamento mantém Nova previsão. -->
 
 </body></html>
