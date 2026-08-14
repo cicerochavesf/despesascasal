@@ -16,129 +16,40 @@ jobs:
         with:
           ref: main
       - name: Conferir base V2.49
-        shell: bash
-        run: |
-          test "$(git hash-object index.html)" = "a67ffd51f6b02b9f7868d1f157ef5d76539f5f36"
+        run: test "$(git hash-object index.html)" = "a67ffd51f6b02b9f7868d1f157ef5d76539f5f36"
       - name: Aplicar V2.51
         shell: python
         run: |
           from pathlib import Path
+          import base64,zlib
+          payload="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"
+          block=zlib.decompress(base64.b64decode(payload)).decode('utf-8')
           p=Path('index.html')
           s=p.read_text(encoding='utf-8')
           old='<!-- Despesas Casal - Controle Financeiro | versão 2.49 -->'
           new='<!-- Despesas Casal - Controle Financeiro | versão 2.51 -->'
-          if old not in s:
-              raise SystemExit('Cabeçalho V2.49 não encontrado')
+          if old not in s or 'v250-home-matrices-style' in s:
+              raise SystemExit('Base inesperada para V2.51')
           s=s.replace(old,new,1)
-          if 'id="v251-home-matrices-style"' in s:
-              raise SystemExit('Bloco V2.51 já existe')
-          block=r'''
-<style id="v251-home-matrices-style">
-/* V2.51 — Visões mensais por categorias e subcategorias no Início */
-.v251-matrix-panel{background:var(--panel,#fff);border:1px solid var(--line,#e2e8f0);border-radius:20px;box-shadow:0 10px 28px rgba(15,23,42,.055);overflow:hidden;min-width:0}
-.v251-matrix-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:16px 16px 10px}
-.v251-matrix-head h2{margin:0;font-size:14px;line-height:1.2;font-weight:950;color:var(--text,#0f172a)}
-.v251-matrix-head p{margin:5px 0 0;font-size:10.5px;line-height:1.35;color:var(--muted,#64748b);font-weight:650}
-.v251-column-btn{appearance:none;border:1px solid var(--line,#cbd5e1);background:var(--soft,#f8fafc);color:var(--text,#0f172a);border-radius:12px;padding:9px 12px;font-size:11px;font-weight:850;cursor:pointer;white-space:nowrap}
-.v251-column-btn:hover{border-color:var(--accent,#2563eb)}
-.v251-mobile-note{display:none;padding:0 13px 10px;font-size:10px;line-height:1.4;color:var(--muted,#64748b);font-weight:700}
-.v251-matrix-table{padding:0 0 8px;overflow:auto}
-.v251-matrix-table table{width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed;min-width:760px}
-.v251-matrix-table th{padding:11px 12px;border-bottom:1px solid var(--line,#e2e8f0);font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted,#64748b);font-weight:900;text-align:right;white-space:nowrap;background:var(--panel,#fff)}
-.v251-matrix-table th:first-child,.v251-matrix-table td:first-child{text-align:left}
-.v251-matrix-table td{padding:11px 12px;border-bottom:1px solid var(--line,#e2e8f0);font-size:11.5px;line-height:1.25;text-align:right;color:var(--text,#0f172a);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.v251-matrix-table tbody tr{cursor:pointer}
-.v251-matrix-table tbody tr:hover td{background:color-mix(in srgb,var(--row-color,#64748b) 5%,var(--panel,#fff))}
-.v251-matrix-table tfoot td{font-weight:950;background:color-mix(in srgb,var(--soft,#f8fafc) 74%,var(--panel,#fff));border-bottom:0}
-.v251-label-pill{display:inline-flex;align-items:center;gap:7px;max-width:100%;padding:5px 9px;border-radius:999px;background:color-mix(in srgb,var(--item-color,#64748b) 12%,var(--soft,#f8fafc));color:color-mix(in srgb,var(--item-color,#64748b) 84%,#0f172a);font-weight:900;overflow:hidden}
-.v251-label-pill i{width:7px;height:7px;border-radius:50%;background:var(--item-color,#64748b);flex:none}.v251-label-pill span{overflow:hidden;text-overflow:ellipsis}
-.v251-mobile-list{display:none;padding:0 11px 11px;gap:9px}.v251-mobile-card{border:1px solid var(--line,#e2e8f0);border-radius:15px;background:var(--soft,#f8fafc);padding:11px;display:grid;gap:9px;cursor:pointer}.v251-mobile-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}.v251-mobile-total{text-align:right;display:grid;gap:2px}.v251-mobile-total span{font-size:9px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted,#64748b);font-weight:850}.v251-mobile-total strong{font-size:12px}.v251-mobile-months{display:grid;grid-template-columns:1fr 1fr;gap:7px}.v251-mobile-month{border:1px solid var(--line,#e2e8f0);border-radius:11px;background:var(--panel,#fff);padding:7px 8px;display:grid;gap:2px}.v251-mobile-month span{font-size:9px;text-transform:uppercase;color:var(--muted,#64748b);font-weight:850}.v251-mobile-month b{font-size:10.5px}
-html[data-theme="dark"] .v251-matrix-panel,.dark .v251-matrix-panel{box-shadow:none}
-@media(max-width:760px){.v251-matrix-panel{border-radius:17px}.v251-matrix-head{padding:13px 13px 9px}.v251-matrix-head h2{font-size:13px}.v251-matrix-head p{font-size:10px}.v251-column-btn{display:none}.v251-mobile-note{display:block}.v251-matrix-table{display:none}.v251-mobile-list{display:grid}}
-@media(max-width:390px){.v251-mobile-months{grid-template-columns:1fr}.v251-mobile-card-head{flex-direction:column}.v251-mobile-total{text-align:left}}
-</style>
-<script id="v251-home-matrices-script">
-(function(){
-function v251MatrixData(monthIds,rows,mode){
-  const map=new Map();
-  (rows||[]).forEach(row=>{
-    const catId=row.b?.cat||row.catId||'';
-    if(!catId)return;
-    const sub=cleanName(row.b?.sub||row.sub||'Sem subcategoria');
-    const key=mode==='category'?catId:`${catId}::${norm(sub)}`;
-    if(!map.has(key)){
-      const c=cat(catId);
-      map.set(key,{key,catId,label:mode==='category'?(c?.name||catId):sub,color:c?.color||'#64748b',months:{},total:0});
-    }
-    const item=map.get(key),month=row.month,value=Number(row.planned||0);
-    item.months[month]=(item.months[month]||0)+value;
-    item.total+=value;
-  });
-  return [...map.values()].sort((a,b)=>b.total-a.total||textCmp(a.label,b.label));
-}
-function v251Click(mode,item){
-  if(mode==='category')v248SetCategoryFilter(item.catId);
-  else{v246HomeFilters.cat=item.catId;v246HomeFilters.sub=item.label;render()}
-}
-function v251ColumnWidth(mode){
-  const root=document.getElementById('app'),selector=mode==='category'?'.v251-cat-table table':'.v251-sub-table table',table=root?.querySelector(selector);
-  if(!table)return alert('A tabela não está disponível nesta tela.');
-  if(!table.dataset.columnKey&&typeof initColumnWidthEditors==='function')initColumnWidthEditors(root);
-  if(!table.dataset.columnKey)return alert('Não foi possível abrir a configuração das colunas.');
-  openColumnWidthEditor(encodeURIComponent(table.dataset.columnKey));
-}
-window.v251ColumnWidth=v251ColumnWidth;
-window.v251MatrixFilter=function(mode,key){
-  const ids=v246HomeMonthIds(),rows=v246HomeBudgetRows(ids),item=v251MatrixData(ids,rows,mode).find(x=>x.key===decodeURIComponent(key));
-  if(item)v251Click(mode,item);
-};
-function v251Matrix(monthIds,rows,mode){
-  const items=v251MatrixData(monthIds,rows,mode),title=mode==='category'?'Visão mensal por categorias':'Visão mensal por subcategorias',desc=mode==='category'?'Valores planejados por categoria em cada mês':'Valores planejados por subcategoria em cada mês',klass=mode==='category'?'v251-cat-table':'v251-sub-table';
-  const mh=(monthIds||[]).map(m=>`<th>${escapeHtml(monthShort(Number(String(m).slice(5,7))).toUpperCase())}/${String(m).slice(2,4)}</th>`).join('');
-  const body=items.map(item=>`<tr style="--row-color:${escapeHtml(item.color)}" onclick="v251MatrixFilter('${mode}','${encodeURIComponent(item.key)}')"><td><span class="v251-label-pill" style="--item-color:${escapeHtml(item.color)}"><i></i><span>${escapeHtml(item.label)}</span></span></td>${(monthIds||[]).map(m=>`<td>${fmt(Number(item.months[m]||0))}</td>`).join('')}<td><strong>${fmt(item.total)}</strong></td></tr>`).join('');
-  const totals=(monthIds||[]).map(m=>items.reduce((sum,item)=>sum+Number(item.months[m]||0),0)),grand=totals.reduce((s,v)=>s+v,0);
-  const desktop=`<div class="table-wrap v251-matrix-table ${klass}"><table><thead><tr><th>${mode==='category'?'Categoria':'Subcategoria'}</th>${mh}<th>Total</th></tr></thead><tbody>${body||`<tr><td colspan="${(monthIds||[]).length+2}">Nenhum dado encontrado neste recorte.</td></tr>`}</tbody><tfoot><tr><td>Total planejado</td>${totals.map(v=>`<td>${fmt(v)}</td>`).join('')}<td>${fmt(grand)}</td></tr></tfoot></table></div>`;
-  const mobile=items.length?`<div class="v251-mobile-list">${items.map(item=>`<article class="v251-mobile-card" onclick="v251MatrixFilter('${mode}','${encodeURIComponent(item.key)}')"><div class="v251-mobile-card-head"><span class="v251-label-pill" style="--item-color:${escapeHtml(item.color)}"><i></i><span>${escapeHtml(item.label)}</span></span><div class="v251-mobile-total"><span>Total</span><strong>${fmt(item.total)}</strong></div></div><div class="v251-mobile-months">${(monthIds||[]).map(m=>`<div class="v251-mobile-month"><span>${escapeHtml(monthShort(Number(String(m).slice(5,7))).toUpperCase())}/${String(m).slice(2,4)}</span><b>${fmt(Number(item.months[m]||0))}</b></div>`).join('')}</div></article>`).join('')}</div>`:'<div class="v251-mobile-list"><div class="v249-breakdown-empty">Nenhum dado encontrado neste recorte.</div></div>';
-  return `<section class="v251-matrix-panel"><div class="v251-matrix-head"><div><h2>${title}</h2><p>${desc}</p></div><button type="button" class="v251-column-btn" onclick="v251ColumnWidth('${mode}')">Ajustar colunas</button></div><div class="v251-mobile-note">Toque em um item para filtrar o dashboard. No computador, as larguras das colunas ficam salvas por usuário e dispositivo.</div>${desktop}${mobile}</section>`;
-}
-function v251Matrices(monthIds,rows){return `${v251Matrix(monthIds,rows,'category')}${v251Matrix(monthIds,rows,'subcategory')}`}
-const previousTableTitle=tableTitleFromContext;
-tableTitleFromContext=function(wrap){
-  if(wrap?.classList?.contains('v251-cat-table'))return 'Início — visão mensal por categorias';
-  if(wrap?.classList?.contains('v251-sub-table'))return 'Início — visão mensal por subcategorias';
-  return previousTableTitle(wrap);
-};
-renderEstrategia=function(){
-  if(!v246HomeFilters.year)v246HomeFilters.year=v246HomeDefaultYear();
-  const monthIds=v246HomeMonthIds(),rows=v246HomeBudgetRows(monthIds);
-  layout(`<div class="v246-home-dashboard">${v246HomeFilterPanel(monthIds)}${v246HomeKpis(monthIds,rows)}${v248HomeInsights(monthIds,rows)}${v249HomeBreakdowns(monthIds,rows)}${v251Matrices(monthIds,rows)}</div>`);
-};
-})();
-</script>
-<!-- V2.51 — Início: adicionadas Visão mensal por categorias e Visão mensal por subcategorias, nesta ordem, abaixo de Responsabilidade financeira e Despesas por localidade. -->
-'''
-          marker='</body></html>'
-          if marker not in s:
-              raise SystemExit('Fechamento do HTML não encontrado')
-          s=s.replace(marker,block+'\n'+marker,1)
+          s=s.replace('</body></html>',block+'\n\n</body></html>',1)
           p.write_text(s,encoding='utf-8')
       - name: Validar V2.51
-        shell: bash
         run: |
           grep -q 'versão 2.51' index.html
           grep -q 'Visão mensal por categorias' index.html
           grep -q 'Visão mensal por subcategorias' index.html
-          grep -q 'v251-home-matrices-script' index.html
           python - <<'PY'
           from pathlib import Path
           import re
           s=Path('index.html').read_text(encoding='utf-8')
+          a=s.index('Visão mensal por categorias')
+          b=s.index('Visão mensal por subcategorias')
+          assert a < b
           scripts=re.findall(r'<script[^>]*>(.*?)</script>',s,flags=re.S|re.I)
           Path('/tmp/all-scripts.js').write_text('\n\n'.join(scripts),encoding='utf-8')
           PY
           node --check /tmp/all-scripts.js
       - name: Publicar V2.51 e limpar workflow temporário
-        shell: bash
         run: |
           git config user.name 'ChatGPT App Despesas Casal'
           git config user.email 'actions@users.noreply.github.com'
