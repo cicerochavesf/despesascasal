@@ -1,0 +1,64 @@
+name: Aplicar V2.59
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-v259.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update-index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Conferir base V2.58
+        run: test "$(git hash-object index.html)" = "c75f34e5e6ba384e4000f32fbb2c5f268c5a5955"
+      - name: Aplicar V2.59
+        shell: python
+        run: |
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          old='<!-- Despesas Casal - Controle Financeiro | versão 2.58 -->'
+          new='<!-- Despesas Casal - Controle Financeiro | versão 2.59 -->'
+          if old not in s: raise SystemExit('Cabeçalho V2.58 não encontrado')
+          s=s.replace(old,new,1)
+          old_decl="const revenue=monthIds.reduce((s,m)=>s+Number(revenueTotal(m)||0),0),expense=rows.reduce((s,r)=>s+Number(r.planned||0),0),balance=revenue-expense,base=Math.max(1,monthIds.length),commitment=revenue>0?expense/revenue*100:0,revenueMonths=monthIds.filter(m=>Number(revenueTotal(m)||0)>.005).length,balanceText=balance<-.005?'Déficit previsto':balance>.005?'Superávit previsto':'Orçamento equilibrado';"
+          new_decl="const revenue=monthIds.reduce((s,m)=>s+Number(revenueTotal(m)||0),0),expense=rows.reduce((s,r)=>s+Number(r.planned||0),0),invested=rows.filter(r=>r.b?.cat==='investimentos').reduce((s,r)=>s+Number(r.planned||0),0),balance=revenue-expense,base=Math.max(1,monthIds.length),commitment=revenue>0?expense/revenue*100:0,investedPct=revenue>0?invested/revenue*100:0,revenueMonths=monthIds.filter(m=>Number(revenueTotal(m)||0)>.005).length,balanceText=balance<-.005?'Déficit previsto':balance>.005?'Superávit previsto':'Orçamento equilibrado';"
+          if old_decl not in s: raise SystemExit('Declaração do painel não encontrada')
+          s=s.replace(old_decl,new_decl,1)
+          old_end="<article class=\"v254-kpi\"><span>Receita comprometida</span><strong>${Math.max(0,commitment).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}%</strong><small>${monthIds.length} ${monthIds.length===1?'mês no recorte':'meses no recorte'}</small></article></div></section>`;"
+          new_end="<article class=\"v254-kpi\"><span>Receita comprometida</span><strong>${Math.max(0,commitment).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}%</strong><small>${monthIds.length} ${monthIds.length===1?'mês no recorte':'meses no recorte'}</small></article><article class=\"v254-kpi v259-invested-kpi\"><span>Total investido</span>${v258Money(invested)}<small><strong>${Math.max(0,investedPct).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}%</strong> da receita</small></article></div></section>`;"
+          if old_end not in s: raise SystemExit('Bloco final de KPIs não encontrado')
+          s=s.replace(old_end,new_end,1)
+          style='''
+          <style id="v259-invested-kpi-style">
+          .v259-invested-kpi{background:linear-gradient(145deg,rgba(16,185,129,.18),rgba(255,255,255,.10));border-color:rgba(167,243,208,.26)}
+          .v259-invested-kpi>small{display:flex;align-items:baseline;gap:4px}
+          .v259-invested-kpi>small strong{font-size:13px;line-height:1;font-weight:950;color:#d1fae5;letter-spacing:-.01em}
+          @media(min-width:761px){.v259-invested-kpi>small strong{font-size:14px}}
+          </style>
+          <!-- V2.59 — Novo KPI Total investido, com percentual sobre a receita do período. -->
+          '''
+          s=s.replace('</body></html>',style+'\n</body></html>',1)
+          p.write_text(s,encoding='utf-8')
+      - name: Validar V2.59
+        run: |
+          grep -q 'versão 2.59' index.html
+          grep -q 'Total investido' index.html
+          grep -q 'investedPct' index.html
+          grep -q "r.b?.cat==='investimentos'" index.html
+          python -c "from pathlib import Path; import re; s=Path('index.html').read_text(encoding='utf-8'); Path('/tmp/all-scripts.js').write_text('\\n\\n'.join(re.findall(r'<script[^>]*>(.*?)</script>',s,flags=re.S|re.I)),encoding='utf-8')"
+          node --check /tmp/all-scripts.js
+      - name: Publicar V2.59 e limpar workflow temporário
+        run: |
+          git config user.name 'ChatGPT App Despesas Casal'
+          git config user.email 'actions@users.noreply.github.com'
+          rm -f .github/workflows/apply-v259.yml
+          git add index.html .github/workflows/apply-v259.yml
+          git commit -m 'V2.59: adicionar KPI total investido'
+          git push origin HEAD:main
