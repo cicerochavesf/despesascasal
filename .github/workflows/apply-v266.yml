@@ -20,8 +20,8 @@ jobs:
         run: test "$(git hash-object index.html)" = "f65d3d7994b37869c8032ad5aa14478aecde378f"
 
       - name: Aplicar V2.66
-        shell: python
         run: |
+          python - <<'PY'
           from pathlib import Path
           p=Path('index.html')
           s=p.read_text(encoding='utf-8')
@@ -31,79 +31,80 @@ jobs:
               raise SystemExit('Cabeçalho V2.65 não encontrado')
           if 'v266-responsive-movement-grid-style' in s:
               raise SystemExit('V2.66 já aplicada')
-          css=r'''
-<style id="v266-responsive-movement-grid-style">
-/* V2.66 — Navegação e KPIs de Movimentações sem rolagem lateral. */
-.v264-movement-hero .tx-tabs{
-  display:grid!important;
-  grid-template-columns:repeat(auto-fit,minmax(118px,1fr))!important;
-  gap:6px!important;
-  overflow:visible!important;
-  width:100%!important;
-}
-.v264-movement-hero .tx-tabs button{
-  width:100%!important;
-  min-width:0!important;
-  max-width:none!important;
-  white-space:normal!important;
-}
-.v264-movement-hero .tx-summary{
-  display:grid!important;
-  grid-template-columns:repeat(auto-fit,minmax(150px,1fr))!important;
-  gap:8px!important;
-  width:100%!important;
-  overflow:visible!important;
-}
-.v264-movement-hero .tx-summary .metric{
-  width:100%!important;
-  min-width:0!important;
-  max-width:none!important;
-}
-@media(max-width:760px){
-  .v264-movement-hero .tx-tabs{
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-    gap:5px!important;
-    overflow:visible!important;
-  }
-  .v264-movement-hero .tx-tabs button{
-    min-width:0!important;
-    min-height:36px!important;
-    padding:6px 7px!important;
-    font-size:9px!important;
-  }
-  .v264-movement-hero .tx-summary{
-    grid-template-columns:repeat(auto-fit,minmax(92px,1fr))!important;
-    gap:5px!important;
-  }
-}
-@media(max-width:390px){
-  .v264-movement-hero .tx-summary{
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  }
-  .v264-movement-hero .tx-summary .metric:last-child:nth-child(odd){
-    grid-column:1/-1;
-  }
-}
-</style>
-<!-- V2.66 — Caixas de Movimentações e KPIs em grade responsiva, sem scroll lateral. -->
-'''
+          css='''
+          <style id="v266-responsive-movement-grid-style">
+          /* V2.66 — Navegação e KPIs de Movimentações sem rolagem lateral. */
+          .v264-movement-hero .tx-tabs{
+            display:grid!important;
+            grid-template-columns:repeat(auto-fit,minmax(118px,1fr))!important;
+            gap:6px!important;
+            overflow:visible!important;
+            width:100%!important;
+          }
+          .v264-movement-hero .tx-tabs button{
+            width:100%!important;
+            min-width:0!important;
+            max-width:none!important;
+            white-space:normal!important;
+          }
+          .v264-movement-hero .tx-summary{
+            display:grid!important;
+            grid-template-columns:repeat(auto-fit,minmax(150px,1fr))!important;
+            gap:8px!important;
+            width:100%!important;
+            overflow:visible!important;
+          }
+          .v264-movement-hero .tx-summary .metric{
+            width:100%!important;
+            min-width:0!important;
+            max-width:none!important;
+          }
+          @media(max-width:760px){
+            .v264-movement-hero .tx-tabs{
+              grid-template-columns:repeat(2,minmax(0,1fr))!important;
+              gap:5px!important;
+              overflow:visible!important;
+            }
+            .v264-movement-hero .tx-tabs button{
+              min-width:0!important;
+              min-height:36px!important;
+              padding:6px 7px!important;
+              font-size:9px!important;
+            }
+            .v264-movement-hero .tx-summary{
+              grid-template-columns:repeat(auto-fit,minmax(92px,1fr))!important;
+              gap:5px!important;
+            }
+          }
+          @media(max-width:390px){
+            .v264-movement-hero .tx-summary{
+              grid-template-columns:repeat(2,minmax(0,1fr))!important;
+            }
+            .v264-movement-hero .tx-summary .metric:last-child:nth-child(odd){
+              grid-column:1/-1;
+            }
+          }
+          </style>
+          <!-- V2.66 — Caixas de Movimentações e KPIs em grade responsiva, sem scroll lateral. -->
+          '''
           s=s.replace(old,new,1)
           marker='</body></html>'
           if marker not in s:
               raise SystemExit('Fechamento HTML não encontrado')
           s=s.replace(marker,css+'\n'+marker,1)
           p.write_text(s,encoding='utf-8')
+          PY
 
       - name: Validar V2.66
         run: |
           grep -q 'versão 2.66' index.html
           grep -q 'v266-responsive-movement-grid-style' index.html
-          grep -q 'grid-template-columns:repeat(2,minmax(0,1fr))' index.html
+          grep -q 'Caixas de Movimentações e KPIs em grade responsiva' index.html
           python - <<'PY'
           from pathlib import Path
           import re
           s=Path('index.html').read_text(encoding='utf-8')
-          assert 'V2.66 — Caixas de Movimentações e KPIs em grade responsiva' in s
+          assert 'grid-template-columns:repeat(2,minmax(0,1fr))!important' in s
           scripts='\n\n'.join(re.findall(r'<script[^>]*>(.*?)</script>',s,flags=re.S|re.I))
           Path('/tmp/all-scripts.js').write_text(scripts,encoding='utf-8')
           PY
@@ -115,5 +116,5 @@ jobs:
           git config user.email 'actions@users.noreply.github.com'
           rm -f .github/workflows/apply-v266.yml
           git add index.html .github/workflows/apply-v266.yml
-          git commit -m 'V2.66: organizar Movimentações em grade responsiva'
+          git commit -m "V2.66: organizar Movimentações em grade responsiva"
           git push origin HEAD:main
