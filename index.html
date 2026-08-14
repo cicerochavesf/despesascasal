@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.48 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.49 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -3394,6 +3394,31 @@ html[data-theme="dark"][data-ui="v23"] .v219-bar-label{
 html[data-theme="dark"] .v246-home-filters,html[data-theme="dark"] .v246-kpi-card,.dark .v246-home-filters,.dark .v246-kpi-card{box-shadow:none}.dark .v246-clear-filters,html[data-theme="dark"] .v246-clear-filters{background:#f8fafc;color:#111827}
 </style>
 
+
+<style id="v249-home-breakdowns-style">
+/* V2.49 — Responsabilidade financeira e despesas por localidade na tela Início */
+.v249-breakdowns-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:stretch}
+.v249-breakdown-panel{min-width:0;background:var(--panel,#fff);border:1px solid var(--line,#e2e8f0);border-radius:20px;box-shadow:0 10px 28px rgba(15,23,42,.055);overflow:hidden}
+.v249-breakdown-head{padding:16px 16px 10px}
+.v249-breakdown-head h2{margin:0;font-size:14px;line-height:1.2;font-weight:950;color:var(--text,#0f172a)}
+.v249-breakdown-head p{margin:5px 0 0;font-size:10.5px;line-height:1.35;color:var(--muted,#64748b);font-weight:650}
+.v249-breakdown-list{display:grid;gap:9px;padding:0 14px 14px}
+.v249-breakdown-row{--v249-color:#64748b;--v249-pct:0%;display:grid;gap:8px;width:100%;padding:11px 12px;border:1px solid var(--line,#e2e8f0);border-radius:14px;background:var(--soft,#f8fafc);color:inherit;text-align:left;cursor:pointer;transition:transform .15s ease,border-color .15s ease,background .15s ease}
+.v249-breakdown-row:hover{transform:translateY(-1px);border-color:color-mix(in srgb,var(--v249-color) 42%,var(--line,#e2e8f0));background:color-mix(in srgb,var(--v249-color) 5%,var(--panel,#fff))}
+.v249-breakdown-row:focus-visible{outline:2px solid color-mix(in srgb,var(--v249-color) 70%,white);outline-offset:2px}
+.v249-breakdown-main{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;gap:8px;min-width:0}
+.v249-breakdown-dot{width:9px;height:9px;border-radius:50%;background:var(--v249-color);box-shadow:0 0 0 3px color-mix(in srgb,var(--v249-color) 12%,transparent)}
+.v249-breakdown-name{min-width:0;font-size:11px;line-height:1.2;font-weight:900;color:var(--text,#0f172a);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.v249-breakdown-value{font-size:11px;line-height:1.2;font-weight:950;color:var(--text,#0f172a);white-space:nowrap}
+.v249-breakdown-pct{font-size:10px;line-height:1.2;font-weight:950;color:color-mix(in srgb,var(--v249-color) 82%,#0f172a);white-space:nowrap}
+.v249-breakdown-track{height:5px;border-radius:999px;background:var(--line,#e2e8f0);overflow:hidden}
+.v249-breakdown-track i{display:block;height:100%;width:var(--v249-pct);border-radius:999px;background:var(--v249-color);min-width:0}
+.v249-breakdown-empty{padding:22px 14px 24px;text-align:center;color:var(--muted,#64748b);font-size:11px}
+html[data-theme="dark"] .v249-breakdown-panel,.dark .v249-breakdown-panel{box-shadow:none}
+@media(max-width:900px){.v249-breakdowns-grid{grid-template-columns:1fr}}
+@media(max-width:760px){.v249-breakdowns-grid{gap:10px}.v249-breakdown-panel{border-radius:17px}.v249-breakdown-head{padding:13px 13px 9px}.v249-breakdown-head h2{font-size:13px}.v249-breakdown-head p{font-size:10px}.v249-breakdown-list{gap:8px;padding:0 10px 10px}.v249-breakdown-row{padding:10px}.v249-breakdown-main{grid-template-columns:auto minmax(0,1fr) auto}.v249-breakdown-value{font-size:10.5px}.v249-breakdown-pct{grid-column:2/4;justify-self:start;font-size:9.5px;margin-top:-2px}.v249-breakdown-dot{width:8px;height:8px}.v249-breakdown-name{font-size:10.5px}}
+@media(max-width:390px){.v249-breakdown-value{font-size:10px}.v249-breakdown-pct{font-size:9px}}
+</style>
 <style id="v248-home-insights-style">
 /* V2.48 — segundo nível do dashboard Início: visão mensal + distribuição por categoria */
 .v248-insights-grid{display:grid;grid-template-columns:minmax(0,1.58fr) minmax(330px,1fr);gap:14px;align-items:stretch}
@@ -5497,6 +5522,49 @@ function v248HomeInsights(monthIds,rows){
   const monthly=v248HomeMonthlyData(monthIds,rows);
   return `<section class="v248-insights-grid"><section class="v248-insight-panel"><div class="v248-panel-head"><div><h2>Receitas × despesas planejadas — mês a mês</h2><p>Receita prevista total comparada às despesas planejadas do filtro atual</p></div><button type="button" class="v248-column-btn" onclick="v248OpenHomeMonthlyColumnWidth()">Ajustar colunas</button></div><div class="v248-mobile-table-hint">Arraste a tabela para o lado para ver todas as colunas. As larguras ficam salvas para este usuário e dispositivo.</div>${v248HomeMonthlyDesktop(monthly)}</section>${v248HomeCategoryPanel(rows)}</section>`;
 }
+
+function v249HomePeriodLabel(monthIds){
+  const ids=(monthIds||[]).slice().sort();
+  if(!ids.length)return 'Período sem meses';
+  const short=m=>`${monthShort(Number(String(m).slice(5,7)))}/${String(m).slice(2,4)}`;
+  return ids.length===1?short(ids[0]):`${short(ids[0])} a ${short(ids[ids.length-1])}`;
+}
+function v249RevenueResponsibilityData(monthIds){
+  const defs=[
+    {key:'cicero',label:'Cícero',color:'#4F46E5'},
+    {key:'nilce',label:'Nilce',color:'#DB2777'},
+    {key:'reserva',label:'Outras receitas',color:'#047857'}
+  ];
+  const items=defs.map(item=>({...item,value:(monthIds||[]).reduce((sum,month)=>sum+Number(revObj(month)[item.key]||0),0)}));
+  const total=items.reduce((sum,item)=>sum+item.value,0);
+  return items.map(item=>({...item,pct:total?item.value/total*100:0,total}));
+}
+function v249LocalityData(rows){
+  const defs=[
+    {key:'Fortaleza',label:'Fortaleza',color:'#EC4899'},
+    {key:'Brasília',label:'Brasília',color:'#64748B'},
+    {key:'Compartilhado',label:'Compartilhado',color:'#16A34A'}
+  ];
+  const map=new Map(defs.map(item=>[item.key,0]));
+  (rows||[]).forEach(row=>{const city=row.city||'Compartilhado';if(map.has(city))map.set(city,(map.get(city)||0)+Number(row.planned||0))});
+  const total=[...map.values()].reduce((sum,value)=>sum+value,0);
+  return defs.map(item=>({...item,value:map.get(item.key)||0,pct:total?(map.get(item.key)||0)/total*100:0,total})).filter(item=>item.value>.005);
+}
+function v249BreakdownRows(items,onclickBuilder){
+  if(!(items||[]).length)return '<div class="v249-breakdown-empty">Nenhum valor encontrado neste recorte.</div>';
+  return `<div class="v249-breakdown-list">${items.map(item=>`<button type="button" class="v249-breakdown-row" style="--v249-color:${escapeHtml(item.color)};--v249-pct:${Math.max(0,Math.min(100,item.pct)).toFixed(2)}%" onclick="${onclickBuilder(item)}"><span class="v249-breakdown-main"><i class="v249-breakdown-dot"></i><strong class="v249-breakdown-name">${escapeHtml(item.label)}</strong><b class="v249-breakdown-value">${fmt(item.value)}</b><span class="v249-breakdown-pct">${item.pct.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}%</span></span><span class="v249-breakdown-track"><i></i></span></button>`).join('')}</div>`;
+}
+function v249OpenRevenueResponsibility(){
+  if(v246HomeFilters.month!=='todos'&&v246HomeFilters.month){state.month=validMonth(v246HomeFilters.month);revenueScope='mes'}else{revenueScope='ano'}
+  view='receitas';render();
+}
+function v249SetCityFilter(city){v246HomeFilters.city=city||'todos';render()}
+function v249HomeBreakdowns(monthIds,rows){
+  const period=v249HomePeriodLabel(monthIds),responsibility=v249RevenueResponsibilityData(monthIds),localities=v249LocalityData(rows);
+  const responsibilityPanel=`<section class="v249-breakdown-panel"><div class="v249-breakdown-head"><h2>Responsabilidade financeira</h2><p>Receita prevista · ${escapeHtml(period)} · clique para detalhar</p></div>${v249BreakdownRows(responsibility,()=>`v249OpenRevenueResponsibility()`)}</section>`;
+  const localityPanel=`<section class="v249-breakdown-panel"><div class="v249-breakdown-head"><h2>Despesas por localidade</h2><p>Participação no valor planejado · clique para filtrar</p></div>${v249BreakdownRows(localities,item=>`v249SetCityFilter('${escapeHtml(item.key)}')`)}</section>`;
+  return `<section class="v249-breakdowns-grid">${responsibilityPanel}${localityPanel}</section>`;
+}
 const v248LegacyTableTitleFromContext=tableTitleFromContext;
 tableTitleFromContext=function(wrap){
   if(wrap?.classList?.contains('v248-monthly-table'))return 'Início — receitas x despesas mês a mês';
@@ -5506,7 +5574,7 @@ tableTitleFromContext=function(wrap){
 renderEstrategia=function(){
   if(!v246HomeFilters.year)v246HomeFilters.year=v246HomeDefaultYear();
   const monthIds=v246HomeMonthIds(),rows=v246HomeBudgetRows(monthIds);
-  layout(`<div class="v246-home-dashboard">${v246HomeFilterPanel(monthIds)}${v246HomeKpis(monthIds,rows)}${v248HomeInsights(monthIds,rows)}</div>`);
+  layout(`<div class="v246-home-dashboard">${v246HomeFilterPanel(monthIds)}${v246HomeKpis(monthIds,rows)}${v248HomeInsights(monthIds,rows)}${v249HomeBreakdowns(monthIds,rows)}</div>`);
 };
 renderReceitas=function(){
   const list=monthYearList(revenueScope),totals=list.reduce((a,m)=>{const r=revObj(m);a.cicero+=Number(r.cicero||0);a.nilce+=Number(r.nilce||0);a.other+=Number(r.reserva||0);return a},{cicero:0,nilce:0,other:0});totals.total=totals.cicero+totals.nilce+totals.other;
@@ -7918,5 +7986,8 @@ requestAnimationFrame(v240EnhanceMobileAuthorBadge);
 
 
 <!-- V2.48 — Início ganhou visão mês a mês e distribuição por categoria abaixo dos KPIs, com cores das categorias, larguras de colunas salvas no desktop e cartões próprios no celular. -->
+
+
+<!-- V2.49 — Início: adicionados painéis Responsabilidade financeira e Despesas por localidade, com dados reais, filtros e layout responsivo. -->
 
 </body></html>
