@@ -1,0 +1,78 @@
+name: Aplicar V2.65
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-v265.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update-index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Conferir base V2.64
+        run: test "$(git hash-object index.html)" = "ac48b1dd7f52eac221d88b7331b4c0270f7e9e2e"
+
+      - name: Aplicar V2.65
+        shell: python
+        run: |
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          old_header='<!-- Despesas Casal - Controle Financeiro | versão 2.64 -->'
+          new_header='<!-- Despesas Casal - Controle Financeiro | versão 2.65 -->'
+          if old_header not in s:
+              raise SystemExit('Cabeçalho V2.64 não encontrado')
+          old="""function prepareDefaultOpening(){
+            view='lancamentos';
+            periodMode='mes';
+            state.month=validMonth(typeof v223FinancialMonthForDate==='function'?v223FinancialMonthForDate(localDateId()):currentMonthId());
+            txScope='mes';
+            txPanel='realizados';"""
+          new="""function prepareDefaultOpening(){
+            view='lancamentos';
+            periodMode='mes';
+            state.month=validMonth(typeof v223FinancialMonthForDate==='function'?v223FinancialMonthForDate(localDateId()):currentMonthId());
+            txScope='mes';
+            txPanel='acompanhamento';"""
+          if old not in s:
+              raise SystemExit('Regra de abertura V2.64 não encontrada')
+          s=s.replace(old_header,new_header,1).replace(old,new,1)
+          s=s.replace('</body></html>',"<!-- V2.65 — abertura padrão em Movimentações > Planejado no mês financeiro atual. -->\n</body></html>",1)
+          p.write_text(s,encoding='utf-8')
+
+      - name: Validar V2.65
+        run: |
+          grep -q 'versão 2.65' index.html
+          grep -q "txPanel='acompanhamento';" index.html
+          grep -q 'V2.65 — abertura padrão em Movimentações > Planejado' index.html
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('index.html').read_text(encoding='utf-8')
+          target="""function prepareDefaultOpening(){
+            view='lancamentos';
+            periodMode='mes';
+            state.month=validMonth(typeof v223FinancialMonthForDate==='function'?v223FinancialMonthForDate(localDateId()):currentMonthId());
+            txScope='mes';
+            txPanel='acompanhamento';"""
+          assert target in s
+          scripts='\n\n'.join(re.findall(r'<script[^>]*>(.*?)</script>',s,flags=re.S|re.I))
+          Path('/tmp/all-scripts.js').write_text(scripts,encoding='utf-8')
+          PY
+          node --check /tmp/all-scripts.js
+
+      - name: Publicar V2.65 e limpar workflow temporário
+        run: |
+          git config user.name 'ChatGPT App Despesas Casal'
+          git config user.email 'actions@users.noreply.github.com'
+          rm -f .github/workflows/apply-v265.yml
+          git add index.html .github/workflows/apply-v265.yml
+          git commit -m 'V2.65: abrir Movimentações em Planejado'
+          git push origin HEAD:main
