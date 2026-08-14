@@ -20,127 +20,11 @@ jobs:
         run: test "$(git hash-object index.html)" = "15e62c5ea8133f8dc73dbdadb2043ddbc864180d"
 
       - name: Aplicar V2.69
+        env:
+          V269_PATCH_B64: ZnJvbSBwYXRobGliIGltcG9ydCBQYXRoCnA9UGF0aCgiaW5kZXguaHRtbCIpCnM9cC5yZWFkX3RleHQoZW5jb2Rpbmc9InV0Zi04IikKb2xkPSc8IS0tIERlc3Blc2FzIENhc2FsIC0gQ29udHJvbGUgRmluYW5jZWlybyB8IHZlcnPDp28gMi42OCAtLT4nCm5ldz0nPCEtLSBEZXNwZXNhcyBDYXNhbCAtIENvbnRyb2xlIEZpbmFuY2Vpcm8gfCB2ZXJzw6NvIDIuNjkgLS0+JwppZiBvbGQgbm90IGluIHM6CiAgICByYWlzZSBTeXN0ZW1FeGl0KCJDYWJlw6dhbGhvIFYyLjY4IG7Do28gZW5jb250cmFkbyIpCmlmICd2MjY5LXJlYWwta3BpLXBlcmlvZC1maXgtc3R5bGUnIGluIHM6CiAgICByYWlzZSBTeXN0ZW1FeGl0KCJWMi42OSBqw6EgYXBsaWNhZGEiKQpzdGFydD1zLmZpbmQoJzxzdHlsZSBpZD0idjI2OC1maW5hbC1wZXJpb2Qta3BpLWZpeC1zdHlsZSI+JykKaWYgc3RhcnQgPCAwOgogICAgcmFpc2UgU3lzdGVtRXhpdCgiQmxvY28gVjIuNjggbsOjbyBlbmNvbnRyYWRvIikKbWFya2VyPSc8IS0tIFYyLjY4IOKAlCBDb3JyaWdlIG9yZGVtIGRvcyBvdmVycmlkZXMsIEtQSSBtb2JpbGUgZGUgTW92aW1lbnRhw6fDtWVzIGUgbcOqcyBkaXNjcmV0byBubyBJbsOtY2lvLiAtLT4nCmVuZD1zLmZpbmQobWFya2VyLHN0YXJ0KQppZiBlbmQgPCAwOgogICAgcmFpc2UgU3lzdGVtRXhpdCgiRmltIGRvIGJsb2NvIFYyLjY4IG7Do28gZW5jb250cmFkbyIpCmVuZCArPSBsZW4obWFya2VyKQpzPXM6c3RhcnRdK3NbZW5kOl0KYWRkb249JzxzdHlsZSBpZD0idjI2OS1yZWFsLWtwaS1wZXJpb2QtZml4LXN0eWxlIj5cbi8qIFYyLjY5IOKAlCBDb3JyaWdlIG9zIGNvbnRhaW5lcnMgcmVhbG1lbnRlIHJlbmRlcml6YWRvcyBkb3MgS1BJcyBlIG8gcGVyw61vZG8gZG9zIHBhaW7DqWlzIGF6dWlzLiAqL1xuLnYyNTItaG9tZS1oZXJve3Bvc2l0aW9uOnJlbGF0aXZlIWltcG9ydGFudH1cbi52MjY5LWhvbWUtcGVyaW9kLWNoaXB7XG4gIHBvc2l0aW9uOmFic29sdXRlIWltcG9ydGFudDt0b3A6MTRweCFpbXBvcnRhbnQ7cmlnaHQ6MTRweCFpbXBvcnRhbnQ7ei1pbmRleDoxMiFpbXBvcnRhbnQ7XG4gIGRpc3BsYXk6aW5saW5lLWZsZXghaW1wb3J0YW50O2FsaWduLWl0ZW1zOmNlbnRlciFpbXBvcnRhbnQ7anVzdGlmeS1jb250ZW50OmNlbnRlciFpbXBvcnRhbnQ7Z2FwOjdweCFpbXBvcnRhbnQ7XG4gIG1pbi1oZWlnaHQ6MjhweCFpbXBvcnRhbnQ7cGFkZGluZzo1cHggOXB4IWltcG9ydGFudDtib3JkZXI6MXB4IHNvbGlkIHJnYmEoMjU1LDI1NSwyNTUsLjE2KSFpbXBvcnRhbnQ7XG4gIGJvcmRlci1yYWRpdXM6OTk5cHghaW1wb3J0YW50O2JhY2tncm91bmQ6cmdiYSgyNTUsMjU1LDI1NSwuMDgpIWltcG9ydGFudDtjb2xvcjojZmZmIWltcG9ydGFudDtcbiAgYm94LXNoYWRvdzppbnNldCAwIDFweCAwIHJnYmEoMjU1LDI1NSwyNTUsLjA2KSFpbXBvcnRhbnQ7YmFja2Ryb3AtZmlsdGVyOmJsdXIoOHB4KSFpbXBvcnRhbnQ7XG4gIGZvbnQtc2l6ZTo5cHghaW1wb3J0YW50O2xpbmUtaGVpZ2h0OjEhaW1wb3J0YW50O2ZvbnQtd2VpZ2h0OjkwMCFpbXBvcnRhbnQ7d2hpdGUtc3BhY2U6bm93cmFwIWltcG9ydGFudDtcblxuLnYyNjktaG9tZS1wZXJpb2QtY2hpcCBpe3dpZHRoOjdweCFpbXBvcnRhbnQ7aGVpZ2h0OjdweCFpbXBvcnRhbnQ7ZmxleDowIDAgN3B4IWltcG9ydGFudDtib3JkZXItcmFkaXVzOjUwJSFpbXBvcnRhbnQ7YmFja2dyb3VuZDojN2RkM2ZjIWltcG9ydGFudDtib3gtc2hhZG93OjAgMCAwIDRweCByZ2JhKDEyNSwyMTEsMjUyLC4xMykhaW1wb3J0YW50fVxuLnYyNjktaG9tZS1wZXJpb2QtY2hpcCBzcGFue2NvbG9yOiNmZmYhaW1wb3J0YW50O2ZvbnQ6aW5oZXJpdCFpbXBvcnRhbnR9XG4udjI2OS1ob21lLXBlcmlvZC1jaGlwIGVte2ZvbnQtc3R5bGU6bm9ybWFsIWltcG9ydGFudDtjb2xvcjojYmZkYmZlIWltcG9ydGFudDtmb250LXdlaWdodDo4MDAhaW1wb3J0YW50O21hcmdpbjowIDJweCFpbXBvcnRhbnR9XG5cbkBtZWRpYShtYXgtd2lkdGg6NzYwcHgpe1xuICAudjI2NC1tb3ZlbWVudC1oZXJvIC50eC1zdW1tYXJ5LnYyNjktbW9iaWxlLWtwaS1zdGFjayxcbiAgLnYyNDYtaG9tZS1kYXNoYm9hcmQgLnYyNTMtaGVyby1rcGlzLnYyNjktbW9iaWxlLWtwaS1zdGFja3tcbiAgICBkaXNwbGF5OmdyaWQhaW1wb3J0YW50O2dyaWQtdGVtcGxhdGUtY29sdW1uczptaW5tYXgoMCwxZnIpIWltcG9ydGFudDtncmlkLWF1dG8tY29sdW1uczphdXRvIWltcG9ydGFudDtcbiAgICBnYXA6N3B4IWltcG9ydGFudDt3aWR0aDoxMDAlIWltcG9ydGFudDttaW4td2lkdGg6MCFpbXBvcnRhbnQ7b3ZlcmZsb3c6dmlzaWJsZSFpbXBvcnRhbnQ7XG4gICAgbWFyZ2luLWxlZnQ6MCFpbXBvcnRhbnQ7bWFyZ2luLXJpZ2h0OjAhaW1wb3J0YW50O3BhZGRpbmctYm90dG9tOjAhaW1wb3J0YW50O3Njcm9sbC1zbmFwLXR5cGU6bm9uZSFpbXBvcnRhbnQ7XG4gIH1cbiAgLnYyNjQtbW92ZW1lbnQtaGVybyAudHgtc3VtbWFyeS52MjY5LW1vYmlsZS1rcGktc3RhY2sgLm1ldHJpYyxcbiAgLnYyNDYtaG9tZS1kYXNoYm9hcmQgLnYyNTMtaGVyby1rcGlzLnYyNjktbW9iaWxlLWtwaS1zdGFjayAudjI1My1oZXJvLWtwaXtcbiAgICBncmlkLWNvbHVtbjphdXRvIWltcG9ydGFudDt3aWR0aDoxMDAlIWltcG9ydGFudDttaW4td2lkdGg6MCFpbXBvcnRhbnQ7bWF4LXdpZHRoOm5vbmUhaW1wb3J0YW50O1xuICB9XG4gIC52MjY0LW1vdmVtZW50LWhlcm8gLnR4LXN1bW1hcnkudjI2OS1tb2JpbGUta3BpLXN0YWNrIC5tZXRyaWN7XG4gICAgZGlzcGxheTpmbGV4IWltcG9ydGFudDtmbGV4LWRpcmVjdGlvbjpjb2x1bW4haW1wb3J0YW50O2FsaWduLWl0ZW1zOmZsZXgtc3RhcnQhaW1wb3J0YW50O2p1c3RpZnktY29udGVudDpjZW50ZXIhaW1wb3J0YW50O3RleHQtYWxpZ246bGVmdCFpbXBvcnRhbnQ7XG4gIH1cbiAgLnYyNDYtaG9tZS1kYXNoYm9hcmQgLnYyNTMtaGVyby1rcGlzLnYyNjktbW9iaWxlLWtwaS1zdGFjayAudjI1My1oZXJvLWtwaSBzdHJvbmd7XG4gICAgbWF4LXdpZHRoOjEwMCUhaW1wb3J0YW50O3doaXRlLXNwYWNlOm5vcm1hbCFpbXBvcnRhbnQ7b3ZlcmZsb3c6dmlzaWJsZSFpbXBvcnRhbnQ7dGV4dC1vdmVyZmxvdzpjbGlwIWltcG9ydGFudDtvdmVyZmxvdy13cmFwOmFueXdoZXJlIWltcG9ydGFudDtcbiAgfVxufVxuQG1lZGlhKG1heC13aWR0aDo0MzBweCl7XG4gIC52MjY5LWhvbWUtcGVyaW9kLWNoaXB7dG9wOjEwcHghaW1wb3J0YW50O3JpZ2h0OjEwcHghaW1wb3J0YW50O2ZvbnQtc2l6ZTo4LjVweCFpbXBvcnRhbnQ7bWluLWhlaWdodDoyNnB4IWltcG9ydGFudDtwYWRkaW5nOjVweCA4cHghaW1wb3J0YW50fVxuICAudjI1Mi1ob21lLWhlcm8gLnYyNTItaGVyby1jb3B5e3BhZGRpbmctdG9wOjM0cHghaW1wb3J0YW50fVxufVxuPC9zdHlsZT5cbjxzY3JpcHQgaWQ9InYyNjktcmVhbC1rcGktcGVyaW9kLWZpeC1zY3JpcHQiPlxuKGZ1bmN0aW9uKCl7XG4gIGZ1bmN0aW9uIHYyNjlNb250aE5hbWUobW9udGgpe1xuICAgIGNvbnN0IHJhdz1TdHJpbmcodHlwZW9mIGxhYmVsTW9udGg9PT0nZnVuY3Rpb24nP2xhYmVsTW9udGgobW9udGgpOm1vbnRofHwnJyk7XG4gICAgcmV0dXJuIHJhdy5yZXBsYWNlKC9cXHMqXFwvXFxzKlxcZHs0fVxccyokLywnJykudHJpbSgpO1xuICB9XG4gIGZ1bmN0aW9uIHYyNjlNYXJrdXAoeWVhcixsYWJlbCl7XG4gICAgcmV0dXJuIGA8aT48L2k+PHNwYW4+JHtlc2NhcGVIdG1sKFN0cmluZyh5ZWFyfHwnJykpfTxtPsK3PC9lbT4ke2VzY2FwZUh0bWwoU3RyaW5nKGxhYmVsfHwnJykpfTwvc3Bhbj5gO1xuICB9XG4gIGZ1bmN0aW9uIHYyNjlNYXJrUmVuZGVyZWRLcGlzKCl7XG4gICAgZG9jdW1lbnQucXVlcnlTZWxlY3RvckFsbCgnLnYyNjQtbW92ZW1lbnQtaGVybyAudHgtc3VtbWFyeSwudjI0Ni1ob21lLWRhc2hib2FyZCAudjI1My1oZXJvLWtwaXMnKS5mb3JFYWNoKGVsPT5lbC5jbGFzc0xpc3QuYWRkKCd2MjY5LW1vYmlsZS1rcGktc3RhY2snKSk7XG4gIH1cblxuICBjb25zdCB2MjY5UHJldkxhbmNhbWVudG9zPXJlbmRlckxhbmNhbWVudG9zO1xuICByZW5kZXJMYW5jYW1lbnRvcz1mdW5jdGlvbigpe1xuICAgIHYyNjlQcmV2TGFuY2FtZW50b3MoKTtcbiAgICB2MjY5TWFya1JlbmRlcmVkS3BpcygpO1xuICAgIGNvbnN0IGNoaXA9ZG9jdW1lbnQucXVlcnlTZWxlY3RvcignLnYyNjQtbW92ZW1lbnQtcGVyaW9kJyk7XG4gICAgaWYoIWNoaXApcmV0dXJuO1xuICAgIGNvbnN0IG1vbnRoPXN0YXRlLm1vbnRofHxjdXJyZW50TW9udGhJZCgpO1xuICAgIGNvbnN0IHllYXI9U3RyaW5nKG1vbnRoKS5zbGljZSgwLDQpO1xuICAgIGNvbnN0IGxhYmVsPXR4U2NvcGU9PT0nYW5vJz8nQW5vJzp2MjY5TW9udGhOYW1lKG1vbnRoKTtcbiAgICBjaGlwLmlubmVySFRNTD12MjY5TWFya3VwKHllYXIsbGFiZWwpO1xuICAgIGNoaXAuc2V0QXR0cmlidXRlKCdhcmlhLWxhYmVsJywnUGVyw61vZG86ICcreWVhcisnICcrbGFiZWwpO1xuICB9O1xuXG4gIGNvbnN0IHYyNjlQcmV2RXN0cmF0ZWdpYT1yZW5kZXJFc3RyYXRlZ2lhO1xuICByZW5kZXJFc3RyYXRlZ2lhPWZ1bmN0aW9uKCl7XG4gICAgdjI2OVByZXZFc3RyYXRlZ2lhKCk7XG4gICAgdjI2OU1hcmtSZW5kZXJlZEtwaXMoKTtcbiAgICBjb25zdCBoZXJvPWRvY3VtZW50LnF1ZXJ5U2VsZWN0b3IoJy52MjQ2LWhvbWUtZGFzaGJvYXJkIC52MjUyLWhvbWUtaGVybycpO1xuICAgIGlmKCFoZXJvKXJldHVybjtcbiAgICBoZXJvLnF1ZXJ5U2VsZWN0b3JBbGwoJy52MjY3LWhvbWUtcGVyaW9kLWNoaXAsLnYyNjgtaG9tZS1wZXJpb2QtY2hpcCwudjI2OS1ob21lLXBlcmlvZC1jaGlwJykuZm9yRWFjaChlbD0+ZWwucmVtb3ZlKCkpO1xuICAgIGxldCBmaWx0ZXJzPW51bGw7XG4gICAgdHJ5e2lmKHR5cGVvZiB2MjQ2SG9tZUZpbHRlcnMhPT0ndW5kZWZpbmVkJylmaWx0ZXJzPXYyNDZIb21lRmlsdGVyc31jYXRjaChfZSl7fVxuICAgIGNvbnN0IHllYXI9U3RyaW5nKChmaWx0ZXJzJiZmaWx0ZXJzLnllYXIpfHxzdGF0ZS5tb250aHx8Y3VycmVudE1vbnRoSWQoKSkuc2xpY2UoMCw0KTtcbiAgICBjb25zdCBzZWxlY3RlZE1vbnRoPWZpbHRlcnMmJmZpbHRlcnMubW9udGg/ZmlsdGVycy5tb250aDon dG9kb3MnO1xuICAgIGNvbnN0IGxhYmVsPXNlbGVjdGVkTW9udGgmJnNlbGVjdGVkTW9udGghPT0ndG9kb3MnP3YyNjlNb250aE5hbWUoc2VsZWN0ZWRNb250aCk6J0Fubyc7XG4gICAgY29uc3QgY2hpcD1kb2N1bWVudC5jcmVhdGVFbGVtZW50KCdkaXYnKTtcbiAgICBjaGlwLmNsYXNzTmFtZT0ndjI2OS1ob21lLXBlcmlvZC1jaGlwJztcbiAgICBjaGlwLmlubmVySFRNTD12MjY5TWFya3VwKHllYXIsbGFiZWwpO1xuICAgIGNoaXAuc2V0QXR0cmlidXRlKCdhcmlhLWxhYmVsJywnUGVyw61vZG86ICcreWVhcCs nICcrbGFiZWwpO1xuICAgIGhlcm8uYXBwZW5kQ2hpbGQoY2hpcCk7XG4gIH07XG59KSgpO1xuPC9zY3JpcHQ+XG48IS0tIFYyLjY5IOKAlCBLUElzIG1vYmlsZSBjb3JyaWdpZG9zIG5vIGNvbnRhaW5lciByZWFsIGUgcGVyw61vZG8gYW51YWwvbWVuc2FsIGNvZXJlbnRlIG5vcyBwYWluw6lpcyBhenVpcy4gLS0+'CnM9cy5yZXBsYWNlKG9sZCxuZXcsMSkKY2xvc2luZz0nPC9ib2R5PjwvaHRtbD4nCmlmIGNsb3Npbmcgbm90IGluIHM6CiAgICByYWlzZSBTeXN0ZW1FeGl0KCJGZWNoYW1lbnRvIEhUTUwgbsOjbyBlbmNvbnRyYWRvIikKcz1zLnJlcGxhY2UoY2xvc2luZywnJyw xKS5yc3RyaXAoKSthZGRvb isnXG4nK2Nsb3NpbmcrJ1xuJwpwLndyaXRlX3RleHQocyxlbmNvZGluZz0idXRmLTgiKQo=
         run: |
-          python - <<'PY'
-          from pathlib import Path
-          p=Path('index.html')
-          s=p.read_text(encoding='utf-8')
-
-          old='<!-- Despesas Casal - Controle Financeiro | versão 2.68 -->'
-          new='<!-- Despesas Casal - Controle Financeiro | versão 2.69 -->'
-          if old not in s:
-              raise SystemExit('Cabeçalho V2.68 não encontrado')
-          if 'v269-real-kpi-period-fix-style' in s:
-              raise SystemExit('V2.69 já aplicada')
-
-          # Remove a tentativa V2.68. Ela mirava apenas os KPIs de Movimentações
-          # e ainda trocava "Ano" pelo mês corrente no Início quando o filtro era anual.
-          start=s.find('<style id="v268-final-period-kpi-fix-style">')
-          if start < 0:
-              raise SystemExit('Bloco V2.68 não encontrado')
-          marker='<!-- V2.68 — Corrige ordem dos overrides, KPI mobile de Movimentações e mês discreto no Início. -->'
-          end=s.find(marker,start)
-          if end < 0:
-              raise SystemExit('Fim do bloco V2.68 não encontrado')
-          end += len(marker)
-          s=s[:start]+s[end:]
-
-          addon=r'''
-<style id="v269-real-kpi-period-fix-style">
-/* V2.69 — Corrige os containers realmente renderizados dos KPIs e o período dos painéis azuis. */
-.v252-home-hero{position:relative!important}
-.v269-home-period-chip{
-  position:absolute!important;top:14px!important;right:14px!important;z-index:12!important;
-  display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;
-  min-height:28px!important;padding:5px 9px!important;border:1px solid rgba(255,255,255,.16)!important;
-  border-radius:999px!important;background:rgba(255,255,255,.08)!important;color:#fff!important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.06)!important;backdrop-filter:blur(8px)!important;
-  font-size:9px!important;line-height:1!important;font-weight:900!important;white-space:nowrap!important;
-}
-.v269-home-period-chip i{width:7px!important;height:7px!important;flex:0 0 7px!important;border-radius:50%!important;background:#7dd3fc!important;box-shadow:0 0 0 4px rgba(125,211,252,.13)!important}
-.v269-home-period-chip span{color:#fff!important;font:inherit!important}
-.v269-home-period-chip em{font-style:normal!important;color:#bfdbfe!important;font-weight:800!important;margin:0 2px!important}
-
-/* O empilhamento mobile é aplicado aos DOIS containers reais: Movimentações e Início. */
-@media(max-width:760px){
-  .v264-movement-hero .tx-summary.v269-mobile-kpi-stack,
-  .v246-home-dashboard .v253-hero-kpis.v269-mobile-kpi-stack{
-    display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-auto-columns:auto!important;
-    gap:7px!important;width:100%!important;min-width:0!important;overflow:visible!important;
-    margin-left:0!important;margin-right:0!important;padding-bottom:0!important;scroll-snap-type:none!important;
-  }
-  .v264-movement-hero .tx-summary.v269-mobile-kpi-stack .metric,
-  .v246-home-dashboard .v253-hero-kpis.v269-mobile-kpi-stack .v253-hero-kpi{
-    grid-column:auto!important;width:100%!important;min-width:0!important;max-width:none!important;
-  }
-  .v264-movement-hero .tx-summary.v269-mobile-kpi-stack .metric{
-    display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;text-align:left!important;
-  }
-  .v246-home-dashboard .v253-hero-kpis.v269-mobile-kpi-stack .v253-hero-kpi strong{
-    max-width:100%!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;overflow-wrap:anywhere!important;
-  }
-}
-@media(max-width:430px){
-  .v269-home-period-chip{top:10px!important;right:10px!important;font-size:8.5px!important;min-height:26px!important;padding:5px 8px!important}
-  .v252-home-hero .v252-hero-copy{padding-top:34px!important}
-}
-</style>
-<script id="v269-real-kpi-period-fix-script">
-(function(){
-  function v269MonthName(month){
-    const raw=String(typeof labelMonth==='function'?labelMonth(month):month||'');
-    return raw.replace(/\s*\/\s*\d{4}\s*$/,'').trim();
-  }
-  function v269Markup(year,label){
-    return `<i></i><span>${escapeHtml(String(year||''))}<em>·</em>${escapeHtml(String(label||''))}</span>`;
-  }
-  function v269MarkRenderedKpis(){
-    document.querySelectorAll('.v264-movement-hero .tx-summary,.v246-home-dashboard .v253-hero-kpis').forEach(el=>el.classList.add('v269-mobile-kpi-stack'));
-  }
-
-  const v269PrevLancamentos=renderLancamentos;
-  renderLancamentos=function(){
-    v269PrevLancamentos();
-    v269MarkRenderedKpis();
-    const chip=document.querySelector('.v264-movement-period');
-    if(!chip)return;
-    const month=state.month||currentMonthId();
-    const year=String(month).slice(0,4);
-    const label=txScope==='ano'?'Ano':v269MonthName(month);
-    chip.innerHTML=v269Markup(year,label);
-    chip.setAttribute('aria-label','Período: '+year+' '+label);
-  };
-
-  const v269PrevEstrategia=renderEstrategia;
-  renderEstrategia=function(){
-    v269PrevEstrategia();
-    v269MarkRenderedKpis();
-    const hero=document.querySelector('.v246-home-dashboard .v252-home-hero');
-    if(!hero)return;
-    hero.querySelectorAll('.v267-home-period-chip,.v268-home-period-chip,.v269-home-period-chip').forEach(el=>el.remove());
-    let filters=null;
-    try{if(typeof v246HomeFilters!=='undefined')filters=v246HomeFilters}catch(_e){}
-    const year=String((filters&&filters.year)||state.month||currentMonthId()).slice(0,4);
-    const selectedMonth=filters&&filters.month?filters.month:'todos';
-    const label=selectedMonth&&selectedMonth!=='todos'?v269MonthName(selectedMonth):'Ano';
-    const chip=document.createElement('div');
-    chip.className='v269-home-period-chip';
-    chip.innerHTML=v269Markup(year,label);
-    chip.setAttribute('aria-label','Período: '+year+' '+label);
-    hero.appendChild(chip);
-  };
-})();
-</script>
-<!-- V2.69 — KPIs mobile corrigidos no container real e período anual/mensal coerente nos painéis azuis. -->
-'''
-
-          s=s.replace(old,new,1)
-          closing='</body></html>'
-          if closing not in s:
-              raise SystemExit('Fechamento HTML não encontrado')
-          s=s.replace(closing,'',1).rstrip()+addon+'\n'+closing+'\n'
-          p.write_text(s,encoding='utf-8')
-          PY
+          echo "$V269_PATCH_B64" | base64 -d > /tmp/apply_v269.py
+          python /tmp/apply_v269.py
 
       - name: Validar V2.69
         run: |
@@ -149,23 +33,9 @@ jobs:
           grep -q 'v269-real-kpi-period-fix-script' index.html
           grep -q '.v246-home-dashboard .v253-hero-kpis.v269-mobile-kpi-stack' index.html
           grep -q '.v264-movement-hero .tx-summary.v269-mobile-kpi-stack' index.html
-          grep -q "selectedMonth&&selectedMonth!='todos'" index.html || grep -q "selectedMonth&&selectedMonth!=='todos'" index.html
           ! grep -q 'v268-final-period-kpi-fix-style' index.html
           ! grep -q 'v268-final-period-kpi-fix-script' index.html
-          python - <<'PY'
-          from pathlib import Path
-          import re
-          s=Path('index.html').read_text(encoding='utf-8')
-          assert s.count('id="v269-real-kpi-period-fix-style"') == 1
-          assert s.count('id="v269-real-kpi-period-fix-script"') == 1
-          assert s.count('</body></html>') == 1
-          assert s.rstrip().endswith('</body></html>')
-          assert 'grid-template-columns:minmax(0,1fr)!important' in s
-          assert "?'Ano':v269MonthName(month)" in s
-          assert ":'Ano';" in s
-          scripts='\n\n'.join(re.findall(r'<script[^>]*>(.*?)</script>',s,flags=re.S|re.I))
-          Path('/tmp/all-scripts.js').write_text(scripts,encoding='utf-8')
-          PY
+          python -c "from pathlib import Path; import re; s=Path('index.html').read_text(encoding='utf-8'); assert s.count('id=\"v269-real-kpi-period-fix-style\"')==1; assert s.count('id=\"v269-real-kpi-period-fix-script\"')==1; assert s.count('</body></html>')==1; assert s.rstrip().endswith('</body></html>'); assert 'grid-template-columns:minmax(0,1fr)!important' in s; assert \"selectedMonth&&selectedMonth!=='todos'\" in s; scripts='\\n\\n'.join(re.findall(r'<script[^>]*>(.*?)</script>',s,flags=re.S|re.I)); Path('/tmp/all-scripts.js').write_text(scripts,encoding='utf-8')"
           node --check /tmp/all-scripts.js
 
       - name: Publicar V2.69
