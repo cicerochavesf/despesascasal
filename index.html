@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.64 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.65 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -3655,7 +3655,7 @@ function prepareDefaultOpening(){
   periodMode='mes';
   state.month=validMonth(typeof v223FinancialMonthForDate==='function'?v223FinancialMonthForDate(localDateId()):currentMonthId());
   txScope='mes';
-  txPanel='realizados';
+  txPanel='acompanhamento';
   txForecastFilters={cat:[],owner:[],city:[],balance:[],payments:[]};
   txRealizedFilters={cat:[],sub:[],owner:[],city:[],payments:[]};
   if(typeof viewSearchTerms!=='undefined')viewSearchTerms.lancamentos='';
@@ -9241,6 +9241,7 @@ html[data-theme="dark"] .v255-panel,html[data-theme="dark"] .v255-filterbar,.dar
 })();
 </script>
 <!-- V2.64 — Movimentações com painel azul; abertura padrão no Extrato do mês financeiro atual; “Ajustar colunas” mais discreto no celular. -->
+<!-- V2.65 — abertura padrão em Movimentações > Planejado no mês financeiro atual. -->
 </body></html>
 
 <!-- V2.63 — Restaura o KPI Total investido no painel atual do Início. -->
