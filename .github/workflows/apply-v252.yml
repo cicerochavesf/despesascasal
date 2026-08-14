@@ -1,0 +1,59 @@
+name: Aplicar V2.52
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-v252.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update-index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Conferir base V2.51
+        run: test "$(git hash-object index.html)" = "4b98dc28eb3687249be5b00d667b68f68afe1865"
+      - name: Aplicar V2.52
+        shell: python
+        run: |
+          from pathlib import Path
+          import zlib,base64,re
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          if 'v253-home-consolidated-style' in s:
+              raise SystemExit('V2.52 já aplicada')
+          old='<!-- Despesas Casal - Controle Financeiro | versão 2.51 -->'
+          new='<!-- Despesas Casal - Controle Financeiro | versão 2.52 -->'
+          if old not in s:
+              raise SystemExit('Cabeçalho V2.51 não encontrado')
+          s=s.replace(old,new,1)
+          payload='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'
+          block=zlib.decompress(base64.b64decode(payload)).decode('utf-8')
+          s=s.replace('</body></html>',block+'\n</body></html>',1)
+          p.write_text(s,encoding='utf-8')
+      - name: Validar V2.52
+        run: |
+          grep -q 'versão 2.52' index.html
+          grep -q 'v253-home-consolidated-style' index.html
+          grep -q 'Início com KPIs integrados ao hero' index.html
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('index.html').read_text(encoding='utf-8')
+          scripts=re.findall(r'<script[^>]*>(.*?)</script>',s,flags=re.S|re.I)
+          Path('/tmp/all-scripts.js').write_text('\n\n'.join(scripts),encoding='utf-8')
+          print('scripts',len(scripts))
+          PY
+          node --check /tmp/all-scripts.js
+      - name: Publicar V2.52 e limpar workflow temporário
+        run: |
+          git config user.name 'ChatGPT App Despesas Casal'
+          git config user.email 'actions@users.noreply.github.com'
+          rm -f .github/workflows/apply-v252.yml
+          git add index.html .github/workflows/apply-v252.yml
+          git commit -m 'V2.52: integrar KPIs e filtros no Início'
+          git push origin HEAD:main
