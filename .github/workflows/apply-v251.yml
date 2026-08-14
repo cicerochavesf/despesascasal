@@ -1,0 +1,148 @@
+name: Aplicar V2.51
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-v251.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update-index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Conferir base V2.49
+        shell: bash
+        run: |
+          test "$(git hash-object index.html)" = "a67ffd51f6b02b9f7868d1f157ef5d76539f5f36"
+      - name: Aplicar V2.51
+        shell: python
+        run: |
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          old='<!-- Despesas Casal - Controle Financeiro | versão 2.49 -->'
+          new='<!-- Despesas Casal - Controle Financeiro | versão 2.51 -->'
+          if old not in s:
+              raise SystemExit('Cabeçalho V2.49 não encontrado')
+          s=s.replace(old,new,1)
+          if 'id="v251-home-matrices-style"' in s:
+              raise SystemExit('Bloco V2.51 já existe')
+          block=r'''
+<style id="v251-home-matrices-style">
+/* V2.51 — Visões mensais por categorias e subcategorias no Início */
+.v251-matrix-panel{background:var(--panel,#fff);border:1px solid var(--line,#e2e8f0);border-radius:20px;box-shadow:0 10px 28px rgba(15,23,42,.055);overflow:hidden;min-width:0}
+.v251-matrix-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:16px 16px 10px}
+.v251-matrix-head h2{margin:0;font-size:14px;line-height:1.2;font-weight:950;color:var(--text,#0f172a)}
+.v251-matrix-head p{margin:5px 0 0;font-size:10.5px;line-height:1.35;color:var(--muted,#64748b);font-weight:650}
+.v251-column-btn{appearance:none;border:1px solid var(--line,#cbd5e1);background:var(--soft,#f8fafc);color:var(--text,#0f172a);border-radius:12px;padding:9px 12px;font-size:11px;font-weight:850;cursor:pointer;white-space:nowrap}
+.v251-column-btn:hover{border-color:var(--accent,#2563eb)}
+.v251-mobile-note{display:none;padding:0 13px 10px;font-size:10px;line-height:1.4;color:var(--muted,#64748b);font-weight:700}
+.v251-matrix-table{padding:0 0 8px;overflow:auto}
+.v251-matrix-table table{width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed;min-width:760px}
+.v251-matrix-table th{padding:11px 12px;border-bottom:1px solid var(--line,#e2e8f0);font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted,#64748b);font-weight:900;text-align:right;white-space:nowrap;background:var(--panel,#fff)}
+.v251-matrix-table th:first-child,.v251-matrix-table td:first-child{text-align:left}
+.v251-matrix-table td{padding:11px 12px;border-bottom:1px solid var(--line,#e2e8f0);font-size:11.5px;line-height:1.25;text-align:right;color:var(--text,#0f172a);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v251-matrix-table tbody tr{cursor:pointer}
+.v251-matrix-table tbody tr:hover td{background:color-mix(in srgb,var(--row-color,#64748b) 5%,var(--panel,#fff))}
+.v251-matrix-table tfoot td{font-weight:950;background:color-mix(in srgb,var(--soft,#f8fafc) 74%,var(--panel,#fff));border-bottom:0}
+.v251-label-pill{display:inline-flex;align-items:center;gap:7px;max-width:100%;padding:5px 9px;border-radius:999px;background:color-mix(in srgb,var(--item-color,#64748b) 12%,var(--soft,#f8fafc));color:color-mix(in srgb,var(--item-color,#64748b) 84%,#0f172a);font-weight:900;overflow:hidden}
+.v251-label-pill i{width:7px;height:7px;border-radius:50%;background:var(--item-color,#64748b);flex:none}.v251-label-pill span{overflow:hidden;text-overflow:ellipsis}
+.v251-mobile-list{display:none;padding:0 11px 11px;gap:9px}.v251-mobile-card{border:1px solid var(--line,#e2e8f0);border-radius:15px;background:var(--soft,#f8fafc);padding:11px;display:grid;gap:9px;cursor:pointer}.v251-mobile-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}.v251-mobile-total{text-align:right;display:grid;gap:2px}.v251-mobile-total span{font-size:9px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted,#64748b);font-weight:850}.v251-mobile-total strong{font-size:12px}.v251-mobile-months{display:grid;grid-template-columns:1fr 1fr;gap:7px}.v251-mobile-month{border:1px solid var(--line,#e2e8f0);border-radius:11px;background:var(--panel,#fff);padding:7px 8px;display:grid;gap:2px}.v251-mobile-month span{font-size:9px;text-transform:uppercase;color:var(--muted,#64748b);font-weight:850}.v251-mobile-month b{font-size:10.5px}
+html[data-theme="dark"] .v251-matrix-panel,.dark .v251-matrix-panel{box-shadow:none}
+@media(max-width:760px){.v251-matrix-panel{border-radius:17px}.v251-matrix-head{padding:13px 13px 9px}.v251-matrix-head h2{font-size:13px}.v251-matrix-head p{font-size:10px}.v251-column-btn{display:none}.v251-mobile-note{display:block}.v251-matrix-table{display:none}.v251-mobile-list{display:grid}}
+@media(max-width:390px){.v251-mobile-months{grid-template-columns:1fr}.v251-mobile-card-head{flex-direction:column}.v251-mobile-total{text-align:left}}
+</style>
+<script id="v251-home-matrices-script">
+(function(){
+function v251MatrixData(monthIds,rows,mode){
+  const map=new Map();
+  (rows||[]).forEach(row=>{
+    const catId=row.b?.cat||row.catId||'';
+    if(!catId)return;
+    const sub=cleanName(row.b?.sub||row.sub||'Sem subcategoria');
+    const key=mode==='category'?catId:`${catId}::${norm(sub)}`;
+    if(!map.has(key)){
+      const c=cat(catId);
+      map.set(key,{key,catId,label:mode==='category'?(c?.name||catId):sub,color:c?.color||'#64748b',months:{},total:0});
+    }
+    const item=map.get(key),month=row.month,value=Number(row.planned||0);
+    item.months[month]=(item.months[month]||0)+value;
+    item.total+=value;
+  });
+  return [...map.values()].sort((a,b)=>b.total-a.total||textCmp(a.label,b.label));
+}
+function v251Click(mode,item){
+  if(mode==='category')v248SetCategoryFilter(item.catId);
+  else{v246HomeFilters.cat=item.catId;v246HomeFilters.sub=item.label;render()}
+}
+function v251ColumnWidth(mode){
+  const root=document.getElementById('app'),selector=mode==='category'?'.v251-cat-table table':'.v251-sub-table table',table=root?.querySelector(selector);
+  if(!table)return alert('A tabela não está disponível nesta tela.');
+  if(!table.dataset.columnKey&&typeof initColumnWidthEditors==='function')initColumnWidthEditors(root);
+  if(!table.dataset.columnKey)return alert('Não foi possível abrir a configuração das colunas.');
+  openColumnWidthEditor(encodeURIComponent(table.dataset.columnKey));
+}
+window.v251ColumnWidth=v251ColumnWidth;
+window.v251MatrixFilter=function(mode,key){
+  const ids=v246HomeMonthIds(),rows=v246HomeBudgetRows(ids),item=v251MatrixData(ids,rows,mode).find(x=>x.key===decodeURIComponent(key));
+  if(item)v251Click(mode,item);
+};
+function v251Matrix(monthIds,rows,mode){
+  const items=v251MatrixData(monthIds,rows,mode),title=mode==='category'?'Visão mensal por categorias':'Visão mensal por subcategorias',desc=mode==='category'?'Valores planejados por categoria em cada mês':'Valores planejados por subcategoria em cada mês',klass=mode==='category'?'v251-cat-table':'v251-sub-table';
+  const mh=(monthIds||[]).map(m=>`<th>${escapeHtml(monthShort(Number(String(m).slice(5,7))).toUpperCase())}/${String(m).slice(2,4)}</th>`).join('');
+  const body=items.map(item=>`<tr style="--row-color:${escapeHtml(item.color)}" onclick="v251MatrixFilter('${mode}','${encodeURIComponent(item.key)}')"><td><span class="v251-label-pill" style="--item-color:${escapeHtml(item.color)}"><i></i><span>${escapeHtml(item.label)}</span></span></td>${(monthIds||[]).map(m=>`<td>${fmt(Number(item.months[m]||0))}</td>`).join('')}<td><strong>${fmt(item.total)}</strong></td></tr>`).join('');
+  const totals=(monthIds||[]).map(m=>items.reduce((sum,item)=>sum+Number(item.months[m]||0),0)),grand=totals.reduce((s,v)=>s+v,0);
+  const desktop=`<div class="table-wrap v251-matrix-table ${klass}"><table><thead><tr><th>${mode==='category'?'Categoria':'Subcategoria'}</th>${mh}<th>Total</th></tr></thead><tbody>${body||`<tr><td colspan="${(monthIds||[]).length+2}">Nenhum dado encontrado neste recorte.</td></tr>`}</tbody><tfoot><tr><td>Total planejado</td>${totals.map(v=>`<td>${fmt(v)}</td>`).join('')}<td>${fmt(grand)}</td></tr></tfoot></table></div>`;
+  const mobile=items.length?`<div class="v251-mobile-list">${items.map(item=>`<article class="v251-mobile-card" onclick="v251MatrixFilter('${mode}','${encodeURIComponent(item.key)}')"><div class="v251-mobile-card-head"><span class="v251-label-pill" style="--item-color:${escapeHtml(item.color)}"><i></i><span>${escapeHtml(item.label)}</span></span><div class="v251-mobile-total"><span>Total</span><strong>${fmt(item.total)}</strong></div></div><div class="v251-mobile-months">${(monthIds||[]).map(m=>`<div class="v251-mobile-month"><span>${escapeHtml(monthShort(Number(String(m).slice(5,7))).toUpperCase())}/${String(m).slice(2,4)}</span><b>${fmt(Number(item.months[m]||0))}</b></div>`).join('')}</div></article>`).join('')}</div>`:'<div class="v251-mobile-list"><div class="v249-breakdown-empty">Nenhum dado encontrado neste recorte.</div></div>';
+  return `<section class="v251-matrix-panel"><div class="v251-matrix-head"><div><h2>${title}</h2><p>${desc}</p></div><button type="button" class="v251-column-btn" onclick="v251ColumnWidth('${mode}')">Ajustar colunas</button></div><div class="v251-mobile-note">Toque em um item para filtrar o dashboard. No computador, as larguras das colunas ficam salvas por usuário e dispositivo.</div>${desktop}${mobile}</section>`;
+}
+function v251Matrices(monthIds,rows){return `${v251Matrix(monthIds,rows,'category')}${v251Matrix(monthIds,rows,'subcategory')}`}
+const previousTableTitle=tableTitleFromContext;
+tableTitleFromContext=function(wrap){
+  if(wrap?.classList?.contains('v251-cat-table'))return 'Início — visão mensal por categorias';
+  if(wrap?.classList?.contains('v251-sub-table'))return 'Início — visão mensal por subcategorias';
+  return previousTableTitle(wrap);
+};
+renderEstrategia=function(){
+  if(!v246HomeFilters.year)v246HomeFilters.year=v246HomeDefaultYear();
+  const monthIds=v246HomeMonthIds(),rows=v246HomeBudgetRows(monthIds);
+  layout(`<div class="v246-home-dashboard">${v246HomeFilterPanel(monthIds)}${v246HomeKpis(monthIds,rows)}${v248HomeInsights(monthIds,rows)}${v249HomeBreakdowns(monthIds,rows)}${v251Matrices(monthIds,rows)}</div>`);
+};
+})();
+</script>
+<!-- V2.51 — Início: adicionadas Visão mensal por categorias e Visão mensal por subcategorias, nesta ordem, abaixo de Responsabilidade financeira e Despesas por localidade. -->
+'''
+          marker='</body></html>'
+          if marker not in s:
+              raise SystemExit('Fechamento do HTML não encontrado')
+          s=s.replace(marker,block+'\n'+marker,1)
+          p.write_text(s,encoding='utf-8')
+      - name: Validar V2.51
+        shell: bash
+        run: |
+          grep -q 'versão 2.51' index.html
+          grep -q 'Visão mensal por categorias' index.html
+          grep -q 'Visão mensal por subcategorias' index.html
+          grep -q 'v251-home-matrices-script' index.html
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('index.html').read_text(encoding='utf-8')
+          scripts=re.findall(r'<script[^>]*>(.*?)</script>',s,flags=re.S|re.I)
+          Path('/tmp/all-scripts.js').write_text('\n\n'.join(scripts),encoding='utf-8')
+          PY
+          node --check /tmp/all-scripts.js
+      - name: Publicar V2.51 e limpar workflow temporário
+        shell: bash
+        run: |
+          git config user.name 'ChatGPT App Despesas Casal'
+          git config user.email 'actions@users.noreply.github.com'
+          rm -f .github/workflows/apply-v251.yml
+          git add index.html .github/workflows/apply-v251.yml
+          git commit -m 'V2.51: adicionar visões mensais por categoria e subcategoria'
+          git push origin HEAD:main
