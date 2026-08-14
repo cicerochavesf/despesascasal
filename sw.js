@@ -1,4 +1,4 @@
-const CACHE_NAME='financas-cn-v231';
+const CACHE_NAME='financas-cn-v232';
 const APP_SHELL=['./','./index.html','./icon-192.png','./icon-512.png','./maskable-512.png'];
 
 self.addEventListener('install',event=>{

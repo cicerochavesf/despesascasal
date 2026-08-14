@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.72 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.73 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -3556,6 +3556,48 @@ html[data-theme="dark"] .v248-month-chip,.dark .v248-month-chip{background:#1533
   .v272-movement-search-outside .view-search-input{min-height:39px!important;font-size:10.5px!important;box-shadow:none!important;background:#f8fafc!important}
   .v264-movement-hero .v27-movement-toolbar{display:none!important}
   .v264-movement-period{min-height:29px!important;padding:5px 23px 5px 9px!important;background:rgba(255,255,255,.10)!important;border-color:rgba(255,255,255,.18!)!important}
+}
+</style>
+
+<style id="v273-period-chip-width-fix">
+/* V2.73 — o seletor compacto de período cresce conforme o nome do mês. */
+.v264-movement-period{
+  flex:0 0 auto!important;
+  width:max-content!important;
+  min-width:max-content!important;
+  max-width:none!important;
+  overflow:visible!important;
+  white-space:nowrap!important;
+  padding-left:9px!important;
+  padding-right:25px!important;
+}
+.v264-movement-period span{
+  display:block!important;
+  width:auto!important;
+  min-width:max-content!important;
+  max-width:none!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  white-space:nowrap!important;
+}
+.v264-movement-period:after{right:8px!important}
+@media(max-width:760px){
+  .v264-movement-hero-head>div:first-child{min-width:0!important;flex:1 1 auto!important}
+  .v264-movement-period{
+    width:max-content!important;
+    min-width:max-content!important;
+    max-width:48vw!important;
+    padding:5px 23px 5px 8px!important;
+    font-size:9px!important;
+  }
+}
+@media(max-width:360px){
+  .v264-movement-period{
+    max-width:52vw!important;
+    font-size:8.2px!important;
+    padding-left:7px!important;
+    padding-right:21px!important;
+  }
 }
 </style>
 </head><body><div id="app"></div><div id="modal" class="modal"></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
