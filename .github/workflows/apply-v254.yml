@@ -1,0 +1,91 @@
+name: Aplicar V2.54
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-v254.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update-index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Conferir base V2.53
+        run: test "$(git hash-object index.html)" = "e54297bb86c3ec9f9e89e97a6053fe068d278c07"
+      - name: Aplicar V2.54
+        shell: python
+        run: |
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          old='<!-- Despesas Casal - Controle Financeiro | versão 2.53 -->'
+          new='<!-- Despesas Casal - Controle Financeiro | versão 2.54 -->'
+          if old not in s: raise SystemExit('Cabeçalho V2.53 não encontrado')
+          s=s.replace(old,new,1)
+          old_panel="""  function v250Panel(kind,monthIds,items){
+            const isSub=kind==='sub';
+            return `<section class=\"v250-matrix-panel\"><div class=\"v250-matrix-head\"><div><h2>${isSub?'Visão mensal por subcategorias':'Visão mensal por categorias'}</h2><p>Valores planejados por ${isSub?'subcategoria':'categoria'} em cada mês do recorte atual</p></div><div class=\"v250-matrix-actions\"><button type=\"button\" class=\"v250-column-btn\" onclick=\"v250OpenWidth('${kind}')\">Ajustar colunas</button></div></div><div class=\"v250-mobile-hint\">No celular, arraste a tabela para o lado. A primeira coluna fica fixa e as larguras são salvas para este usuário e dispositivo.</div>${v250MatrixTable(kind,monthIds,items)}</section>`;
+          }
+"""
+          new_panel="""  window.v254SubcategoryExpanded=window.v254SubcategoryExpanded===true;
+          window.v254ToggleSubcategoryMatrix=function(){window.v254SubcategoryExpanded=!window.v254SubcategoryExpanded;render()};
+          function v250Panel(kind,monthIds,items){
+            const isSub=kind==='sub',expanded=!isSub||window.v254SubcategoryExpanded;
+            const actions=isSub
+              ? `<button type=\"button\" class=\"v250-column-btn v254-sub-toggle\" onclick=\"v254ToggleSubcategoryMatrix()\">${expanded?'Recolher':'Expandir'}</button>${expanded?`<button type=\"button\" class=\"v250-column-btn\" onclick=\"v250OpenWidth('${kind}')\">Ajustar colunas</button>`:''}`
+              : `<button type=\"button\" class=\"v250-column-btn\" onclick=\"v250OpenWidth('${kind}')\">Ajustar colunas</button>`;
+            const content=expanded?`<div class=\"v250-mobile-hint\">No celular, arraste a tabela para o lado. A primeira coluna fica fixa e as larguras são salvas para este usuário e dispositivo.</div>${v250MatrixTable(kind,monthIds,items)}`:'';
+            return `<section class=\"v250-matrix-panel ${isSub?'v254-subcategory-panel':''} ${expanded?'is-expanded':'is-collapsed'}\"><div class=\"v250-matrix-head\"><div><h2>${isSub?'Visão mensal por subcategorias':'Visão mensal por categorias'}</h2><p>${isSub&&!expanded?'Toque em Expandir para visualizar os valores planejados por subcategoria.':`Valores planejados por ${isSub?'subcategoria':'categoria'} em cada mês do recorte atual`}</p></div><div class=\"v250-matrix-actions\">${actions}</div></div>${content}</section>`;
+          }
+"""
+          if old_panel not in s: raise SystemExit('Função v250Panel original não encontrada')
+          s=s.replace(old_panel,new_panel,1)
+          style='''
+          <style id="v254-subcategory-collapse-style">
+          /* V2.54 — matriz de subcategorias recolhida por padrão */
+          .v254-subcategory-panel.is-collapsed .v250-matrix-head{border-bottom:0}
+          .v254-subcategory-panel.is-collapsed{min-height:0}
+          .v254-sub-toggle{min-width:82px}
+          @media(max-width:760px){
+            .v254-subcategory-panel .v250-matrix-head{align-items:flex-start}
+            .v254-subcategory-panel .v250-matrix-actions{display:flex;flex-wrap:wrap;justify-content:flex-end}
+            .v254-subcategory-panel.is-collapsed .v250-matrix-head{padding-bottom:13px}
+          }
+          @media(max-width:430px){
+            .v254-subcategory-panel .v250-matrix-head{display:grid;grid-template-columns:minmax(0,1fr) auto}
+            .v254-subcategory-panel .v250-matrix-actions{justify-content:flex-end}
+          }
+          </style>
+          <!-- V2.54 — Visão mensal por subcategorias recolhida por padrão, com opção Expandir/Recolher. -->
+          '''
+          s=s.replace('</body></html>',style+'\n</body></html>',1)
+          p.write_text(s,encoding='utf-8')
+      - name: Validar V2.54
+        run: |
+          grep -q 'versão 2.54' index.html
+          grep -q 'v254ToggleSubcategoryMatrix' index.html
+          grep -q 'v254-subcategory-collapse-style' index.html
+          grep -q "Expandir'" index.html
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('index.html').read_text(encoding='utf-8')
+          scripts=re.findall(r'<script[^>]*>(.*?)</script>',s,flags=re.S|re.I)
+          Path('/tmp/all-scripts.js').write_text('\n\n'.join(scripts),encoding='utf-8')
+          print('scripts',len(scripts))
+          PY
+          node --check /tmp/all-scripts.js
+          test "$(git hash-object index.html)" = "74dbd2b5aa4e9950c2f8e5e2d679009917007f32"
+      - name: Publicar V2.54 e limpar workflow temporário
+        run: |
+          git config user.name 'ChatGPT App Despesas Casal'
+          git config user.email 'actions@users.noreply.github.com'
+          rm -f .github/workflows/apply-v254.yml
+          git add index.html .github/workflows/apply-v254.yml
+          git commit -m 'V2.54: recolher subcategorias no Início'
+          git push origin HEAD:main
