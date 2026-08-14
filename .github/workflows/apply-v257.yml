@@ -1,0 +1,76 @@
+name: Aplicar V2.57
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-v257.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update-index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Conferir base V2.56
+        run: test "$(git hash-object index.html)" = "96a684f53fdf58eb16920e6fa121e1420fd8e804"
+      - name: Aplicar V2.57
+        shell: python
+        run: |
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          s=s.replace('<!-- Despesas Casal - Controle Financeiro | versão 2.56 -->','<!-- Despesas Casal - Controle Financeiro | versão 2.57 -->',1)
+          old_const="const years=v246HomeAvailableYears(),year=v246HomeFilters.year,months=v246HomeMonthsForYear(year),subs=v246HomeSubcategoryOptions(monthIds);"
+          new_const="const year=v246HomeFilters.year,months=v246HomeMonthsForYear(year),subs=v246HomeSubcategoryOptions(monthIds);"
+          if old_const not in s: raise SystemExit('Const dos filtros não encontrado')
+          s=s.replace(old_const,new_const,1)
+          old_field="return `<div class=\"v254-filter-fields\"><div class=\"v246-filter-field\"><label>Ano</label><select onchange=\"v246SetHomeFilter('year',this.value)\">${years.map(y=>`<option value=\"${y}\" ${y===year?'selected':''}>${y}</option>`).join('')}</select></div><div class=\"v246-filter-field\"><label>Mês</label>"
+          new_field="return `<div class=\"v254-filter-fields\"><div class=\"v246-filter-field\"><label>Mês</label>"
+          if old_field not in s: raise SystemExit('Campo Ano interno não encontrado')
+          s=s.replace(old_field,new_field,1)
+          anchor="  function v254HomePanel(monthIds,rows){\n"
+          helper="""  function v257YearControl(){
+            const years=v246HomeAvailableYears(),year=v246HomeFilters.year;
+            return `<label class="v257-year-control"><span class="v257-year-copy"><span>Ano</span><select aria-label="Ano do painel" onchange="v246SetHomeFilter('year',this.value)">${years.map(y=>`<option value="${y}" ${y===year?'selected':''}>${y}</option>`).join('')}</select></span></label>`;
+          }
+"""
+          if anchor not in s: raise SystemExit('Âncora do painel não encontrada')
+          s=s.replace(anchor,helper+anchor,1)
+          old_top='<section class="v254-home-panel"><div class="v254-home-top"><button type="button" class="v254-filter-toggle"'
+          new_top='<section class="v254-home-panel"><div class="v254-home-top">${v257YearControl()}<button type="button" class="v254-filter-toggle"'
+          if old_top not in s: raise SystemExit('Topo do painel não encontrado')
+          s=s.replace(old_top,new_top,1)
+          style='''
+          <style id="v257-year-visible-style">
+          .v254-home-top{display:flex;align-items:stretch;justify-content:flex-start;gap:10px;flex-wrap:wrap}
+          .v257-year-control{display:flex;align-items:center;gap:10px;min-height:52px;padding:9px 12px;border-radius:18px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.12);backdrop-filter:blur(7px);color:#fff;min-width:128px}
+          .v257-year-copy{display:grid;gap:2px;min-width:0}
+          .v257-year-copy span{font-size:9px;line-height:1;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.70)}
+          .v257-year-control select{appearance:none;-webkit-appearance:none;border:0;outline:0;background:transparent;color:#fff;font:inherit;font-size:17px;line-height:1.1;font-weight:950;padding:0 20px 0 0;min-width:76px;cursor:pointer;background-image:linear-gradient(45deg,transparent 50%,rgba(255,255,255,.92) 50%),linear-gradient(135deg,rgba(255,255,255,.92) 50%,transparent 50%);background-position:calc(100% - 8px) 48%,calc(100% - 3px) 48%;background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+          .v257-year-control select option{color:#0f172a;background:#fff}
+          .v254-filter-toggle{flex:1 1 220px}
+          @media(max-width:760px){.v254-home-top{display:grid;grid-template-columns:minmax(118px,.42fr) minmax(0,1fr);gap:9px}.v257-year-control{min-width:0;min-height:50px;padding:8px 11px;border-radius:16px}.v257-year-control select{font-size:16px;min-width:70px}.v254-filter-toggle{width:100%;min-width:0;min-height:50px;padding:10px 12px}}
+          </style>
+          <!-- V2.57 — Ano permanece visível no Início mesmo com os demais filtros recolhidos. -->
+          '''
+          s=s.replace('</body></html>',style+'\n</body></html>',1)
+          p.write_text(s,encoding='utf-8')
+      - name: Validar V2.57
+        run: |
+          grep -q 'versão 2.57' index.html
+          grep -q 'v257YearControl' index.html
+          grep -q 'v257-year-visible-style' index.html
+          python -c "from pathlib import Path; import re; s=Path('index.html').read_text(encoding='utf-8'); Path('/tmp/all-scripts.js').write_text('\\n\\n'.join(re.findall(r'<script[^>]*>(.*?)</script>',s,flags=re.S|re.I)),encoding='utf-8')"
+          node --check /tmp/all-scripts.js
+      - name: Publicar V2.57 e limpar workflow temporário
+        run: |
+          git config user.name 'ChatGPT App Despesas Casal'
+          git config user.email 'actions@users.noreply.github.com'
+          rm -f .github/workflows/apply-v257.yml
+          git add index.html .github/workflows/apply-v257.yml
+          git commit -m 'V2.57: manter ano visível no Início'
+          git push origin HEAD:main
