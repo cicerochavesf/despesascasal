@@ -1,6 +1,6 @@
 name: Aplicar V2.74 seletor de periodo
 
-on:
+"on":
   push:
     paths:
       - '.github/workflows/apply-v274.yml'
