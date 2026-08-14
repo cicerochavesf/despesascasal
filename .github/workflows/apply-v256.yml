@@ -1,0 +1,85 @@
+name: Aplicar V2.56
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-v256.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update-index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Conferir base V2.55
+        run: test "$(git hash-object index.html)" = "a7d79a910165fd05b319db59b71b9b000bc13a1a"
+      - name: Aplicar V2.56
+        shell: python
+        run: |
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          old='<!-- Despesas Casal - Controle Financeiro | versão 2.55 -->'
+          new='<!-- Despesas Casal - Controle Financeiro | versão 2.56 -->'
+          if old not in s: raise SystemExit('Cabeçalho V2.55 não encontrado')
+          s=s.replace(old,new,1)
+
+          old_css='''.v254-kpi span{font-size:10px;line-height:1.2;font-weight:850;letter-spacing:.05em;text-transform:uppercase;color:rgba(255,255,255,.76)}
+          .v254-kpi strong{font-size:clamp(17px,5vw,22px);line-height:1.05;font-weight:950;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+          .v254-kpi small{font-size:11px;line-height:1.35;color:rgba(255,255,255,.84)}'''
+          new_css='''.v254-kpi span{font-size:10px;line-height:1.2;font-weight:850;letter-spacing:.05em;text-transform:uppercase;color:rgba(255,255,255,.76)}
+          .v254-kpi strong{font-size:clamp(22px,2.2vw,30px);line-height:1.02;font-weight:950;color:#fff;letter-spacing:-.04em;white-space:normal;overflow:visible;text-overflow:clip}
+          .v254-kpi strong.v254-money{display:flex;align-items:flex-end;gap:6px;flex-wrap:wrap}
+          .v254-kpi strong.v254-money em{font-style:normal;font-size:clamp(14px,1.2vw,17px);line-height:1.1;font-weight:900;color:rgba(255,255,255,.92);letter-spacing:0}
+          .v254-kpi strong.v254-money b{font-size:clamp(27px,2.6vw,36px);line-height:.96;font-weight:950;color:#fff;letter-spacing:-.05em}
+          .v254-kpi small{font-size:11px;line-height:1.35;color:rgba(255,255,255,.84)}'''
+          if old_css not in s: raise SystemExit('Bloco CSS dos KPIs não encontrado')
+          s=s.replace(old_css,new_css,1)
+
+          old_mobile='''  .v254-kpi{padding:13px 12px;border-radius:17px}
+            .v254-kpi strong{font-size:18px}
+            .v254-kpi small{font-size:10.5px}'''
+          new_mobile='''  .v254-kpi{padding:13px 12px;border-radius:17px}
+            .v254-kpi strong{font-size:22px}
+            .v254-kpi strong.v254-money em{font-size:13px}
+            .v254-kpi strong.v254-money b{font-size:29px}
+            .v254-kpi small{font-size:10.5px}'''
+          if old_mobile not in s: raise SystemExit('Bloco mobile dos KPIs não encontrado')
+          s=s.replace(old_mobile,new_mobile,1)
+
+          anchor='  function v254FilterFields(monthIds){\n'
+          helper='''  function v254MoneyValue(value){return `<strong class="v254-money"><em>R$</em><b>${Number(value||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</b></strong>`}\n'''
+          if anchor not in s: raise SystemExit('Âncora v254FilterFields não encontrada')
+          s=s.replace(anchor,helper+anchor,1)
+
+          repl={
+            '<strong>${fmt(balance)}</strong>':'${v254MoneyValue(balance)}',
+            '<strong>${fmt(revenue)}</strong>':'${v254MoneyValue(revenue)}',
+            '<strong>${fmt(expense)}</strong>':'${v254MoneyValue(expense)}',
+            '<strong>${fmt(revenue/base)}</strong>':'${v254MoneyValue(revenue/base)}',
+            '<strong>${fmt(expense/base)}</strong>':'${v254MoneyValue(expense/base)}',
+          }
+          for a,b in repl.items():
+            if a not in s: raise SystemExit(f'Trecho KPI não encontrado: {a}')
+            s=s.replace(a,b,1)
+
+          p.write_text(s,encoding='utf-8')
+      - name: Validar V2.56
+        run: |
+          grep -q 'versão 2.56' index.html
+          grep -q 'function v254MoneyValue' index.html
+          grep -q 'v254-money' index.html
+          python -c "from pathlib import Path; import re; s=Path('index.html').read_text(encoding='utf-8'); Path('/tmp/all-scripts.js').write_text('\n\n'.join(re.findall(r'<script[^>]*>(.*?)</script>',s,flags=re.S|re.I)),encoding='utf-8')"
+          node --check /tmp/all-scripts.js
+      - name: Publicar V2.56 e limpar workflow temporário
+        run: |
+          git config user.name 'ChatGPT App Despesas Casal'
+          git config user.email 'actions@users.noreply.github.com'
+          rm -f .github/workflows/apply-v256.yml
+          git add index.html .github/workflows/apply-v256.yml
+          git commit -m 'V2.56: destacar valores dos KPIs no Início'
+          git push origin HEAD:main
