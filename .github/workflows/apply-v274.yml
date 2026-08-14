@@ -27,56 +27,56 @@ jobs:
           s = s.replace(old, new, 1)
 
           css = r'''
-<style id="v274-period-chip-arrow-fix">
-/* V2.74 — separa a seta do texto e evita sobreposição no nome do mês. */
-.v264-movement-period{
-  width:max-content!important;
-  min-width:max-content!important;
-  max-width:none!important;
-  overflow:visible!important;
-  padding-right:34px!important;
-}
-.v264-movement-period span{
-  width:auto!important;
-  min-width:max-content!important;
-  max-width:none!important;
-  overflow:visible!important;
-  white-space:nowrap!important;
-  padding-right:2px!important;
-}
-.v264-movement-period:after{
-  content:""!important;
-  position:absolute!important;
-  width:7px!important;
-  height:7px!important;
-  right:13px!important;
-  top:50%!important;
-  border:0!important;
-  border-right:2px solid #dbeafe!important;
-  border-bottom:2px solid #dbeafe!important;
-  transform:translateY(-68%) rotate(45deg)!important;
-  pointer-events:none!important;
-  box-sizing:border-box!important;
-}
-@media(max-width:760px){
-  .v264-movement-period{
-    width:max-content!important;
-    min-width:max-content!important;
-    max-width:none!important;
-    padding:5px 33px 5px 9px!important;
-  }
-  .v264-movement-period:after{right:12px!important}
-}
-@media(max-width:360px){
-  .v264-movement-period{
-    max-width:none!important;
-    font-size:8.2px!important;
-    padding-right:30px!important;
-  }
-  .v264-movement-period:after{right:11px!important;width:6px!important;height:6px!important}
-}
-</style>
-'''
+          <style id="v274-period-chip-arrow-fix">
+          /* V2.74 — separa a seta do texto e evita sobreposição no nome do mês. */
+          .v264-movement-period{
+            width:max-content!important;
+            min-width:max-content!important;
+            max-width:none!important;
+            overflow:visible!important;
+            padding-right:34px!important;
+          }
+          .v264-movement-period span{
+            width:auto!important;
+            min-width:max-content!important;
+            max-width:none!important;
+            overflow:visible!important;
+            white-space:nowrap!important;
+            padding-right:2px!important;
+          }
+          .v264-movement-period:after{
+            content:""!important;
+            position:absolute!important;
+            width:7px!important;
+            height:7px!important;
+            right:13px!important;
+            top:50%!important;
+            border:0!important;
+            border-right:2px solid #dbeafe!important;
+            border-bottom:2px solid #dbeafe!important;
+            transform:translateY(-68%) rotate(45deg)!important;
+            pointer-events:none!important;
+            box-sizing:border-box!important;
+          }
+          @media(max-width:760px){
+            .v264-movement-period{
+              width:max-content!important;
+              min-width:max-content!important;
+              max-width:none!important;
+              padding:5px 33px 5px 9px!important;
+            }
+            .v264-movement-period:after{right:12px!important}
+          }
+          @media(max-width:360px){
+            .v264-movement-period{
+              max-width:none!important;
+              font-size:8.2px!important;
+              padding-right:30px!important;
+            }
+            .v264-movement-period:after{right:11px!important;width:6px!important;height:6px!important}
+          }
+          </style>
+          '''
           if 'id="v274-period-chip-arrow-fix"' not in s:
               s = s.replace('</head>', css + '\n</head>', 1)
 
