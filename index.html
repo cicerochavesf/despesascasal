@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.66 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.67 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -9297,6 +9297,52 @@ html[data-theme="dark"] .v255-panel,html[data-theme="dark"] .v255-filterbar,.dar
 }
 </style>
 <!-- V2.66 — Caixas de Movimentações e KPIs em grade responsiva, sem scroll lateral. -->
+
+
+<style id="v267-period-chips-style">
+/* V2.67 — Ano + período discreto nos painéis azuis de Movimentações e Início. */
+.v264-movement-period,.v267-home-period-chip{display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;min-height:32px!important;padding:6px 11px!important;border:1px solid rgba(255,255,255,.16)!important;border-radius:999px!important;background:rgba(255,255,255,.08)!important;color:#fff!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.06)!important;backdrop-filter:blur(8px);font-size:10px!important;line-height:1!important;font-weight:900!important;letter-spacing:-.01em!important;white-space:nowrap!important}
+.v264-movement-period i,.v267-home-period-chip i{width:7px!important;height:7px!important;flex:0 0 7px!important;border-radius:999px!important;background:#7dd3fc!important;box-shadow:0 0 0 4px rgba(125,211,252,.13)!important}
+.v264-movement-period span,.v267-home-period-chip span{color:#fff!important;font:inherit!important}
+.v264-movement-period em,.v267-home-period-chip em{font-style:normal!important;color:#bfdbfe!important;font-weight:800!important;margin:0 2px!important}
+.v252-home-hero{position:relative!important}
+.v267-home-period-chip{position:absolute!important;top:16px!important;right:16px!important;z-index:4!important}
+.v252-home-hero .v252-hero-copy{padding-right:132px!important}
+@media(max-width:760px){.v264-movement-period,.v267-home-period-chip{min-height:27px!important;padding:5px 8px!important;gap:6px!important;font-size:9px!important}.v267-home-period-chip{top:12px!important;right:12px!important}}
+@media(max-width:430px){.v252-home-hero .v252-hero-copy{padding-right:0!important;padding-top:34px!important}}
+</style>
+<script id="v267-period-chips-script">
+(function(){
+  function v267ChipMarkup(year,label){return `<i></i><span>${escapeHtml(String(year||''))}<em>·</em>${escapeHtml(String(label||''))}</span>`}
+  const v267BaseRenderLancamentos=renderLancamentos;
+  renderLancamentos=function(){
+    v267BaseRenderLancamentos();
+    const chip=document.querySelector('.v264-movement-period');
+    if(!chip)return;
+    const year=String(state.month||currentMonthId()).slice(0,4);
+    const label=txScope==='ano'?'Ano':labelMonth(state.month);
+    chip.innerHTML=v267ChipMarkup(year,label);
+    chip.setAttribute('aria-label','Período: '+year+' '+label);
+  };
+  const v267BaseRenderEstrategia=renderEstrategia;
+  renderEstrategia=function(){
+    v267BaseRenderEstrategia();
+    const hero=document.querySelector('.v246-home-dashboard .v252-home-hero');
+    if(!hero)return;
+    const old=hero.querySelector(':scope > .v267-home-period-chip');
+    if(old)old.remove();
+    const year=String((window.v246HomeFilters&&v246HomeFilters.year)||state.month||currentMonthId()).slice(0,4);
+    const selectedMonth=window.v246HomeFilters?v246HomeFilters.month:'todos';
+    const label=selectedMonth&&selectedMonth!=='todos'?labelMonth(selectedMonth):'Ano';
+    const chip=document.createElement('div');
+    chip.className='v267-home-period-chip';
+    chip.innerHTML=v267ChipMarkup(year,label);
+    chip.setAttribute('aria-label','Período: '+year+' '+label);
+    hero.appendChild(chip);
+  };
+})();
+</script>
+<!-- V2.67 — Período discreto com ano nos painéis azuis. -->
 
 </body></html>
 
