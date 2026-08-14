@@ -1,0 +1,178 @@
+name: Aplicar V2.69
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-v269.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update-index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Conferir base V2.68
+        run: test "$(git hash-object index.html)" = "15e62c5ea8133f8dc73dbdadb2043ddbc864180d"
+
+      - name: Aplicar V2.69
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+
+          old='<!-- Despesas Casal - Controle Financeiro | versão 2.68 -->'
+          new='<!-- Despesas Casal - Controle Financeiro | versão 2.69 -->'
+          if old not in s:
+              raise SystemExit('Cabeçalho V2.68 não encontrado')
+          if 'v269-real-kpi-period-fix-style' in s:
+              raise SystemExit('V2.69 já aplicada')
+
+          # Remove a tentativa V2.68. Ela mirava apenas os KPIs de Movimentações
+          # e ainda trocava "Ano" pelo mês corrente no Início quando o filtro era anual.
+          start=s.find('<style id="v268-final-period-kpi-fix-style">')
+          if start < 0:
+              raise SystemExit('Bloco V2.68 não encontrado')
+          marker='<!-- V2.68 — Corrige ordem dos overrides, KPI mobile de Movimentações e mês discreto no Início. -->'
+          end=s.find(marker,start)
+          if end < 0:
+              raise SystemExit('Fim do bloco V2.68 não encontrado')
+          end += len(marker)
+          s=s[:start]+s[end:]
+
+          addon=r'''
+<style id="v269-real-kpi-period-fix-style">
+/* V2.69 — Corrige os containers realmente renderizados dos KPIs e o período dos painéis azuis. */
+.v252-home-hero{position:relative!important}
+.v269-home-period-chip{
+  position:absolute!important;top:14px!important;right:14px!important;z-index:12!important;
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;
+  min-height:28px!important;padding:5px 9px!important;border:1px solid rgba(255,255,255,.16)!important;
+  border-radius:999px!important;background:rgba(255,255,255,.08)!important;color:#fff!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.06)!important;backdrop-filter:blur(8px)!important;
+  font-size:9px!important;line-height:1!important;font-weight:900!important;white-space:nowrap!important;
+}
+.v269-home-period-chip i{width:7px!important;height:7px!important;flex:0 0 7px!important;border-radius:50%!important;background:#7dd3fc!important;box-shadow:0 0 0 4px rgba(125,211,252,.13)!important}
+.v269-home-period-chip span{color:#fff!important;font:inherit!important}
+.v269-home-period-chip em{font-style:normal!important;color:#bfdbfe!important;font-weight:800!important;margin:0 2px!important}
+
+/* O empilhamento mobile é aplicado aos DOIS containers reais: Movimentações e Início. */
+@media(max-width:760px){
+  .v264-movement-hero .tx-summary.v269-mobile-kpi-stack,
+  .v246-home-dashboard .v253-hero-kpis.v269-mobile-kpi-stack{
+    display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-auto-columns:auto!important;
+    gap:7px!important;width:100%!important;min-width:0!important;overflow:visible!important;
+    margin-left:0!important;margin-right:0!important;padding-bottom:0!important;scroll-snap-type:none!important;
+  }
+  .v264-movement-hero .tx-summary.v269-mobile-kpi-stack .metric,
+  .v246-home-dashboard .v253-hero-kpis.v269-mobile-kpi-stack .v253-hero-kpi{
+    grid-column:auto!important;width:100%!important;min-width:0!important;max-width:none!important;
+  }
+  .v264-movement-hero .tx-summary.v269-mobile-kpi-stack .metric{
+    display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;text-align:left!important;
+  }
+  .v246-home-dashboard .v253-hero-kpis.v269-mobile-kpi-stack .v253-hero-kpi strong{
+    max-width:100%!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;overflow-wrap:anywhere!important;
+  }
+}
+@media(max-width:430px){
+  .v269-home-period-chip{top:10px!important;right:10px!important;font-size:8.5px!important;min-height:26px!important;padding:5px 8px!important}
+  .v252-home-hero .v252-hero-copy{padding-top:34px!important}
+}
+</style>
+<script id="v269-real-kpi-period-fix-script">
+(function(){
+  function v269MonthName(month){
+    const raw=String(typeof labelMonth==='function'?labelMonth(month):month||'');
+    return raw.replace(/\s*\/\s*\d{4}\s*$/,'').trim();
+  }
+  function v269Markup(year,label){
+    return `<i></i><span>${escapeHtml(String(year||''))}<em>·</em>${escapeHtml(String(label||''))}</span>`;
+  }
+  function v269MarkRenderedKpis(){
+    document.querySelectorAll('.v264-movement-hero .tx-summary,.v246-home-dashboard .v253-hero-kpis').forEach(el=>el.classList.add('v269-mobile-kpi-stack'));
+  }
+
+  const v269PrevLancamentos=renderLancamentos;
+  renderLancamentos=function(){
+    v269PrevLancamentos();
+    v269MarkRenderedKpis();
+    const chip=document.querySelector('.v264-movement-period');
+    if(!chip)return;
+    const month=state.month||currentMonthId();
+    const year=String(month).slice(0,4);
+    const label=txScope==='ano'?'Ano':v269MonthName(month);
+    chip.innerHTML=v269Markup(year,label);
+    chip.setAttribute('aria-label','Período: '+year+' '+label);
+  };
+
+  const v269PrevEstrategia=renderEstrategia;
+  renderEstrategia=function(){
+    v269PrevEstrategia();
+    v269MarkRenderedKpis();
+    const hero=document.querySelector('.v246-home-dashboard .v252-home-hero');
+    if(!hero)return;
+    hero.querySelectorAll('.v267-home-period-chip,.v268-home-period-chip,.v269-home-period-chip').forEach(el=>el.remove());
+    let filters=null;
+    try{if(typeof v246HomeFilters!=='undefined')filters=v246HomeFilters}catch(_e){}
+    const year=String((filters&&filters.year)||state.month||currentMonthId()).slice(0,4);
+    const selectedMonth=filters&&filters.month?filters.month:'todos';
+    const label=selectedMonth&&selectedMonth!=='todos'?v269MonthName(selectedMonth):'Ano';
+    const chip=document.createElement('div');
+    chip.className='v269-home-period-chip';
+    chip.innerHTML=v269Markup(year,label);
+    chip.setAttribute('aria-label','Período: '+year+' '+label);
+    hero.appendChild(chip);
+  };
+})();
+</script>
+<!-- V2.69 — KPIs mobile corrigidos no container real e período anual/mensal coerente nos painéis azuis. -->
+'''
+
+          s=s.replace(old,new,1)
+          closing='</body></html>'
+          if closing not in s:
+              raise SystemExit('Fechamento HTML não encontrado')
+          s=s.replace(closing,'',1).rstrip()+addon+'\n'+closing+'\n'
+          p.write_text(s,encoding='utf-8')
+          PY
+
+      - name: Validar V2.69
+        run: |
+          grep -q 'versão 2.69' index.html
+          grep -q 'v269-real-kpi-period-fix-style' index.html
+          grep -q 'v269-real-kpi-period-fix-script' index.html
+          grep -q '.v246-home-dashboard .v253-hero-kpis.v269-mobile-kpi-stack' index.html
+          grep -q '.v264-movement-hero .tx-summary.v269-mobile-kpi-stack' index.html
+          grep -q "selectedMonth&&selectedMonth!='todos'" index.html || grep -q "selectedMonth&&selectedMonth!=='todos'" index.html
+          ! grep -q 'v268-final-period-kpi-fix-style' index.html
+          ! grep -q 'v268-final-period-kpi-fix-script' index.html
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('index.html').read_text(encoding='utf-8')
+          assert s.count('id="v269-real-kpi-period-fix-style"') == 1
+          assert s.count('id="v269-real-kpi-period-fix-script"') == 1
+          assert s.count('</body></html>') == 1
+          assert s.rstrip().endswith('</body></html>')
+          assert 'grid-template-columns:minmax(0,1fr)!important' in s
+          assert "?'Ano':v269MonthName(month)" in s
+          assert ":'Ano';" in s
+          scripts='\n\n'.join(re.findall(r'<script[^>]*>(.*?)</script>',s,flags=re.S|re.I))
+          Path('/tmp/all-scripts.js').write_text(scripts,encoding='utf-8')
+          PY
+          node --check /tmp/all-scripts.js
+
+      - name: Publicar V2.69
+        run: |
+          git config user.name 'ChatGPT App Despesas Casal'
+          git config user.email 'actions@users.noreply.github.com'
+          rm -f .github/workflows/apply-v269.yml
+          git add index.html .github/workflows/apply-v269.yml
+          git commit -m 'V2.69: corrigir KPIs e período nos painéis'
+          git push origin HEAD:main
