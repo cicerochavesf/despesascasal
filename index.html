@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.50 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.51 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -8140,5 +8140,157 @@ requestAnimationFrame(v240EnhanceMobileAuthorBadge);
 </script>
 <!-- V2.50 — Início: colunas redimensionáveis por arraste no PC; Distribuição por categoria sem rolagem interna; 2026 limitado a julho–dezembro. -->
 <!-- V2.50 — Ações contextuais: Novo lançamento somente em Movimentações; em Remanejamentos vira Novo remanejamento; Planejamento mantém Nova previsão. -->
+
+<style id="v251-home-refresh-style">
+/* V2.51 — Início com mais acabamento visual e melhor usabilidade no celular */
+.v251-home-hero{position:relative;overflow:hidden;display:grid;grid-template-columns:minmax(0,1.2fr) auto;gap:16px;align-items:stretch;padding:20px;border-radius:24px;background:linear-gradient(135deg,#0f172a 0%,#1d4ed8 55%,#38bdf8 100%);color:#fff;box-shadow:0 18px 40px rgba(15,23,42,.16)}
+.v251-home-hero::before,.v251-home-hero::after{content:"";position:absolute;border-radius:999px;pointer-events:none}
+.v251-home-hero::before{width:180px;height:180px;right:-70px;top:-80px;background:rgba(255,255,255,.11)}
+.v251-home-hero::after{width:120px;height:120px;left:-35px;bottom:-45px;background:rgba(255,255,255,.08)}
+.v251-home-hero>*{position:relative;z-index:1}
+.v251-hero-copy{display:grid;gap:10px;min-width:0}
+.v251-hero-kicker{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;padding:7px 11px;border-radius:999px;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.15);font-size:11px;font-weight:900;letter-spacing:.04em;text-transform:uppercase}
+.v251-hero-kicker i{width:8px;height:8px;border-radius:50%;background:#7dd3fc;box-shadow:0 0 0 5px rgba(125,211,252,.18)}
+.v251-hero-copy h2{margin:0;font-size:26px;line-height:1.02;font-weight:950;letter-spacing:-.05em;color:#fff}
+.v251-hero-copy p{margin:0;max-width:760px;font-size:13px;line-height:1.45;color:rgba(255,255,255,.8)}
+.v251-hero-balance{display:grid;gap:6px;margin-top:2px}
+.v251-hero-balance span{font-size:11px;font-weight:850;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.78)}
+.v251-hero-balance strong{font-size:clamp(30px,5.2vw,44px);line-height:1;font-weight:950;letter-spacing:-.06em;color:#fff}
+.v251-hero-balance small{font-size:12px;color:rgba(255,255,255,.78)}
+.v251-hero-badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.v251-hero-badges span{display:inline-flex;align-items:center;gap:6px;padding:8px 11px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.12);font-size:11px;font-weight:800;color:#fff}
+.v251-hero-side{display:grid;grid-template-columns:repeat(2,minmax(150px,1fr));gap:10px;align-content:center;min-width:320px}
+.v251-hero-mini{padding:14px 14px 13px;border-radius:18px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.13);backdrop-filter:blur(6px)}
+.v251-hero-mini span{display:block;font-size:10px;line-height:1.2;font-weight:850;letter-spacing:.05em;text-transform:uppercase;color:rgba(255,255,255,.72)}
+.v251-hero-mini strong{display:block;margin-top:7px;font-size:19px;line-height:1.08;font-weight:950;color:#fff;white-space:nowrap}
+.v251-hero-mini small{display:block;margin-top:5px;font-size:11px;line-height:1.3;color:rgba(255,255,255,.76)}
+
+.v251-home-filters-card{display:grid;gap:12px;padding:16px;background:linear-gradient(180deg,color-mix(in srgb,var(--panel,#fff) 88%,#eef6ff) 0%,var(--panel,#fff) 100%);border:1px solid color-mix(in srgb,var(--line,#e2e8f0) 80%,#dbeafe);border-radius:22px;box-shadow:0 14px 32px rgba(15,23,42,.06)}
+.v251-home-filters-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.v251-home-filters-top h3{margin:4px 0 0;font-size:18px;line-height:1.15;font-weight:950;color:var(--text,#0f172a)}
+.v251-home-filters-top p{margin:5px 0 0;font-size:12px;line-height:1.45;color:var(--muted,#64748b)}
+.v251-home-filters-top .v251-kicker{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;background:#eff6ff;color:#1d4ed8;border:1px solid #dbeafe;font-size:10px;font-weight:900;letter-spacing:.05em;text-transform:uppercase}
+.v251-home-filters-top .v251-kicker i{width:8px;height:8px;border-radius:50%;background:#38bdf8}
+.v251-filter-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto}
+.v251-filter-toggle,.v251-filter-clear{appearance:none;height:42px;padding:0 14px;border-radius:13px;font-weight:900;font-size:12px;cursor:pointer;transition:transform .18s ease,filter .18s ease,border-color .18s ease,background .18s ease}
+.v251-filter-toggle{border:1px solid var(--line,#dbe3ed);background:var(--soft,#f8fafc);color:var(--text,#0f172a)}
+.v251-filter-toggle:hover{border-color:color-mix(in srgb,var(--primary,#4f46e5) 28%,var(--line,#dbe3ed));background:color-mix(in srgb,var(--primary,#4f46e5) 5%,var(--soft,#f8fafc))}
+.v251-filter-clear{border:0;background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 100%);color:#fff;box-shadow:0 10px 20px rgba(15,23,42,.12)}
+.v251-filter-clear:hover{filter:brightness(1.05)}
+.v251-active-filters{display:flex;flex-wrap:wrap;gap:8px}
+.v251-active-filters span{display:inline-flex;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;background:#f8fafc;border:1px solid var(--line,#e2e8f0);font-size:11px;font-weight:800;color:var(--text,#0f172a)}
+.v251-active-filters b{color:var(--muted,#64748b);font-weight:900}
+.v251-active-filters em{font-style:normal;color:#1d4ed8;font-weight:900}
+.v251-home-filters-body{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;align-items:end}
+.v251-home-filters-body .v246-filter-field{min-width:0}
+.v251-home-filters-body .v246-filter-field label{display:block;margin:0 0 7px 2px;font-size:11px;line-height:1;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--muted,#64748b)}
+.v251-home-filters-body .v246-filter-field select{width:100%;height:48px;border:1px solid var(--line,#dbe3ed);border-radius:14px;background:var(--soft,#f8fafc);color:var(--text,#0f172a);font:inherit;font-size:13px;padding:0 34px 0 12px;outline:none;white-space:nowrap;text-overflow:ellipsis;transition:border-color .18s ease,box-shadow .18s ease,background .18s ease}
+.v251-home-filters-body .v246-filter-field select:focus{border-color:var(--primary,#4f46e5);box-shadow:0 0 0 3px rgba(79,70,229,.12);background:var(--panel,#fff)}
+.v251-home-filters-body .v251-filter-clear.mobile-only{display:none}
+
+.v246-kpi-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}
+.v246-kpi-card{position:relative;overflow:hidden;min-width:0;min-height:118px;padding:18px 16px 16px;background:linear-gradient(180deg,var(--panel,#fff) 0%,color-mix(in srgb,var(--panel,#fff) 90%,#eef6ff) 100%);border:1px solid var(--line,#e2e8f0);border-radius:20px;box-shadow:0 10px 28px rgba(15,23,42,.05);container-type:inline-size}
+.v246-kpi-card::before{content:"";position:absolute;inset:auto auto 0 0;width:100%;height:4px;background:linear-gradient(90deg,var(--kpi-accent,#0ea5e9),color-mix(in srgb,var(--kpi-accent,#0ea5e9) 25%,white));opacity:.95}
+.v246-kpi-card::after{content:"";position:absolute;right:-20px;top:-26px;width:86px;height:86px;border-radius:999px;background:color-mix(in srgb,var(--kpi-accent,#0ea5e9) 12%,white);opacity:.95;pointer-events:none}
+.v246-kpi-card.is-revenue{--kpi-accent:#0ea5e9}.v246-kpi-card.is-expense{--kpi-accent:#f59e0b}.v246-kpi-card.is-average{--kpi-accent:#8b5cf6}.v246-kpi-card.is-positive{--kpi-accent:#16a34a}.v246-kpi-card.is-negative{--kpi-accent:#ef4444}.v246-kpi-card.is-neutral{--kpi-accent:#64748b}
+.v246-kpi-card>span{max-width:82%;font-size:11px;line-height:1.24;font-weight:950;letter-spacing:.045em;text-transform:uppercase;color:var(--muted,#64748b)}
+.v246-kpi-card>strong{margin-top:12px;width:100%;max-width:100%;font-size:clamp(19px,10cqi,26px);line-height:1.02;font-weight:950;letter-spacing:-.05em;color:var(--text,#0f172a);white-space:nowrap}
+.v246-kpi-card>small{margin-top:11px;font-size:11px;line-height:1.35;color:var(--muted,#64748b)}
+
+@media(max-width:1180px){
+  .v251-home-hero{grid-template-columns:1fr}
+  .v251-hero-side{grid-template-columns:repeat(2,minmax(0,1fr));min-width:0}
+  .v251-home-filters-body{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .v246-kpi-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:760px){
+  .v246-home-dashboard{gap:12px}
+  .v251-home-hero{gap:14px;padding:16px;border-radius:20px}
+  .v251-hero-copy h2{font-size:23px}
+  .v251-hero-copy p{font-size:12px}
+  .v251-hero-balance strong{font-size:32px}
+  .v251-hero-side{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .v251-hero-mini{padding:12px;border-radius:16px}
+  .v251-hero-mini strong{font-size:16px}
+  .v251-home-filters-card{padding:14px;border-radius:18px}
+  .v251-home-filters-top{align-items:center}
+  .v251-home-filters-top h3{font-size:16px}
+  .v251-home-filters-top p{font-size:11px}
+  .v251-filter-clear.desktop-only{display:none}
+  .v251-home-filters-body{display:none;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+  .v251-home-filters-body.is-open{display:grid}
+  .v251-home-filters-body .v251-filter-clear.mobile-only{display:block;grid-column:1/-1;height:44px}
+  .v251-active-filters{gap:7px}
+  .v251-active-filters span{font-size:10px;padding:6px 9px}
+  .v246-kpi-grid{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(180px,76vw);gap:10px;overflow-x:auto;padding-bottom:4px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+  .v246-kpi-grid::-webkit-scrollbar{display:none}
+  .v246-kpi-card{min-height:108px;padding:15px 14px;border-radius:17px;scroll-snap-align:start}
+  .v246-kpi-card>span{font-size:10px}
+  .v246-kpi-card>strong{margin-top:10px;font-size:24px}
+  .v246-kpi-card>small{margin-top:10px;font-size:10.5px}
+}
+@media(max-width:430px){
+  .v251-home-filters-top{flex-direction:column;align-items:flex-start}
+  .v251-filter-actions{width:100%}
+  .v251-filter-toggle,.v251-filter-clear{flex:1 1 0;justify-content:center}
+  .v251-hero-side{grid-template-columns:1fr 1fr}
+  .v246-kpi-grid{grid-auto-columns:minmax(170px,82vw)}
+}
+html[data-theme="dark"] .v251-home-filters-card,html[data-theme="dark"] .v246-kpi-card,.dark .v251-home-filters-card,.dark .v246-kpi-card{box-shadow:none}
+html[data-theme="dark"] .v251-home-filters-top .v251-kicker,.dark .v251-home-filters-top .v251-kicker{background:#172554;color:#bfdbfe;border-color:#1d4ed8}
+html[data-theme="dark"] .v251-active-filters span,.dark .v251-active-filters span{background:#0f172a;border-color:#334155}
+</style>
+<script id="v251-home-refresh-script">
+(function(){
+  window.v251HomeFiltersOpen=false;
+  function v251PeriodLabel(monthIds){
+    const list=(monthIds||[]).slice();
+    if(!list.length)return 'Sem período disponível';
+    if(list.length===1)return labelMonth(list[0]);
+    return `${labelMonth(list[0])} a ${labelMonth(list[list.length-1])}`;
+  }
+  function v251ActiveFilterChips(monthIds){
+    const chips=[];
+    chips.push(`<span><b>Período</b><em>${escapeHtml(v251PeriodLabel(monthIds))}</em></span>`);
+    const specs=[
+      ['Categoria',v246HomeFilters.cat!=='todos'?(cat(v246HomeFilters.cat)?.name||v246HomeFilters.cat):''],
+      ['Subcategoria',v246HomeFilters.sub!=='todos'?v246HomeFilters.sub:''],
+      ['Cidade',v246HomeFilters.city!=='todos'?v246HomeFilters.city:''],
+      ['Responsável',v246HomeFilters.owner!=='todos'?v246HomeFilters.owner:'']
+    ];
+    specs.forEach(([label,val])=>{ if(val)chips.push(`<span><b>${escapeHtml(label)}</b><em>${escapeHtml(val)}</em></span>`); });
+    return `<div class="v251-active-filters">${chips.join('')}</div>`;
+  }
+  function v251Hero(monthIds,rows){
+    const revenue=monthIds.reduce((sum,month)=>sum+Number(revenueTotal(month)||0),0);
+    const expense=(rows||[]).reduce((sum,row)=>sum+Number(row.planned||0),0);
+    const balance=revenue-expense;
+    const pct=revenue>0?(expense/revenue*100):0;
+    const revenueMonths=monthIds.filter(month=>Number(revenueTotal(month)||0)>.005).length;
+    const tone=balance<-.005?'déficit':balance>.005?'superávit':'equilíbrio';
+    return `<section class="v251-home-hero"><div class="v251-hero-copy"><span class="v251-hero-kicker"><i></i>Painel do período</span><h2>${escapeHtml(v251PeriodLabel(monthIds))}</h2><p>Uma leitura mais bonita e direta do recorte atual. Use os filtros só quando precisar detalhar a visão.</p><div class="v251-hero-balance"><span>Saldo previsto</span><strong>${fmt(balance)}</strong><small>${balance<-.005?'As despesas estão acima das receitas planejadas.':balance>.005?'Há folga prevista no recorte atual.':'Receitas e despesas estão equilibradas neste recorte.'}</small></div><div class="v251-hero-badges"><span>${monthIds.length} ${monthIds.length===1?'mês no recorte':'meses no recorte'}</span><span>${rows.length} ${rows.length===1?'previsão filtrada':'previsões filtradas'}</span><span>${Math.max(0,pct).toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1})}% da receita comprometida</span></div></div><div class="v251-hero-side"><article class="v251-hero-mini"><span>Receitas previstas</span><strong>${fmt(revenue)}</strong><small>${revenueMonths} ${revenueMonths===1?'mês com entrada':'meses com entrada'}</small></article><article class="v251-hero-mini"><span>Despesas previstas</span><strong>${fmt(expense)}</strong><small>${rows.length} ${rows.length===1?'item planejado':'itens planejados'}</small></article><article class="v251-hero-mini"><span>Leitura rápida</span><strong>${tone.charAt(0).toUpperCase()+tone.slice(1)}</strong><small>${balance<-.005?'Atenção ao orçamento.':balance>.005?'Situação confortável.':'Sem folga nem déficit.'}</small></article><article class="v251-hero-mini"><span>Média mensal</span><strong>${fmt(monthIds.length?expense/monthIds.length:0)}</strong><small>Despesas médias do recorte</small></article></div></section>`;
+  }
+  window.v251ToggleHomeFilters=function(force){
+    window.v251HomeFiltersOpen=typeof force==='boolean'?!!force:!window.v251HomeFiltersOpen;
+    render();
+  };
+  v246HomeFilterPanel=function(monthIds){
+    const years=v246HomeAvailableYears(),year=v246HomeFilters.year,months=v246HomeMonthsForYear(year),subs=v246HomeSubcategoryOptions(monthIds);
+    if(v246HomeFilters.sub!=='todos'&&!subs.some(x=>norm(x)===norm(v246HomeFilters.sub)))v246HomeFilters.sub='todos';
+    const monthOptions=`<option value="todos" ${v246HomeFilters.month==='todos'?'selected':''}>Todos os meses</option>`+months.map(m=>`<option value="${m}" ${v246HomeFilters.month===m?'selected':''}>${labelMonth(m)}</option>`).join('');
+    const catOptions=`<option value="todos" ${v246HomeFilters.cat==='todos'?'selected':''}>Todas as categorias</option>`+state.categories.slice().sort((a,b)=>textCmp(a.name,b.name)).map(c=>`<option value="${escapeHtml(c.id)}" ${v246HomeFilters.cat===c.id?'selected':''}>${escapeHtml(c.name)}</option>`).join('');
+    const subOptions=`<option value="todos" ${v246HomeFilters.sub==='todos'?'selected':''}>Todas as subcategorias</option>`+subs.map(name=>`<option value="${escapeHtml(name)}" ${norm(v246HomeFilters.sub)===norm(name)?'selected':''}>${escapeHtml(name)}</option>`).join('');
+    const cityOptions=['Fortaleza','Brasília','Compartilhado'].map(v=>`<option value="${v}" ${v246HomeFilters.city===v?'selected':''}>${v}</option>`).join('');
+    const ownerOptionsList=['Cícero','Nilce','Compartilhado'].map(v=>`<option value="${v}" ${v246HomeFilters.owner===v?'selected':''}>${v}</option>`).join('');
+    return `<section class="v251-home-filters-card"><div class="v251-home-filters-top"><div><span class="v251-kicker"><i></i>Filtros inteligentes</span><h3>Refine sua visão</h3><p>No celular, os filtros ficam recolhidos para deixar o painel mais limpo. Abra só quando quiser detalhar.</p></div><div class="v251-filter-actions"><button type="button" class="v251-filter-toggle" onclick="v251ToggleHomeFilters()">${window.v251HomeFiltersOpen?'Ocultar filtros':'Mostrar filtros'}</button><button type="button" class="v251-filter-clear desktop-only" onclick="v246ClearHomeFilters()">Limpar</button></div></div>${v251ActiveFilterChips(monthIds)}<div class="v251-home-filters-body ${window.v251HomeFiltersOpen?'is-open':''}"><div class="v246-filter-field"><label>Ano</label><select onchange="v246SetHomeFilter('year',this.value)">${years.map(y=>`<option value="${y}" ${y===year?'selected':''}>${y}</option>`).join('')}</select></div><div class="v246-filter-field"><label>Mês</label><select onchange="v246SetHomeFilter('month',this.value)">${monthOptions}</select></div><div class="v246-filter-field"><label>Categoria</label><select onchange="v246SetHomeFilter('cat',this.value)">${catOptions}</select></div><div class="v246-filter-field"><label>Subcategoria</label><select onchange="v246SetHomeFilter('sub',this.value)">${subOptions}</select></div><div class="v246-filter-field"><label>Cidade</label><select onchange="v246SetHomeFilter('city',this.value)"><option value="todos" ${v246HomeFilters.city==='todos'?'selected':''}>Todas as cidades</option>${cityOptions}</select></div><div class="v246-filter-field"><label>Responsável</label><select onchange="v246SetHomeFilter('owner',this.value)"><option value="todos" ${v246HomeFilters.owner==='todos'?'selected':''}>Todos os responsáveis</option>${ownerOptionsList}</select></div><button type="button" class="v251-filter-clear mobile-only" onclick="v246ClearHomeFilters()">Limpar filtros</button></div></section>`;
+  };
+  renderEstrategia=function(){
+    if(!v246HomeFilters.year)v246HomeFilters.year=v246HomeDefaultYear();
+    const monthIds=v246HomeMonthIds(),rows=v246HomeBudgetRows(monthIds);
+    layout(`<div class="v246-home-dashboard">${v251Hero(monthIds,rows)}${v246HomeFilterPanel(monthIds)}${v246HomeKpis(monthIds,rows)}${v248HomeInsights(monthIds,rows)}${v249HomeBreakdowns(monthIds,rows)}${v250HomeMatrices(monthIds,rows)}</div>`);
+  };
+})();
+</script>
+<!-- V2.51 — Início com hero, filtros recolhíveis no celular e KPIs mais leves. -->
 
 </body></html>
