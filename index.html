@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.63 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.64 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -3651,9 +3651,9 @@ function retryCloudSync(){initCloud()}
 async function loadFromCloud(){setCloudStatus('Carregando nuvem...','loading');renderCloudGate('loading');try{const res=await fetch(cloudTableUrl(`id=eq.${encodeURIComponent(SUPABASE_ROW_ID)}&select=data,updated_at`),{headers:cloudReadHeaders(),cache:'no-store'});if(!res.ok)throw new Error(await parseCloudError(res));const rows=await res.json();if(rows&&rows.length&&rows[0].data){state=merge(clone(baseData),rows[0].data);lastCloudUpdatedAt=rows[0].updated_at||''}else{const seed=loadLocalCache();state=merge(clone(baseData),seed);setCloudStatus('Criando estado na nuvem...','loading');lastCloudUpdatedAt=await writeCloudRow(SUPABASE_ROW_ID,state)}ensureUiState();const openingSnapshot=clone(state);prepareDefaultOpening();cacheCloudState();cloudReady=true;cloudSynced=true;cloudLoadError='';setCloudStatus('Nuvem sincronizada','ok');render();ensureDailyCloudBackup(openingSnapshot)}catch(err){console.error('Erro ao carregar do Supabase',err);cloudReady=false;cloudSynced=false;cloudLoadError=String(err.message||err);setCloudStatus('Nuvem indisponível','error');renderCloudGate('error',cloudLoadError)}}
 function initCloud(){if(!authUser){renderAuthGate('login');return}if(cloudLoading)return;clearTimeout(cloudSaveTimer);cloudReady=false;cloudSynced=false;cloudLoadError='';cloudLoading=true;loadFromCloud().finally(()=>{cloudLoading=false})}
 function prepareDefaultOpening(){
-  view='estrategia';
+  view='lancamentos';
   periodMode='mes';
-  state.month=validMonth(currentMonthId());
+  state.month=validMonth(typeof v223FinancialMonthForDate==='function'?v223FinancialMonthForDate(localDateId()):currentMonthId());
   txScope='mes';
   txPanel='realizados';
   txForecastFilters={cat:[],owner:[],city:[],balance:[],payments:[]};
@@ -8971,6 +8971,276 @@ html[data-theme="dark"] .v255-panel,html[data-theme="dark"] .v255-filterbar,.dar
 })();
 </script>
 <!-- V2.62 — Correção de overflow numérico no celular e ajuste de colunas em todas as tabelas de Análises. -->
+<style id="v264-movements-home-open-mobile-columns-style">
+/* V2.64 — Movimentações com painel azul, abertura padrão no Extrato e ajuste de colunas mais discreto no celular. */
+.v264-movement-hero{
+  margin:0 0 12px;
+  padding:16px;
+  border-radius:24px;
+  background:linear-gradient(135deg,#0f172a 0%,#1d4ed8 56%,#38bdf8 132%);
+  border:1px solid rgba(191,219,254,.22);
+  box-shadow:0 18px 42px rgba(15,23,42,.16);
+  overflow:hidden;
+}
+.v264-movement-hero-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:14px;
+  margin-bottom:12px;
+}
+.v264-movement-hero-head span{
+  display:block;
+  color:#bfdbfe;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:.085em;
+  text-transform:uppercase;
+}
+.v264-movement-hero-head h2{
+  margin:3px 0 0;
+  color:#fff;
+  font-size:21px;
+  line-height:1.05;
+  font-weight:950;
+  letter-spacing:-.035em;
+}
+.v264-movement-hero-head p{
+  margin:5px 0 0;
+  color:#dbeafe;
+  font-size:10.5px;
+  line-height:1.35;
+  font-weight:700;
+}
+.v264-movement-period{
+  flex:0 0 auto;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  min-height:30px;
+  padding:6px 10px;
+  border:1px solid rgba(255,255,255,.2);
+  border-radius:999px;
+  background:rgba(255,255,255,.10);
+  color:#fff;
+  font-size:10px;
+  font-weight:900;
+  white-space:nowrap;
+}
+.v264-movement-period i{
+  width:6px;
+  height:6px;
+  border-radius:999px;
+  background:#7dd3fc;
+  box-shadow:0 0 0 4px rgba(125,211,252,.13);
+}
+.v264-movement-hero .tx-tabs{
+  margin:0 0 9px!important;
+  padding:4px!important;
+  border:1px solid rgba(255,255,255,.16)!important;
+  border-radius:14px!important;
+  background:rgba(15,23,42,.16)!important;
+  box-shadow:none!important;
+}
+.v264-movement-hero .tx-tabs button{
+  color:#dbeafe!important;
+  border-color:transparent!important;
+  background:transparent!important;
+}
+.v264-movement-hero .tx-tabs button b{
+  background:rgba(255,255,255,.12)!important;
+  color:#fff!important;
+}
+.v264-movement-hero .tx-tabs button.active{
+  background:#fff!important;
+  color:#0f172a!important;
+  box-shadow:0 4px 12px rgba(15,23,42,.12)!important;
+}
+.v264-movement-hero .tx-tabs button.active b{
+  background:#dbeafe!important;
+  color:#1d4ed8!important;
+}
+.v264-movement-hero .v26-movement-toolbar,
+.v264-movement-hero .v27-movement-toolbar{
+  margin:0 0 9px!important;
+  background:rgba(255,255,255,.10)!important;
+  border-color:rgba(255,255,255,.16)!important;
+  box-shadow:none!important;
+}
+.v264-movement-hero .v27-movement-field>label,
+.v264-movement-hero .v26-movement-control>label,
+.v264-movement-hero .v26-movement-label{
+  color:#bfdbfe!important;
+}
+.v264-movement-hero .v27-movement-field .select,
+.v264-movement-hero .v27-movement-search .view-search-input,
+.v264-movement-hero .v26-movement-search .view-search-input{
+  border-color:rgba(255,255,255,.2)!important;
+  background:rgba(255,255,255,.96)!important;
+  color:#0f172a!important;
+  box-shadow:none!important;
+}
+.v264-movement-hero .tx-summary{
+  margin:0!important;
+  gap:8px!important;
+}
+.v264-movement-hero .tx-summary .metric{
+  min-width:0!important;
+  min-height:88px!important;
+  padding:12px 13px!important;
+  border:1px solid rgba(255,255,255,.15)!important;
+  border-radius:16px!important;
+  background:rgba(255,255,255,.10)!important;
+  box-shadow:none!important;
+}
+.v264-movement-hero .tx-summary .metric .label{
+  color:#bfdbfe!important;
+  font-size:8.5px!important;
+}
+.v264-movement-hero .tx-summary .metric .value{
+  color:#fff!important;
+  font-size:21px!important;
+}
+.v264-movement-hero .tx-summary .metric .value .money{
+  color:inherit!important;
+}
+.v264-movement-hero .tx-summary .metric .subtxt{
+  color:#dbeafe!important;
+}
+@media(max-width:760px){
+  .v264-movement-hero{
+    margin:0 0 9px;
+    padding:11px;
+    border-radius:19px;
+  }
+  .v264-movement-hero-head{
+    align-items:flex-start;
+    margin-bottom:9px;
+    gap:8px;
+  }
+  .v264-movement-hero-head h2{font-size:17px}
+  .v264-movement-hero-head p{font-size:9px}
+  .v264-movement-period{
+    min-height:25px;
+    padding:4px 7px;
+    font-size:8.5px;
+  }
+  .v264-movement-hero .tx-tabs{
+    display:flex!important;
+    gap:3px!important;
+    overflow-x:auto!important;
+    scrollbar-width:none;
+  }
+  .v264-movement-hero .tx-tabs::-webkit-scrollbar{display:none}
+  .v264-movement-hero .tx-tabs button{
+    flex:0 0 auto!important;
+    min-width:104px!important;
+    min-height:34px!important;
+    padding:6px 8px!important;
+    font-size:9px!important;
+  }
+  .v264-movement-hero .v26-movement-toolbar,
+  .v264-movement-hero .v27-movement-toolbar{
+    padding:7px!important;
+    border-radius:12px!important;
+  }
+  .v264-movement-hero .tx-summary{
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:5px!important;
+  }
+  .v264-movement-hero .tx-summary .metric{
+    min-height:76px!important;
+    padding:8px 7px!important;
+    border-radius:12px!important;
+  }
+  .v264-movement-hero .tx-summary .metric .label{
+    font-size:7px!important;
+    letter-spacing:.04em!important;
+  }
+  .v264-movement-hero .tx-summary .metric .value{
+    margin-top:5px!important;
+    font-size:clamp(14px,4.25vw,18px)!important;
+    line-height:1.04!important;
+    overflow-wrap:anywhere!important;
+  }
+  .v264-movement-hero .tx-summary .metric .subtxt{
+    margin-top:4px!important;
+    font-size:7px!important;
+    line-height:1.15!important;
+  }
+
+  /* O controle continua acessível, mas deixa de competir visualmente com o conteúdo. */
+  .column-width-button,
+  .v248-column-btn,
+  .v250-column-btn:not(.v254-sub-toggle),
+  .v227-column-config-btn{
+    min-height:20px!important;
+    padding:2px 4px!important;
+    border-color:transparent!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    color:var(--muted,#64748b)!important;
+    font-size:0!important;
+    font-weight:800!important;
+    opacity:.40!important;
+    border-radius:7px!important;
+    gap:2px!important;
+  }
+  .column-width-button::after,
+  .v248-column-btn::after,
+  .v250-column-btn:not(.v254-sub-toggle)::after,
+  .v227-column-config-btn::after{
+    content:"Colunas";
+    font-size:7px;
+    line-height:1;
+    letter-spacing:.01em;
+  }
+  .column-width-button svg,
+  .v248-column-btn svg,
+  .v250-column-btn:not(.v254-sub-toggle) svg,
+  .v227-column-config-btn svg{
+    width:10px!important;
+    height:10px!important;
+  }
+  .column-width-button:hover,
+  .column-width-button:focus-visible,
+  .v248-column-btn:hover,
+  .v248-column-btn:focus-visible,
+  .v250-column-btn:not(.v254-sub-toggle):hover,
+  .v250-column-btn:not(.v254-sub-toggle):focus-visible,
+  .v227-column-config-btn:hover,
+  .v227-column-config-btn:focus-visible{
+    opacity:.78!important;
+  }
+}
+</style>
+<script id="v264-movements-home-open-script">
+(function(){
+  const v264BaseRenderLancamentos=renderLancamentos;
+  renderLancamentos=function(){
+    v264BaseRenderLancamentos();
+    const main=document.querySelector('.v23-main');
+    if(!main||main.querySelector(':scope > .v264-movement-hero'))return;
+
+    const tabs=main.querySelector(':scope > .tx-tabs')||main.querySelector('.tx-tabs');
+    const toolbar=main.querySelector(':scope > .v27-movement-toolbar')||main.querySelector(':scope > .v26-movement-toolbar')||main.querySelector('.v27-movement-toolbar,.v26-movement-toolbar');
+    const summary=main.querySelector(':scope > .tx-summary')||main.querySelector('.tx-summary');
+    if(!tabs&&!toolbar&&!summary)return;
+
+    const hero=document.createElement('section');
+    hero.className='v264-movement-hero';
+    const panelNames={realizados:'Extrato',acompanhamento:'Acompanhamento',envelopes:'Envelopes',remanejamentos:'Remanejamentos'};
+    const period=txScope==='ano'?`Ano ${String(state.month||'').slice(0,4)}`:labelMonth(state.month);
+    hero.innerHTML=`<div class="v264-movement-hero-head"><div><span>Movimentações</span><h2>${escapeHtml(panelNames[txPanel]||'Movimentações')}</h2><p>Consulte, filtre e acompanhe o movimento financeiro do período.</p></div><div class="v264-movement-period"><i></i>${escapeHtml(period)}</div></div>`;
+
+    const anchor=tabs||toolbar||summary||main.firstElementChild;
+    if(anchor)main.insertBefore(hero,anchor);else main.prepend(hero);
+    [tabs,toolbar,summary].filter(Boolean).forEach(el=>hero.appendChild(el));
+  };
+})();
+</script>
+<!-- V2.64 — Movimentações com painel azul; abertura padrão no Extrato do mês financeiro atual; “Ajustar colunas” mais discreto no celular. -->
 </body></html>
 
 <!-- V2.63 — Restaura o KPI Total investido no painel atual do Início. -->
