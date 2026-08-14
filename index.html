@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.55 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.56 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -4116,7 +4116,7 @@ function renderRxDMobileBlocks(periodMonthsList,cumulativeByMonth){
     const balanceClass=balance<0?'neg':'';
     const accumulatedClass=accumulated<0?'neg':'';
     const balanceColor=balance<0?'#B42318':'#047857';
-    return `<article class="rxd-mobile-card" style="--balance-color:${balanceColor}"><div class="rxd-mobile-card-head"><strong>${labelMonth(m)}</strong><span>${fmt(balance)}</span></div><div class="rxd-mobile-grid"><div class="rxd-mobile-field revenue"><small>Receita</small><strong>${fmt(revenue)}</strong></div><div class="rxd-mobile-field expense"><small>Despesa</small><strong>${fmt(expense)}</strong></div><div class="rxd-mobile-field balance"><small>Saldo do mês</small><strong class="${balanceClass}">${fmt(balance)}</strong></div><div class="rxd-mobile-field accumulated"><small>Saldo acumulado</small><strong class="${accumulatedClass}">${fmt(accumulated)}</strong></div></div></article>`
+    return `<article class="rxd-mobile-card" style="--balance-color:${balanceColor}"><div class="rxd-mobile-card-head"><strong>${labelMonth(m)}</strong><span>${fmt(balance)}</span></div><div class="rxd-mobile-grid"><div class="rxd-mobile-field revenue"><small>Receita</small>${v254MoneyValue(revenue)}</div><div class="rxd-mobile-field expense"><small>Despesa</small>${v254MoneyValue(expense)}</div><div class="rxd-mobile-field balance"><small>Saldo do mês</small><strong class="${balanceClass}">${fmt(balance)}</strong></div><div class="rxd-mobile-field accumulated"><small>Saldo acumulado</small><strong class="${accumulatedClass}">${fmt(accumulated)}</strong></div></div></article>`
   }).join('')}</div>`
 }
 function renderRxD(){
@@ -5467,9 +5467,9 @@ function v246HomeKpis(monthIds,rows){
   return `<section class="v246-kpi-grid">
     <article class="v246-kpi-card is-revenue"><span>Total previsto de receitas</span><strong>${fmt(revenue)}</strong><small>${revenueMonths} ${revenueMonths===1?'mês com receita':'meses com receita'}</small></article>
     <article class="v246-kpi-card is-expense"><span>Total previsto de despesas</span><strong>${fmt(expense)}</strong><small>${rows.length} ${rows.length===1?'item no recorte atual':'itens no recorte atual'}</small></article>
-    <article class="v246-kpi-card ${balanceClass}"><span>Saldo previsto</span><strong>${fmt(balance)}</strong><small>${balance<-.005?'Déficit previsto':balance>.005?'Superávit previsto':'Receitas e despesas equilibradas'}</small></article>
-    <article class="v246-kpi-card is-average"><span>Média mensal de receitas</span><strong>${fmt(revenue/base)}</strong><small>Base: ${monthIds.length} ${monthIds.length===1?'mês':'meses'}</small></article>
-    <article class="v246-kpi-card is-average"><span>Média mensal de despesas</span><strong>${fmt(expense/base)}</strong><small>Base: ${monthIds.length} ${monthIds.length===1?'mês':'meses'}</small></article>
+    <article class="v246-kpi-card ${balanceClass}"><span>Saldo previsto</span>${v254MoneyValue(balance)}<small>${balance<-.005?'Déficit previsto':balance>.005?'Superávit previsto':'Receitas e despesas equilibradas'}</small></article>
+    <article class="v246-kpi-card is-average"><span>Média mensal de receitas</span>${v254MoneyValue(revenue/base)}<small>Base: ${monthIds.length} ${monthIds.length===1?'mês':'meses'}</small></article>
+    <article class="v246-kpi-card is-average"><span>Média mensal de despesas</span>${v254MoneyValue(expense/base)}<small>Base: ${monthIds.length} ${monthIds.length===1?'mês':'meses'}</small></article>
   </section>`;
 }
 
@@ -8412,7 +8412,10 @@ html[data-theme="dark"] .v253-filter-box,.dark .v253-filter-box{box-shadow:none}
 .v254-kpi{padding:15px 14px;border-radius:20px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(6px);display:grid;gap:6px;min-width:0}
 .v254-kpi.is-saldo{grid-column:1/-1;background:rgba(255,255,255,.14)}
 .v254-kpi span{font-size:10px;line-height:1.2;font-weight:850;letter-spacing:.05em;text-transform:uppercase;color:rgba(255,255,255,.76)}
-.v254-kpi strong{font-size:clamp(17px,5vw,22px);line-height:1.05;font-weight:950;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v254-kpi strong{font-size:clamp(22px,2.2vw,30px);line-height:1.02;font-weight:950;color:#fff;letter-spacing:-.04em;white-space:normal;overflow:visible;text-overflow:clip}
+.v254-kpi strong.v254-money{display:flex;align-items:flex-end;gap:6px;flex-wrap:wrap}
+.v254-kpi strong.v254-money em{font-style:normal;font-size:clamp(14px,1.2vw,17px);line-height:1.1;font-weight:900;color:rgba(255,255,255,.92);letter-spacing:0}
+.v254-kpi strong.v254-money b{font-size:clamp(27px,2.6vw,36px);line-height:.96;font-weight:950;color:#fff;letter-spacing:-.05em}
 .v254-kpi small{font-size:11px;line-height:1.35;color:rgba(255,255,255,.84)}
 .v254-filter-wrap{display:none}
 .v254-filter-wrap.is-open{display:grid;gap:10px}
@@ -8440,7 +8443,9 @@ html[data-theme="dark"] .v253-filter-box,.dark .v253-filter-box{box-shadow:none}
   .v254-filter-toggle span{font-size:10.5px}
   .v254-kpis{gap:10px}
   .v254-kpi{padding:13px 12px;border-radius:17px}
-  .v254-kpi strong{font-size:18px}
+  .v254-kpi strong{font-size:22px}
+  .v254-kpi strong.v254-money em{font-size:13px}
+  .v254-kpi strong.v254-money b{font-size:29px}
   .v254-kpi small{font-size:10.5px}
   .v254-filter-fields{grid-template-columns:1fr 1fr;gap:9px}
   .v254-filter-actions{justify-content:stretch}
@@ -8472,6 +8477,7 @@ html[data-theme="dark"] .v254-home-panel,.dark .v254-home-panel{box-shadow:none}
     specs.forEach(([label,val])=>{if(val)chips.push(`<span><b>${escapeHtml(label)}</b><em>${escapeHtml(val)}</em></span>`)});
     return `<div class="v254-active-filters">${chips.join('')}</div>`;
   }
+  function v254MoneyValue(value){return `<strong class="v254-money"><em>R$</em><b>${Number(value||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})}</b></strong>`}
   function v254FilterFields(monthIds){
     const years=v246HomeAvailableYears(),year=v246HomeFilters.year,months=v246HomeMonthsForYear(year),subs=v246HomeSubcategoryOptions(monthIds);
     if(v246HomeFilters.sub!=='todos'&&!subs.some(x=>norm(x)===norm(v246HomeFilters.sub)))v246HomeFilters.sub='todos';
