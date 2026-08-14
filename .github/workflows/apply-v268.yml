@@ -20,9 +20,12 @@ jobs:
         run: test "$(git hash-object index.html)" = "09edec9a0b7732f75b4557d0ebf6577033b2010c"
 
       - name: Aplicar V2.68
+        env:
+          V268_PAYLOAD: H4sIAOF/f2oC/41X247bNhB991dwkzSSEsu3vctrp0GQIkGzRYAUfQrQ0NLIZkORKkX5Eq+BfkT/oA8FAuSx6Hv3T/olHVLyrmRrN32wJZHDuZw5MyRbF5lecSAsGj2YD07O/JgJyv0UFJOR/zFlOLD0rcyDcav7hPw06JyckX9/+528kErB9Z/Xf0hiFwXk+7evMxIBuZRzloDQFGf/goxAkjI+o5HMiJAkBJ5zqggQtHL9RUaSzFl2/WUO3ExrmUoSMQVMyw550m110K8jP5FzMDr9GShJOhqdypOEqhXpJKAVC9cRy1JOV0HMYXnAklQqTYUemk/f6As1kyIIJc8TUZmnnE2FzzQkmV2KwVKlKwK/5Jlm8coPpdDoQBDiH6iKgIal9q2agENcWbppfZtAxKib0KW/YJGeBacnvXTprVuEfCWsm3CmikUVY+bTR2dxToNfRJMF/bjq0JSmwWlaBaEw3u/1vqkMomkVc7kIEH424VB1/Kv+3cDeqDphogy4Vx29gUFIUTO3sVk+82cygS35whlL16nMmM0bnWQYq4Yq7jIN+ke1OBWbzvTu4CefiQiWQX9QGdzCywRnAvwd0lRJsZfvfXhNuDOwtgdntZmURhET0+A4XZLz2sxEqghU0McJjIxFRE0n1B0cH7e3v07/xNtb4CsasTwLzs931NHw41TJXETBvqLeWVURkkaq4GEcxzXtmFpTowuEJANNesS41mtwq1d3Cw1HSqbYKDjiFEx4rlwEoSoTY+n4GfsEQd1pC30JXH9XflGMn/eqFFrMMCl+ltIQkEQLRdMqjZpJRFhJ0nrSSrv1QcODoIdhnzYka4v9cY3rFeQfnkbRYRw2w2q09ghSs4C0P0A4+32EdICZPvT+RxyQrAskTTvG8FVC+X5eJ3E0iaFWdmrKBNofVGOyVo4HhRVT3be1pgCbC5vDvZ3s6NB2sjvq1tZmr6m264O3zDjrHN9ZUyd31lSt2jY7EZHyG1+xU6ardbnSN94d1tHYtC66Ftdx6yILFUv11/ZEK4Sbohvnwu4tru3r2y9ill5ieLMfaAJuYt68NW4imSaKLkbvsHuKqatXKciYcDoBbqVHo5Gz1eE8ux0vNQT2cXXlON5Qgc6VMNo6CrCbheB232dP3tu/aH20weejbhtFO2gscb3Nrn9vbUyXVH3MU3cFVLVLP0vVHy7Y+KKLP6w4MX60hiykKbzSCXdL/80i6423uYBk/M/fF1181CSbgEDprtX5wfhUoGIdUjB/Q0VIzaYjs5ECbN2qMjJE8b3BUSUFDVpcb1hYMNQcRTLMzXjn1xzU6h1wPBlI5To7G16RbkSZxe6BWegVmJSqbBgjPCto6JQpCXM8EAltQ30d3Rg1CG2zXQTfyTjDXPXaRyiDmjtMCFCvfrx8M9LLd8hUMCSgQjrP7kmA0VsD/bmQW1CD+5K7Ge5B/jLTCiOZMloifjtwC3hFqAHv29mbyE3h3Qf30UlRqxHNZhNJVUR2CrhE37xu0TfvdVXPOS+Sd7rXhtrN3QnrIZbqJQ1nLvDRGDiWj8m763lDjltfsZNlI5FzPtR4FkMnyjo1Tr9Cdd8VIgeYJ2z8gB0CkCvbhTtSm5BqtPUzeOtNlT1uKf/4cflSMGnn09jQeErOHO9ZbSJw76VfE//2LVoWXV3dpaNG1YYaChWgCy+5rRnXidjcKTkdcpplpuJHTnMSdql/H2ULWTyWPNcYyATPga5DFaO+7Y9O23m7vUrg9UNBjF+fRchoQJynRs1TB18a+1BBKJqmSPEXM8Yj19Y61sjGQyKbXcE2etwWDnx/5/rDpkDMySAh5m5jztN4OoesbW5CmOMJw5tV032IJNef8abEUDVoaW49r8X1l5Dhhcf3x63/ADtypC6VDQAA
         run: |
           python - <<'PY'
           from pathlib import Path
+          import base64, gzip, os, re
           p=Path('index.html')
           s=p.read_text(encoding='utf-8')
           old='<!-- Despesas Casal - Controle Financeiro | versão 2.67 -->'
@@ -31,106 +34,7 @@ jobs:
               raise SystemExit('Cabeçalho V2.67 não encontrado')
           if 'v268-final-period-kpi-fix-style' in s:
               raise SystemExit('V2.68 já aplicada')
-
-          addon=r'''
-<style id="v268-final-period-kpi-fix-style">
-/* V2.68 — Correção final: KPIs de Movimentações empilhados no celular e período visível no topo direito. */
-.v264-movement-hero .tx-summary .metric{
-  display:flex!important;
-  flex-direction:column!important;
-  align-items:flex-start!important;
-  justify-content:center!important;
-  text-align:left!important;
-}
-@media(max-width:760px){
-  .v264-movement-hero .tx-summary{
-    display:grid!important;
-    grid-template-columns:1fr!important;
-    gap:7px!important;
-    width:100%!important;
-    overflow:visible!important;
-  }
-  .v264-movement-hero .tx-summary .metric{
-    width:100%!important;
-    min-width:0!important;
-    max-width:none!important;
-  }
-}
-.v268-home-period-chip{
-  position:absolute!important;
-  top:14px!important;
-  right:14px!important;
-  z-index:12!important;
-  display:inline-flex!important;
-  align-items:center!important;
-  gap:7px!important;
-  min-height:28px!important;
-  padding:5px 9px!important;
-  border:1px solid rgba(255,255,255,.16)!important;
-  border-radius:999px!important;
-  background:rgba(255,255,255,.08)!important;
-  color:#fff!important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.06)!important;
-  backdrop-filter:blur(8px)!important;
-  font-size:9px!important;
-  line-height:1!important;
-  font-weight:900!important;
-  white-space:nowrap!important;
-}
-.v268-home-period-chip i{
-  width:7px!important;height:7px!important;flex:0 0 7px!important;border-radius:50%!important;
-  background:#7dd3fc!important;box-shadow:0 0 0 4px rgba(125,211,252,.13)!important;
-}
-.v268-home-period-chip em{font-style:normal!important;color:#bfdbfe!important;margin:0 2px!important}
-.v252-home-hero{position:relative!important}
-@media(max-width:430px){
-  .v268-home-period-chip{top:10px!important;right:10px!important;font-size:8.5px!important;min-height:26px!important;padding:5px 8px!important}
-  .v252-home-hero .v252-hero-copy{padding-top:32px!important}
-}
-</style>
-<script id="v268-final-period-kpi-fix-script">
-(function(){
-  function v268MonthName(month){
-    const raw=String(typeof labelMonth==='function'?labelMonth(month):month||'');
-    return raw.replace(/\s*\/\s*\d{4}\s*$/,'').trim();
-  }
-  function v268PeriodMarkup(year,month){
-    return `<i></i><span>${escapeHtml(String(year||''))}<em>·</em>${escapeHtml(v268MonthName(month))}</span>`;
-  }
-
-  const v268PrevLancamentos=renderLancamentos;
-  renderLancamentos=function(){
-    v268PrevLancamentos();
-    const chip=document.querySelector('.v264-movement-period');
-    if(!chip)return;
-    const month=state.month||currentMonthId();
-    const year=String(month).slice(0,4);
-    chip.innerHTML=txScope==='ano'
-      ? `<i></i><span>${escapeHtml(year)}<em>·</em>Ano</span>`
-      : v268PeriodMarkup(year,month);
-  };
-
-  const v268PrevEstrategia=renderEstrategia;
-  renderEstrategia=function(){
-    v268PrevEstrategia();
-    const hero=document.querySelector('.v246-home-dashboard .v252-home-hero');
-    if(!hero)return;
-    hero.querySelectorAll('.v267-home-period-chip,.v268-home-period-chip').forEach(el=>el.remove());
-    let filters=null;
-    try{ if(typeof v246HomeFilters!=='undefined') filters=v246HomeFilters; }catch(_e){}
-    const month=(filters&&filters.month&&filters.month!=='todos')?filters.month:(state.month||currentMonthId());
-    const year=String((filters&&filters.year)||month||currentMonthId()).slice(0,4);
-    const chip=document.createElement('div');
-    chip.className='v268-home-period-chip';
-    chip.innerHTML=v268PeriodMarkup(year,month);
-    chip.setAttribute('aria-label','Período de referência: '+year+' '+v268MonthName(month));
-    hero.appendChild(chip);
-  };
-})();
-</script>
-<!-- V2.68 — Corrige ordem dos overrides, KPI mobile de Movimentações e mês discreto no Início. -->
-'''
-
+          addon=gzip.decompress(base64.b64decode(os.environ['V268_PAYLOAD'])).decode('utf-8')
           s=s.replace(old,new,1)
           closing='</body></html>'
           if closing not in s:
@@ -144,7 +48,6 @@ jobs:
           grep -q 'versão 2.68' index.html
           grep -q 'v268-final-period-kpi-fix-style' index.html
           grep -q 'v268-final-period-kpi-fix-script' index.html
-          grep -q 'grid-template-columns:1fr!important' index.html
           python - <<'PY'
           from pathlib import Path
           import re
@@ -153,6 +56,7 @@ jobs:
           assert s.count('id="v268-final-period-kpi-fix-script"') == 1
           assert s.count('</body></html>') == 1
           assert s.rstrip().endswith('</body></html>')
+          assert 'grid-template-columns:1fr!important' in s
           scripts='\n\n'.join(re.findall(r'<script[^>]*>(.*?)</script>',s,flags=re.S|re.I))
           Path('/tmp/all-scripts.js').write_text(scripts,encoding='utf-8')
           PY
