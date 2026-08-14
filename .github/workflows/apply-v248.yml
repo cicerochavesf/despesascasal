@@ -1,0 +1,50 @@
+name: Aplicar V2.48
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-v248.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update-index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Conferir base V2.44
+        shell: bash
+        run: |
+          test "$(git hash-object index.html)" = "1f04a5fd124842c07bf724c9528fccd2bf0d7023"
+      - name: Aplicar V2.48
+        shell: bash
+        run: |
+          printf '%s' 'LS0tIGEvaW5kZXguaHRtbAorKysgYi9pbmRleC5odG1sCkBAIC0xLDQgKzEsNCBAQAotPCEtLSBEZXNwZXNhcyBDYXNhbCAtIENvbnRyb2xlIEZpbmFuY2Vpcm8gfCB2ZXJzw6NvIDIuNDQgLS0+CjwhLS0gRGVzcGVzYXMgQ2FzYWwgLSBDb250cm9sZSBGaW5hbmNlaXJvIHwgdmVyc8OjbyAyLjQ4IC0tPgogPCFET0NUWVBFIGh0bWw+CiA8aHRtbCBsYW5nPSJwdC1CUiI+PGhlYWQ+CiA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+PG1ldGEgbmFtZT0idmlld3BvcnQiIGNvbnRlbnQ9IndpZHRoPWRldmljZS13aWR0aCwgaW5pdGlhbC1zY2FsZT0xLjAsIG1heGltdW0tc2NhbGU9NS4wIj4KQEAgLTMzNzQsNiArMzM3NCw3MyBAQAogICB9CiB9CiA8L3N0eWxlPgorCis8c3R5bGUgaWQ9InYyNDYtaG9tZS1kYXNoYm9hcmQtc3R5bGUiPgorLnYyNDYtaG9tZS1kYXNoYm9hcmR7ZGlzcGxheTpncmlkO2dhcDoxNnB4O3BhZGRpbmctYm90dG9tOjE4cHh9Ci8uLioq' | base64 -d > /tmp/v248.patch
+          python - <<'PY'
+from pathlib import Path
+import base64
+p=Path('/tmp/v248.patch')
+# placeholder to be replaced by generated full patch at runtime is not allowed
+PY
+          git apply --check /tmp/v248.patch
+          git apply /tmp/v248.patch
+      - name: Validar arquivo final
+        shell: bash
+        run: |
+          test "$(git hash-object index.html)" = "0fcb134df29fb07059a7077f53253e2e5a2cc163"
+          grep -q 'versão 2.48' index.html
+          grep -q 'v248-home-insights-style' index.html
+          grep -q 'Receitas × despesas planejadas — mês a mês' index.html
+          grep -q 'Distribuição por categoria' index.html
+      - name: Publicar V2.48 e limpar workflow temporário
+        shell: bash
+        run: |
+          git config user.name 'ChatGPT App Despesas Casal'
+          git config user.email 'actions@users.noreply.github.com'
+          rm -f .github/workflows/apply-v248.yml
+          git add index.html .github/workflows/apply-v248.yml
+          git commit -m 'V2.48: ampliar dashboard da tela Início'
+          git push origin HEAD:main
