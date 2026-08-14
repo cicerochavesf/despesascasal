@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.71 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.72 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -3537,6 +3537,25 @@ html[data-theme="dark"] .v248-month-chip,.dark .v248-month-chip{background:#1533
   html[data-ui="v23"] .view-lancamentos .v264-movement-hero .tx-tabs button b{
     display:none!important;
   }
+}
+</style>
+<style id="v272-movement-search-period-style">
+/* V2.72 — busca fora do painel azul e período discreto/clicável. */
+.v272-movement-search-outside{margin:0 0 10px;display:flex;justify-content:flex-end}
+.v272-movement-search-outside .v27-movement-search{width:min(520px,100%)}
+.v272-movement-search-outside .v27-movement-search>label{display:none!important}
+.v272-movement-search-outside .view-search-input{min-height:40px!important;background:#fff!important;border:1px solid #dce3ec!important;border-radius:13px!important;box-shadow:0 5px 14px rgba(16,24,40,.035)!important}
+.v264-movement-hero .v27-movement-toolbar{background:transparent!important;border:0!important;padding:0!important;box-shadow:none!important;margin:0 0 8px!important}
+.v264-movement-hero .v27-movement-toolbar-grid{grid-template-columns:minmax(110px,130px) minmax(150px,190px)!important;justify-content:end!important;gap:6px!important}
+.v264-movement-period{position:relative!important;cursor:pointer!important;padding-right:22px!important;overflow:hidden!important}
+.v264-movement-period:after{content:'€';position:absolute;right:8px;top:50%;transform:translateY(-54%);color:#dbeafe;font-size:12px;font-weight:950;pointer-events:none}
+.v272-period-select{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;opacity:0!important;cursor:pointer!important;z-index:4!important}
+@media(max-width:760px){
+  .v272-movement-search-outside{margin:0 0 8px!important;display:block!important}
+  .v272-movement-search-outside .v27-movement-search{width:100%!important}
+  .v272-movement-search-outside .view-search-input{min-height:39px!important;font-size:10.5px!important;box-shadow:none!important;background:#f8fafc!important}
+  .v264-movement-hero .v27-movement-toolbar{display:none!important}
+  .v264-movement-period{min-height:29px!important;padding:5px 23px 5px 9px!important;background:rgba(255,255,255,.10)!important;border-color:rgba(255,255,255,.18!)!important}
 }
 </style>
 </head><body><div id="app"></div><div id="modal" class="modal"></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
@@ -9487,4 +9506,66 @@ renderEstrategia=function(){v269PrevEstrategia();v269MarkRenderedKpis();const he
 }
 </style>
 <!-- V2.70 — Movimentações mobile sem rolagem lateral nas abas; KPIs empilhados. -->
+<script id="v272-movement-search-period-script">
+(function(){
+  const v272PrevRenderLancamentos=renderLancamentos;
+  function v272PeriodOptions(){
+    const current=String(state.month||currentMonthId());
+    const all=(typeof months==='function'?months():[]).slice().sort();
+    const list=all.length?all:[current];
+    const yearsSeen=[];
+    list.forEach(m=>{const y=String(m).slice(0,4);if(y&&!yearsSeen.includes(y))yearsSeen.push(y)});
+    let out='';
+    yearsSeen.forEach(y=>{
+      out+=`<optgroup label="${escapeHtml(y)}">`;
+      out+=`<option value="ano:${escapeHtml(y)}" ${txScope==='ano' && current.startsWith(y)?'selected':''}>Todos os meses de ${escapeHtml(y)}</option>`;
+      list.filter(m=>String(m).startsWith(y)).forEach(m=>{out+=`<option value="${escapeHtml(m)}" ${txScope==='mes' && m===current?'selected':''}>${escapeHtml(labelMonth(m))}</option>`});
+      out+='</optgroup>';
+    });
+    return out;
+  }
+  function v272ApplyPeriod(value){
+    const raw=String(value||'');
+    if(raw.startsWith('ano:')){
+      const year=raw.slice(4),available=(typeof v213MonthsForYear==='function'?v213MonthsForYear(year):[]);
+      if(available.length)state.month=available.find(m=>m.slice(5,7)===String(state.month||'').slice(5,7))||available[0];
+      txScope='ano';save();render();return;
+    }
+    setPeriodSelection('txScope',raw);
+  }
+  window.v272ApplyPeriod=v272ApplyPeriod;
+  function v272EnhanceMovements(){
+    const main=document.querySelector('.v23-main.view-lancamentos,.view-lancamentos.v23-main,.v23-main');
+    if(!main)return;
+    const hero=main.querySelector(':scope > .v264-movement-hero')||main.querySelector('.v264-movement-hero');
+    if(!hero)return;
+    const toolbar=hero.querySelector('.v27-movement-toolbar,.v26-movement-toolbar');
+    const search=toolbar&&toolbar.querySelector('.v27-movement-search,.v26-movement-search');
+    if(search){
+      let outside=main.querySelector(':scope > .v272-movement-search-outside');
+      if(!outside){outside=document.createElement('div');outside.className='v272-movement-search-outside';hero.insertAdjacentElement('afterend',outside)}
+      outside.appendChild(search);
+    }
+    const grid=toolbar&&toolbar.querySelector('.v27-movement-toolbar-grid,.v26-movement-toolbar-grid');
+    if(grid)grid.classList.add('v272-period-filters');
+    const chip=hero.querySelector('.v264-movement-period');
+    if(chip){
+      chip.setAttribute('role','button');
+      chip.setAttribute('title','Escolher período');
+      chip.setAttribute('aria-label','Escolher mês ou período');
+      let select=chip.querySelector('.v272-period-select');
+      if(!select){
+        select=document.createElement('select');
+        select.className='v272-period-select';
+        select.setAttribute('aria-label','Escolher mês ou período');
+        select.onchange=function(){v272ApplyPeriod(this.value)};
+        chip.appendChild(select);
+      }
+      select.innerHTML=v272PeriodOptions();
+    }
+  }
+  renderLancamentos=function(){v272PrevRenderLancamentos();v272EnhanceMovements()};
+})();
+</script>
+<!-- V2.72 — Busca de lançamentos fora do painel azul; filtro de período mais discreto; chip do mês clicável. -->
 </body></html>
