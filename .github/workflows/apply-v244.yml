@@ -1,0 +1,59 @@
+name: Aplicar V2.44
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-v244.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update-index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Aplicar V2.44
+        shell: python
+        run: |
+          from pathlib import Path
+
+          path = Path('index.html')
+          s = path.read_text(encoding='utf-8')
+
+          old_header = '<!-- Despesas Casal - Controle Financeiro | versão 2.43 -->'
+          new_header = '<!-- Despesas Casal - Controle Financeiro | versão 2.44 -->'
+          if old_header not in s:
+              raise SystemExit('Cabeçalho V2.43 não encontrado; publicação cancelada.')
+          s = s.replace(old_header, new_header, 1)
+
+          old_open = "function prepareDefaultOpening(){\n  view='lancamentos';"
+          new_open = "function prepareDefaultOpening(){\n  view='estrategia';"
+          if old_open not in s:
+              raise SystemExit('prepareDefaultOpening da V2.43 não encontrado; publicação cancelada.')
+          s = s.replace(old_open, new_open, 1)
+
+          note = '<!-- V2.44 — Ao abrir/recarregar, após a sincronização com a nuvem, o app inicia sempre na tela Início. -->'
+          if note not in s:
+              s = s.replace('\n</body></html>', '\n\n' + note + '\n\n</body></html>', 1)
+
+          path.write_text(s, encoding='utf-8')
+
+      - name: Validar alteração
+        shell: bash
+        run: |
+          grep -q 'versão 2.44' index.html
+          grep -q "view='estrategia';" index.html
+          grep -q 'V2.44 — Ao abrir/recarregar' index.html
+
+      - name: Publicar index.html
+        shell: bash
+        run: |
+          git config user.name 'ChatGPT App Despesas Casal'
+          git config user.email 'actions@users.noreply.github.com'
+          git add index.html
+          git diff --cached --quiet && exit 1
+          git commit -m 'V2.44: abrir sempre na tela Início'
+          git push origin HEAD:main
