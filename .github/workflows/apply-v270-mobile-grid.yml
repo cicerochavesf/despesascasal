@@ -1,0 +1,120 @@
+name: Aplicar V2.70 mobile grid
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-v270-mobile-grid.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update-index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Conferir base atual
+        run: test "$(git hash-object index.html)" = "8b40e4db62ca1730dbc8f74f6e7e8f511b372c24"
+
+      - name: Aplicar V2.70
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          old='<!-- Despesas Casal - Controle Financeiro | versão 2.69 -->'
+          new='<!-- Despesas Casal - Controle Financeiro | versão 2.70 -->'
+          if old not in s:
+              raise SystemExit('Cabeçalho V2.69 não encontrado')
+          if 'v270-mobile-movement-layout-style' in s:
+              raise SystemExit('V2.70 já aplicada')
+          addon=r'''
+<style id="v270-mobile-movement-layout-style">
+/* V2.70 — celular: KPIs em coluna única e quatro abas visíveis em grade 2x2. */
+@media (max-width:760px){
+  .v264-movement-hero .tx-tabs{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    grid-auto-flow:row!important;
+    gap:6px!important;
+    width:100%!important;
+    max-width:100%!important;
+    overflow:visible!important;
+    overflow-x:visible!important;
+    white-space:normal!important;
+    scroll-snap-type:none!important;
+  }
+  .v264-movement-hero .tx-tabs button{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:5px!important;
+    flex:initial!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    margin:0!important;
+    box-sizing:border-box!important;
+    white-space:normal!important;
+  }
+  .v264-movement-hero .tx-summary{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    grid-auto-flow:row!important;
+    gap:8px!important;
+    width:100%!important;
+    max-width:100%!important;
+    overflow:visible!important;
+    overflow-x:visible!important;
+    scroll-snap-type:none!important;
+  }
+  .v264-movement-hero .tx-summary .metric{
+    grid-column:auto!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    margin:0!important;
+  }
+}
+</style>
+<!-- V2.70 — Movimentações mobile sem rolagem lateral nas abas; KPIs empilhados. -->
+'''
+          s=s.replace(old,new,1)
+          closing='</body></html>'
+          if closing not in s:
+              raise SystemExit('Fechamento HTML não encontrado')
+          s=s.replace(closing,'',1).rstrip()+addon+'\n'+closing+'\n'
+          p.write_text(s,encoding='utf-8')
+          PY
+
+      - name: Validar V2.70
+        run: |
+          grep -q 'versão 2.70' index.html
+          grep -q 'v270-mobile-movement-layout-style' index.html
+          grep -q 'grid-template-columns:repeat(2,minmax(0,1fr))!important' index.html
+          grep -q 'grid-template-columns:minmax(0,1fr)!important' index.html
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          s=Path('index.html').read_text(encoding='utf-8')
+          assert s.count('id="v270-mobile-movement-layout-style"') == 1
+          assert s.count('</body></html>') == 1
+          assert s.rstrip().endswith('</body></html>')
+          scripts='\n\n'.join(re.findall(r'<script[^>]*>(.*?)</script>',s,flags=re.S|re.I))
+          Path('/tmp/all-scripts.js').write_text(scripts,encoding='utf-8')
+          PY
+          node --check /tmp/all-scripts.js
+
+      - name: Publicar e limpar workflows temporários
+        run: |
+          git config user.name 'ChatGPT App Despesas Casal'
+          git config user.email 'actions@users.noreply.github.com'
+          rm -f .github/workflows/apply-v270-mobile-grid.yml
+          rm -f .github/workflows/apply-v270.yml
+          rm -f .github/workflows/recover-v270-audit.yml
+          git add index.html .github/workflows
+          git commit -m 'V2.70: corrigir layout mobile de Movimentações'
+          git push origin HEAD:main
