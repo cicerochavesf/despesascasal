@@ -18,52 +18,19 @@ jobs:
       - name: Conferir base V2.56
         run: test "$(git hash-object index.html)" = "96a684f53fdf58eb16920e6fa121e1420fd8e804"
       - name: Aplicar V2.57
-        shell: python
         run: |
+          python - <<'PY'
+          import zlib,base64
           from pathlib import Path
-          p=Path('index.html')
-          s=p.read_text(encoding='utf-8')
-          s=s.replace('<!-- Despesas Casal - Controle Financeiro | versão 2.56 -->','<!-- Despesas Casal - Controle Financeiro | versão 2.57 -->',1)
-          old_const="const years=v246HomeAvailableYears(),year=v246HomeFilters.year,months=v246HomeMonthsForYear(year),subs=v246HomeSubcategoryOptions(monthIds);"
-          new_const="const year=v246HomeFilters.year,months=v246HomeMonthsForYear(year),subs=v246HomeSubcategoryOptions(monthIds);"
-          if old_const not in s: raise SystemExit('Const dos filtros não encontrado')
-          s=s.replace(old_const,new_const,1)
-          old_field="return `<div class=\"v254-filter-fields\"><div class=\"v246-filter-field\"><label>Ano</label><select onchange=\"v246SetHomeFilter('year',this.value)\">${years.map(y=>`<option value=\"${y}\" ${y===year?'selected':''}>${y}</option>`).join('')}</select></div><div class=\"v246-filter-field\"><label>Mês</label>"
-          new_field="return `<div class=\"v254-filter-fields\"><div class=\"v246-filter-field\"><label>Mês</label>"
-          if old_field not in s: raise SystemExit('Campo Ano interno não encontrado')
-          s=s.replace(old_field,new_field,1)
-          anchor="  function v254HomePanel(monthIds,rows){\n"
-          helper="""  function v257YearControl(){
-            const years=v246HomeAvailableYears(),year=v246HomeFilters.year;
-            return `<label class="v257-year-control"><span class="v257-year-copy"><span>Ano</span><select aria-label="Ano do painel" onchange="v246SetHomeFilter('year',this.value)">${years.map(y=>`<option value="${y}" ${y===year?'selected':''}>${y}</option>`).join('')}</select></span></label>`;
-          }
-"""
-          if anchor not in s: raise SystemExit('Âncora do painel não encontrada')
-          s=s.replace(anchor,helper+anchor,1)
-          old_top='<section class="v254-home-panel"><div class="v254-home-top"><button type="button" class="v254-filter-toggle"'
-          new_top='<section class="v254-home-panel"><div class="v254-home-top">${v257YearControl()}<button type="button" class="v254-filter-toggle"'
-          if old_top not in s: raise SystemExit('Topo do painel não encontrado')
-          s=s.replace(old_top,new_top,1)
-          style='''
-          <style id="v257-year-visible-style">
-          .v254-home-top{display:flex;align-items:stretch;justify-content:flex-start;gap:10px;flex-wrap:wrap}
-          .v257-year-control{display:flex;align-items:center;gap:10px;min-height:52px;padding:9px 12px;border-radius:18px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.12);backdrop-filter:blur(7px);color:#fff;min-width:128px}
-          .v257-year-copy{display:grid;gap:2px;min-width:0}
-          .v257-year-copy span{font-size:9px;line-height:1;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.70)}
-          .v257-year-control select{appearance:none;-webkit-appearance:none;border:0;outline:0;background:transparent;color:#fff;font:inherit;font-size:17px;line-height:1.1;font-weight:950;padding:0 20px 0 0;min-width:76px;cursor:pointer;background-image:linear-gradient(45deg,transparent 50%,rgba(255,255,255,.92) 50%),linear-gradient(135deg,rgba(255,255,255,.92) 50%,transparent 50%);background-position:calc(100% - 8px) 48%,calc(100% - 3px) 48%;background-size:5px 5px,5px 5px;background-repeat:no-repeat}
-          .v257-year-control select option{color:#0f172a;background:#fff}
-          .v254-filter-toggle{flex:1 1 220px}
-          @media(max-width:760px){.v254-home-top{display:grid;grid-template-columns:minmax(118px,.42fr) minmax(0,1fr);gap:9px}.v257-year-control{min-width:0;min-height:50px;padding:8px 11px;border-radius:16px}.v257-year-control select{font-size:16px;min-width:70px}.v254-filter-toggle{width:100%;min-width:0;min-height:50px;padding:10px 12px}}
-          </style>
-          <!-- V2.57 — Ano permanece visível no Início mesmo com os demais filtros recolhidos. -->
-          '''
-          s=s.replace('</body></html>',style+'\n</body></html>',1)
-          p.write_text(s,encoding='utf-8')
+          payload='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'
+          code=zlib.decompress(base64.b64decode(payload)).decode('utf-8')
+          exec(compile(code,'patch_v257.py','exec'))
+          PY
       - name: Validar V2.57
         run: |
           grep -q 'versão 2.57' index.html
           grep -q 'v257YearControl' index.html
-          grep -q 'v257-year-visible-style' index.html
+          grep -q 'v257-year-control' index.html
           python -c "from pathlib import Path; import re; s=Path('index.html').read_text(encoding='utf-8'); Path('/tmp/all-scripts.js').write_text('\\n\\n'.join(re.findall(r'<script[^>]*>(.*?)</script>',s,flags=re.S|re.I)),encoding='utf-8')"
           node --check /tmp/all-scripts.js
       - name: Publicar V2.57 e limpar workflow temporário
