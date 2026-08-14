@@ -42,8 +42,10 @@ jobs:
           from pathlib import Path
           import re
           s=Path('index.html').read_text(encoding='utf-8')
-          a=s.index('Visão mensal por categorias')
-          b=s.index('Visão mensal por subcategorias')
+          start=s.index('function v250HomeMatrices')
+          frag=s[start:start+450]
+          a=frag.index("v250Panel('cat'")
+          b=frag.index("v250Panel('sub'")
           assert a < b
           scripts=re.findall(r'<script[^>]*>(.*?)</script>',s,flags=re.S|re.I)
           Path('/tmp/all-scripts.js').write_text('\n\n'.join(scripts),encoding='utf-8')
