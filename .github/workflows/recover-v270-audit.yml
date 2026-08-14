@@ -1,0 +1,86 @@
+name: Validar e concluir V2.70
+
+on:
+  push:
+    paths:
+      - '.github/workflows/recover-v270-audit.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  audit-fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Preservar base visual
+        run: cp index.html /tmp/index-before-v270.html
+
+      - name: Aplicar ou reconhecer V2.70
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re, base64, gzip, subprocess
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          if 'versão 2.70' in s:
+              Path('/tmp/v270-already').write_text('1')
+              raise SystemExit(0)
+          if 'versão 2.69' not in s:
+              raise SystemExit('Base inesperada: esperado V2.69 ou V2.70')
+          wf=Path('.github/workflows/apply-v270.yml')
+          if not wf.exists():
+              raise SystemExit('Workflow V2.70 preparado não encontrado')
+          text=wf.read_text(encoding='utf-8')
+          m=re.search(r'^\s*V270_PATCH_GZ_B64:\s*([A-Za-z0-9+/=]+)\s*$',text,re.M)
+          if not m:
+              raise SystemExit('Payload V270_PATCH_GZ_B64 não encontrado')
+          try:
+              patch=gzip.decompress(base64.b64decode(m.group(1),validate=True))
+          except Exception as e:
+              raise SystemExit(f'Payload V2.70 inválido: {e}')
+          Path('/tmp/apply_v270.py').write_bytes(patch)
+          subprocess.run(['python','/tmp/apply_v270.py'],check=True)
+          PY
+
+      - name: Validar lógica e garantir zero mudança visual
+        run: |
+          grep -q 'versão 2.70' index.html
+          python - <<'PY'
+          from pathlib import Path
+          import re, hashlib
+          before=Path('/tmp/index-before-v270.html').read_text(encoding='utf-8')
+          after=Path('index.html').read_text(encoding='utf-8')
+          def styles(s):
+              return re.findall(r'<style\b[^>]*>.*?</style>',s,flags=re.S|re.I)
+          b=styles(before); a=styles(after)
+          if b!=a:
+              raise SystemExit('AUDITORIA BLOQUEADA: houve alteração em CSS/estilos')
+          if len(b)!=len(a):
+              raise SystemExit('AUDITORIA BLOQUEADA: quantidade de blocos de estilo mudou')
+          if after.count('</body></html>')!=1 or not after.rstrip().endswith('</body></html>'):
+              raise SystemExit('Estrutura HTML final inválida')
+          scripts='\n\n'.join(re.findall(r'<script[^>]*>(.*?)</script>',after,flags=re.S|re.I))
+          Path('/tmp/all-scripts-v270.js').write_text(scripts,encoding='utf-8')
+          print('CSS preservado:',hashlib.sha256(''.join(a).encode()).hexdigest())
+          PY
+          node --check /tmp/all-scripts-v270.js
+
+      - name: Publicar ou limpar preparação
+        run: |
+          git config user.name 'ChatGPT App Despesas Casal'
+          git config user.email 'actions@users.noreply.github.com'
+          rm -f .github/workflows/apply-v270.yml .github/workflows/recover-v270-audit.yml
+          git add index.html .github/workflows/apply-v270.yml .github/workflows/recover-v270-audit.yml
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          if test -f /tmp/v270-already; then
+            git commit -m 'Limpar preparação da auditoria V2.70'
+          else
+            git commit -m 'V2.70: corrigir consistência lógica sem alterar visual'
+          fi
+          git push origin HEAD:main
