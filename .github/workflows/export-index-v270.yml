@@ -1,0 +1,21 @@
+name: Exportar index V2.70
+
+on:
+  push:
+    branches:
+      - export-index-v270
+    paths:
+      - '.github/workflows/export-index-v270.yml'
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: export-index-v270
+      - uses: actions/upload-artifact@v4
+        with:
+          name: index-v270
+          path: index.html
+          if-no-files-found: error
