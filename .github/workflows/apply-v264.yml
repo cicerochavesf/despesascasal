@@ -22,4 +22,72 @@ jobs:
       - name: Aplicar V2.64
         shell: python
         env:
-          V264_PAYLOAD: H4sIAHZ1f2oC/7VaT2/byBW/+1NMnN2VGJC0SEmWTFtqkyDAHjZtsSl6WSyQETmUZpecYWeGshzZwH6IHttTDwUK7LGXXv1N9pP0DUlJ/CsrDooghjTz5r3f+/+G1I1UdxFBNJidr93LkRXzNYkJU9Ja8ZhYPCEM1hY0IpbPozRm0spOnM/PLl6hv7j25Qj99svf0Hu+pvocfvzX43+IRD6PUYIpIxHCn9LIRHhBhEoFhtVAPP6TI8bRu40SWHFEEP4plYqggCAthWGJYkwlCqj0BVEZsU+iNMLCRq8uzuwKVmtFBN+eITgjlpR5AzRAjptsrmEJpAWULT3nMv++4CIgwhI4oKn03FGxiv2fl4KnLPAiwIyFtdQUwLvvDMcBWZovB6EzcTEafG2+dIIRCaZofAmfh9NFEE6RM3S/Ng78PSfZIMkjGiCxXOC+c+WYrnNluuORabtuQbmx5AoH/BYAO1M4MALMBf3YdIfmyDVt5zIjBk1FGAHpigYBYddnD202gD840IYAuyURvvPCiGT64YgumUUViWW2ZhEW6HVtdRregWuZAiaeTLBPrAVRt0QLQWiJE88pjJRb11pwpXjs5QbuhoGAFytjWUTc/1nzAQ9z4b1chMEiJHohBOmWpJ+Id5VLyhZuCV2ulHc1GOiliCgFftMAtTvtwXRMYr2hyEZZEEZMhlzEXpokRPhYkqPYVm4pXIZgdQiZErQwDKu4XCcHpo
+          V264_PAYLOAD: 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
+        run: |
+          from pathlib import Path
+          import base64, gzip, os
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+
+          old_header='<!-- Despesas Casal - Controle Financeiro | versão 2.63 -->'
+          new_header='<!-- Despesas Casal - Controle Financeiro | versão 2.64 -->'
+          if old_header not in s:
+              raise SystemExit('Cabeçalho V2.63 não encontrado')
+          if 'v264-movements-home-open-script' in s:
+              raise SystemExit('V2.64 já aplicada')
+
+          old_open="""function prepareDefaultOpening(){
+            view='estrategia';
+            periodMode='mes';
+            state.month=validMonth(currentMonthId());
+            txScope='mes';
+            txPanel='realizados';"""
+          new_open="""function prepareDefaultOpening(){
+            view='lancamentos';
+            periodMode='mes';
+            state.month=validMonth(typeof v223FinancialMonthForDate==='function'?v223FinancialMonthForDate(localDateId()):currentMonthId());
+            txScope='mes';
+            txPanel='realizados';"""
+          if old_open not in s:
+              raise SystemExit('prepareDefaultOpening esperado não encontrado')
+
+          addon=gzip.decompress(base64.b64decode(os.environ['V264_PAYLOAD'])).decode('utf-8')
+          s=s.replace(old_header,new_header,1)
+          s=s.replace(old_open,new_open,1)
+
+          marker='</body></html>'
+          if marker not in s:
+              raise SystemExit('Fechamento HTML não encontrado')
+          s=s.replace(marker,addon+'\n'+marker,1)
+          p.write_text(s,encoding='utf-8')
+
+      - name: Validar V2.64
+        run: |
+          grep -q 'versão 2.64' index.html
+          grep -q 'v264-movements-home-open-script' index.html
+          grep -q 'v264-movement-hero' index.html
+          grep -q 'content:"Colunas"' index.html
+          python - <<'PY2'
+          from pathlib import Path
+          import re
+          s=Path('index.html').read_text(encoding='utf-8')
+          expected="""function prepareDefaultOpening(){
+            view='lancamentos';
+            periodMode='mes';
+            state.month=validMonth(typeof v223FinancialMonthForDate==='function'?v223FinancialMonthForDate(localDateId()):currentMonthId());
+            txScope='mes';
+            txPanel='realizados';"""
+          assert expected in s
+          scripts='\n\n'.join(re.findall(r'<script[^>]*>(.*?)</script>',s,flags=re.S|re.I))
+          Path('/tmp/all-scripts.js').write_text(scripts,encoding='utf-8')
+          PY2
+          node --check /tmp/all-scripts.js
+
+      - name: Publicar V2.64 e limpar workflow temporário
+        run: |
+          git config user.name 'ChatGPT App Despesas Casal'
+          git config user.email 'actions@users.noreply.github.com'
+          rm -f .github/workflows/apply-v264.yml
+          git add index.html .github/workflows/apply-v264.yml
+          git commit -m 'V2.64: painel em Movimentações e abertura no Extrato'
+          git push origin HEAD:main
