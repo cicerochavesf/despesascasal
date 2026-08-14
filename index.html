@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.42 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.43 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -5331,8 +5331,7 @@ renderEstrategia=function(){
 
   layout(`${v23PageHead('Olá, '+v24GreetingName(),'Acompanhe o resultado de '+labelMonth(month)+' de '+year+'.',v24HomePeriodControls())}
     <section class="v23-hero"><div class="v23-hero-copy"><span>Saldo atual · ${labelMonth(month)} de ${year}</span><strong class="v23-hero-value">${fmt(currentBalance)}</strong><p>Orçamento planejado menos o valor já utilizado.</p><div class="v24-hero-commitment"><i></i><span>${commitment.toLocaleString('pt-BR',{maximumFractionDigits:1})}% da renda já está comprometida</span></div></div><div class="v23-hero-metrics"><div class="v23-hero-metric"><span>Receitas</span><strong>${fmt(revenue)}</strong></div><div class="v23-hero-metric"><span>Planejado</span><strong>${fmt(planned)}</strong></div><div class="v23-hero-metric"><span>Despesas realizadas</span><strong>${fmt(real)}</strong></div><div class="v23-hero-metric"><span>Saldo projetado</span><strong>${fmt(projected)}</strong></div></div></section>
-    <section class="v23-panel v23-panel-pad v23-gap-top"><div class="v23-panel-head"><div><h2>Ritmo de gastos do mês</h2><p>Gasto acumulado comparado ao ritmo planejado em ${labelMonth(month)} de ${year}.</p></div><button class="v23-panel-link" onclick="view='lancamentos';txPanel='acompanhamento';txScope='mes';render()">Abrir planejado</button></div>${v214MonthRhythm(month,planned)}</section>
-    <div class="v23-grid equal v23-gap-top"><section class="v23-panel v23-panel-pad"><div class="v23-panel-head"><div><h2>Maiores despesas planejadas</h2><p>Ranking pelo orçamento do mês e avanço do valor realizado.</p></div><button class="v23-panel-link" onclick="view='despesas';expenseScope='mes';render()">Ver planejamento</button></div><div class="v24-plan-list">${plannedRows||'<div class="v23-empty">Nenhuma despesa planejada neste mês.</div>'}${unplannedRows}</div></section><section class="v23-panel v23-panel-pad"><div class="v23-panel-head"><div><h2>Movimentações recentes</h2><p>Últimos registros de ${labelMonth(month)}.</p></div><button class="v23-panel-link" onclick="view='lancamentos';txScope='mes';txPanel='realizados';render()">Ver extrato</button></div>${v23RecentTransactions(7,[month])}</section></div>`);
+    <section class="v23-panel v23-panel-pad"><div class="v23-panel-head"><div><h2>Movimentações recentes</h2><p>Últimos registros de ${labelMonth(month)}.</p></div><button class="v23-panel-link" onclick="view='lancamentos';txScope='mes';txPanel='realizados';render()">Ver extrato</button></div>${v23RecentTransactions(7,[month])}</section>`);
 };
 
 renderReceitas=function(){
@@ -7733,5 +7732,7 @@ requestAnimationFrame(v240EnhanceMobileAuthorBadge);
 
 
 <!-- V2.42 — Restaurar base inicial removido da interface (desktop e mobile) e ação desativada. -->
+
+<!-- V2.43 — Tela Início simplificada: removidos Ritmo de gastos do mês e Maiores despesas planejadas; Movimentações recentes permanece. -->
 
 </body></html>
