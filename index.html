@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.53 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.54 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -8075,9 +8075,15 @@ requestAnimationFrame(v240EnhanceMobileAuthorBadge);
     openColumnWidthEditor(encodeURIComponent(key));
   }
   window.v250OpenWidth=v250OpenWidth;
+  window.v254SubcategoryExpanded=window.v254SubcategoryExpanded===true;
+  window.v254ToggleSubcategoryMatrix=function(){window.v254SubcategoryExpanded=!window.v254SubcategoryExpanded;render()};
   function v250Panel(kind,monthIds,items){
-    const isSub=kind==='sub';
-    return `<section class="v250-matrix-panel"><div class="v250-matrix-head"><div><h2>${isSub?'Visão mensal por subcategorias':'Visão mensal por categorias'}</h2><p>Valores planejados por ${isSub?'subcategoria':'categoria'} em cada mês do recorte atual</p></div><div class="v250-matrix-actions"><button type="button" class="v250-column-btn" onclick="v250OpenWidth('${kind}')">Ajustar colunas</button></div></div><div class="v250-mobile-hint">No celular, arraste a tabela para o lado. A primeira coluna fica fixa e as larguras são salvas para este usuário e dispositivo.</div>${v250MatrixTable(kind,monthIds,items)}</section>`;
+    const isSub=kind==='sub',expanded=!isSub||window.v254SubcategoryExpanded;
+    const actions=isSub
+      ? `<button type="button" class="v250-column-btn v254-sub-toggle" onclick="v254ToggleSubcategoryMatrix()">${expanded?'Recolher':'Expandir'}</button>${expanded?`<button type="button" class="v250-column-btn" onclick="v250OpenWidth('${kind}')">Ajustar colunas</button>`:''}`
+      : `<button type="button" class="v250-column-btn" onclick="v250OpenWidth('${kind}')">Ajustar colunas</button>`;
+    const content=expanded?`<div class="v250-mobile-hint">No celular, arraste a tabela para o lado. A primeira coluna fica fixa e as larguras são salvas para este usuário e dispositivo.</div>${v250MatrixTable(kind,monthIds,items)}`:'';
+    return `<section class="v250-matrix-panel ${isSub?'v254-subcategory-panel':''} ${expanded?'is-expanded':'is-collapsed'}"><div class="v250-matrix-head"><div><h2>${isSub?'Visão mensal por subcategorias':'Visão mensal por categorias'}</h2><p>${isSub&&!expanded?'Toque em Expandir para visualizar os valores planejados por subcategoria.':`Valores planejados por ${isSub?'subcategoria':'categoria'} em cada mês do recorte atual`}</p></div><div class="v250-matrix-actions">${actions}</div></div>${content}</section>`;
   }
   function v250HomeMatrices(monthIds,rows){
     return `<section class="v250-matrices">${v250Panel('cat',monthIds,v250RowsByCategory(monthIds,rows))}${v250Panel('sub',monthIds,v250RowsBySubcategory(monthIds,rows))}</section>`;
@@ -8496,5 +8502,23 @@ html[data-theme="dark"] .v254-home-panel,.dark .v254-home-panel{box-shadow:none}
 })();
 </script>
 <!-- V2.53 — Início com painel limpo e filtros dentro do painel. -->
+
+
+<style id="v254-subcategory-collapse-style">
+/* V2.54 — matriz de subcategorias recolhida por padrão */
+.v254-subcategory-panel.is-collapsed .v250-matrix-head{border-bottom:0}
+.v254-subcategory-panel.is-collapsed{min-height:0}
+.v254-sub-toggle{min-width:82px}
+@media(max-width:760px){
+  .v254-subcategory-panel .v250-matrix-head{align-items:flex-start}
+  .v254-subcategory-panel .v250-matrix-actions{display:flex;flex-wrap:wrap;justify-content:flex-end}
+  .v254-subcategory-panel.is-collapsed .v250-matrix-head{padding-bottom:13px}
+}
+@media(max-width:430px){
+  .v254-subcategory-panel .v250-matrix-head{display:grid;grid-template-columns:minmax(0,1fr) auto}
+  .v254-subcategory-panel .v250-matrix-actions{justify-content:flex-end}
+}
+</style>
+<!-- V2.54 — Visão mensal por subcategorias recolhida por padrão, com opção Expandir/Recolher. -->
 
 </body></html>
