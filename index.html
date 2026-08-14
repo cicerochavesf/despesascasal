@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.69 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.70 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -9365,6 +9365,53 @@ const v269PrevEstrategia=renderEstrategia;
 renderEstrategia=function(){v269PrevEstrategia();v269MarkRenderedKpis();const hero=document.querySelector('.v246-home-dashboard .v252-home-hero');if(!hero)return;hero.querySelectorAll('.v267-home-period-chip,.v268-home-period-chip,.v269-home-period-chip').forEach(el=>el.remove());let filters=null;try{if(typeof v246HomeFilters!=='undefined')filters=v246HomeFilters}catch(_e){}const year=String((filters&&filters.year)||state.month||currentMonthId()).slice(0,4);const selectedMonth=filters&&filters.month?filters.month:'todos';const label=selectedMonth&&selectedMonth!=='todos'?v269MonthName(selectedMonth):'Ano';const chip=document.createElement('div');chip.className='v269-home-period-chip';chip.innerHTML=v269Markup(year,label);chip.setAttribute('aria-label','Período: '+year+' '+label);hero.appendChild(chip)};
 })();
 </script>
-<!-- V2.69 — KPIs mobile corrigidos no container real e período anual/mensal coerente nos painéis azuis. -->
-
+<!-- V2.69 — KPIs mobile corrigidos no container real e período anual/mensal coerente nos painéis azuis. --><style id="v270-mobile-movement-layout-style">
+/* V2.70 — celular: KPIs em coluna única e quatro abas visíveis em grade 2x2. */
+@media (max-width:760px){
+  .v264-movement-hero .tx-tabs{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    grid-auto-flow:row!important;
+    gap:6px!important;
+    width:100%!important;
+    max-width:100%!important;
+    overflow:visible!important;
+    overflow-x:visible!important;
+    white-space:normal!important;
+    scroll-snap-type:none!important;
+  }
+  .v264-movement-hero .tx-tabs button{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:5px!important;
+    flex:initial!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    margin:0!important;
+    box-sizing:border-box!important;
+    white-space:normal!important;
+  }
+  .v264-movement-hero .tx-summary{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    grid-auto-flow:row!important;
+    gap:8px!important;
+    width:100%!important;
+    max-width:100%!important;
+    overflow:visible!important;
+    overflow-x:visible!important;
+    scroll-snap-type:none!important;
+  }
+  .v264-movement-hero .tx-summary .metric{
+    grid-column:auto!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    margin:0!important;
+  }
+}
+</style>
+<!-- V2.70 — Movimentações mobile sem rolagem lateral nas abas; KPIs empilhados. -->
 </body></html>
