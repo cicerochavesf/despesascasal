@@ -1,0 +1,25 @@
+name: Aplicar V2.64
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-v264.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update-index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Conferir base V2.63
+        run: test "$(git hash-object index.html)" = "57cf19ed43511e735e73c7cf3a23cedf7e683591"
+
+      - name: Aplicar V2.64
+        shell: python
+        env:
+          V264_PAYLOAD: H4sIAHZ1f2oC/7VaT2/byBW/+1NMnN2VGJC0SEmWTFtqkyDAHjZtsSl6WSyQETmUZpecYWeGshzZwH6IHttTDwUK7LGXXv1N9pP0DUlJ/CsrDooghjTz5r3f+/+G1I1UdxFBNJidr93LkRXzNYkJU9Ja8ZhYPCEM1hY0IpbPozRm0spOnM/PLl6hv7j25Qj99svf0Hu+pvocfvzX43+IRD6PUYIpIxHCn9LIRHhBhEoFhtVAPP6TI8bRu40SWHFEEP4plYqggCAthWGJYkwlCqj0BVEZsU+iNMLCRq8uzuwKVmtFBN+eITgjlpR5AzRAjptsrmEJpAWULT3nMv++4CIgwhI4oKn03FGxiv2fl4KnLPAiwIyFtdQUwLvvDMcBWZovB6EzcTEafG2+dIIRCaZofAmfh9NFEE6RM3S/Ng78PSfZIMkjGiCxXOC+c+WYrnNluuORabtuQbmx5AoH/BYAO1M4MALMBf3YdIfmyDVt5zIjBk1FGAHpigYBYddnD202gD840IYAuyURvvPCiGT64YgumUUViWW2ZhEW6HVtdRregWuZAiaeTLBPrAVRt0QLQWiJE88pjJRb11pwpXjs5QbuhoGAFytjWUTc/1nzAQ9z4b1chMEiJHohBOmWpJ+Id5VLyhZuCV2ulHc1GOiliCgFftMAtTvtwXRMYr2hyEZZEEZMhlzEXpokRPhYkqPYVm4pXIZgdQiZErQwDKu4XCcHpo
