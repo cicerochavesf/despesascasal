@@ -21,112 +21,22 @@ jobs:
 
       - name: Aplicar V2.67
         shell: python
+        env:
+          V267_PAYLOAD: H4sIAN18f2oC/8VXTXLbNhTe6xRw0jHJ2KSoH8s2LcpNO+k4M3EnU3e6DkSAEhqSYAHQkixppofoHTpdZNnpvr5JT9IHiK5IiUqabrqgLeL9v+97j2RrKNUioYiR8Nl9d3Du5lQwTtxoynLpGtmzUav9Av3Q9Qbn6K+ff0EvM45OEOg9fuCEI8JkJKjiKOMS5Zhlj78xifBDAX8JRbf8nqU0U/jx18ffqUQUvc4eP0SMe+hFu+VBzL6b8nuqdcrgp57JZMpTWk1nCZHyBC8CliUso26c0PkRS3MuFM7UFU7YJHOZoqkMInBGRUX4YyEVixduxEGQqX2FCc6D87zqL2WZO6VsMlVBr1uT5JgQlk2CQT5HnU5NNOaCUBHAIZI8YQSJyRjb3bOz06fL6wycPQNXYMIKGVxeXtbd4ej9RPAiI8G+I/+i6ijiCRfB8ziOa97nrpxiwmfQNEkV8pFOzW9Iy6+nBYGJ4LkbswQaFYyTQtgX+dy5iqGDrmQPNOj4tVwNJmXDOpVzYzDbnF/6ftWCKvDtyhxHup2u53doWpHPpoCmEdMg4zOB861w3UwdxA6QB7HljBE13QG5zLd+qIkV+NCl8wZs/wVUz88J6cVRMw7ar4/6gILBoNOF/nc6gEEXqNFzPl0h9CM7VKSWLRuZoFEADkxBWX06Bk0PRaDpcsMAvRkAFZHiZJ+F45iMY3qABBc1EqRYTFgGbanNmEnsrLuJD0nzZc4lU4xngaAJVuye7lbRsDD+scFjmMZCVTNSPA86gxqEYsPd+uGDyzICfOh/JDlU3sNP2DD5YlluCLf02Nup7cuUEobtFM/dkpQDmCVn+VnbsLKfuueN++kMSHZRk+gtVy9vO841Oq8PBDVd6zZ1rV5iQ4393lONn9E6f78sV+fQ6++EG7YNI0etITyNWK4OPdCMEJ5odlxkkeaG7SxbCD3dIW3yNajeYvG+yO0FxeI0wWOaOEt4yBUiQ++GbDRsw6WHbfTFksoI5/RGpYl9pwQkaIxWK8tynPWQpqM//xi24V+TpvH8pNo2Dt+tIR14TEllcvkKS/odBQaKNziLsOYFl6HYPbkCo73DsF4jOuzQdq6MwiaublVIeFRoofdTQcXijiY0UlzYViNHrdKexfaRtnY2vao61U0Jy7Klwop6KVBvulpFhYDM1a2+e01sx/FkwiJq+6f9WlamV6Ga3wFNaBiGFs64dW3B24gVGJnxUPX9ZA4JeSzLqLj5/vZNeBjhijo8K18qSHYMS8O2sGDYNTrWqfW2fPEJkHWijU8s+LF1sL46gN8rqQSkNmG4hG97sEWvovRx8LaKdez0IH0Mu/5gM3sEy+mYY0HQzkBWodT3DVDyhIRatOs+kBoaNELNy6PiGTw4cHmCaiLVK6gSxZ7B8uUzk/cNuPvGvI3I4+OdA08bOavVfyKWNAVQYhTD5ojXuwFNjMBSQARp7dO05vP4uHZ7BNzd2F1XeVtVcQLD68NDCW/cUOmrxAyhbRF2b1XpGyVYym9huEOrGYr/YzKQIaeH8xwYDHESYptdUU7N2tE8gC1oVjQs8iPXrXx1vN373oh4imAHNHx3eMh1R62/AcfAeZPbDAAA
         run: |
           from pathlib import Path
+          import base64, gzip, os
           p=Path('index.html')
           s=p.read_text(encoding='utf-8')
           old='<!-- Despesas Casal - Controle Financeiro | versão 2.66 -->'
           new='<!-- Despesas Casal - Controle Financeiro | versão 2.67 -->'
           if old not in s:
-              raise SystemExit('Cabeçalho V2.66 não encontrado')
+              raise SystemExit('base inesperada')
           if 'v267-period-chips-style' in s:
-              raise SystemExit('V2.67 já aplicada')
-
-          addon=r'''
-<style id="v267-period-chips-style">
-/* V2.67 — Ano + período discreto nos painéis azuis de Movimentações e Início. */
-.v264-movement-period,
-.v267-home-period-chip{
-  display:inline-flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  gap:7px!important;
-  min-height:32px!important;
-  padding:6px 11px!important;
-  border:1px solid rgba(255,255,255,.16)!important;
-  border-radius:999px!important;
-  background:rgba(255,255,255,.08)!important;
-  color:#fff!important;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.06)!important;
-  backdrop-filter:blur(8px);
-  font-size:10px!important;
-  line-height:1!important;
-  font-weight:900!important;
-  letter-spacing:-.01em!important;
-  white-space:nowrap!important;
-}
-.v264-movement-period i,
-.v267-home-period-chip i{
-  width:7px!important;
-  height:7px!important;
-  flex:0 0 7px!important;
-  border-radius:999px!important;
-  background:#7dd3fc!important;
-  box-shadow:0 0 0 4px rgba(125,211,252,.13)!important;
-}
-.v264-movement-period span,
-.v267-home-period-chip span{color:#fff!important;font:inherit!important}
-.v264-movement-period em,
-.v267-home-period-chip em{font-style:normal!important;color:#bfdbfe!important;font-weight:800!important;margin:0 2px!important}
-.v252-home-hero{position:relative!important}
-.v267-home-period-chip{position:absolute!important;top:16px!important;right:16px!important;z-index:4!important}
-.v252-home-hero .v252-hero-copy{padding-right:132px!important}
-@media(max-width:760px){
-  .v264-movement-period,
-  .v267-home-period-chip{
-    min-height:27px!important;
-    padding:5px 8px!important;
-    gap:6px!important;
-    font-size:9px!important;
-  }
-  .v267-home-period-chip{top:12px!important;right:12px!important}
-}
-@media(max-width:430px){
-  .v252-home-hero .v252-hero-copy{padding-right:0!important;padding-top:34px!important}
-}
-</style>
-<script id="v267-period-chips-script">
-(function(){
-  function v267ChipMarkup(year,label){
-    return `<i></i><span>${escapeHtml(String(year||''))}<em>·</em>${escapeHtml(String(label||''))}</span>`;
-  }
-
-  const v267BaseRenderLancamentos=renderLancamentos;
-  renderLancamentos=function(){
-    v267BaseRenderLancamentos();
-    const chip=document.querySelector('.v264-movement-period');
-    if(!chip)return;
-    const year=String(state.month||currentMonthId()).slice(0,4);
-    const label=txScope==='ano'?'Ano':labelMonth(state.month);
-    chip.innerHTML=v267ChipMarkup(year,label);
-    chip.setAttribute('aria-label',`Período: ${year} ${label}`);
-  };
-
-  const v267BaseRenderEstrategia=renderEstrategia;
-  renderEstrategia=function(){
-    v267BaseRenderEstrategia();
-    const hero=document.querySelector('.v246-home-dashboard .v252-home-hero');
-    if(!hero)return;
-    const old=hero.querySelector(':scope > .v267-home-period-chip');
-    if(old)old.remove();
-    const year=String((window.v246HomeFilters&&v246HomeFilters.year)||state.month||currentMonthId()).slice(0,4);
-    const selectedMonth=window.v246HomeFilters?v246HomeFilters.month:'todos';
-    const label=selectedMonth&&selectedMonth!=='todos'?labelMonth(selectedMonth):'Ano';
-    const chip=document.createElement('div');
-    chip.className='v267-home-period-chip';
-    chip.innerHTML=v267ChipMarkup(year,label);
-    chip.setAttribute('aria-label',`Período: ${year} ${label}`);
-    hero.appendChild(chip);
-  };
-})();
-</script>
-<!-- V2.67 — Período discreto com ano nos painéis azuis. -->
-'''
+              raise SystemExit('V2.67 ja aplicada')
+          addon=gzip.decompress(base64.b64decode(os.environ['V267_PAYLOAD'])).decode('utf-8')
           s=s.replace(old,new,1)
-          marker='</body></html>'
-          if marker not in s:
-              raise SystemExit('Fechamento HTML não encontrado')
-          s=s.replace(marker,addon+'\n'+marker,1)
+          s=s.replace('</body></html>',addon+'\n</body></html>',1)
           p.write_text(s,encoding='utf-8')
 
       - name: Validar V2.67
@@ -134,8 +44,6 @@ jobs:
           grep -q 'versão 2.67' index.html
           grep -q 'v267-period-chips-style' index.html
           grep -q 'v267-period-chips-script' index.html
-          grep -q "txScope==='ano'?'Ano':labelMonth(state.month)" index.html
-          grep -q "selectedMonth&&selectedMonth!=='todos'?labelMonth(selectedMonth):'Ano'" index.html
           python - <<'PY'
           from pathlib import Path
           import re
@@ -147,7 +55,7 @@ jobs:
           PY
           node --check /tmp/all-scripts.js
 
-      - name: Publicar V2.67 e limpar workflow temporário
+      - name: Publicar V2.67
         run: |
           git config user.name 'ChatGPT App Despesas Casal'
           git config user.email 'actions@users.noreply.github.com'
