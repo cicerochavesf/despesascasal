@@ -1,0 +1,144 @@
+name: Aplicar V2.71 mobile
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-v271.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Aplicar ajustes da V2.71
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          index = Path('index.html')
+          text = index.read_text(encoding='utf-8')
+
+          text = text.replace(
+              '<!-- Despesas Casal - Controle Financeiro | versão 2.70 -->',
+              '<!-- Despesas Casal - Controle Financeiro | versão 2.71 -->',
+              1,
+          )
+
+          style = r'''
+          <style id="v271-mobile-movement-final-layout">
+          /* V2.71 — mobile: KPIs empilhados e quatro guias de Movimentações em uma única linha. */
+          @media (max-width:760px){
+            html[data-ui="v23"] .view-lancamentos .v264-movement-hero .tx-summary,
+            html[data-ui="v23"] .view-lancamentos .v264-movement-hero .tx-summary.v269-mobile-kpi-stack{
+              display:grid!important;
+              grid-template-columns:minmax(0,1fr)!important;
+              grid-auto-columns:auto!important;
+              grid-auto-flow:row!important;
+              gap:8px!important;
+              width:100%!important;
+              max-width:100%!important;
+              overflow:visible!important;
+              overflow-x:visible!important;
+              scroll-snap-type:none!important;
+              padding-left:0!important;
+              padding-right:0!important;
+            }
+            html[data-ui="v23"] .view-lancamentos .v264-movement-hero .tx-summary > .metric,
+            html[data-ui="v23"] .view-lancamentos .v264-movement-hero .tx-summary.v269-mobile-kpi-stack > .metric{
+              grid-column:1 / -1!important;
+              width:100%!important;
+              min-width:0!important;
+              max-width:none!important;
+              margin:0!important;
+              scroll-snap-align:none!important;
+            }
+
+            html[data-ui="v23"] .view-lancamentos .v264-movement-hero .tx-tabs{
+              display:grid!important;
+              grid-template-columns:repeat(4,minmax(0,1fr))!important;
+              grid-auto-flow:row!important;
+              gap:3px!important;
+              width:100%!important;
+              max-width:100%!important;
+              overflow:visible!important;
+              overflow-x:visible!important;
+              scroll-snap-type:none!important;
+              white-space:normal!important;
+            }
+            html[data-ui="v23"] .view-lancamentos .v264-movement-hero .tx-tabs button{
+              display:flex!important;
+              align-items:center!important;
+              justify-content:center!important;
+              flex:initial!important;
+              width:100%!important;
+              min-width:0!important;
+              max-width:none!important;
+              min-height:40px!important;
+              margin:0!important;
+              padding:6px 2px!important;
+              box-sizing:border-box!important;
+              font-size:clamp(7.6px,2.25vw,9px)!important;
+              line-height:1.05!important;
+              text-align:center!important;
+              white-space:nowrap!important;
+              overflow:hidden!important;
+              text-overflow:clip!important;
+              scroll-snap-align:none!important;
+            }
+            html[data-ui="v23"] .view-lancamentos .v264-movement-hero .tx-tabs button span{
+              display:block!important;
+              min-width:0!important;
+              max-width:100%!important;
+              overflow:hidden!important;
+              text-overflow:clip!important;
+              white-space:nowrap!important;
+            }
+            html[data-ui="v23"] .view-lancamentos .v264-movement-hero .tx-tabs button b{
+              display:none!important;
+            }
+          }
+          </style>
+          '''.strip()
+
+          # Evita duplicar o bloco caso a automação seja executada novamente.
+          text = re.sub(
+              r'\s*<style id="v271-mobile-movement-final-layout">.*?</style>\s*',
+              '\n',
+              text,
+              flags=re.S,
+          )
+          if '</head>' not in text:
+              raise SystemExit('Não foi encontrado </head> em index.html')
+          text = text.replace('</head>', style + '\n</head>', 1)
+          index.write_text(text, encoding='utf-8')
+
+          sw = Path('sw.js')
+          sw_text = sw.read_text(encoding='utf-8')
+          sw_text = re.sub(r"financas-cn-v\d+", "financas-cn-v230", sw_text, count=1)
+          sw.write_text(sw_text, encoding='utf-8')
+          PY
+
+      - name: Remover automação temporária
+        run: rm -f .github/workflows/apply-v271.yml
+
+      - name: Publicar V2.71
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html sw.js .github/workflows/apply-v271.yml
+          if git diff --cached --quiet; then
+            echo "Nenhuma alteração para publicar."
+            exit 0
+          fi
+          git commit -m "V2.71: ajusta KPIs e guias de Movimentações no mobile"
+          git push origin HEAD:main
