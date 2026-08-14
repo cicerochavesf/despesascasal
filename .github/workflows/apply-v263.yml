@@ -1,0 +1,43 @@
+name: Aplicar V2.63
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-v263.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  update-index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Conferir base V2.62
+        run: |
+          test "$(git hash-object index.html)" = "2dcf23507015743ce25b7df45728a1e64104eac4"
+      - name: Aplicar V2.63
+        run: |
+          python - <<'PY'
+          import zlib,base64
+          open('/tmp/patch.py','wb').write(zlib.decompress(base64.b64decode('eNrtVNtq20AQffdXTEyKZGIpdXohNZJLmzRg2oBxSp4CYSKN7SV7Ebtrx8E19CP6B30oFPoV/pN+SUdSLk3jlELpW/UgrWZmz8ycuYysUVCgn0hxBkIVxnoY8G+jSMtPGAid0zyeeCWDVsOlRWwJ81NPcx+Szkwu9DgNpn4U7bLeyPx0wnqyaZBsRBHskyvIoYM9dCghgj2jvTWS4EBo1BkJa+ADzMi61WcDO/HzHYiiXtDQdPG3SE9qJDECF2dmqn14G15rI+10G8CPReEIji6dJ/VmLnw4CvbwjFZfUE4MHFcRCV06t5ibLizWgC0rahxTU0jM6CdV+zaPdqfiJ20maL3IOPBMonPpSXO28+xpdF6Ik2YvcQXq3pA4HY+QGVVwfciLHJPtSpU4TlqPe5uLQy5PrHAePm6znRJekfat2Jt3JkNJR95yacKg8NHrYdBeKKGFmqoDi5kXRu+LsfCu22kzwjr5srV8xC5rZ4lTKCX7VMz5pJ+7WJIe+8kS7onSNO28DNTqqwNtwFLGDUVBN1Dk6I5oyegVarJ9xQefcjHjt6MqlF6z7IL/fD3M10PEAB9eRELPiLs6v0PVe+N5emqVyM0VS5sLvrF7aDRdhtfXWsurNNZSeG01yP4Rh5BjmXtZ1z/plLtT/tvxfiVnBnIDbwf9Byd73UiXs1wOsUJ7frOWjqtF8/3jJxgyHzi1CDXyL0SXpSyQ3UlAP2UNi/p69S0TJr7ZUzUym3q+CK7OwMFWCsGJDrZq9VZ5bhTxhRWe6kXs2vdX8Q+L1QsK')))
+          PY
+          python /tmp/patch.py
+      - name: Validar V2.63
+        run: |
+          grep -q "versão 2.63" index.html
+          grep -q "Total investido" index.html
+          grep -q "V2.63 — Restaura o KPI Total investido" index.html
+          python - <<'PY'
+          import re
+          s=open('index.html',encoding='utf-8').read()
+          js='\n'.join(re.findall(r'<script(?:\s[^>]*)?>(.*?)</script>',s,re.S|re.I))
+          open('/tmp/all.js','w',encoding='utf-8').write(js)
+          PY
+          node --check /tmp/all.js
+      - name: Publicar V2.63 e limpar workflow temporário
+        run: |
+          git config user.name "ChatGPT App Despesas Casal"
+          git config user.email "actions@users.noreply.github.com"
+          rm .github/workflows/apply-v263.yml
+          git add index.html .github/workflows/apply-v263.yml
+          git commit -m "V2.63: restaurar KPI total investido"
+          git push
