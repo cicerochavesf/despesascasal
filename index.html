@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.43 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.44 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -3559,7 +3559,7 @@ function retryCloudSync(){initCloud()}
 async function loadFromCloud(){setCloudStatus('Carregando nuvem...','loading');renderCloudGate('loading');try{const res=await fetch(cloudTableUrl(`id=eq.${encodeURIComponent(SUPABASE_ROW_ID)}&select=data,updated_at`),{headers:cloudReadHeaders(),cache:'no-store'});if(!res.ok)throw new Error(await parseCloudError(res));const rows=await res.json();if(rows&&rows.length&&rows[0].data){state=merge(clone(baseData),rows[0].data);lastCloudUpdatedAt=rows[0].updated_at||''}else{const seed=loadLocalCache();state=merge(clone(baseData),seed);setCloudStatus('Criando estado na nuvem...','loading');lastCloudUpdatedAt=await writeCloudRow(SUPABASE_ROW_ID,state)}ensureUiState();const openingSnapshot=clone(state);prepareDefaultOpening();cacheCloudState();cloudReady=true;cloudSynced=true;cloudLoadError='';setCloudStatus('Nuvem sincronizada','ok');render();ensureDailyCloudBackup(openingSnapshot)}catch(err){console.error('Erro ao carregar do Supabase',err);cloudReady=false;cloudSynced=false;cloudLoadError=String(err.message||err);setCloudStatus('Nuvem indisponível','error');renderCloudGate('error',cloudLoadError)}}
 function initCloud(){if(!authUser){renderAuthGate('login');return}if(cloudLoading)return;clearTimeout(cloudSaveTimer);cloudReady=false;cloudSynced=false;cloudLoadError='';cloudLoading=true;loadFromCloud().finally(()=>{cloudLoading=false})}
 function prepareDefaultOpening(){
-  view='lancamentos';
+  view='estrategia';
   periodMode='mes';
   state.month=validMonth(currentMonthId());
   txScope='mes';
@@ -7734,5 +7734,8 @@ requestAnimationFrame(v240EnhanceMobileAuthorBadge);
 <!-- V2.42 — Restaurar base inicial removido da interface (desktop e mobile) e ação desativada. -->
 
 <!-- V2.43 — Tela Início simplificada: removidos Ritmo de gastos do mês e Maiores despesas planejadas; Movimentações recentes permanece. -->
+
+
+<!-- V2.44 — Ao abrir/recarregar, após a sincronização com a nuvem, o app inicia sempre na tela Início. -->
 
 </body></html>
