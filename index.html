@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.76 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.77 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -3775,6 +3775,30 @@ html[data-theme="dark"] .v276-analysis-year-filter select{
 }
 </style>
 
+<style id="v277-tablet-floating-actions-fix">
+/* V2.77 — ações contextuais sempre visíveis e acima da navegação no tablet. */
+html[data-ui="v23"] .v27-global-fab{
+  z-index:135!important;
+  visibility:visible!important;
+}
+@media (min-width:761px) and (max-width:1120px){
+  html[data-ui="v23"] .v27-global-fab{
+    display:inline-flex!important;
+    right:22px!important;
+    bottom:88px!important;
+    min-height:50px!important;
+    padding:0 18px!important;
+    font-size:11.5px!important;
+    opacity:1!important;
+    pointer-events:auto!important;
+    box-shadow:0 16px 38px rgba(79,70,229,.32)!important;
+  }
+}
+body:has(.modal.open) .v27-global-fab{
+  opacity:0!important;
+  pointer-events:none!important;
+}
+</style>
 </head><body><div id="app"></div><div id="modal" class="modal"></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 const storeKey='despesas-casal-profissional-v12';
 const SUPABASE_URL='https://fpcwnjlneaaarzeevgpl.supabase.co';
