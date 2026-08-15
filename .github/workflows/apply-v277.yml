@@ -15,53 +15,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Corrigir botoes flutuantes no tablet
         run: |
-          python3 - <<'PY'
-          from pathlib import Path
-
-          p = Path('index.html')
-          s = p.read_text(encoding='utf-8')
-          old = '<!-- Despesas Casal - Controle Financeiro | versão 2.76 -->'
-          new = '<!-- Despesas Casal - Controle Financeiro | versão 2.77 -->'
-          if old not in s:
-              raise SystemExit('Cabeçalho da V2.76 não encontrado')
-          s = s.replace(old, new, 1)
-
-          css = r'''
-<style id="v277-tablet-floating-actions-fix">
-/* V2.77 — ações contextuais sempre visíveis e acima da navegação no tablet. */
-html[data-ui="v23"] .v27-global-fab{
-  z-index:135!important;
-  visibility:visible!important;
-}
-@media (min-width:761px) and (max-width:1120px){
-  html[data-ui="v23"] .v27-global-fab{
-    display:inline-flex!important;
-    right:22px!important;
-    bottom:88px!important;
-    min-height:50px!important;
-    padding:0 18px!important;
-    font-size:11.5px!important;
-    opacity:1!important;
-    pointer-events:auto!important;
-    box-shadow:0 16px 38px rgba(79,70,229,.32)!important;
-  }
-}
-body:has(.modal.open) .v27-global-fab{
-  opacity:0!important;
-  pointer-events:none!important;
-}
-</style>
-'''
-          if 'id="v277-tablet-floating-actions-fix"' not in s:
-              s = s.replace('</head>', css + '\n</head>', 1)
-          p.write_text(s, encoding='utf-8')
-
-          sw = Path('sw.js')
-          t = sw.read_text(encoding='utf-8')
-          if "CACHE_NAME='financas-cn-v235'" in t:
-              t = t.replace("CACHE_NAME='financas-cn-v235'", "CACHE_NAME='financas-cn-v236'", 1)
-          sw.write_text(t, encoding='utf-8')
-          PY
+          echo 'ZnJvbSBwYXRobGliIGltcG9ydCBQYXRoCgpwID0gUGF0aCgiaW5kZXguaHRtbCIpCnMgPSBwLnJlYWRfdGV4dChlbmNvZGluZz0idXRmLTgiKQpvbGQgPSAiPCEtLSBEZXNwZXNhcyBDYXNhbCAtIENvbnRyb2xlIEZpbmFuY2Vpcm8gfCB2ZXJzw6NvIDIuNzYgLS0+IgpuZXcgPSAiPCEtLSBEZXNwZXNhcyBDYXNhbCAtIENvbnRyb2xlIEZpbmFuY2Vpcm8gfCB2ZXJzw6NvIDIuNzcgLS0+IgppZiBvbGQgbm90IGluIHM6CiAgICByYWlzZSBTeXN0ZW1FeGl0KCJDYWJlw6dhbGhvIGRhIFYyLjc2IG7Do28gZW5jb250cmFkbyIpCnMgPSBzLnJlcGxhY2Uob2xkLCBuZXcsIDEpCgpjc3MgPSAnPHN0eWxlIGlkPSJ2Mjc3LXRhYmxldC1mbG9hdGluZy1hY3Rpb25zLWZpeCI+XG4vKiBWMi43NyDigJQgYcOnw7VlcyBjb250ZXh0dWFpcyBzZW1wcmUgdmlzw612ZWlzIGUgYWNpbWEgZGEgbmF2ZWdhw6fDo28gbm8gdGFibGV0LiAqL1xuaHRtbFtkYXRhLXVpPSJ2MjMiXSAudjI3LWdsb2JhbC1mYWJ7XG4gIHotaW5kZXg6MTM1IWltcG9ydGFudDtcbiAgdmlzaWJpbGl0eTp2aXNpYmxlIWltcG9ydGFudDtcbn1cbkBtZWRpYSAobWluLXdpZHRoOjc2MXB4KSBhbmQgKG1heC13aWR0aDoxMTIwcHgpe1xuICBodG1sW2RhdGEtdWk9InYyMyJdIC52MjctZ2xvYmFsLWZhYntcbiAgICBkaXNwbGF5OmlubGluZS1mbGV4IWltcG9ydGFudDtcbiAgICByaWdodDoyMnB4IWltcG9ydGFudDtcbiAgICBib3R0b206ODhweCFpbXBvcnRhbnQ7XG4gICAgbWluLWhlaWdodDo1MHB4IWltcG9ydGFudDtcbiAgICBwYWRkaW5nOjAgMThweCFpbXBvcnRhbnQ7XG4gICAgZm9udC1zaXplOjExLjVweCFpbXBvcnRhbnQ7XG4gICAgb3BhY2l0eToxIWltcG9ydGFudDtcbiAgICBwb2ludGVyLWV2ZW50czphdXRvIWltcG9ydGFudDtcbiAgICBib3gtc2hhZG93OjAgMTZweCAzOHB4IHJnYmEoNzksNzAsMjI5LC4zMikhaW1wb3J0YW50O1xuICB9XG59XG5ib2R5OmhhcygubW9kYWwub3BlbikgLnYyNy1nbG9iYWwtZmFie1xuICBvcGFjaXR5OjAhaW1wb3J0YW50O1xuICBwb2ludGVyLWV2ZW50czpub25lIWltcG9ydGFudDtcbn1cbjwvc3R5bGU+JwppZiAnaWQ9InYyNzctdGFibGV0LWZsb2F0aW5nLWFjdGlvbnMtZml4Iicgbm90IGluIHM6CiAgICBzID0gcy5yZXBsYWNlKCI8L2hlYWQ+IiwgY3NzICsgIlxuPC9oZWFkPiIsIDEpCnAud3JpdGVfdGV4dChzLCBlbmNvZGluZz0idXRmLTgiKQoKc3cgPSBQYXRoKCJzdy5qcyIpCnQgPSBzdy5yZWFkX3RleHQoZW5jb2Rpbmc9InV0Zi04IikKaWYgIkNBQ0hFX05BTUU9J2ZpbmFuY2FzLWNuLXYyMzUnIiBpbiB0OgogICAgdCA9IHQucmVwbGFjZSgiQ0FDSEVfTkFNRT0nZmluYW5jYXMtY24tdjIzNSciLCAiQ0FDSEVfTkFNRT0nZmluYW5jYXMtY24tdjIzNiciLCAxKQpzdy53cml0ZV90ZXh0KHQsIGVuY29kaW5nPSJ1dGYtOCIpCg==' | base64 -d > /tmp/apply_v277.py
+          python3 /tmp/apply_v277.py
           rm -f .github/workflows/apply-v277.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
