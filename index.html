@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.79 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.80 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -6571,7 +6571,7 @@ openTx=function(id){
   const form=document.querySelector('#modal form[onsubmit="saveTx(event)"]');if(!form)return;
   let hidden=form.querySelector('input[name="financialMonth"]');if(!hidden){hidden=document.createElement('input');hidden.type='hidden';hidden.name='financialMonth';form.appendChild(hidden)}hidden.value=intendedMonth;
   const dateInput=form.querySelector('input[name="date"]');
-  if(dateInput&&!id){const today=localDateId(),suggested=v223DateBelongsToMonth(today,intendedMonth)?today:v223DateId(v223FinancialBounds(intendedMonth).start);dateInput.value=suggested}
+  if(dateInput&&!id)dateInput.value=localDateId()
 };
 
 saveTx=function(e){
