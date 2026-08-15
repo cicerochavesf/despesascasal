@@ -1,0 +1,24 @@
+name: Aplicar V2.78 valor vazio em novo lancamento
+
+"on":
+  push:
+    paths:
+      - '.github/workflows/apply-v278.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deixar valor vazio em novo lancamento
+        run: |
+          python3 -c "from pathlib import Path; p=Path('index.html'); s=p.read_text(encoding='utf-8'); old='<!-- Despesas Casal - Controle Financeiro | versão 2.77 -->'; assert old in s, 'V2.77 nao encontrada'; s=s.replace(old,'<!-- Despesas Casal - Controle Financeiro | versão 2.78 -->',1); oldv='value=\"${t.amount||0}\" oninput=\"updateTxCardFields()\" required'; newv='value=\"${id?(t.amount??\x27\x27):\x27\x27}\" oninput=\"updateTxCardFields()\" required'; assert oldv in s, 'Campo amount nao encontrado'; s=s.replace(oldv,newv,1); p.write_text(s,encoding='utf-8'); sw=Path('sw.js'); t=sw.read_text(encoding='utf-8'); t=t.replace(\"CACHE_NAME='financas-cn-v236'\",\"CACHE_NAME='financas-cn-v237'\",1); sw.write_text(t,encoding='utf-8')"
+          rm -f .github/workflows/apply-v278.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html sw.js .github/workflows/apply-v278.yml
+          git commit -m "V2.78: novo lancamento inicia com valor vazio"
+          git push
