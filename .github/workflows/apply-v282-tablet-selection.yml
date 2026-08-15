@@ -1,8 +1,8 @@
-name: Aplicar V2.82 ajustes do Extrato no tablet
+name: Apply V282 tablet selection
 on:
   push:
     paths:
-      - '.github/workflows/apply-v282-tablet-selection.yml'
+      - .github/workflows/apply-v282-tablet-selection.yml
 permissions:
   contents: write
 jobs:
@@ -10,94 +10,52 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Aplicar ajustes do Extrato no tablet
+      - name: Patch tablet selection
         shell: bash
         run: |
-          git fetch origin main
-          git checkout main
-          git reset --hard origin/main
           python3 - <<'PY'
           from pathlib import Path
           import re
-          p=Path('index.html')
-          s=p.read_text(encoding='utf-8')
-          # Garante que a correção de sintaxe do seletor V2.81 também esteja presente.
-          s=s.replace(":')+monthList.map",":'')+monthList.map")
-          s=s.replace('<!-- Despesas Casal - Controle Financeiro | versão 2.81 -->','<!-- Despesas Casal - Controle Financeiro | versão 2.82 -->',1)
-          s=s.replace('<!-- Despesas Casal - Controle Financeiro | versão 2.80 -->','<!-- Despesas Casal - Controle Financeiro | versão 2.82 -->',1)
-          old='''<div class="mobile-list-toolbar">${mobileFilterTrigger('realized','Filtros')}<button type="button" onclick="toggleAllRealizedSelection(true)">Selecionar todos</button></div>'''
-          new='''<div class="mobile-list-toolbar realized-selection-toolbar">${mobileFilterTrigger('realized','Filtros')}<button type="button" onclick="toggleAllRealizedSelection(${allVisibleSelected?'false':'true'})">${allVisibleSelected?'Limpar seleção do filtro':'Selecionar todos do filtro'}</button></div>'''
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          s = s.replace(":')+monthList.map", ":'')+monthList.map")
+          s = s.replace('<!-- Despesas Casal - Controle Financeiro | versão 2.81 -->','<!-- Despesas Casal - Controle Financeiro | versão 2.82 -->',1)
+          old = '''<div class="mobile-list-toolbar">${mobileFilterTrigger('realized','Filtros')}<button type="button" onclick="toggleAllRealizedSelection(true)">Selecionar todos</button></div>'''
+          new = '''<div class="mobile-list-toolbar realized-selection-toolbar">${mobileFilterTrigger('realized','Filtros')}<button type="button" onclick="toggleAllRealizedSelection(${allVisibleSelected?'false':'true'})">${allVisibleSelected?'Limpar seleção do filtro':'Selecionar todos do filtro'}</button></div>'''
           if old in s:
-              s=s.replace(old,new,1)
-          elif 'realized-selection-toolbar' not in s:
-              raise SystemExit('Toolbar do Extrato não encontrada para ajuste')
-          marker='v282-tablet-realized-selection-fix'
+              s = s.replace(old,new,1)
+          marker = 'v282-tablet-realized-selection-fix'
           if marker not in s:
-              block=r'''
+              block = r'''
 <style id="v282-tablet-realized-selection-fix">
-/* V2.82 — tablet: seleção do Extrato visível acima da navegação e seleção de todos os itens filtrados. */
 @media (min-width:761px) and (max-width:1120px){
-  html[data-ui="v23"] .view-lancamentos .realized-selection-toolbar{
-    display:flex!important;
-    align-items:center!important;
-    justify-content:flex-end!important;
-    gap:8px!important;
-    margin:0 0 10px!important;
-  }
-  html[data-ui="v23"] .view-lancamentos .realized-selection-toolbar .mobile-filter-trigger{
-    display:none!important;
-  }
-  html[data-ui="v23"] .view-lancamentos .realized-selection-toolbar>button:not(.mobile-filter-trigger){
-    min-height:38px!important;
-    border:1px solid #dbe3ee!important;
-    border-radius:11px!important;
-    background:#f8fafc!important;
-    color:#475467!important;
-    padding:8px 12px!important;
-    font-size:10.5px!important;
-    font-weight:900!important;
-    box-shadow:0 4px 12px rgba(16,24,40,.04)!important;
-  }
-  html[data-ui="v23"] #realizedSelectionTray.selection-tray{
-    z-index:145!important;
-    bottom:92px!important;
-    width:min(720px,calc(100vw - 36px))!important;
-    grid-template-columns:minmax(150px,.8fr) minmax(180px,1fr) auto!important;
-    gap:10px!important;
-    padding:10px 12px!important;
-    border-radius:16px!important;
-  }
-  html[data-ui="v23"] #realizedSelectionTray.selection-tray.is-visible{
-    transform:translate(-50%,0)!important;
-    opacity:1!important;
-    pointer-events:auto!important;
-  }
-  html[data-ui="v23"].has-selection-tray .v27-global-fab{
-    bottom:176px!important;
-  }
+  html[data-ui="v23"] .view-lancamentos .realized-selection-toolbar{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:8px!important;margin:0 0 10px!important}
+  html[data-ui="v23"] .view-lancamentos .realized-selection-toolbar .mobile-filter-trigger{display:none!important}
+  html[data-ui="v23"] .view-lancamentos .realized-selection-toolbar>button:not(.mobile-filter-trigger){min-height:38px!important;border:1px solid #dbe3ee!important;border-radius:11px!important;background:#f8fafc!important;color:#475467!important;padding:8px 12px!important;font-size:10.5px!important;font-weight:900!important;box-shadow:0 4px 12px rgba(16,24,40,.04)!important}
+  html[data-ui="v23"] #realizedSelectionTray.selection-tray{z-index:145!important;bottom:92px!important;width:min(720px,calc(100vw - 36px))!important;grid-template-columns:minmax(150px,.8fr) minmax(180px,1fr) auto!important;gap:10px!important;padding:10px 12px!important;border-radius:16px!important}
+  html[data-ui="v23"] #realizedSelectionTray.selection-tray.is-visible{transform:translate(-50%,0)!important;opacity:1!important;pointer-events:auto!important}
+  html[data-ui="v23"].has-selection-tray .v27-global-fab{bottom:176px!important}
 }
 </style>
-<!-- V2.82 — Extrato no tablet com somatório flutuante e seleção total do filtro. -->
 '''
-              s=s.replace('</body>',block+'\n</body>',1)
+              s = s.replace('</body>', block + '\n</body>', 1)
           p.write_text(s,encoding='utf-8')
-          # Valida especificamente o JavaScript do seletor V2.81 se ele existir.
-          m=re.search(r'<script id="v281-movement-period-split-script">(.*?)</script>',s,re.S)
+          m = re.search(r'<script id="v281-movement-period-split-script">(.*?)</script>',s,re.S)
           if m:
               Path('/tmp/v281.js').write_text(m.group(1),encoding='utf-8')
           PY
           if [ -f /tmp/v281.js ]; then node --check /tmp/v281.js; fi
           python3 - <<'PY'
           from pathlib import Path
-          sw=Path('sw.js')
-          t=sw.read_text(encoding='utf-8')
           import re
-          t=re.sub(r"financas-cn-v\d+","financas-cn-v243",t,count=1)
-          sw.write_text(t,encoding='utf-8')
+          p = Path('sw.js')
+          s = p.read_text(encoding='utf-8')
+          s = re.sub(r'financas-cn-v\d+','financas-cn-v243',s,count=1)
+          p.write_text(s,encoding='utf-8')
           PY
           rm -f .github/workflows/apply-v282-tablet-selection.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "V2.82: corrige seleção e somatório do Extrato no tablet"
+          git commit -m "V2.82: corrige selecao e somatorio do Extrato no tablet"
           git push
