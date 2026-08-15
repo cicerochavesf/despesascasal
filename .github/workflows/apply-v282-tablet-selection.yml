@@ -1,5 +1,5 @@
 name: Apply V282 tablet selection
-on:
+'on':
   push:
     paths:
       - .github/workflows/apply-v282-tablet-selection.yml
@@ -11,51 +11,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Patch tablet selection
-        shell: bash
         run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          import re
-          p = Path('index.html')
-          s = p.read_text(encoding='utf-8')
-          s = s.replace(":')+monthList.map", ":'')+monthList.map")
-          s = s.replace('<!-- Despesas Casal - Controle Financeiro | versão 2.81 -->','<!-- Despesas Casal - Controle Financeiro | versão 2.82 -->',1)
-          old = '''<div class="mobile-list-toolbar">${mobileFilterTrigger('realized','Filtros')}<button type="button" onclick="toggleAllRealizedSelection(true)">Selecionar todos</button></div>'''
-          new = '''<div class="mobile-list-toolbar realized-selection-toolbar">${mobileFilterTrigger('realized','Filtros')}<button type="button" onclick="toggleAllRealizedSelection(${allVisibleSelected?'false':'true'})">${allVisibleSelected?'Limpar seleção do filtro':'Selecionar todos do filtro'}</button></div>'''
-          if old in s:
-              s = s.replace(old,new,1)
-          marker = 'v282-tablet-realized-selection-fix'
-          if marker not in s:
-              block = r'''
-<style id="v282-tablet-realized-selection-fix">
-@media (min-width:761px) and (max-width:1120px){
-  html[data-ui="v23"] .view-lancamentos .realized-selection-toolbar{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:8px!important;margin:0 0 10px!important}
-  html[data-ui="v23"] .view-lancamentos .realized-selection-toolbar .mobile-filter-trigger{display:none!important}
-  html[data-ui="v23"] .view-lancamentos .realized-selection-toolbar>button:not(.mobile-filter-trigger){min-height:38px!important;border:1px solid #dbe3ee!important;border-radius:11px!important;background:#f8fafc!important;color:#475467!important;padding:8px 12px!important;font-size:10.5px!important;font-weight:900!important;box-shadow:0 4px 12px rgba(16,24,40,.04)!important}
-  html[data-ui="v23"] #realizedSelectionTray.selection-tray{z-index:145!important;bottom:92px!important;width:min(720px,calc(100vw - 36px))!important;grid-template-columns:minmax(150px,.8fr) minmax(180px,1fr) auto!important;gap:10px!important;padding:10px 12px!important;border-radius:16px!important}
-  html[data-ui="v23"] #realizedSelectionTray.selection-tray.is-visible{transform:translate(-50%,0)!important;opacity:1!important;pointer-events:auto!important}
-  html[data-ui="v23"].has-selection-tray .v27-global-fab{bottom:176px!important}
-}
-</style>
-'''
-              s = s.replace('</body>', block + '\n</body>', 1)
-          p.write_text(s,encoding='utf-8')
-          m = re.search(r'<script id="v281-movement-period-split-script">(.*?)</script>',s,re.S)
-          if m:
-              Path('/tmp/v281.js').write_text(m.group(1),encoding='utf-8')
-          PY
+          echo 'CmZyb20gcGF0aGxpYiBpbXBvcnQgUGF0aAppbXBvcnQgcmUKcCA9IFBhdGgoImluZGV4Lmh0bWwiKQpzID0gcC5yZWFkX3RleHQoZW5jb2Rpbmc9InV0Zi04IikKcyA9IHMucmVwbGFjZSgiOicpK21vbnRoTGlzdC5tYXAiLCAiOicnKSttb250aExpc3QubWFwIikKcyA9IHMucmVwbGFjZSgiPCEtLSBEZXNwZXNhcyBDYXNhbCAtIENvbnRyb2xlIEZpbmFuY2Vpcm8gfCB2ZXJzw6NvIDIuODEgLS0+IiwiPCEtLSBEZXNwZXNhcyBDYXNhbCAtIENvbnRyb2xlIEZpbmFuY2Vpcm8gfCB2ZXJzw6NvIDIuODIgLS0+IiwxKQpzID0gcy5yZXBsYWNlKCI8IS0tIERlc3Blc2FzIENhc2FsIC0gQ29udHJvbGUgRmluYW5jZWlybyB8IHZlcnPDo28gMi44MCAtLT4iLCI8IS0tIERlc3Blc2FzIENhc2FsIC0gQ29udHJvbGUgRmluYW5jZWlybyB8IHZlcnPDo28gMi44MiAtLT4iLDEpCgpvbGQgPSAnPGRpdiBjbGFzcz0ibW9iaWxlLWxpc3QtdG9vbGJhciI+JHttb2JpbGVGaWx0ZXJUcmlnZ2VyKFwncmVhbGl6ZWRcJyxcJ0ZpbHRyb3NcJyl9PGJ1dHRvbiB0eXBlPSJidXR0b24iIG9uY2xpY2s9InRvZ2dsZUFsbFJlYWxpemVkU2VsZWN0aW9uKHRydWUpIj5TZWxlY2lvbmFyIHRvZG9zPC9idXR0b24+PC9kaXY+JwpuZXcgPSAnPGRpdiBjbGFzcz0ibW9iaWxlLWxpc3QtdG9vbGJhciByZWFsaXplZC1zZWxlY3Rpb24tdG9vbGJhciI+JHttb2JpbGVGaWx0ZXJUcmlnZ2VyKFwncmVhbGl6ZWRcJyxcJ0ZpbHRyb3NcJyl9PGJ1dHRvbiB0eXBlPSJidXR0b24iIG9uY2xpY2s9InRvZ2dsZUFsbFJlYWxpemVkU2VsZWN0aW9uKCR7YWxsVmlzaWJsZVNlbGVjdGVkP1wnZmFsc2VcJzpcJ3RydWVcJ30pIj4ke2FsbFZpc2libGVTZWxlY3RlZD9cJ0xpbXBhciBzZWxlw6fDo28gZG8gZmlsdHJvXCc6XCdTZWxlY2lvbmFyIHRvZG9zIGRvIGZpbHRyb1wnfTwvYnV0dG9uPjwvZGl2PicKaWYgb2xkIGluIHM6CiAgICBzID0gcy5yZXBsYWNlKG9sZCxuZXcsMSkKZWxpZiAicmVhbGl6ZWQtc2VsZWN0aW9uLXRvb2xiYXIiIG5vdCBpbiBzOgogICAgcmFpc2UgU3lzdGVtRXhpdCgiVG9vbGJhciBkbyBFeHRyYXRvIG5hbyBlbmNvbnRyYWRhIikKCm1hcmtlciA9ICJ2MjgyLXRhYmxldC1yZWFsaXplZC1zZWxlY3Rpb24tZml4IgppZiBtYXJrZXIgbm90IGluIHM6CiAgICBibG9jayA9ICcnJwo8c3R5bGUgaWQ9InYyODItdGFibGV0LXJlYWxpemVkLXNlbGVjdGlvbi1maXgiPgpAbWVkaWEgKG1pbi13aWR0aDo3NjFweCkgYW5kIChtYXgtd2lkdGg6MTEyMHB4KXsKICBodG1sW2RhdGEtdWk9InYyMyJdIC52aWV3LWxhbmNhbWVudG9zIC5yZWFsaXplZC1zZWxlY3Rpb24tdG9vbGJhcntkaXNwbGF5OmZsZXghaW1wb3J0YW50O2FsaWduLWl0ZW1zOmNlbnRlciFpbXBvcnRhbnQ7anVzdGlmeS1jb250ZW50OmZsZXgtZW5kIWltcG9ydGFudDtnYXA6OHB4IWltcG9ydGFudDttYXJnaW46MCAwIDEwcHghaW1wb3J0YW50fQogIGh0bWxbZGF0YS11aT0idjIzIl0gLnZpZXctbGFuY2FtZW50b3MgLnJlYWxpemVkLXNlbGVjdGlvbi10b29sYmFyIC5tb2JpbGUtZmlsdGVyLXRyaWdnZXJ7ZGlzcGxheTpub25lIWltcG9ydGFudH0KICBodG1sW2RhdGEtdWk9InYyMyJdIC52aWV3LWxhbmNhbWVudG9zIC5yZWFsaXplZC1zZWxlY3Rpb24tdG9vbGJhcj5idXR0b246bm90KC5tb2JpbGUtZmlsdGVyLXRyaWdnZXIpe21pbi1oZWlnaHQ6MzhweCFpbXBvcnRhbnQ7Ym9yZGVyOjFweCBzb2xpZCAjZGJlM2VlIWltcG9ydGFudDtib3JkZXItcmFkaXVzOjExcHghaW1wb3J0YW50O2JhY2tncm91bmQ6I2Y4ZmFmYyFpbXBvcnRhbnQ7Y29sb3I6IzQ3NTQ2NyFpbXBvcnRhbnQ7cGFkZGluZzo4cHggMTJweCFpbXBvcnRhbnQ7Zm9udC1zaXplOjEwLjVweCFpbXBvcnRhbnQ7Zm9udC13ZWlnaHQ6OTAwIWltcG9ydGFudDtib3gtc2hhZG93OjAgNHB4IDEycHggcmdiYSgxNiwyNCw0MCwuMDQpIWltcG9ydGFudH0KICBodG1sW2RhdGEtdWk9InYyMyJdICNyZWFsaXplZFNlbGVjdGlvblRyYXkuc2VsZWN0aW9uLXRyYXl7ei1pbmRleDoxNDUhaW1wb3J0YW50O2JvdHRvbTo5MnB4IWltcG9ydGFudDt3aWR0aDptaW4oNzIwcHgsY2FsYygxMDB2dyAtIDM2cHgpKSFpbXBvcnRhbnQ7Z3JpZC10ZW1wbGF0ZS1jb2x1bW5zOm1pbm1heCgxNTBweCwuOGZyKSBtaW5tYXgoMTgwcHgsMWZyKSBhdXRvIWltcG9ydGFudDtnYXA6MTBweCFpbXBvcnRhbnQ7cGFkZGluZzoxMHB4IDEycHghaW1wb3J0YW50O2JvcmRlci1yYWRpdXM6MTZweCFpbXBvcnRhbnR9CiAgaHRtbFtkYXRhLXVpPSJ2MjMiXSAjcmVhbGl6ZWRTZWxlY3Rpb25UcmF5LnNlbGVjdGlvbi10cmF5LmlzLXZpc2libGV7dHJhbnNmb3JtOnRyYW5zbGF0ZSgtNTAlLDApIWltcG9ydGFudDtvcGFjaXR5OjEhaW1wb3J0YW50O3BvaW50ZXItZXZlbnRzOmF1dG8haW1wb3J0YW50fQogIGh0bWxbZGF0YS11aT0idjIzIl0uaGFzLXNlbGVjdGlvbi10cmF5IC52MjctZ2xvYmFsLWZhYntib3R0b206MTc2cHghaW1wb3J0YW50fQp9Cjwvc3R5bGU+CicnJwogICAgcyA9IHMucmVwbGFjZSgiPC9ib2R5PiIsIGJsb2NrICsgIlxuPC9ib2R5PiIsIDEpCgpwLndyaXRlX3RleHQocyxlbmNvZGluZz0idXRmLTgiKQoKc3cgPSBQYXRoKCJzdy5qcyIpCnQgPSBzdy5yZWFkX3RleHQoZW5jb2Rpbmc9InV0Zi04IikKdCA9IHJlLnN1YihyImZpbmFuY2FzLWNuLXZcXGQrIiwiZmluYW5jYXMtY24tdjI0MyIsdCxjb3VudD0xKQpzdy53cml0ZV90ZXh0KHQsZW5jb2Rpbmc9InV0Zi04IikKCm0gPSByZS5zZWFyY2gocic8c2NyaXB0IGlkPSJ2MjgxLW1vdmVtZW50LXBlcmlvZC1zcGxpdC1zY3JpcHQiPiguKj8pPC9zY3JpcHQ+JyxzLHJlLlMpCmlmIG06CiAgICBQYXRoKCIvdG1wL3YyODEuanMiKS53cml0ZV90ZXh0KG0uZ3JvdXAoMSksZW5jb2Rpbmc9InV0Zi04IikK' | base64 -d > /tmp/patch_v282.py
+          python3 /tmp/patch_v282.py
           if [ -f /tmp/v281.js ]; then node --check /tmp/v281.js; fi
-          python3 - <<'PY'
-          from pathlib import Path
-          import re
-          p = Path('sw.js')
-          s = p.read_text(encoding='utf-8')
-          s = re.sub(r'financas-cn-v\d+','financas-cn-v243',s,count=1)
-          p.write_text(s,encoding='utf-8')
-          PY
           rm -f .github/workflows/apply-v282-tablet-selection.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "V2.82: corrige selecao e somatorio do Extrato no tablet"
+          git commit -m "V2.82 tablet selection"
           git push
