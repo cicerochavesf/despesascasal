@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.74 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.75 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -3648,6 +3648,74 @@ html[data-theme="dark"] .v248-month-chip,.dark .v248-month-chip{background:#1533
     padding-right:30px!important;
   }
   .v264-movement-period:after{right:11px!important;width:6px!important;height:6px!important}
+}
+</style>
+
+<style id="v275-tablet-movements-responsive">
+/* V2.75 — faixa de tablet: quatro guias proporcionais, sem rolagem ou cortes. */
+@media (min-width:761px) and (max-width:1120px){
+  html[data-ui="v23"] .view-lancamentos .v264-movement-hero .tx-tabs{
+    display:grid!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    grid-auto-flow:row!important;
+    width:100%!important;
+    max-width:100%!important;
+    gap:5px!important;
+    padding:5px!important;
+    margin:10px 0 12px!important;
+    overflow:visible!important;
+    overflow-x:visible!important;
+    scroll-snap-type:none!important;
+  }
+  html[data-ui="v23"] .view-lancamentos .v264-movement-hero .tx-tabs button{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    min-height:40px!important;
+    padding:8px 5px!important;
+    gap:0!important;
+    flex:initial!important;
+    font-size:clamp(9px,1.2vw,11px)!important;
+    line-height:1.1!important;
+    letter-spacing:-.015em!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:clip!important;
+    scroll-snap-align:none!important;
+  }
+  html[data-ui="v23"] .view-lancamentos .v264-movement-hero .tx-tabs button span{
+    display:block!important;
+    min-width:0!important;
+    max-width:100%!important;
+    white-space:nowrap!important;
+    overflow:visible!important;
+    text-overflow:clip!important;
+  }
+  html[data-ui="v23"] .view-lancamentos .v264-movement-hero .tx-tabs button b{
+    display:none!important;
+  }
+  html[data-ui="v23"] .view-lancamentos .v264-movement-hero .v26-movement-toolbar,
+  html[data-ui="v23"] .view-lancamentos .v264-movement-hero .v27-movement-toolbar{
+    display:none!important;
+  }
+  html[data-ui="v23"] .view-lancamentos .v264-movement-hero .tx-summary{
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    grid-auto-flow:row!important;
+    grid-auto-columns:auto!important;
+    gap:10px!important;
+    overflow:visible!important;
+  }
+  html[data-ui="v23"] .view-lancamentos .v264-movement-hero .tx-summary>.card,
+  html[data-ui="v23"] .view-lancamentos .v264-movement-hero .tx-summary>.metric,
+  html[data-ui="v23"] .view-lancamentos .v264-movement-hero .tx-summary>.tx-summary-card{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+  }
 }
 </style>
 
