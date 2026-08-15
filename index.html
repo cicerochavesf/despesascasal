@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.82 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.83 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -4584,7 +4584,7 @@ function renderLancamentos(){
   const tabs=`<div class="tx-tabs"><button class="${txPanel==='acompanhamento'?'active':''}" onclick="setTxPanel('acompanhamento')"><span>Acompanhamento</span><b>${budgets.length}</b></button><button class="${txPanel==='realizados'?'active':''}" onclick="setTxPanel('realizados')"><span>Realizados</span><b>${txList.length}</b></button><button class="${txPanel==='envelopes'?'active':''}" onclick="setTxPanel('envelopes')"><span>Envelopes</span><b>${envelopes.length}</b></button><button class="${txPanel==='remanejamentos'?'active':''}" onclick="setTxPanel('remanejamentos')"><span>Remanejamentos</span><b>${remEntries.length}</b></button></div>`;
   let panel='';
   if(txPanel==='acompanhamento')panel=`<div class="card tx-panel"><div class="section-title"><div><h3>Acompanhamento — ${periodTitle}</h3><span>${budgets.length} item(ns) · ${withBalance} em aberto · ${noBalance} zerado(s)${negativeCount?' · '+negativeCount+' negativo(s)':''}</span></div></div><div class="mobile-list-toolbar">${mobileFilterTrigger('forecast','Filtros')}<button type="button" onclick="toggleAllForecastSelection(${allForecastSelected?'false':'true'})">${allForecastSelected?'Limpar seleção':'Selecionar todos'}</button></div>${txForecastFilterControls()}<div class="table-wrap tx-forecast-table tx-forecast-table-desktop"><table><thead><tr><th class="tx-select-cell"><input class="tx-select-box" type="checkbox" ${allForecastSelected?'checked':''} onchange="toggleAllForecastSelection(this.checked)" title="Selecionar todas as previsões exibidas"></th><th>Despesa</th><th>Previsto</th><th>Utilizado</th><th>Saldo</th><th>Disponível</th></tr></thead><tbody>${forecastRows||'<tr><td colspan="6">Nenhuma previsão encontrada para os filtros atuais.</td></tr>'}</tbody></table></div><div class="tx-forecast-cards">${forecastCards||'<div class="tx-forecast-empty">Nenhuma previsão encontrada para os filtros atuais.</div>'}</div></div>${selectionTray('forecast',forecastSelected.length,forecastTotals)}`;
-  if(txPanel==='realizados')panel=`<div class="card tx-panel"><div class="section-title"><div><h3>Lançamentos realizados — ${periodTitle}</h3><span>${txList.length} item(ns) · marque as linhas para somar em tempo real.</span></div></div><div class="mobile-list-toolbar">${mobileFilterTrigger('realized','Filtros')}<button type="button" onclick="toggleAllRealizedSelection(true)">Selecionar todos</button></div>${txRealizedFilterControls()}<div class="table-wrap tx-realized-table tx-realized-grouped"><table><thead><tr><th class="tx-select-cell"><input id="txSelectAll" class="tx-select-box" type="checkbox" ${allVisibleSelected?'checked':''} onchange="toggleAllRealizedSelection(this.checked)" title="Selecionar todos os lançamentos exibidos"></th><th>Data</th><th>Descrição</th><th>Categorização</th><th>Forma de Pagamento</th><th>Parcela</th><th>Valor</th></tr></thead><tbody>${rows||'<tr><td colspan="7">Sem lançamentos realizados para os filtros atuais.</td></tr>'}</tbody></table><div class="tx-mobile-card-list tx-realized-statement-list">${realizedStatement}</div></div></div>${selectionTray('realized',selectedRealizedIds.size,{total:selectedTotal})}`;
+  if(txPanel==='realizados')panel=`<div class="card tx-panel"><div class="section-title"><div><h3>Lançamentos realizados — ${periodTitle}</h3><span>${txList.length} item(ns) · marque as linhas para somar em tempo real.</span></div></div><div class="mobile-list-toolbar realized-selection-toolbar">${mobileFilterTrigger('realized','Filtros')}<button type="button" onclick="toggleAllRealizedSelection(${allVisibleSelected?'false':'true'})">${allVisibleSelected?'Limpar seleção do filtro':'Selecionar todos do filtro'}</button></div>${txRealizedFilterControls()}<div class="table-wrap tx-realized-table tx-realized-grouped"><table><thead><tr><th class="tx-select-cell"><input id="txSelectAll" class="tx-select-box" type="checkbox" ${allVisibleSelected?'checked':''} onchange="toggleAllRealizedSelection(this.checked)" title="Selecionar todos os lançamentos exibidos"></th><th>Data</th><th>Descrição</th><th>Categorização</th><th>Forma de Pagamento</th><th>Parcela</th><th>Valor</th></tr></thead><tbody>${rows||'<tr><td colspan="7">Sem lançamentos realizados para os filtros atuais.</td></tr>'}</tbody></table><div class="tx-mobile-card-list tx-realized-statement-list">${realizedStatement}</div></div></div>${selectionTray('realized',selectedRealizedIds.size,{total:selectedTotal})}`;
   if(txPanel==='envelopes')panel=`<div class="card tx-panel"><div class="section-title"><div><h3>Envelopes semanais — ${labelMonth(state.month)}</h3><span>Domingo a sábado · clique em um envelope para ver as semanas.</span></div></div><div class="envelope-summary"><div class="envelope-stat"><span>Previsto nos envelopes</span><strong>${fmt(envelopePlanned)}</strong><small>${envelopes.length} envelope(s) ativo(s)</small></div><div class="envelope-stat"><span>Utilizado no período</span><strong class="neg">${fmt(envelopeUsed)}</strong><small>${envelopeDateLabel(envelopePeriod(state.month).start)} a ${envelopeDateLabel(addDateDays(envelopePeriod(state.month).endExclusive,-1))}</small></div><div class="envelope-stat"><span>Saldo dos envelopes</span><strong class="${envelopeBalance<0?'neg':'pos'}">${fmt(envelopeBalance)}</strong><small>Previsto menos realizado</small></div><div class="envelope-stat"><span>Disponível na semana</span><strong class="${envelopeCurrent<0?'neg':'pos'}">${fmt(envelopeCurrent)}</strong><small>Após redistribuições encerradas</small></div></div><div class="note" style="margin-bottom:12px">Lançamentos são vinculados automaticamente pela subcategoria, cidade e data. Sobras e excessos só são redistribuídos quando a semana termina.</div><div class="table-wrap tx-envelope-table"><table><thead><tr><th>Envelope</th><th>Previsto mês</th><th>Utilizado</th><th>Saldo mês</th><th>Semana disponível</th><th>Situação</th></tr></thead><tbody>${envelopeRows||'<tr><td colspan="6">Nenhuma subcategoria com envelope semanal possui previsão neste mês.</td></tr>'}</tbody></table><div class="tx-mobile-card-list">${envelopeCards||'<div class="tx-forecast-empty">Nenhuma subcategoria com envelope semanal possui previsão neste mês.</div>'}</div></div></div>`;
   if(txPanel==='remanejamentos')panel=`<div class="card tx-panel"><div class="section-title"><div><h3>Remanejamentos — ${periodTitle}</h3><span>Transfira saldo somente dentro do acompanhamento. O orçamento original não será alterado.</span></div></div><div class="table-wrap tx-rem-table"><table><thead><tr>${txScope==='ano'?'<th>Mês</th>':''}<th>Origem</th><th>Destino</th><th>Valor</th><th>Observação</th><th></th></tr></thead><tbody>${rem||'<tr><td colspan="6">Sem remanejamentos.</td></tr>'}</tbody></table><div class="tx-mobile-card-list">${remCards||'<div class="tx-forecast-empty">Sem remanejamentos.</div>'}</div></div></div>`;
   const txPrimaryAction=txPanel==='remanejamentos'?`<button class="btn" onclick="openRealloc()">Novo remanejamento</button>`:`<button class="btn" onclick="openTx()">Novo lançamento</button>`;
@@ -9957,5 +9957,51 @@ renderEstrategia=function(){v269PrevEstrategia();v269MarkRenderedKpis();const he
 })();
 </script>
 <!-- V2.82 — Filtro Ano + Mês limitado à visão tablet. -->
+
+
+<style id="v283-tablet-realized-selection-fix">
+/* V2.83 — somente tablet: somatório do Extrato acima da navegação e seleção total do filtro. */
+@media (min-width:761px) and (max-width:1120px){
+  html[data-ui="v23"] .view-lancamentos .realized-selection-toolbar{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-end!important;
+    gap:8px!important;
+    margin:0 0 10px!important;
+  }
+  html[data-ui="v23"] .view-lancamentos .realized-selection-toolbar .mobile-filter-trigger{
+    display:none!important;
+  }
+  html[data-ui="v23"] .view-lancamentos .realized-selection-toolbar>button:not(.mobile-filter-trigger){
+    min-height:38px!important;
+    border:1px solid #dbe3ee!important;
+    border-radius:11px!important;
+    background:#f8fafc!important;
+    color:#475467!important;
+    padding:8px 12px!important;
+    font-size:10.5px!important;
+    font-weight:900!important;
+    box-shadow:0 4px 12px rgba(16,24,40,.04)!important;
+  }
+  html[data-ui="v23"] #realizedSelectionTray.selection-tray{
+    z-index:145!important;
+    bottom:92px!important;
+    width:min(720px,calc(100vw - 36px))!important;
+    grid-template-columns:minmax(150px,.8fr) minmax(180px,1fr) auto!important;
+    gap:10px!important;
+    padding:10px 12px!important;
+    border-radius:16px!important;
+  }
+  html[data-ui="v23"] #realizedSelectionTray.selection-tray.is-visible{
+    transform:translate(-50%,0)!important;
+    opacity:1!important;
+    pointer-events:auto!important;
+  }
+  html[data-ui="v23"].has-selection-tray .v27-global-fab{
+    bottom:176px!important;
+  }
+}
+</style>
+<!-- V2.83 — Extrato no tablet: somatório e selecionar todos do filtro. -->
 
 </body></html>
