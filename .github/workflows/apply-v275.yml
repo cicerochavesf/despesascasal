@@ -1,6 +1,6 @@
 name: Aplicar V2.75 tablet
 
-on:
+"on":
   push:
     paths:
       - '.github/workflows/apply-v275.yml'
@@ -17,92 +17,22 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
-
-          p = Path('index.html')
-          s = p.read_text(encoding='utf-8')
-          old = '<!-- Despesas Casal - Controle Financeiro | versão 2.74 -->'
-          new = '<!-- Despesas Casal - Controle Financeiro | versão 2.75 -->'
+          import base64
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          old='<!-- Despesas Casal - Controle Financeiro | versão 2.74 -->'
+          new='<!-- Despesas Casal - Controle Financeiro | versão 2.75 -->'
           if old not in s:
               raise SystemExit('Cabeçalho da V2.74 não encontrado')
-          s = s.replace(old, new, 1)
-
-          css = r'''
-<style id="v275-tablet-movements-responsive">
-/* V2.75 — faixa de tablet: quatro guias proporcionais, sem rolagem ou cortes. */
-@media (min-width:761px) and (max-width:1120px){
-  html[data-ui="v23"] .view-lancamentos .v264-movement-hero .tx-tabs{
-    display:grid!important;
-    grid-template-columns:repeat(4,minmax(0,1fr))!important;
-    grid-auto-flow:row!important;
-    width:100%!important;
-    max-width:100%!important;
-    gap:5px!important;
-    padding:5px!important;
-    margin:10px 0 12px!important;
-    overflow:visible!important;
-    overflow-x:visible!important;
-    scroll-snap-type:none!important;
-  }
-  html[data-ui="v23"] .view-lancamentos .v264-movement-hero .tx-tabs button{
-    display:flex!important;
-    align-items:center!important;
-    justify-content:center!important;
-    width:100%!important;
-    min-width:0!important;
-    max-width:none!important;
-    min-height:40px!important;
-    padding:8px 5px!important;
-    gap:0!important;
-    flex:initial!important;
-    font-size:clamp(9px,1.2vw,11px)!important;
-    line-height:1.1!important;
-    letter-spacing:-.015em!important;
-    white-space:nowrap!important;
-    overflow:hidden!important;
-    text-overflow:clip!important;
-    scroll-snap-align:none!important;
-  }
-  html[data-ui="v23"] .view-lancamentos .v264-movement-hero .tx-tabs button span{
-    display:block!important;
-    min-width:0!important;
-    max-width:100%!important;
-    white-space:nowrap!important;
-    overflow:visible!important;
-    text-overflow:clip!important;
-  }
-  html[data-ui="v23"] .view-lancamentos .v264-movement-hero .tx-tabs button b{
-    display:none!important;
-  }
-  html[data-ui="v23"] .view-lancamentos .v264-movement-hero .v26-movement-toolbar,
-  html[data-ui="v23"] .view-lancamentos .v264-movement-hero .v27-movement-toolbar{
-    display:none!important;
-  }
-  html[data-ui="v23"] .view-lancamentos .v264-movement-hero .tx-summary{
-    display:grid!important;
-    grid-template-columns:repeat(3,minmax(0,1fr))!important;
-    grid-auto-flow:row!important;
-    grid-auto-columns:auto!important;
-    gap:10px!important;
-    overflow:visible!important;
-  }
-  html[data-ui="v23"] .view-lancamentos .v264-movement-hero .tx-summary>.card,
-  html[data-ui="v23"] .view-lancamentos .v264-movement-hero .tx-summary>.metric,
-  html[data-ui="v23"] .view-lancamentos .v264-movement-hero .tx-summary>.tx-summary-card{
-    width:100%!important;
-    min-width:0!important;
-    max-width:none!important;
-  }
-}
-</style>
-'''
+          s=s.replace(old,new,1)
+          css=base64.b64decode('PHN0eWxlIGlkPSJ2Mjc1LXRhYmxldC1tb3ZlbWVudHMtcmVzcG9uc2l2ZSI+Ci8qIFYyLjc1IOKAlCBmYWl4YSBkZSB0YWJsZXQ6IHF1YXRybyBndWlhcyBwcm9wb3JjaW9uYWlzLCBzZW0gcm9sYWdlbSBvdSBjb3J0ZXMuICovCkBtZWRpYSAobWluLXdpZHRoOjc2MXB4KSBhbmQgKG1heC13aWR0aDoxMTIwcHgpewogIGh0bWxbZGF0YS11aT0idjIzIl0gLnZpZXctbGFuY2FtZW50b3MgLnYyNjQtbW92ZW1lbnQtaGVybyAudHgtdGFic3sKICAgIGRpc3BsYXk6Z3JpZCFpbXBvcnRhbnQ7CiAgICBncmlkLXRlbXBsYXRlLWNvbHVtbnM6cmVwZWF0KDQsbWlubWF4KDAsMWZyKSkhaW1wb3J0YW50OwogICAgZ3JpZC1hdXRvLWZsb3c6cm93IWltcG9ydGFudDsKICAgIHdpZHRoOjEwMCUhaW1wb3J0YW50OwogICAgbWF4LXdpZHRoOjEwMCUhaW1wb3J0YW50OwogICAgZ2FwOjVweCFpbXBvcnRhbnQ7CiAgICBwYWRkaW5nOjVweCFpbXBvcnRhbnQ7CiAgICBtYXJnaW46MTBweCAwIDEycHghaW1wb3J0YW50OwogICAgb3ZlcmZsb3c6dmlzaWJsZSFpbXBvcnRhbnQ7CiAgICBvdmVyZmxvdy14OnZpc2libGUhaW1wb3J0YW50OwogICAgc2Nyb2xsLXNuYXAtdHlwZTpub25lIWltcG9ydGFudDsKICB9CiAgaHRtbFtkYXRhLXVpPSJ2MjMiXSAudmlldy1sYW5jYW1lbnRvcyAudjI2NC1tb3ZlbWVudC1oZXJvIC50eC10YWJzIGJ1dHRvbnsKICAgIGRpc3BsYXk6ZmxleCFpbXBvcnRhbnQ7CiAgICBhbGlnbi1pdGVtczpjZW50ZXIhaW1wb3J0YW50OwogICAganVzdGlmeS1jb250ZW50OmNlbnRlciFpbXBvcnRhbnQ7CiAgICB3aWR0aDoxMDAlIWltcG9ydGFudDsKICAgIG1pbi13aWR0aDowIWltcG9ydGFudDsKICAgIG1heC13aWR0aDpub25lIWltcG9ydGFudDsKICAgIG1pbi1oZWlnaHQ6NDBweCFpbXBvcnRhbnQ7CiAgICBwYWRkaW5nOjhweCA1cHghaW1wb3J0YW50OwogICAgZ2FwOjAhaW1wb3J0YW50OwogICAgZmxleDppbml0aWFsIWltcG9ydGFudDsKICAgIGZvbnQtc2l6ZTpjbGFtcCg5cHgsMS4ydncsMTFweCkhaW1wb3J0YW50OwogICAgbGluZS1oZWlnaHQ6MS4xIWltcG9ydGFudDsKICAgIGxldHRlci1zcGFjaW5nOi0uMDE1ZW0haW1wb3J0YW50OwogICAgd2hpdGUtc3BhY2U6bm93cmFwIWltcG9ydGFudDsKICAgIG92ZXJmbG93OmhpZGRlbiFpbXBvcnRhbnQ7CiAgICB0ZXh0LW92ZXJmbG93OmNsaXAhaW1wb3J0YW50OwogICAgc2Nyb2xsLXNuYXAtYWxpZ246bm9uZSFpbXBvcnRhbnQ7CiAgfQogIGh0bWxbZGF0YS11aT0idjIzIl0gLnZpZXctbGFuY2FtZW50b3MgLnYyNjQtbW92ZW1lbnQtaGVybyAudHgtdGFicyBidXR0b24gc3BhbnsKICAgIGRpc3BsYXk6YmxvY2shaW1wb3J0YW50OwogICAgbWluLXdpZHRoOjAhaW1wb3J0YW50OwogICAgbWF4LXdpZHRoOjEwMCUhaW1wb3J0YW50OwogICAgd2hpdGUtc3BhY2U6bm93cmFwIWltcG9ydGFudDsKICAgIG92ZXJmbG93OnZpc2libGUhaW1wb3J0YW50OwogICAgdGV4dC1vdmVyZmxvdzpjbGlwIWltcG9ydGFudDsKICB9CiAgaHRtbFtkYXRhLXVpPSJ2MjMiXSAudmlldy1sYW5jYW1lbnRvcyAudjI2NC1tb3ZlbWVudC1oZXJvIC50eC10YWJzIGJ1dHRvbiBiewogICAgZGlzcGxheTpub25lIWltcG9ydGFudDsKICB9CiAgaHRtbFtkYXRhLXVpPSJ2MjMiXSAudmlldy1sYW5jYW1lbnRvcyAudjI2NC1tb3ZlbWVudC1oZXJvIC52MjYtbW92ZW1lbnQtdG9vbGJhciwKICBodG1sW2RhdGEtdWk9InYyMyJdIC52aWV3LWxhbmNhbWVudG9zIC52MjY0LW1vdmVtZW50LWhlcm8gLnYyNy1tb3ZlbWVudC10b29sYmFyewogICAgZGlzcGxheTpub25lIWltcG9ydGFudDsKICB9CiAgaHRtbFtkYXRhLXVpPSJ2MjMiXSAudmlldy1sYW5jYW1lbnRvcyAudjI2NC1tb3ZlbWVudC1oZXJvIC50eC1zdW1tYXJ5ewogICAgZGlzcGxheTpncmlkIWltcG9ydGFudDsKICAgIGdyaWQtdGVtcGxhdGUtY29sdW1uczpyZXBlYXQoMyxtaW5tYXgoMCwxZnIpKSFpbXBvcnRhbnQ7CiAgICBncmlkLWF1dG8tZmxvdzpyb3chaW1wb3J0YW50OwogICAgZ3JpZC1hdXRvLWNvbHVtbnM6YXV0byFpbXBvcnRhbnQ7CiAgICBnYXA6MTBweCFpbXBvcnRhbnQ7CiAgICBvdmVyZmxvdzp2aXNpYmxlIWltcG9ydGFudDsKICB9CiAgaHRtbFtkYXRhLXVpPSJ2MjMiXSAudmlldy1sYW5jYW1lbnRvcyAudjI2NC1tb3ZlbWVudC1oZXJvIC50eC1zdW1tYXJ5Pi5jYXJkLAogIGh0bWxbZGF0YS11aT0idjIzIl0gLnZpZXctbGFuY2FtZW50b3MgLnYyNjQtbW92ZW1lbnQtaGVybyAudHgtc3VtbWFyeT4ubWV0cmljLAogIGh0bWxbZGF0YS11aT0idjIzIl0gLnZpZXctbGFuY2FtZW50b3MgLnYyNjQtbW92ZW1lbnQtaGVybyAudHgtc3VtbWFyeT4udHgtc3VtbWFyeS1jYXJkewogICAgd2lkdGg6MTAwJSFpbXBvcnRhbnQ7CiAgICBtaW4td2lkdGg6MCFpbXBvcnRhbnQ7CiAgICBtYXgtd2lkdGg6bm9uZSFpbXBvcnRhbnQ7CiAgfQp9Cjwvc3R5bGU+Cg==').decode('utf-8')
           if 'id="v275-tablet-movements-responsive"' not in s:
-              s = s.replace('</head>', css + '\n</head>', 1)
-          p.write_text(s, encoding='utf-8')
-
-          sw = Path('sw.js')
-          t = sw.read_text(encoding='utf-8')
-          t = t.replace("CACHE_NAME='financas-cn-v233'", "CACHE_NAME='financas-cn-v234'", 1)
-          sw.write_text(t, encoding='utf-8')
+              s=s.replace('</head>',css+'\n</head>',1)
+          p.write_text(s,encoding='utf-8')
+          sw=Path('sw.js')
+          t=sw.read_text(encoding='utf-8')
+          t=t.replace("CACHE_NAME='financas-cn-v233'","CACHE_NAME='financas-cn-v234'",1)
+          sw.write_text(t,encoding='utf-8')
           PY
           rm -f .github/workflows/apply-v275.yml
           git config user.name "github-actions[bot]"
