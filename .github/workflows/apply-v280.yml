@@ -1,0 +1,25 @@
+name: Aplicar V2.80 data real no novo lancamento
+
+"on":
+  push:
+    paths:
+      - '.github/workflows/apply-v280.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Remover sobrescrita antiga da data
+        run: |
+          echo 'ZnJvbSBwYXRobGliIGltcG9ydCBQYXRoCnA9UGF0aCgnaW5kZXguaHRtbCcpCnM9cC5yZWFkX3RleHQoZW5jb2Rpbmc9J3V0Zi04JykKb2xkPSc8IS0tIERlc3Blc2FzIENhc2FsIC0gQ29udHJvbGUgRmluYW5jZWlybyB8IHZlcnPDo28gMi43OSAtLT4nCmFzc2VydCBvbGQgaW4gcywgJ1YyLjc5IG5hbyBlbmNvbnRyYWRhJwpzPXMucmVwbGFjZShvbGQsJzwhLS0gRGVzcGVzYXMgQ2FzYWwgLSBDb250cm9sZSBGaW5hbmNlaXJvIHwgdmVyc8OjbyAyLjgwIC0tPicsMSkKb2xkX2xpbmU9IiAgaWYoZGF0ZUlucHV0JiYhaWQpe2NvbnN0IHRvZGF5PWxvY2FsRGF0ZUlkKCksc3VnZ2VzdGVkPXYyMjNEYXRlQmVsb25nc1RvTW9udGgodG9kYXksaW50ZW5kZWRNb250aCk/dG9kYXk6djIyM0RhdGVJZCh2MjIzRmluYW5jaWFsQm91bmRzKGludGVuZGVkTW9udGgpLnN0YXJ0KTtkYXRlSW5wdXQudmFsdWU9c3VnZ2VzdGVkfSIKbmV3X2xpbmU9IiAgaWYoZGF0ZUlucHV0JiYhaWQpZGF0ZUlucHV0LnZhbHVlPWxvY2FsRGF0ZUlkKCkiCmFzc2VydCBvbGRfbGluZSBpbiBzLCAnUmVncmEgYW50aWdhIGRlIGRhdGEgbmFvIGVuY29udHJhZGEnCnM9cy5yZXBsYWNlKG9sZF9saW5lLG5ld19saW5lLDEpCnAud3JpdGVfdGV4dChzLGVuY29kaW5nPSd1dGYtOCcpCnN3PVBhdGgoJ3N3LmpzJykKdD1zdy5yZWFkX3RleHQoZW5jb2Rpbmc9J3V0Zi04JykKYXNzZXJ0ICJDQUNIRV9OQU1FPSdmaW5hbmNhcy1jbi12MjM4JyIgaW4gdCwgJ0NhY2hlIHYyMzggbmFvIGVuY29udHJhZG8nCnQ9dC5yZXBsYWNlKCJDQUNIRV9OQU1FPSdmaW5hbmNhcy1jbi12MjM4JyIsIkNBQ0hFX05BTUU9J2ZpbmFuY2FzLWNuLXYyMzknIiwxKQpzdy53cml0ZV90ZXh0KHQsZW5jb2Rpbmc9J3V0Zi04JykK' | base64 -d > /tmp/patch_v280.py
+          python3 /tmp/patch_v280.py
+          rm -f .github/workflows/apply-v280.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html sw.js .github/workflows/apply-v280.yml
+          git commit -m "V2.80: consolida data real no novo lancamento"
+          git push
