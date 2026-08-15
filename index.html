@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.81 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.82 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -9910,14 +9910,16 @@ renderEstrategia=function(){v269PrevEstrategia();v269MarkRenderedKpis();const he
     if(!head)return;
     head.querySelectorAll('.v281-period-controls').forEach(el=>el.remove());
     const chip=hero.querySelector('.v264-movement-period');
-    if(chip){chip.hidden=true;chip.setAttribute('aria-hidden','true')}
+    const tablet=window.matchMedia('(min-width:761px) and (max-width:1120px)').matches;
+    if(chip){chip.hidden=tablet;chip.setAttribute('aria-hidden',tablet?'true':'false')}
+    if(!tablet)return;
     const current=String(state.month||currentMonthId());
     const year=current.slice(0,4);
     const years=v281Years();
     const monthList=v281Months(year);
     const yearOptions=years.map(y=>`<option value="${escapeHtml(y)}" ${y===year?'selected':''}>${escapeHtml(y)}</option>`).join('');
     const allowAll=txPanel!=='envelopes';
-    const monthOptions=(allowAll?`<option value="todos" ${txScope==='ano'?'selected':''}>Todos</option>`:')+monthList.map(m=>`<option value="${escapeHtml(m)}" ${txScope==='mes'&&m===current?'selected':''}>${escapeHtml((typeof v269MonthName==='function'?v269MonthName(m):labelMonth(m)).replace(/\s*\/\s*\d{4}\s*$/,''))}</option>`).join('');
+    const monthOptions=(allowAll?`<option value="todos" ${txScope==='ano'?'selected':''}>Todos</option>`:'')+monthList.map(m=>`<option value="${escapeHtml(m)}" ${txScope==='mes'&&m===current?'selected':''}>${escapeHtml((typeof v269MonthName==='function'?v269MonthName(m):labelMonth(m)).replace(/\s*\/\s*\d{4}\s*$/,''))}</option>`).join('');
     const box=document.createElement('div');
     box.className='v281-period-controls';
     box.innerHTML=`<label class="v281-period-field"><span>Ano</span><select aria-label="Ano das movimentações" onchange="v281SetMovementYear(this.value)">${yearOptions}</select></label><label class="v281-period-field"><span>Mês</span><select aria-label="Mês das movimentações" onchange="v281SetMovementMonth(this.value)">${monthOptions}</select></label>`;
@@ -9929,5 +9931,31 @@ renderEstrategia=function(){v269PrevEstrategia();v269MarkRenderedKpis();const he
 })();
 </script>
 <!-- V2.81 — Filtro de Movimentações separado em Ano e Mês. -->
+
+
+<style id="v282-tablet-only-period-filter">
+/* V2.82 — Ano + Mês separados apenas na visão tablet. */
+.v281-period-controls{display:none!important}
+.v264-movement-hero .v264-movement-period{display:inline-flex!important}
+@media (min-width:761px) and (max-width:1120px){
+  .v281-period-controls{
+    display:grid!important;
+    grid-template-columns:minmax(86px,104px) minmax(126px,158px)!important;
+    gap:7px!important;
+    margin-left:auto!important;
+    align-items:end!important;
+  }
+  .v264-movement-hero .v264-movement-period{display:none!important}
+}
+</style>
+<script id="v282-tablet-only-period-filter-script">
+(function(){
+  const mq=window.matchMedia('(min-width:761px) and (max-width:1120px)');
+  const refresh=function(){try{render()}catch(_e){}};
+  if(typeof mq.addEventListener==='function')mq.addEventListener('change',refresh);
+  else if(typeof mq.addListener==='function')mq.addListener(refresh);
+})();
+</script>
+<!-- V2.82 — Filtro Ano + Mês limitado à visão tablet. -->
 
 </body></html>
