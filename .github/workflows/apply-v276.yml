@@ -1,0 +1,128 @@
+name: Aplicar V2.76 filtro anual em Analises
+
+"on":
+  push:
+    paths:
+      - '.github/workflows/apply-v276.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Aplicar filtro de ano em Analises
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+
+          old_header = '<!-- Despesas Casal - Controle Financeiro | versão 2.75 -->'
+          new_header = '<!-- Despesas Casal - Controle Financeiro | versão 2.76 -->'
+          if old_header not in s:
+              raise SystemExit('Cabeçalho da V2.75 não encontrado')
+          s = s.replace(old_header, new_header, 1)
+
+          old_ref = "function v260RefMonth(){const all=v260MonthSet(),now=typeof currentMonthId==='function'?currentMonthId():'';if(all.includes(now))return now;const st=String(state.month||'');if(all.includes(st))return st;return all.filter(m=>m<=now).pop()||all[all.length-1]||now}"
+          new_ref = "function v260RefMonth(){const all=v260MonthSet(),now=typeof currentMonthId==='function'?currentMonthId():'';const selected=String(window.v276AnalysisYear||'');if(/^\\d{4}$/.test(selected)){const mm=/^\\d{4}-\\d{2}$/.test(now)?now.slice(5,7):String(new Date().getMonth()+1).padStart(2,'0');return `${selected}-${mm}`}if(all.includes(now))return now;const st=String(state.month||'');if(all.includes(st))return st;return all.filter(m=>m<=now).pop()||all[all.length-1]||now}"
+          if old_ref not in s:
+              raise SystemExit('Função v260RefMonth não encontrada')
+          s = s.replace(old_ref, new_ref, 1)
+
+          old_year_months = "function v260YearMonths(year){return v260MonthSet().filter(m=>m.startsWith(String(year)+'-'))}"
+          new_year_months = "function v260YearMonths(year){const found=v260MonthSet().filter(m=>m.startsWith(String(year)+'-'));if(found.length)return found;return Array.from({length:12},(_,i)=>`${year}-${String(i+1).padStart(2,'0')}`)}"
+          if old_year_months not in s:
+              raise SystemExit('Função v260YearMonths não encontrada')
+          s = s.replace(old_year_months, new_year_months, 1)
+
+          anchor = "function v260SameMonthsPrevYear(months){return months.map(m=>`${+m.slice(0,4)-1}-${m.slice(5,7)}`)}"
+          helpers = r'''function v276CurrentYear(){const now=typeof currentMonthId==='function'?String(currentMonthId()||''):'';return /^\d{4}-\d{2}$/.test(now)?now.slice(0,4):String(new Date().getFullYear())}
+  function v276AnalysisYears(){const cur=+v276CurrentYear(),set=new Set([String(cur-1),String(cur),String(cur+1)]);v260MonthSet().forEach(m=>set.add(m.slice(0,4)));const selected=String(window.v276AnalysisYear||'');if(/^\d{4}$/.test(selected))set.add(selected);return [...set].sort((a,b)=>Number(b)-Number(a))}
+  function v276YearSelect(year){const options=v276AnalysisYears().map(y=>`<option value="${y}" ${String(y)===String(year)?'selected':''}>${y}</option>`).join('');return `<label class="v276-analysis-year-filter"><span>Ano</span><select aria-label="Selecionar ano das análises" onchange="v276SetAnalysisYear(this.value)">${options}</select></label>`}
+  window.v276SetAnalysisYear=function(year){window.v276AnalysisYear=/^\d{4}$/.test(String(year||''))?String(year):'';render()}
+  '''
+          if helpers.strip() not in s:
+              s = s.replace(anchor, anchor + '\n  ' + helpers, 1)
+
+          old_render = "renderRxD=function(){try{const m=v260RefMonth(),q=v260QuarterInfo(m),year=m.slice(0,4);layout(`<div class=\"v260-analysis\"><div class=\"v260-head\"><div><h2>Análises financeiras</h2><p>Comparações de planejamento, remanejamentos e execução sem repetir os indicadores do Início.</p></div><div class=\"v260-period\"><i></i>${escapeHtml(labelMonth(m))} · ${q.q}º trimestre · ${year}</div></div><div class=\"v260-grid2\">${v260SummaryCard('Receitas','Planejado','revenue')}${v260SummaryCard('Despesas totais','Planejado com remanejamento','expense')}</div>${v260CategoryPlanTable()}<div class=\"v260-grid2\">${v260RemapTable()}${v260ActualTable()}</div><div class=\"v260-grid2\">${v260Top('cat')}${v260Top('sub')}</div>${v260Suggestions()}</div>`)}catch(err){console.error('V2.60 Análises',err);layout(`<div class=\"v260-analysis\"><section class=\"v260-card\"><div class=\"v260-card-head\"><div><h3>Análises</h3><p>Não foi possível montar os comparativos.</p></div></div><div class=\"v260-body\"><div class=\"v260-suggestion\"><i style=\"--dot:#ef4444\"></i><p>${escapeHtml(String(err?.message||err||'Erro desconhecido'))}</p></div></div></section></div>`)}}"
+          new_render = "renderRxD=function(){try{const m=v260RefMonth(),q=v260QuarterInfo(m),year=m.slice(0,4);layout(`<div class=\"v260-analysis\"><div class=\"v260-head\"><div><h2>Análises financeiras</h2><p>Comparações de planejamento, remanejamentos e execução sem repetir os indicadores do Início.</p></div><div class=\"v276-analysis-period-controls\"><div class=\"v260-period\"><i></i>${escapeHtml(labelMonth(m))} · ${q.q}º trimestre · ${year}</div>${v276YearSelect(year)}</div></div><div class=\"v260-grid2\">${v260SummaryCard('Receitas','Planejado','revenue')}${v260SummaryCard('Despesas totais','Planejado com remanejamento','expense')}</div>${v260CategoryPlanTable()}<div class=\"v260-grid2\">${v260RemapTable()}${v260ActualTable()}</div><div class=\"v260-grid2\">${v260Top('cat')}${v260Top('sub')}</div>${v260Suggestions()}</div>`)}catch(err){console.error('V2.60 Análises',err);layout(`<div class=\"v260-analysis\"><section class=\"v260-card\"><div class=\"v260-card-head\"><div><h3>Análises</h3><p>Não foi possível montar os comparativos.</p></div></div><div class=\"v260-body\"><div class=\"v260-suggestion\"><i style=\"--dot:#ef4444\"></i><p>${escapeHtml(String(err?.message||err||'Erro desconhecido'))}</p></div></div></section></div>`)}}"
+          if old_render not in s:
+              raise SystemExit('Render de Análises não encontrado')
+          s = s.replace(old_render, new_render, 1)
+
+          css = r'''
+<style id="v276-analysis-year-filter-style">
+/* V2.76 — seletor de ano nas Análises, mantendo mês corrente como referência. */
+.v276-analysis-period-controls{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:8px!important;
+  flex-wrap:wrap!important;
+}
+.v276-analysis-year-filter{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  min-height:34px!important;
+  padding:4px 5px 4px 9px!important;
+  border:1px solid var(--line,#e2e8f0)!important;
+  border-radius:999px!important;
+  background:var(--panel,#fff)!important;
+  color:var(--muted,#64748b)!important;
+  font-weight:850!important;
+  white-space:nowrap!important;
+}
+.v276-analysis-year-filter>span{
+  font-size:9px!important;
+  line-height:1!important;
+  letter-spacing:.06em!important;
+  text-transform:uppercase!important;
+}
+.v276-analysis-year-filter select{
+  min-height:26px!important;
+  border:0!important;
+  outline:0!important;
+  border-radius:999px!important;
+  background:#f1f5f9!important;
+  color:#172033!important;
+  padding:3px 24px 3px 8px!important;
+  font:inherit!important;
+  font-size:10.5px!important;
+  font-weight:900!important;
+  cursor:pointer!important;
+}
+html[data-theme="dark"] .v276-analysis-year-filter select{
+  background:#172033!important;
+  color:#f8fafc!important;
+}
+@media(max-width:900px){
+  .v276-analysis-period-controls{justify-content:flex-start!important}
+}
+@media(max-width:620px){
+  .v276-analysis-period-controls{width:100%!important;gap:6px!important}
+  .v276-analysis-year-filter{min-height:31px!important;padding-left:8px!important}
+  .v276-analysis-year-filter select{min-height:23px!important;font-size:10px!important}
+}
+</style>
+'''
+          if 'id="v276-analysis-year-filter-style"' not in s:
+              s = s.replace('</head>', css + '\n</head>', 1)
+
+          p.write_text(s, encoding='utf-8')
+
+          sw = Path('sw.js')
+          t = sw.read_text(encoding='utf-8')
+          t = t.replace("CACHE_NAME='financas-cn-v234'", "CACHE_NAME='financas-cn-v235'", 1)
+          sw.write_text(t, encoding='utf-8')
+          PY
+          rm -f .github/workflows/apply-v276.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html sw.js .github/workflows/apply-v276.yml
+          git commit -m "V2.76: adiciona filtro de ano em Analises"
+          git push
