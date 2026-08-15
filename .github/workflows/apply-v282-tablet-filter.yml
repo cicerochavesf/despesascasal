@@ -1,0 +1,86 @@
+name: Aplicar V2.82 filtro somente tablet
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-v282-tablet-filter.yml'
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Sincronizar main e aplicar V2.82
+        shell: bash
+        run: |
+          git pull --ff-only origin main || true
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+          s=s.replace('<!-- Despesas Casal - Controle Financeiro | versão 2.81 -->','<!-- Despesas Casal - Controle Financeiro | versão 2.82 -->',1)
+          s=s.replace(":')+monthList.map", ":'')+monthList.map", 1)
+          old="""    const chip=hero.querySelector('.v264-movement-period');
+    if(chip){chip.hidden=true;chip.setAttribute('aria-hidden','true')}
+    const current=String(state.month||currentMonthId());"""
+          new="""    const chip=hero.querySelector('.v264-movement-period');
+    const tablet=window.matchMedia('(min-width:761px) and (max-width:1120px)').matches;
+    if(chip){chip.hidden=tablet;chip.setAttribute('aria-hidden',tablet?'true':'false')}
+    if(!tablet)return;
+    const current=String(state.month||currentMonthId());"""
+          if old in s:
+              s=s.replace(old,new,1)
+          elif "const tablet=window.matchMedia('(min-width:761px) and (max-width:1120px)').matches;" not in s:
+              raise SystemExit('Trecho V2.81 para limitar ao tablet não encontrado')
+          marker='v282-tablet-only-period-filter'
+          if marker not in s:
+              block=r'''
+<style id="v282-tablet-only-period-filter">
+/* V2.82 — os seletores Ano + Mês de Movimentações existem somente na visão tablet. */
+.v281-period-controls{display:none!important}
+.v264-movement-hero .v264-movement-period{display:inline-flex!important}
+@media (min-width:761px) and (max-width:1120px){
+  .v281-period-controls{
+    display:grid!important;
+    grid-template-columns:minmax(86px,104px) minmax(126px,158px)!important;
+    gap:7px!important;
+    margin-left:auto!important;
+    align-items:end!important;
+  }
+  .v264-movement-hero .v264-movement-period{display:none!important}
+}
+</style>
+<script id="v282-tablet-only-period-filter-script">
+(function(){
+  const mq=window.matchMedia('(min-width:761px) and (max-width:1120px)');
+  const refresh=function(){try{render()}catch(_e){}};
+  if(typeof mq.addEventListener==='function')mq.addEventListener('change',refresh);
+  else if(typeof mq.addListener==='function')mq.addListener(refresh);
+})();
+</script>
+<!-- V2.82 — Filtro Ano + Mês limitado à visão tablet. -->
+'''
+              s=s.replace('</body>',block+'\n</body>',1)
+          p.write_text(s,encoding='utf-8')
+          m=re.search(r'<script id="v281-movement-period-split-script">(.*?)</script>',s,re.S)
+          if not m: raise SystemExit('Script V2.81 não encontrado para validação')
+          Path('/tmp/v281.js').write_text(m.group(1),encoding='utf-8')
+          m2=re.search(r'<script id="v282-tablet-only-period-filter-script">(.*?)</script>',s,re.S)
+          if not m2: raise SystemExit('Script V2.82 não encontrado para validação')
+          Path('/tmp/v282.js').write_text(m2.group(1),encoding='utf-8')
+          sw=Path('sw.js')
+          t=sw.read_text(encoding='utf-8')
+          t=re.sub(r'financas-cn-v\d+','financas-cn-v243',t,count=1)
+          sw.write_text(t,encoding='utf-8')
+          PY
+          node --check /tmp/v281.js
+          node --check /tmp/v282.js
+          rm -f .github/workflows/apply-v282-tablet-filter.yml .github/workflows/fix-v281-js.yml .github/workflows/apply-v281.yml .github/workflows/apply-v281b.yml .github/workflows/fix-v281-label.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "V2.82: limita filtro Ano e Mes de Movimentacoes ao tablet"
+          git push
