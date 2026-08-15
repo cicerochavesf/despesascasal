@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.75 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.76 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -3716,6 +3716,62 @@ html[data-theme="dark"] .v248-month-chip,.dark .v248-month-chip{background:#1533
     min-width:0!important;
     max-width:none!important;
   }
+}
+</style>
+
+
+<style id="v276-analysis-year-filter-style">
+/* V2.76 — seletor de ano nas Análises, mantendo mês corrente como referência. */
+.v276-analysis-period-controls{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:8px!important;
+  flex-wrap:wrap!important;
+}
+.v276-analysis-year-filter{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  min-height:34px!important;
+  padding:4px 5px 4px 9px!important;
+  border:1px solid var(--line,#e2e8f0)!important;
+  border-radius:999px!important;
+  background:var(--panel,#fff)!important;
+  color:var(--muted,#64748b)!important;
+  font-weight:850!important;
+  white-space:nowrap!important;
+}
+.v276-analysis-year-filter>span{
+  font-size:9px!important;
+  line-height:1!important;
+  letter-spacing:.06em!important;
+  text-transform:uppercase!important;
+}
+.v276-analysis-year-filter select{
+  min-height:26px!important;
+  border:0!important;
+  outline:0!important;
+  border-radius:999px!important;
+  background:#f1f5f9!important;
+  color:#172033!important;
+  padding:3px 24px 3px 8px!important;
+  font:inherit!important;
+  font-size:10.5px!important;
+  font-weight:900!important;
+  cursor:pointer!important;
+}
+html[data-theme="dark"] .v276-analysis-year-filter select{
+  background:#172033!important;
+  color:#f8fafc!important;
+}
+@media(max-width:900px){
+  .v276-analysis-period-controls{justify-content:flex-start!important}
+}
+@media(max-width:620px){
+  .v276-analysis-period-controls{width:100%!important;gap:6px!important}
+  .v276-analysis-year-filter{min-height:31px!important;padding-left:8px!important}
+  .v276-analysis-year-filter select{min-height:23px!important;font-size:10px!important}
 }
 </style>
 
@@ -9063,13 +9119,18 @@ html[data-theme="dark"] .v255-panel,html[data-theme="dark"] .v255-filterbar,.dar
 (function(){
   window.v260CategoryMode=window.v260CategoryMode||'mes';
   function v260MonthSet(){const set=new Set();(state.months||[]).forEach(x=>{const id=typeof x==='string'?x:x?.id;if(/^\d{4}-\d{2}$/.test(String(id||'')))set.add(String(id))});[state.budgets,state.revenues,state.transactions,state.reallocations].forEach(obj=>Object.keys(obj||{}).forEach(m=>{if(/^\d{4}-\d{2}$/.test(String(m)))set.add(String(m))}));return [...set].sort()}
-  function v260RefMonth(){const all=v260MonthSet(),now=typeof currentMonthId==='function'?currentMonthId():'';if(all.includes(now))return now;const st=String(state.month||'');if(all.includes(st))return st;return all.filter(m=>m<=now).pop()||all[all.length-1]||now}
+  function v260RefMonth(){const all=v260MonthSet(),now=typeof currentMonthId==='function'?currentMonthId():'';const selected=String(window.v276AnalysisYear||'');if(/^\d{4}$/.test(selected)){const mm=/^\d{4}-\d{2}$/.test(now)?now.slice(5,7):String(new Date().getMonth()+1).padStart(2,'0');return `${selected}-${mm}`}if(all.includes(now))return now;const st=String(state.month||'');if(all.includes(st))return st;return all.filter(m=>m<=now).pop()||all[all.length-1]||now}
   function v260AddMonth(m,delta){if(!/^\d{4}-\d{2}$/.test(String(m||'')))return'';let y=+m.slice(0,4),mm=+m.slice(5,7)-1+delta;y+=Math.floor(mm/12);mm=((mm%12)+12)%12;return `${y}-${String(mm+1).padStart(2,'0')}`}
   function v260QuarterInfo(m){const y=+m.slice(0,4),mo=+m.slice(5,7),q=Math.floor((mo-1)/3)+1,start=(q-1)*3+1;return{year:y,q,months:[0,1,2].map(i=>`${y}-${String(start+i).padStart(2,'0')}`)}}
   function v260PrevQuarterMonths(m){const q=v260QuarterInfo(m);let y=q.year,qq=q.q-1;if(qq<1){qq=4;y--}const start=(qq-1)*3+1;return[0,1,2].map(i=>`${y}-${String(start+i).padStart(2,'0')}`)}
   function v260SameQuarterPrevYear(m){const q=v260QuarterInfo(m),start=(q.q-1)*3+1,y=q.year-1;return[0,1,2].map(i=>`${y}-${String(start+i).padStart(2,'0')}`)}
-  function v260YearMonths(year){return v260MonthSet().filter(m=>m.startsWith(String(year)+'-'))}
+  function v260YearMonths(year){const found=v260MonthSet().filter(m=>m.startsWith(String(year)+'-'));if(found.length)return found;return Array.from({length:12},(_,i)=>`${year}-${String(i+1).padStart(2,'0')}`)}
   function v260SameMonthsPrevYear(months){return months.map(m=>`${+m.slice(0,4)-1}-${m.slice(5,7)}`)}
+  function v276CurrentYear(){const now=typeof currentMonthId==='function'?String(currentMonthId()||''):'';return /^\d{4}-\d{2}$/.test(now)?now.slice(0,4):String(new Date().getFullYear())}
+  function v276AnalysisYears(){const cur=+v276CurrentYear(),set=new Set([String(cur-1),String(cur),String(cur+1)]);v260MonthSet().forEach(m=>set.add(m.slice(0,4)));const selected=String(window.v276AnalysisYear||'');if(/^\d{4}$/.test(selected))set.add(selected);return [...set].sort((a,b)=>Number(b)-Number(a))}
+  function v276YearSelect(year){const options=v276AnalysisYears().map(y=>`<option value="${y}" ${String(y)===String(year)?'selected':''}>${y}</option>`).join('');return `<label class="v276-analysis-year-filter"><span>Ano</span><select aria-label="Selecionar ano das análises" onchange="v276SetAnalysisYear(this.value)">${options}</select></label>`}
+  window.v276SetAnalysisYear=function(year){window.v276AnalysisYear=/^\d{4}$/.test(String(year||''))?String(year):'';render()}
+  
   function v260Revenue(months){return months.reduce((s,m)=>s+Number(revenueTotal(m)||0),0)}
   function v260Original(months,catId=null){return months.reduce((s,m)=>s+(state.budgets?.[m]||[]).filter(b=>!catId||b.cat===catId).reduce((a,b)=>a+Number(b.planned||0),0),0)}
   function v260Adjusted(months,catId=null){return months.reduce((s,m)=>s+(state.budgets?.[m]||[]).filter(b=>!catId||b.cat===catId).reduce((a,b)=>a+Number(budgetLineAdjusted(m,b)||0),0),0)}
@@ -9087,7 +9148,7 @@ html[data-theme="dark"] .v255-panel,html[data-theme="dark"] .v255-filterbar,.dar
   function v260ActualTable(){const sc=v260ModeScope(v260CategoryMode),rows=state.categories.map(c=>({name:c.name,color:c.color||'#64748b',orig:v260Original(sc.cur,c.id),real:v260Actual(sc.cur,c.id)})).filter(x=>Math.abs(x.orig)+Math.abs(x.real)>.005).sort((a,b)=>b.real-a.real);const body=rows.map(x=>{const d=x.real-x.orig,exec=x.orig>0?(x.real/x.orig*100):null;return `<tr><td><span class="v260-cat-dot" style="background:${x.color}"></span>${escapeHtml(x.name)}</td><td>${fmt(x.orig)}</td><td>${fmt(x.real)}</td><td class="${d>0?'v260-negative':d<0?'v260-positive':'v260-muted'}">${d>0?'+':''}${fmt(d)}</td><td>${exec===null?'—':exec.toLocaleString('pt-BR',{maximumFractionDigits:1})+'%'}</td></tr>`}).join('')||'<tr><td colspan="5">Sem dados realizados no período.</td></tr>';return `<section class="v260-card"><div class="v260-card-head"><div><h3>Planejamento original × realizado</h3><p>${escapeHtml(sc.label)} · sem remanejamento versus o realizado registrado.</p></div></div><div class="v260-body"><div class="v260-table-wrap"><table class="v260-table"><thead><tr><th>Categoria</th><th>Original</th><th>Realizado</th><th>Diferença</th><th>Execução</th></tr></thead><tbody>${body}</tbody></table></div><div class="v260-note">Em períodos ainda abertos, o realizado representa somente os lançamentos registrados até agora.</div></div></section>`}
   function v260Top(kind){const sc=v260ModeScope(v260CategoryMode),map=new Map();sc.cur.forEach(m=>(state.budgets?.[m]||[]).forEach(b=>{const key=kind==='cat'?b.cat:String(b.sub||'Sem subcategoria'),name=kind==='cat'?(state.categories.find(c=>c.id===b.cat)?.name||b.cat):cleanName(b.sub||'Sem subcategoria'),color=kind==='cat'?(state.categories.find(c=>c.id===b.cat)?.color||'#2563eb'):'#2563eb',value=Number(budgetLineAdjusted(m,b)||0),old=map.get(key)||{name,color,total:0};old.total+=value;map.set(key,old)}));const arr=[...map.values()].filter(x=>x.total>.005).sort((a,b)=>b.total-a.total).slice(0,5),max=arr[0]?.total||1,total=arr.reduce((s,x)=>s+x.total,0);const html=arr.map((x,i)=>`<div class="v260-rank"><b>${i+1}</b><div class="v260-rank-main"><strong title="${escapeHtml(x.name)}">${escapeHtml(x.name)}</strong><span><i style="--rank:${x.color};--w:${Math.max(3,x.total/max*100)}%"></i></span></div><strong>${fmt(x.total)}</strong></div>`).join('')||'<div class="v260-note">Sem dados no período.</div>';return `<section class="v260-card"><div class="v260-card-head"><div><h3>Top 5 — ${kind==='cat'?'categorias':'subcategorias'}</h3><p>${escapeHtml(sc.label)} · maiores despesas planejadas com remanejamento.</p></div></div><div class="v260-body"><div class="v260-ranking">${html}</div></div></section>`}
   function v260Suggestions(){const m=v260RefMonth(),prev=v260AddMonth(m,-1),cats=state.categories.map(c=>({name:c.name,color:c.color||'#2563eb',cur:v260Adjusted([m],c.id),prev:v260Adjusted([prev],c.id),orig:v260Original([m],c.id),real:v260Actual([m],c.id)})),arr=[];const growth=cats.filter(x=>x.prev>.005&&x.cur>x.prev*1.05).sort((a,b)=>(b.cur-b.prev)-(a.cur-a.prev))[0];if(growth)arr.push({c:'#ef4444',t:`<strong>${escapeHtml(growth.name)}</strong> aumentou ${Math.abs(v260Pct(growth.cur,growth.prev)||0).toLocaleString('pt-BR',{maximumFractionDigits:1})}% no planejamento ajustado em relação ao mês anterior. Vale revisar se a elevação é recorrente ou pontual.`});const over=cats.filter(x=>x.orig>.005&&x.real>x.orig).sort((a,b)=>(b.real-b.orig)-(a.real-a.orig))[0];if(over)arr.push({c:'#f59e0b',t:`<strong>${escapeHtml(over.name)}</strong> está ${fmt(over.real-over.orig)} acima do planejamento original no realizado. Pode ser uma prioridade para correção do próximo orçamento.`});const rem=cats.map(x=>({...x,d:x.cur-x.orig})).filter(x=>Math.abs(x.d)>.005).sort((a,b)=>Math.abs(b.d)-Math.abs(a.d))[0];if(rem)arr.push({c:'#2563eb',t:`O maior efeito de remanejamento está em <strong>${escapeHtml(rem.name)}</strong>: ${rem.d>0?'reforço de':'redução de'} ${fmt(Math.abs(rem.d))} no mês atual.`});const top5=cats.slice().sort((a,b)=>b.cur-a.cur).slice(0,5),all=cats.reduce((s,x)=>s+x.cur,0),share=all>0?top5.reduce((s,x)=>s+x.cur,0)/all*100:0;if(share>0)arr.push({c:'#8b5cf6',t:`As 5 maiores categorias concentram <strong>${share.toLocaleString('pt-BR',{maximumFractionDigits:1})}%</strong> das despesas planejadas do mês. Mudanças nelas tendem a produzir o maior impacto financeiro.`});if(!arr.length)arr.push({c:'#10b981',t:'Não há desvios relevantes suficientes no mês atual para gerar uma recomendação objetiva.'});return `<section class="v260-card"><div class="v260-card-head"><div><h3>Sugestões de melhoria</h3><p>Leituras objetivas geradas a partir das comparações e desvios atuais.</p></div></div><div class="v260-body"><div class="v260-suggestions">${arr.slice(0,4).map(x=>`<div class="v260-suggestion"><i style="--dot:${x.c}"></i><p>${x.t}</p></div>`).join('')}</div></div></section>`}
-  renderRxD=function(){try{const m=v260RefMonth(),q=v260QuarterInfo(m),year=m.slice(0,4);layout(`<div class="v260-analysis"><div class="v260-head"><div><h2>Análises financeiras</h2><p>Comparações de planejamento, remanejamentos e execução sem repetir os indicadores do Início.</p></div><div class="v260-period"><i></i>${escapeHtml(labelMonth(m))} · ${q.q}º trimestre · ${year}</div></div><div class="v260-grid2">${v260SummaryCard('Receitas','Planejado','revenue')}${v260SummaryCard('Despesas totais','Planejado com remanejamento','expense')}</div>${v260CategoryPlanTable()}<div class="v260-grid2">${v260RemapTable()}${v260ActualTable()}</div><div class="v260-grid2">${v260Top('cat')}${v260Top('sub')}</div>${v260Suggestions()}</div>`)}catch(err){console.error('V2.60 Análises',err);layout(`<div class="v260-analysis"><section class="v260-card"><div class="v260-card-head"><div><h3>Análises</h3><p>Não foi possível montar os comparativos.</p></div></div><div class="v260-body"><div class="v260-suggestion"><i style="--dot:#ef4444"></i><p>${escapeHtml(String(err?.message||err||'Erro desconhecido'))}</p></div></div></section></div>`)}}
+  renderRxD=function(){try{const m=v260RefMonth(),q=v260QuarterInfo(m),year=m.slice(0,4);layout(`<div class="v260-analysis"><div class="v260-head"><div><h2>Análises financeiras</h2><p>Comparações de planejamento, remanejamentos e execução sem repetir os indicadores do Início.</p></div><div class="v276-analysis-period-controls"><div class="v260-period"><i></i>${escapeHtml(labelMonth(m))} · ${q.q}º trimestre · ${year}</div>${v276YearSelect(year)}</div></div><div class="v260-grid2">${v260SummaryCard('Receitas','Planejado','revenue')}${v260SummaryCard('Despesas totais','Planejado com remanejamento','expense')}</div>${v260CategoryPlanTable()}<div class="v260-grid2">${v260RemapTable()}${v260ActualTable()}</div><div class="v260-grid2">${v260Top('cat')}${v260Top('sub')}</div>${v260Suggestions()}</div>`)}catch(err){console.error('V2.60 Análises',err);layout(`<div class="v260-analysis"><section class="v260-card"><div class="v260-card-head"><div><h3>Análises</h3><p>Não foi possível montar os comparativos.</p></div></div><div class="v260-body"><div class="v260-suggestion"><i style="--dot:#ef4444"></i><p>${escapeHtml(String(err?.message||err||'Erro desconhecido'))}</p></div></div></section></div>`)}}
 })();
 </script>
 <!-- V2.60 — Análises simplificadas: receitas/despesas comparativas, categoria por mês/trimestre/ano, remanejamentos, realizado, Top 5 e sugestões. -->
