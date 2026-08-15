@@ -1,0 +1,70 @@
+name: Aplicar V2.77 botoes flutuantes
+
+"on":
+  push:
+    paths:
+      - '.github/workflows/apply-v277.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Corrigir botoes flutuantes no tablet
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          old = '<!-- Despesas Casal - Controle Financeiro | versão 2.76 -->'
+          new = '<!-- Despesas Casal - Controle Financeiro | versão 2.77 -->'
+          if old not in s:
+              raise SystemExit('Cabeçalho da V2.76 não encontrado')
+          s = s.replace(old, new, 1)
+
+          css = r'''
+<style id="v277-tablet-floating-actions-fix">
+/* V2.77 — ações contextuais sempre visíveis e acima da navegação no tablet. */
+html[data-ui="v23"] .v27-global-fab{
+  z-index:135!important;
+  visibility:visible!important;
+}
+@media (min-width:761px) and (max-width:1120px){
+  html[data-ui="v23"] .v27-global-fab{
+    display:inline-flex!important;
+    right:22px!important;
+    bottom:88px!important;
+    min-height:50px!important;
+    padding:0 18px!important;
+    font-size:11.5px!important;
+    opacity:1!important;
+    pointer-events:auto!important;
+    box-shadow:0 16px 38px rgba(79,70,229,.32)!important;
+  }
+}
+body:has(.modal.open) .v27-global-fab{
+  opacity:0!important;
+  pointer-events:none!important;
+}
+</style>
+'''
+          if 'id="v277-tablet-floating-actions-fix"' not in s:
+              s = s.replace('</head>', css + '\n</head>', 1)
+          p.write_text(s, encoding='utf-8')
+
+          sw = Path('sw.js')
+          t = sw.read_text(encoding='utf-8')
+          if "CACHE_NAME='financas-cn-v235'" in t:
+              t = t.replace("CACHE_NAME='financas-cn-v235'", "CACHE_NAME='financas-cn-v236'", 1)
+          sw.write_text(t, encoding='utf-8')
+          PY
+          rm -f .github/workflows/apply-v277.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html sw.js .github/workflows/apply-v277.yml
+          git commit -m "V2.77: restaura botoes flutuantes no tablet"
+          git push
