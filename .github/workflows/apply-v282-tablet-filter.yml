@@ -1,4 +1,4 @@
-name: Aplicar V2.82 filtro somente tablet
+name: Aplicar V2.82 somente tablet
 on:
   push:
     paths:
@@ -12,70 +12,11 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Sincronizar main e aplicar V2.82
+      - name: Aplicar e validar V2.82
         shell: bash
         run: |
           git pull --ff-only origin main || true
-          python3 - <<'PY'
-          from pathlib import Path
-          import re
-          p=Path('index.html')
-          s=p.read_text(encoding='utf-8')
-          s=s.replace('<!-- Despesas Casal - Controle Financeiro | versão 2.81 -->','<!-- Despesas Casal - Controle Financeiro | versão 2.82 -->',1)
-          s=s.replace(":')+monthList.map", ":'')+monthList.map", 1)
-          old="""    const chip=hero.querySelector('.v264-movement-period');
-    if(chip){chip.hidden=true;chip.setAttribute('aria-hidden','true')}
-    const current=String(state.month||currentMonthId());"""
-          new="""    const chip=hero.querySelector('.v264-movement-period');
-    const tablet=window.matchMedia('(min-width:761px) and (max-width:1120px)').matches;
-    if(chip){chip.hidden=tablet;chip.setAttribute('aria-hidden',tablet?'true':'false')}
-    if(!tablet)return;
-    const current=String(state.month||currentMonthId());"""
-          if old in s:
-              s=s.replace(old,new,1)
-          elif "const tablet=window.matchMedia('(min-width:761px) and (max-width:1120px)').matches;" not in s:
-              raise SystemExit('Trecho V2.81 para limitar ao tablet não encontrado')
-          marker='v282-tablet-only-period-filter'
-          if marker not in s:
-              block=r'''
-<style id="v282-tablet-only-period-filter">
-/* V2.82 — os seletores Ano + Mês de Movimentações existem somente na visão tablet. */
-.v281-period-controls{display:none!important}
-.v264-movement-hero .v264-movement-period{display:inline-flex!important}
-@media (min-width:761px) and (max-width:1120px){
-  .v281-period-controls{
-    display:grid!important;
-    grid-template-columns:minmax(86px,104px) minmax(126px,158px)!important;
-    gap:7px!important;
-    margin-left:auto!important;
-    align-items:end!important;
-  }
-  .v264-movement-hero .v264-movement-period{display:none!important}
-}
-</style>
-<script id="v282-tablet-only-period-filter-script">
-(function(){
-  const mq=window.matchMedia('(min-width:761px) and (max-width:1120px)');
-  const refresh=function(){try{render()}catch(_e){}};
-  if(typeof mq.addEventListener==='function')mq.addEventListener('change',refresh);
-  else if(typeof mq.addListener==='function')mq.addListener(refresh);
-})();
-</script>
-<!-- V2.82 — Filtro Ano + Mês limitado à visão tablet. -->
-'''
-              s=s.replace('</body>',block+'\n</body>',1)
-          p.write_text(s,encoding='utf-8')
-          m=re.search(r'<script id="v281-movement-period-split-script">(.*?)</script>',s,re.S)
-          if not m: raise SystemExit('Script V2.81 não encontrado para validação')
-          Path('/tmp/v281.js').write_text(m.group(1),encoding='utf-8')
-          m2=re.search(r'<script id="v282-tablet-only-period-filter-script">(.*?)</script>',s,re.S)
-          if not m2: raise SystemExit('Script V2.82 não encontrado para validação')
-          Path('/tmp/v282.js').write_text(m2.group(1),encoding='utf-8')
-          sw=Path('sw.js')
-          t=sw.read_text(encoding='utf-8')
-          t=re.sub(r'financas-cn-v\d+','financas-cn-v243',t,count=1)
-          sw.write_text(t,encoding='utf-8')
-          PY
+          python3 -c "import base64;exec(base64.b64decode('CmZyb20gcGF0aGxpYiBpbXBvcnQgUGF0aAppbXBvcnQgcmUKcD1QYXRoKCdpbmRleC5odG1sJykKcz1wLnJlYWRfdGV4dChlbmNvZGluZz0ndXRmLTgnKQpzPXMucmVwbGFjZSgnPCEtLSBEZXNwZXNhcyBDYXNhbCAtIENvbnRyb2xlIEZpbmFuY2Vpcm8gfCB2ZXJzw6NvIDIuODEgLS0+JywnPCEtLSBEZXNwZXNhcyBDYXNhbCAtIENvbnRyb2xlIEZpbmFuY2Vpcm8gfCB2ZXJzw6NvIDIuODIgLS0+JywxKQpzPXMucmVwbGFjZSgiOicpK21vbnRoTGlzdC5tYXAiLCAiOicnKSttb250aExpc3QubWFwIiwgMSkKCmlmICJjb25zdCB0YWJsZXQ9d2luZG93Lm1hdGNoTWVkaWEoJyhtaW4td2lkdGg6NzYxcHgpIGFuZCAobWF4LXdpZHRoOjExMjBweCknKS5tYXRjaGVzOyIgbm90IGluIHM6CiAgICBwYXR0ZXJuID0gcmUuY29tcGlsZSgKICAgICAgICByIiAgICBjb25zdCBjaGlwPWhlcm9cLnF1ZXJ5U2VsZWN0b3JcKCdcLnYyNjQtbW92ZW1lbnQtcGVyaW9kJ1wpO1xzKmlmXChjaGlwXClce2NoaXBcLmhpZGRlbj10cnVlO2NoaXBcLnNldEF0dHJpYnV0ZVwoJ2FyaWEtaGlkZGVuJywndHJ1ZSdcKVx9XHMqY29uc3QgY3VycmVudD1TdHJpbmdcKHN0YXRlXC5tb250aFx8XHxjdXJyZW50TW9udGhJZFwoXClcKTsiCiAgICApCiAgICByZXBsYWNlbWVudCA9ICgKICAgICAgICAiICAgIGNvbnN0IGNoaXA9aGVyby5xdWVyeVNlbGVjdG9yKCcudjI2NC1tb3ZlbWVudC1wZXJpb2QnKTtcbiIKICAgICAgICAiICAgIGNvbnN0IHRhYmxldD13aW5kb3cubWF0Y2hNZWRpYSgnKG1pbi13aWR0aDo3NjFweCkgYW5kIChtYXgtd2lkdGg6MTEyMHB4KScpLm1hdGNoZXM7XG4iCiAgICAgICAgIiAgICBpZihjaGlwKXtjaGlwLmhpZGRlbj10YWJsZXQ7Y2hpcC5zZXRBdHRyaWJ1dGUoJ2FyaWEtaGlkZGVuJyx0YWJsZXQ/J3RydWUnOidmYWxzZScpfVxuIgogICAgICAgICIgICAgaWYoIXRhYmxldClyZXR1cm47XG4iCiAgICAgICAgIiAgICBjb25zdCBjdXJyZW50PVN0cmluZyhzdGF0ZS5tb250aHx8Y3VycmVudE1vbnRoSWQoKSk7IgogICAgKQogICAgcyxuPXBhdHRlcm4uc3VibihyZXBsYWNlbWVudCxzLGNvdW50PTEpCiAgICBpZiBuICE9IDE6CiAgICAgICAgcmFpc2UgU3lzdGVtRXhpdCgnVHJlY2hvIFYyLjgxIHBhcmEgbGltaXRhciBhbyB0YWJsZXQgbsOjbyBlbmNvbnRyYWRvJykKCm1hcmtlcj0ndjI4Mi10YWJsZXQtb25seS1wZXJpb2QtZmlsdGVyJwppZiBtYXJrZXIgbm90IGluIHM6CiAgICBibG9jaz1yJycnCjxzdHlsZSBpZD0idjI4Mi10YWJsZXQtb25seS1wZXJpb2QtZmlsdGVyIj4KLyogVjIuODIg4oCUIEFubyArIE3DqnMgc2VwYXJhZG9zIGFwZW5hcyBuYSB2aXPDo28gdGFibGV0LiAqLwoudjI4MS1wZXJpb2QtY29udHJvbHN7ZGlzcGxheTpub25lIWltcG9ydGFudH0KLnYyNjQtbW92ZW1lbnQtaGVybyAudjI2NC1tb3ZlbWVudC1wZXJpb2R7ZGlzcGxheTppbmxpbmUtZmxleCFpbXBvcnRhbnR9CkBtZWRpYSAobWluLXdpZHRoOjc2MXB4KSBhbmQgKG1heC13aWR0aDoxMTIwcHgpewogIC52MjgxLXBlcmlvZC1jb250cm9sc3sKICAgIGRpc3BsYXk6Z3JpZCFpbXBvcnRhbnQ7CiAgICBncmlkLXRlbXBsYXRlLWNvbHVtbnM6bWlubWF4KDg2cHgsMTA0cHgpIG1pbm1heCgxMjZweCwxNThweCkhaW1wb3J0YW50OwogICAgZ2FwOjdweCFpbXBvcnRhbnQ7CiAgICBtYXJnaW4tbGVmdDphdXRvIWltcG9ydGFudDsKICAgIGFsaWduLWl0ZW1zOmVuZCFpbXBvcnRhbnQ7CiAgfQogIC52MjY0LW1vdmVtZW50LWhlcm8gLnYyNjQtbW92ZW1lbnQtcGVyaW9ke2Rpc3BsYXk6bm9uZSFpbXBvcnRhbnR9Cn0KPC9zdHlsZT4KPHNjcmlwdCBpZD0idjI4Mi10YWJsZXQtb25seS1wZXJpb2QtZmlsdGVyLXNjcmlwdCI+CihmdW5jdGlvbigpewogIGNvbnN0IG1xPXdpbmRvdy5tYXRjaE1lZGlhKCcobWluLXdpZHRoOjc2MXB4KSBhbmQgKG1heC13aWR0aDoxMTIwcHgpJyk7CiAgY29uc3QgcmVmcmVzaD1mdW5jdGlvbigpe3RyeXtyZW5kZXIoKX1jYXRjaChfZSl7fX07CiAgaWYodHlwZW9mIG1xLmFkZEV2ZW50TGlzdGVuZXI9PT0nZnVuY3Rpb24nKW1xLmFkZEV2ZW50TGlzdGVuZXIoJ2NoYW5nZScscmVmcmVzaCk7CiAgZWxzZSBpZih0eXBlb2YgbXEuYWRkTGlzdGVuZXI9PT0nZnVuY3Rpb24nKW1xLmFkZExpc3RlbmVyKHJlZnJlc2gpOwp9KSgpOwo8L3NjcmlwdD4KPCEtLSBWMi44MiDigJQgRmlsdHJvIEFubyArIE3DqnMgbGltaXRhZG8gw6Agdmlzw6NvIHRhYmxldC4gLS0+CicnJwogICAgaWYgJzwvYm9keT4nIG5vdCBpbiBzOgogICAgICAgIHJhaXNlIFN5c3RlbUV4aXQoJ0ZlY2hhbWVudG8gYm9keSBuw6NvIGVuY29udHJhZG8nKQogICAgcz1zLnJlcGxhY2UoJzwvYm9keT4nLGJsb2NrKydcbjwvYm9keT4nLDEpCgpwLndyaXRlX3RleHQocyxlbmNvZGluZz0ndXRmLTgnKQoKbT1yZS5zZWFyY2gocic8c2NyaXB0IGlkPSJ2MjgxLW1vdmVtZW50LXBlcmlvZC1zcGxpdC1zY3JpcHQiPiguKj8pPC9zY3JpcHQ+JyxzLHJlLlMpCmlmIG5vdCBtOgogICAgcmFpc2UgU3lzdGVtRXhpdCgnU2NyaXB0IFYyLjgxIG7Do28gZW5jb250cmFkbycpClBhdGgoJy90bXAvdjI4MS5qcycpLndyaXRlX3RleHQobS5ncm91cCgxKSxlbmNvZGluZz0ndXRmLTgnKQptMj1yZS5zZWFyY2gocic8c2NyaXB0IGlkPSJ2MjgyLXRhYmxldC1vbmx5LXBlcmlvZC1maWx0ZXItc2NyaXB0Ij4oLio/KTwvc2NyaXB0PicscyxyZS5TKQppZiBub3QgbTI6CiAgICByYWlzZSBTeXN0ZW1FeGl0KCdTY3JpcHQgVjIuODIgbsOjbyBlbmNvbnRyYWRvJykKUGF0aCgnL3RtcC92MjgyLmpzJykud3JpdGVfdGV4dChtMi5ncm91cCgxKSxlbmNvZGluZz0ndXRmLTgnKQoKc3c9UGF0aCgnc3cuanMnKQp0PXN3LnJlYWRfdGV4dChlbmNvZGluZz0ndXRmLTgnKQp0PXJlLnN1YihyJ2ZpbmFuY2FzLWNuLXZcZCsnLCdmaW5hbmNhcy1jbi12MjQzJyx0LGNvdW50PTEpCnN3LndyaXRlX3RleHQodCxlbmNvZGluZz0ndXRmLTgnKQo='))"
           node --check /tmp/v281.js
           node --check /tmp/v282.js
           rm -f .github/workflows/apply-v282-tablet-filter.yml .github/workflows/fix-v281-js.yml .github/workflows/apply-v281.yml .github/workflows/apply-v281b.yml .github/workflows/fix-v281-label.yml
