@@ -9920,7 +9920,7 @@ renderEstrategia=function(){v269PrevEstrategia();v269MarkRenderedKpis();const he
     const monthOptions=(allowAll?`<option value="todos" ${txScope==='ano'?'selected':''}>Todos</option>`:')+monthList.map(m=>`<option value="${escapeHtml(m)}" ${txScope==='mes'&&m===current?'selected':''}>${escapeHtml((typeof v269MonthName==='function'?v269MonthName(m):labelMonth(m)).replace(/\s*\/\s*\d{4}\s*$/,''))}</option>`).join('');
     const box=document.createElement('div');
     box.className='v281-period-controls';
-    box.innerHTML=`<tlabel class="v281-period-field"><span>Ano</span><select aria-label="Ano das movimentações" onchange="v281SetMovementYear(this.value)">${yearOptions}</select></label><label class="v281-period-field"><span>Mês</span><select aria-label="Mês das movimentações" onchange="v281SetMovementMonth(this.value)">${monthOptions}</select></label>`;
+    box.innerHTML=`<label class="v281-period-field"><span>Ano</span><select aria-label="Ano das movimentações" onchange="v281SetMovementYear(this.value)">${yearOptions}</select></label><label class="v281-period-field"><span>Mês</span><select aria-label="Mês das movimentações" onchange="v281SetMovementMonth(this.value)">${monthOptions}</select></label>`;
     head.appendChild(box);
   }
   window.v281SetMovementYear=v281SetYear;
