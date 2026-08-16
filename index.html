@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.88 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.89 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -10387,4 +10387,72 @@ html[data-ui="v23"] .view-lancamentos .v281-period-field select{
 })();
 </script>
 <!-- V2.88 — sincronização compartilhada automática. -->
+<style id="v289-column-controls-all-devices-style">
+/* V2.89 — ajuste de larguras disponível em Planejamento, Planejado e Extrato nas três visões. */
+.v289-column-toolbar{display:flex!important;}
+@media (max-width:760px){
+  html.device-mobile .v289-column-toolbar{display:flex!important;align-items:center!important;justify-content:flex-end!important;gap:6px!important;margin:0 0 7px!important;padding:6px!important;min-height:0!important;border:1px solid #E4E8EF!important;border-radius:12px!important;background:#F8FAFC!important;}
+  html.device-mobile .v289-column-toolbar .table-view-toolbar-copy{display:none!important;}
+  html.device-mobile .v289-column-toolbar .table-view-toolbar-actions{width:100%!important;display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important;}
+  html.device-mobile .v289-column-toolbar .column-width-button,
+  html.device-mobile .v289-column-toolbar .tiny{display:inline-flex!important;width:100%!important;min-height:36px!important;align-items:center!important;justify-content:center!important;margin:0!important;padding:7px 8px!important;font-size:9.5px!important;}
+}
+html[data-ui="v23"] .view-despesas .v25-planning-table .column-resize-handle,
+html[data-ui="v23"] .view-lancamentos .tx-forecast-table .column-resize-handle,
+html[data-ui="v23"] .view-lancamentos .tx-realized-grouped .column-resize-handle{display:block!important;}
+@media (max-width:1120px){
+  html[data-ui="v23"] .view-despesas .v25-planning-table .column-resize-handle,
+  html[data-ui="v23"] .view-lancamentos .tx-forecast-table .column-resize-handle,
+  html[data-ui="v23"] .view-lancamentos .tx-realized-grouped .column-resize-handle{width:20px!important;right:-10px!important;z-index:95!important;touch-action:none!important;}
+  html[data-ui="v23"] .view-despesas .v25-planning-table .column-resize-handle::after,
+  html[data-ui="v23"] .view-lancamentos .tx-forecast-table .column-resize-handle::after,
+  html[data-ui="v23"] .view-lancamentos .tx-realized-grouped .column-resize-handle::after{left:9px!important;background:#B8C2D0!important;box-shadow:none!important;}
+  html[data-ui="v23"] .view-despesas .v25-planning-table .column-resize-handle.is-active::after,
+  html[data-ui="v23"] .view-lancamentos .tx-forecast-table .column-resize-handle.is-active::after,
+  html[data-ui="v23"] .view-lancamentos .tx-realized-grouped .column-resize-handle.is-active::after{background:#3559E0!important;box-shadow:0 0 0 3px rgba(53,89,224,.12)!important;}
+}
+</style>
+<script id="v289-column-controls-all-devices-script">
+(function(){
+  const targets=[
+    {selector:'.v25-planning-table',key:'planejamento_despesas'},
+    {selector:'.tx-forecast-table',key:'lancamentos_acompanhamento'},
+    {selector:'.tx-realized-grouped',key:'lancamentos_realizados'}
+  ];
+  function ensureTargetToolbar(root,definition){
+    root.querySelectorAll(definition.selector).forEach(wrap=>{
+      const table=wrap.querySelector('table');
+      if(!table)return;
+      if(!table.dataset.columnKey&&typeof initColumnWidthEditors==='function')initColumnWidthEditors(root);
+      if(typeof decorateManagedTables==='function')decorateManagedTables(root);
+      let toolbar=wrap.previousElementSibling;
+      if(!toolbar||!toolbar.classList.contains('table-view-toolbar')){
+        if(typeof decorateManagedTables==='function')decorateManagedTables(root);
+        toolbar=wrap.previousElementSibling;
+      }
+      if(toolbar&&toolbar.classList.contains('table-view-toolbar')){
+        toolbar.classList.add('v289-column-toolbar');
+        const actions=toolbar.querySelector('.table-view-toolbar-actions');
+        if(actions&&!actions.querySelector('.column-width-button')&&table.dataset.columnKey&&typeof managedColumnWidthButtonHTML==='function'){
+          actions.insertAdjacentHTML('afterbegin',managedColumnWidthButtonHTML(table));
+        }
+      }
+    });
+  }
+  window.v289EnsureColumnControls=function(root=document.getElementById('app')){
+    if(!root)return;
+    if(typeof initColumnWidthEditors==='function')initColumnWidthEditors(root);
+    if(typeof decorateManagedTables==='function')decorateManagedTables(root);
+    targets.forEach(definition=>ensureTargetToolbar(root,definition));
+    if(typeof installColumnDragResizers==='function')installColumnDragResizers(root);
+  };
+  const previousPostRender=postRenderV75;
+  postRenderV75=function(){
+    previousPostRender();
+    requestAnimationFrame(()=>window.v289EnsureColumnControls(document.getElementById('app')));
+  };
+  setTimeout(()=>window.v289EnsureColumnControls(document.getElementById('app')),1400);
+})();
+</script>
+<!-- V2.89 — larguras editáveis nas três visões. -->
 </body></html>
