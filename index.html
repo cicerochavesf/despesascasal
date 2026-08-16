@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.84 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.85 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -3799,6 +3799,46 @@ body:has(.modal.open) .v27-global-fab{
   pointer-events:none!important;
 }
 </style>
+
+<style id="v285-planning-filter-density">
+/* V2.85 — Planejamento: filtros de despesas mais compactos em todas as visões. */
+html[data-ui="v23"] .view-despesas .v29-planning-control-panel,
+html[data-ui="v23"] .view-despesas .v215-year-filter-panel{padding:8px 10px!important}
+html[data-ui="v23"] .view-despesas .v29-planning-filter-row,
+html[data-ui="v23"] .view-despesas .v215-year-filter-row{gap:7px!important;align-items:end!important}
+html[data-ui="v23"] .view-despesas .v29-planning-field,
+html[data-ui="v23"] .view-despesas .v215-filter-field{min-width:0!important;grid-column:auto!important}
+html[data-ui="v23"] .view-despesas .v29-planning-field .select,
+html[data-ui="v23"] .view-despesas .v215-filter-field .select{min-height:36px!important;padding:7px 9px!important;font-size:12px!important}
+form.mobile-filter-sheet[onsubmit*="expense"]{display:grid!important;gap:9px!important}
+form.mobile-filter-sheet[onsubmit*="expense"]>.field{min-width:0!important}
+form.mobile-filter-sheet[onsubmit*="expense"]>.field select{min-width:0!important;width:100%!important;min-height:40px!important;padding:9px 10px!important}
+form.mobile-filter-sheet[onsubmit*="expense"]>.mobile-filter-actions{grid-column:1/-1!important;margin-top:2px!important}
+@media (min-width:1121px){
+  html[data-ui="v23"] .view-despesas .v29-planning-filter-row{grid-template-columns:minmax(92px,.55fr) minmax(122px,.72fr) minmax(150px,1.2fr) minmax(132px,1fr) minmax(132px,1fr)!important}
+  html[data-ui="v23"] .view-despesas .v215-year-filter-row{grid-template-columns:minmax(92px,.55fr) repeat(4,minmax(132px,1fr)) auto!important}
+  form.mobile-filter-sheet[onsubmit*="expense"]{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+}
+@media (min-width:761px) and (max-width:1120px){
+  html[data-ui="v23"] .view-despesas .v29-planning-filter-row,
+  html[data-ui="v23"] .view-despesas .v215-year-filter-row{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  html[data-ui="v23"] .view-despesas .v228-filter-clear{grid-column:1/-1!important;justify-self:start!important}
+  form.mobile-filter-sheet[onsubmit*="expense"]{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media (max-width:760px){
+  html[data-ui="v23"] .view-despesas .v29-planning-filter-row,
+  html[data-ui="v23"] .view-despesas .v215-year-filter-row,
+  html[data-ui="v23"] .view-despesas .v215-year-filter-row.is-income{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important}
+  html[data-ui="v23"] .view-despesas .v29-planning-field:nth-child(n),
+  html[data-ui="v23"] .view-despesas .v215-filter-field:nth-child(n){grid-column:auto!important}
+  html[data-ui="v23"] .view-despesas .v228-filter-clear{grid-column:1/-1!important;justify-self:start!important}
+  form.mobile-filter-sheet[onsubmit*="expense"]{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  form.mobile-filter-sheet[onsubmit*="expense"]>.field label{font-size:10px!important;margin-bottom:5px!important}
+  form.mobile-filter-sheet[onsubmit*="expense"]>.field select{font-size:12px!important;padding:9px 8px!important}
+}
+</style>
+<!-- V2.85 — filtros de despesas compactados. -->
+
 </head><body><div id="app"></div><div id="modal" class="modal"></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 const storeKey='despesas-casal-profissional-v12';
 const SUPABASE_URL='https://fpcwnjlneaaarzeevgpl.supabase.co';
