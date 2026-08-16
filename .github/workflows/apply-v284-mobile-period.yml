@@ -1,4 +1,4 @@
-name: Apply V284 mobile period split
+name: Apply V284 all period split
 'on':
   push:
     paths:
@@ -10,84 +10,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Aplicar filtro separado no celular
-        shell: bash
+      - name: Patch all period split
         run: |
           git fetch origin main
           git reset --hard origin/main
-          python3 - <<'PY'
-          from pathlib import Path
-          import re
-
-          p=Path('index.html')
-          s=p.read_text(encoding='utf-8')
-
-          old_version='<!-- Despesas Casal - Controle Financeiro | versão 2.83 -->'
-          new_version='<!-- Despesas Casal - Controle Financeiro | versão 2.84 -->'
-          if old_version not in s:
-              raise SystemExit('Versão 2.83 não encontrada')
-          s=s.replace(old_version,new_version,1)
-
-          old_cond="const tablet=window.matchMedia('(min-width:761px) and (max-width:1120px)').matches;"
-          new_cond="const tablet=window.matchMedia('(max-width:1120px)').matches;"
-          if old_cond not in s:
-              raise SystemExit('Condição do filtro V2.81 não encontrada')
-          s=s.replace(old_cond,new_cond,1)
-
-          old_mq="const mq=window.matchMedia('(min-width:761px) and (max-width:1120px)');"
-          new_mq="const mq=window.matchMedia('(max-width:1120px)');"
-          if old_mq in s:
-              s=s.replace(old_mq,new_mq,1)
-
-          marker='v284-mobile-period-split-fix'
-          if marker not in s:
-              block='''
-<style id="v284-mobile-period-split-fix">
-/* V2.84 — celular: Ano e Mês separados também em Movimentações/Planejado. */
-@media (max-width:760px){
-  html[data-ui="v23"] .view-lancamentos .v281-period-controls{
-    display:grid!important;
-    order:3!important;
-    width:100%!important;
-    margin-left:0!important;
-    margin-top:7px!important;
-    grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr)!important;
-    gap:6px!important;
-    align-items:end!important;
-  }
-  html[data-ui="v23"] .view-lancamentos .v264-movement-hero .v264-movement-period{
-    display:none!important;
-  }
-  html[data-ui="v23"] .view-lancamentos .v281-period-field select{
-    width:100%!important;
-    min-width:0!important;
-    min-height:36px!important;
-    font-size:11px!important;
-    padding:6px 8px!important;
-  }
-}
-</style>
-<!-- V2.84 — Ano e Mês separados restaurados na visão de celular. -->
-'''
-              s=s.replace('</body>',block+'\n</body>',1)
-
-          p.write_text(s,encoding='utf-8')
-
-          m=re.search(r'<script id="v281-movement-period-split-script">(.*?)</script>',s,re.S)
-          if not m:
-              raise SystemExit('Script V2.81 não encontrado')
-          Path('/tmp/v281.js').write_text(m.group(1),encoding='utf-8')
-
-          sw=Path('sw.js')
-          t=sw.read_text(encoding='utf-8')
-          t=re.sub(r'financas-cn-v\d+','financas-cn-v245',t,count=1)
-          sw.write_text(t,encoding='utf-8')
-          PY
+          echo 'ZnJvbSBwYXRobGliIGltcG9ydCBQYXRoCmltcG9ydCByZQoKcD1QYXRoKCJpbmRleC5odG1sIikKcz1wLnJlYWRfdGV4dChlbmNvZGluZz0idXRmLTgiKQoKb2xkPSc8IS0tIERlc3Blc2FzIENhc2FsIC0gQ29udHJvbGUgRmluYW5jZWlybyB8IHZlcnPDo28gMi44MyAtLT4nCm5ldz0nPCEtLSBEZXNwZXNhcyBDYXNhbCAtIENvbnRyb2xlIEZpbmFuY2Vpcm8gfCB2ZXJzw6NvIDIuODQgLS0+JwppZiBvbGQgbm90IGluIHM6CiAgICByYWlzZSBTeXN0ZW1FeGl0KCJWZXJzw6NvIDIuODMgbsOjbyBlbmNvbnRyYWRhIikKcz1zLnJlcGxhY2Uob2xkLG5ldywxKQoKb2xkX2NvbmQ9ImNvbnN0IHRhYmxldD13aW5kb3cubWF0Y2hNZWRpYSgnKG1pbi13aWR0aDo3NjFweCkgYW5kIChtYXgtd2lkdGg6MTEyMHB4KScpLm1hdGNoZXM7IgppZiBvbGRfY29uZCBub3QgaW4gczoKICAgIHJhaXNlIFN5c3RlbUV4aXQoIkNvbmRpw6fDo28gVjIuODEgbsOjbyBlbmNvbnRyYWRhIikKcz1zLnJlcGxhY2Uob2xkX2NvbmQsImNvbnN0IHRhYmxldD10cnVlOyIsMSkKCm1hcmtlcj0idjI4NC1hbGwtZGV2aWNlcy1wZXJpb2Qtc3BsaXQtZml4IgppZiBtYXJrZXIgbm90IGluIHM6CiAgICBibG9jaz1yJycnXAo8c3R5bGUgaWQ9InYyODQtYWxsLWRldmljZXMtcGVyaW9kLXNwbGl0LWZpeCI+Ci8qIFYyLjg0IOKAlCBNb3ZpbWVudGHDp8O1ZXM6IEFubyBlIE3DqnMgc2VwYXJhZG9zIG5vIGNvbXB1dGFkb3IsIHRhYmxldCBlIGNlbHVsYXIuICovCmh0bWxbZGF0YS11aT0idjIzIl0gLnZpZXctbGFuY2FtZW50b3MgLnYyODEtcGVyaW9kLWNvbnRyb2xzewogIGRpc3BsYXk6Z3JpZCFpbXBvcnRhbnQ7CiAgZ3JpZC10ZW1wbGF0ZS1jb2x1bW5zOm1pbm1heCg4NnB4LDEwNHB4KSBtaW5tYXgoMTI2cHgsMTU4cHgpIWltcG9ydGFudDsKICBnYXA6N3B4IWltcG9ydGFudDsKICBtYXJnaW4tbGVmdDphdXRvIWltcG9ydGFudDsKICBhbGlnbi1pdGVtczplbmQhaW1wb3J0YW50OwogIGZsZXg6MCAwIGF1dG8haW1wb3J0YW50Owp9Cmh0bWxbZGF0YS11aT0idjIzIl0gLnZpZXctbGFuY2FtZW50b3MgLnYyNjQtbW92ZW1lbnQtaGVybyAudjI2NC1tb3ZlbWVudC1wZXJpb2R7CiAgZGlzcGxheTpub25lIWltcG9ydGFudDsKfQpodG1sW2RhdGEtdWk9InYyMyJdIC52aWV3LWxhbmNhbWVudG9zIC52MjgxLXBlcmlvZC1maWVsZCBzZWxlY3R7CiAgd2lkdGg6MTAwJSFpbXBvcnRhbnQ7CiAgbWluLXdpZHRoOjAhaW1wb3J0YW50Owp9CkBtZWRpYSAobWF4LXdpZHRoOjc2MHB4KXsKICBodG1sW2RhdGEtdWk9InYyMyJdIC52aWV3LWxhbmNhbWVudG9zIC52MjY0LW1vdmVtZW50LWhlcm8taGVhZHsKICAgIGZsZXgtd3JhcDp3cmFwIWltcG9ydGFudDsKICAgIGFsaWduLWl0ZW1zOmZsZXgtc3RhcnQhaW1wb3J0YW50OwogIH0KICBodG1sW2RhdGEtdWk9InYyMyJdIC52aWV3LWxhbmNhbWVudG9zIC52MjgxLXBlcmlvZC1jb250cm9sc3sKICAgIG9yZGVyOjMhaW1wb3J0YW50OwogICAgd2lkdGg6MTAwJSFpbXBvcnRhbnQ7CiAgICBtYXJnaW4tbGVmdDowIWltcG9ydGFudDsKICAgIG1hcmdpbi10b3A6N3B4IWltcG9ydGFudDsKICAgIGdyaWQtdGVtcGxhdGUtY29sdW1uczptaW5tYXgoMCwuNzJmcikgbWlubWF4KDAsMS4yOGZyKSFpbXBvcnRhbnQ7CiAgICBnYXA6NnB4IWltcG9ydGFudDsKICB9CiAgaHRtbFtkYXRhLXVpPSJ2MjMiXSAudmlldy1sYW5jYW1lbnRvcyAudjI4MS1wZXJpb2QtZmllbGQgc2VsZWN0ewogICAgbWluLWhlaWdodDozNnB4IWltcG9ydGFudDsKICAgIGZvbnQtc2l6ZToxMXB4IWltcG9ydGFudDsKICAgIHBhZGRpbmc6NnB4IDhweCFpbXBvcnRhbnQ7CiAgfQp9Cjwvc3R5bGU+CjwhLS0gVjIuODQg4oCUIHNlbGV0b3IgYW50aWdvIMO6bmljbyByZW1vdmlkbyBkYXMgdHLDqnMgdmlzw7Vlcy4gLS0+CicnJwogICAgcz1zLnJlcGxhY2UoIjwvYm9keT4iLGJsb2NrKyJcbjwvYm9keT4iLDEpCgpwLndyaXRlX3RleHQocyxlbmNvZGluZz0idXRmLTgiKQoKbT1yZS5zZWFyY2gocic8c2NyaXB0IGlkPSJ2MjgxLW1vdmVtZW50LXBlcmlvZC1zcGxpdC1zY3JpcHQiPiguKj8pPC9zY3JpcHQ+JyxzLHJlLlMpCmlmIG5vdCBtOgogICAgcmFpc2UgU3lzdGVtRXhpdCgiU2NyaXB0IFYyLjgxIG7Do28gZW5jb250cmFkbyIpClBhdGgoIi90bXAvdjI4MS5qcyIpLndyaXRlX3RleHQobS5ncm91cCgxKSxlbmNvZGluZz0idXRmLTgiKQoKc3c9UGF0aCgic3cuanMiKQp0PXN3LnJlYWRfdGV4dChlbmNvZGluZz0idXRmLTgiKQp0PXJlLnN1YihyImZpbmFuY2FzLWNuLXZcZCsiLCJmaW5hbmNhcy1jbi12MjQ1Iix0LGNvdW50PTEpCnN3LndyaXRlX3RleHQodCxlbmNvZGluZz0idXRmLTgiKQo=' | base64 -d > /tmp/patch_v284.py
+          python3 /tmp/patch_v284.py
           node --check /tmp/v281.js
           rm -f .github/workflows/apply-v284-mobile-period.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "V2.84: restaura Ano e Mes separados no celular"
+          git commit -m "V2.84: Ano e Mes separados em todas as visoes"
           git pull --rebase origin main
           git push
