@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.83 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.84 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -9910,7 +9910,7 @@ renderEstrategia=function(){v269PrevEstrategia();v269MarkRenderedKpis();const he
     if(!head)return;
     head.querySelectorAll('.v281-period-controls').forEach(el=>el.remove());
     const chip=hero.querySelector('.v264-movement-period');
-    const tablet=window.matchMedia('(min-width:761px) and (max-width:1120px)').matches;
+    const tablet=true;
     if(chip){chip.hidden=tablet;chip.setAttribute('aria-hidden',tablet?'true':'false')}
     if(!tablet)return;
     const current=String(state.month||currentMonthId());
@@ -10003,5 +10003,45 @@ renderEstrategia=function(){v269PrevEstrategia();v269MarkRenderedKpis();const he
 }
 </style>
 <!-- V2.83 — Extrato no tablet: somatório e selecionar todos do filtro. -->
+
+\
+<style id="v284-all-devices-period-split-fix">
+/* V2.84 — Movimentações: Ano e Mês separados no computador, tablet e celular. */
+html[data-ui="v23"] .view-lancamentos .v281-period-controls{
+  display:grid!important;
+  grid-template-columns:minmax(86px,104px) minmax(126px,158px)!important;
+  gap:7px!important;
+  margin-left:auto!important;
+  align-items:end!important;
+  flex:0 0 auto!important;
+}
+html[data-ui="v23"] .view-lancamentos .v264-movement-hero .v264-movement-period{
+  display:none!important;
+}
+html[data-ui="v23"] .view-lancamentos .v281-period-field select{
+  width:100%!important;
+  min-width:0!important;
+}
+@media (max-width:760px){
+  html[data-ui="v23"] .view-lancamentos .v264-movement-hero-head{
+    flex-wrap:wrap!important;
+    align-items:flex-start!important;
+  }
+  html[data-ui="v23"] .view-lancamentos .v281-period-controls{
+    order:3!important;
+    width:100%!important;
+    margin-left:0!important;
+    margin-top:7px!important;
+    grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr)!important;
+    gap:6px!important;
+  }
+  html[data-ui="v23"] .view-lancamentos .v281-period-field select{
+    min-height:36px!important;
+    font-size:11px!important;
+    padding:6px 8px!important;
+  }
+}
+</style>
+<!-- V2.84 — seletor antigo único removido das três visões. -->
 
 </body></html>
