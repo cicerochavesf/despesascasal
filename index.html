@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.86 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.87 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -10197,4 +10197,44 @@ html[data-ui="v23"] .view-lancamentos .v281-period-field select{
 })();
 </script>
 <!-- V2.86 — histórico jan-jun/2026 alinhado à identidade de jul-dez/2026. -->
+<style id="v287-planning-mobile-columns-style">
+/* V2.87 — Planejamento mobile com tabela e ajuste de colunas. */
+@media (max-width:760px){
+  html.device-mobile[data-ui="v23"] .view-despesas .v25-planning-table{
+    display:block!important;width:100%!important;max-width:100%!important;
+    overflow-x:auto!important;-webkit-overflow-scrolling:touch!important;
+  }
+  html.device-mobile[data-ui="v23"] .view-despesas .v25-planning-cards{display:none!important}
+  html.device-mobile[data-ui="v23"] .view-despesas .table-view-toolbar[data-for-table="planejamento_despesas"]{
+    display:flex!important;width:100%!important;margin:0 0 7px!important;padding:5px 6px!important
+  }
+  html.device-mobile[data-ui="v23"] .view-despesas .table-view-toolbar[data-for-table="planejamento_despesas"] .table-view-toolbar-copy{display:none!important}
+  html.device-mobile[data-ui="v23"] .view-despesas .table-view-toolbar[data-for-table="planejamento_despesas"] .table-view-toolbar-actions{
+    display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important;width:100%!important;margin:0!important
+  }
+  html.device-mobile[data-ui="v23"] .view-despesas .table-view-toolbar[data-for-table="planejamento_despesas"] .column-width-button,
+  html.device-mobile[data-ui="v23"] .view-despesas .table-view-toolbar[data-for-table="planejamento_despesas"] .tiny{
+    display:inline-flex!important;align-items:center!important;justify-content:center!important;
+    width:100%!important;min-height:34px!important;padding:6px 7px!important;font-size:9px!important
+  }
+  html.device-mobile[data-ui="v23"] .view-despesas .v25-planning-table table{
+    display:table!important;min-width:650px!important;width:max-content!important;table-layout:fixed!important
+  }
+  html.device-mobile[data-ui="v23"] .view-despesas .v25-planning-table thead{display:table-header-group!important}
+  html.device-mobile[data-ui="v23"] .view-despesas .v25-planning-table tbody{display:table-row-group!important}
+  html.device-mobile[data-ui="v23"] .view-despesas .v25-planning-table tr{display:table-row!important}
+  html.device-mobile[data-ui="v23"] .view-despesas .v25-planning-table th,
+  html.device-mobile[data-ui="v23"] .view-despesas .v25-planning-table td{display:table-cell!important}
+  html.device-mobile[data-ui="v23"] .view-despesas .v25-planning-table .column-resize-handle{
+    display:block!important;width:20px!important;right:-10px!important;z-index:55!important
+  }
+  html.device-mobile[data-ui="v23"] .view-despesas .v25-planning-table .column-resize-handle::after{
+    left:9px!important;background:#A8B2C1!important
+  }
+  html.device-mobile[data-ui="v23"] .view-despesas .v25-planning-table .column-resize-handle.is-active::after{
+    background:#3559E0!important
+  }
+}
+</style>
+<!-- V2.87 — ajuste de colunas restaurado no Planejamento mobile. -->
 </body></html>
