@@ -1,0 +1,25 @@
+name: Apply V290 planning columns
+"on":
+  push:
+    paths:
+      - ".github/workflows/apply-v290-columns.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Patch planning consolidated columns
+        run: |
+          python .github/scripts/apply_v290.py
+          rm -f .github/scripts/apply_v290.py .github/workflows/apply-v290-columns.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html sw.js .github/scripts/apply_v290.py .github/workflows/apply-v290-columns.yml
+          git commit -m "V2.90: habilita ajuste de colunas nos consolidados do Planejamento"
+          git push origin main
