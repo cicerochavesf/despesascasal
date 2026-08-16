@@ -1,0 +1,93 @@
+name: Apply V284 mobile period split
+'on':
+  push:
+    paths:
+      - .github/workflows/apply-v284-mobile-period.yml
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Aplicar filtro separado no celular
+        shell: bash
+        run: |
+          git fetch origin main
+          git reset --hard origin/main
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          p=Path('index.html')
+          s=p.read_text(encoding='utf-8')
+
+          old_version='<!-- Despesas Casal - Controle Financeiro | versão 2.83 -->'
+          new_version='<!-- Despesas Casal - Controle Financeiro | versão 2.84 -->'
+          if old_version not in s:
+              raise SystemExit('Versão 2.83 não encontrada')
+          s=s.replace(old_version,new_version,1)
+
+          old_cond="const tablet=window.matchMedia('(min-width:761px) and (max-width:1120px)').matches;"
+          new_cond="const tablet=window.matchMedia('(max-width:1120px)').matches;"
+          if old_cond not in s:
+              raise SystemExit('Condição do filtro V2.81 não encontrada')
+          s=s.replace(old_cond,new_cond,1)
+
+          old_mq="const mq=window.matchMedia('(min-width:761px) and (max-width:1120px)');"
+          new_mq="const mq=window.matchMedia('(max-width:1120px)');"
+          if old_mq in s:
+              s=s.replace(old_mq,new_mq,1)
+
+          marker='v284-mobile-period-split-fix'
+          if marker not in s:
+              block='''
+<style id="v284-mobile-period-split-fix">
+/* V2.84 — celular: Ano e Mês separados também em Movimentações/Planejado. */
+@media (max-width:760px){
+  html[data-ui="v23"] .view-lancamentos .v281-period-controls{
+    display:grid!important;
+    order:3!important;
+    width:100%!important;
+    margin-left:0!important;
+    margin-top:7px!important;
+    grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr)!important;
+    gap:6px!important;
+    align-items:end!important;
+  }
+  html[data-ui="v23"] .view-lancamentos .v264-movement-hero .v264-movement-period{
+    display:none!important;
+  }
+  html[data-ui="v23"] .view-lancamentos .v281-period-field select{
+    width:100%!important;
+    min-width:0!important;
+    min-height:36px!important;
+    font-size:11px!important;
+    padding:6px 8px!important;
+  }
+}
+</style>
+<!-- V2.84 — Ano e Mês separados restaurados na visão de celular. -->
+'''
+              s=s.replace('</body>',block+'\n</body>',1)
+
+          p.write_text(s,encoding='utf-8')
+
+          m=re.search(r'<script id="v281-movement-period-split-script">(.*?)</script>',s,re.S)
+          if not m:
+              raise SystemExit('Script V2.81 não encontrado')
+          Path('/tmp/v281.js').write_text(m.group(1),encoding='utf-8')
+
+          sw=Path('sw.js')
+          t=sw.read_text(encoding='utf-8')
+          t=re.sub(r'financas-cn-v\d+','financas-cn-v245',t,count=1)
+          sw.write_text(t,encoding='utf-8')
+          PY
+          node --check /tmp/v281.js
+          rm -f .github/workflows/apply-v284-mobile-period.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "V2.84: restaura Ano e Mes separados no celular"
+          git pull --rebase origin main
+          git push
