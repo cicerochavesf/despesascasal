@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.87 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.88 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -10237,4 +10237,154 @@ html[data-ui="v23"] .view-lancamentos .v281-period-field select{
 }
 </style>
 <!-- V2.87 — ajuste de colunas restaurado no Planejamento mobile. -->
+<script id="v288-auto-cloud-sync-script">
+/* V2.88 — sincronização automática entre usuários/aparelhos.
+   - tenta Supabase Realtime para atualização imediata;
+   - usa checagem leve de updated_at como fallback;
+   - nunca substitui edição local pendente ou modal aberto;
+   - preserva o mês/tela local ao receber dados remotos. */
+(function(){
+  const V288_PENDING_KEY=storeKey+'-cloud-pending-v237';
+  const V288_POLL_MS=4000;
+  let v288Channel=null;
+  let v288Checking=false;
+  let v288Applying=false;
+  let v288PendingRemoteAt='';
+  let v288RealtimeRetryAfter=0;
+
+  function v288Time(value){
+    const n=Date.parse(String(value||''));
+    return Number.isFinite(n)?n:0;
+  }
+  function v288IsNewer(updatedAt){
+    return v288Time(updatedAt)>v288Time(lastCloudUpdatedAt);
+  }
+  function v288HasLocalPending(){
+    try{return !!localStorage.getItem(V288_PENDING_KEY)}catch(_){return false}
+  }
+  function v288ModalOpen(){
+    return !!document.getElementById('modal')?.classList.contains('open');
+  }
+  function v288CanApply(){
+    return !!(authUser&&cloudSynced&&!cloudLoading&&!cloudSaving&&!v288Applying&&!v288HasLocalPending()&&!v288ModalOpen());
+  }
+  function v288RememberRemote(updatedAt){
+    if(v288IsNewer(updatedAt)&&v288Time(updatedAt)>v288Time(v288PendingRemoteAt))v288PendingRemoteAt=updatedAt;
+  }
+  function v288ApplyRow(row){
+    if(!row?.data||!v288IsNewer(row.updated_at))return false;
+    if(!v288CanApply()){
+      v288RememberRemote(row.updated_at);
+      return false;
+    }
+    v288Applying=true;
+    const localMonth=state?.month;
+    const scrollY=window.scrollY||0;
+    try{
+      state=merge(clone(baseData),row.data);
+      if(localMonth&&typeof validMonth==='function')state.month=validMonth(localMonth);
+      lastCloudUpdatedAt=row.updated_at||lastCloudUpdatedAt;
+      ensureUiState();
+      cacheCloudState();
+      setCloudStatus('Atualizado automaticamente','ok');
+      render();
+      requestAnimationFrame(()=>window.scrollTo({top:scrollY,left:0,behavior:'auto'}));
+      v288PendingRemoteAt='';
+      return true;
+    }finally{
+      v288Applying=false;
+    }
+  }
+  async function v288FetchAndApply(expectedAt=''){
+    if(expectedAt&&!v288IsNewer(expectedAt)){
+      if(v288PendingRemoteAt===expectedAt)v288PendingRemoteAt='';
+      return false;
+    }
+    if(!v288CanApply()){
+      if(expectedAt)v288RememberRemote(expectedAt);
+      return false;
+    }
+    try{
+      const res=await fetch(cloudTableUrl(`id=eq.${encodeURIComponent(SUPABASE_ROW_ID)}&select=data,updated_at`),{headers:cloudReadHeaders(),cache:'no-store'});
+      if(!res.ok)return false;
+      const rows=await res.json(),row=Array.isArray(rows)?rows[0]:null;
+      return v288ApplyRow(row);
+    }catch(err){
+      console.warn('Sincronização automática: não foi possível baixar a atualização.',err);
+      return false;
+    }
+  }
+  async function v288CheckCloud(){
+    if(v288Checking||document.hidden||!authUser||!cloudSynced||cloudLoading)return;
+    if(v288PendingRemoteAt){
+      if(v288CanApply())await v288FetchAndApply(v288PendingRemoteAt);
+      if(v288PendingRemoteAt)return;
+    }
+    if(cloudSaving||v288HasLocalPending()||v288ModalOpen())return;
+    v288Checking=true;
+    try{
+      const res=await fetch(cloudTableUrl(`id=eq.${encodeURIComponent(SUPABASE_ROW_ID)}&select=updated_at`),{headers:cloudReadHeaders(),cache:'no-store'});
+      if(!res.ok)return;
+      const rows=await res.json(),updatedAt=Array.isArray(rows)?rows[0]?.updated_at:'';
+      if(updatedAt&&v288IsNewer(updatedAt))await v288FetchAndApply(updatedAt);
+    }catch(err){
+      console.warn('Sincronização automática: checagem da nuvem indisponível.',err);
+    }finally{
+      v288Checking=false;
+    }
+  }
+  function v288StopRealtime(){
+    if(!v288Channel)return;
+    try{getAuthClient().removeChannel(v288Channel)}catch(_){ }
+    v288Channel=null;
+  }
+  function v288StartRealtime(){
+    if(v288Channel||!authUser||!cloudSynced||Date.now()<v288RealtimeRetryAfter)return;
+    try{
+      const client=getAuthClient();
+      v288Channel=client.channel('app-state-live-v288')
+        .on('postgres_changes',{event:'UPDATE',schema:'public',table:SUPABASE_TABLE,filter:`id=eq.${SUPABASE_ROW_ID}`},payload=>{
+          const row=payload?.new||null;
+          if(row?.updated_at&&!v288IsNewer(row.updated_at))return;
+          if(row?.data)v288ApplyRow(row);
+          else if(row?.updated_at){v288RememberRemote(row.updated_at);void v288CheckCloud()}
+          else void v288CheckCloud();
+        })
+        .subscribe(status=>{
+          if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'||status==='CLOSED'){
+            v288RealtimeRetryAfter=Date.now()+60000;
+            v288StopRealtime();
+          }
+        });
+    }catch(err){
+      v288RealtimeRetryAfter=Date.now()+60000;
+      v288Channel=null;
+      console.warn('Sincronização automática: Realtime indisponível; usando fallback.',err);
+    }
+  }
+
+  const v288PreviousCloseModal=closeModal;
+  closeModal=function(){
+    const result=v288PreviousCloseModal.apply(this,arguments);
+    setTimeout(()=>{v288StartRealtime();void v288CheckCloud()},0);
+    return result;
+  };
+
+  const v288PreviousHandleAuthEvent=handleAuthEvent;
+  handleAuthEvent=async function(event,session){
+    if(event==='SIGNED_OUT')v288StopRealtime();
+    const result=await v288PreviousHandleAuthEvent.apply(this,arguments);
+    if(session&&cloudSynced){v288StartRealtime();void v288CheckCloud()}
+    return result;
+  };
+
+  document.addEventListener('visibilitychange',()=>{
+    if(!document.hidden){v288StartRealtime();void v288CheckCloud()}
+  });
+  window.addEventListener('focus',()=>{v288StartRealtime();void v288CheckCloud()});
+  setInterval(()=>{v288StartRealtime();void v288CheckCloud()},V288_POLL_MS);
+  setTimeout(()=>{v288StartRealtime();void v288CheckCloud()},1200);
+})();
+</script>
+<!-- V2.88 — sincronização compartilhada automática. -->
 </body></html>
