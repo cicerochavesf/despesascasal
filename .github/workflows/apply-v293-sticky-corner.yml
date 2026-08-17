@@ -1,0 +1,37 @@
+name: Apply V293 sticky corner
+"on":
+  push:
+    branches: [main]
+    paths: ['.github/workflows/apply-v293-sticky-corner.yml']
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Apply V2.93
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import base64
+          p=Path('index.html'); t=p.read_text(encoding='utf-8')
+          old='<!-- Despesas Casal - Controle Financeiro | versão 2.92 -->'
+          if old not in t: raise SystemExit('V2.92 não encontrada')
+          block=base64.b64decode('PHN0eWxlIGlkPSJ2MjkzLXN0aWNreS1jb3JuZXItc3ViY2F0ZWdvcnktaGVpZ2h0LXN0eWxlIj4KLyogVjIuOTMg4oCUIGNhbnRvIHN1cGVyaW9yIGVzcXVlcmRvIHJlYWxtZW50ZSBjb25nZWxhZG8gZSBjb25zb2xpZGFkbyBkZSBzdWJjYXRlZ29yaWFzIHNlbSByb2xhZ2VtIHZlcnRpY2FsIGludGVybmEuICovCmh0bWxbZGF0YS11aT0idjIzIl0gI2FwcCAudjIxNS10YWJsZS13cmFwIC52MjE1LWFubnVhbC10YWJsZSB0aGVhZCB0aHsKICBwb3NpdGlvbjpzdGlja3khaW1wb3J0YW50OwogIHRvcDowIWltcG9ydGFudDsKICB6LWluZGV4OjQwIWltcG9ydGFudDsKfQpodG1sW2RhdGEtdWk9InYyMyJdICNhcHAgLnYyMTUtdGFibGUtd3JhcCAudjIxNS1hbm51YWwtdGFibGUgdGhlYWQgdGg6Zmlyc3QtY2hpbGR7CiAgcG9zaXRpb246c3RpY2t5IWltcG9ydGFudDsKICBsZWZ0OjAhaW1wb3J0YW50OwogIHotaW5kZXg6MjQwIWltcG9ydGFudDsKICBpc29sYXRpb246aXNvbGF0ZSFpbXBvcnRhbnQ7CiAgYmFja2dyb3VuZDp2YXIoLS1wYW5lbCwjZmZmKSFpbXBvcnRhbnQ7CiAgYmFja2dyb3VuZC1jbGlwOnBhZGRpbmctYm94IWltcG9ydGFudDsKICBib3gtc2hhZG93OjEwcHggMCAxNHB4IC0xNHB4IHJnYmEoMTUsMjMsNDIsLjU1KSFpbXBvcnRhbnQ7Cn0KaHRtbFtkYXRhLXVpPSJ2MjMiXSAjYXBwIC52MjE1LXRhYmxlLXdyYXAgLnYyMTUtYW5udWFsLXRhYmxlIHRib2R5IHRkOmZpcnN0LWNoaWxkewogIHBvc2l0aW9uOnN0aWNreSFpbXBvcnRhbnQ7CiAgbGVmdDowIWltcG9ydGFudDsKICB6LWluZGV4OjYwIWltcG9ydGFudDsKICBiYWNrZ3JvdW5kOnZhcigtLXBhbmVsLCNmZmYpIWltcG9ydGFudDsKICBiYWNrZ3JvdW5kLWNsaXA6cGFkZGluZy1ib3ghaW1wb3J0YW50Owp9Cmh0bWxbZGF0YS11aT0idjIzIl0gI2FwcCAudjIxNS10YWJsZS13cmFwIC52MjE1LWFubnVhbC10YWJsZSB0Zm9vdCB0ZDpmaXJzdC1jaGlsZHsKICBwb3NpdGlvbjpzdGlja3khaW1wb3J0YW50OwogIGxlZnQ6MCFpbXBvcnRhbnQ7CiAgWi1pbmRleDoxMDAhaW1wb3J0YW50OwogIGJhY2tncm91bmQ6Y29sb3ItbWl4KGluIHNyZ2IsdmFyKC0tc29mdCwjZjhmYWZjKSA3MiUsdmFyKC0tcGFuZWwsI2ZmZikpIWltcG9ydGFudDsKfQpodG1sW2RhdGEtdWk9InYyMyJdICNhcHAgLnYyNTAtbWF0cml4LXdyYXAgdGhlYWQgdGh7CiAgcG9zaXRpb246c3RpY2t5IWltcG9ydGFudDsKICB0b3A6MCFpbXBvcnRhbnQ7CiAgei1pbmRleDo0MCFpbXBvcnRhbnQ7Cn0KaHRtbFtkYXRhLXVpPSJ2MjMiXSAjYXBwIC52MjUwLW1hdHJpeC13cmFwIHRoZWFkIHRoOmZpcnN0LWNoaWxkewogIHBvc2l0aW9uOnN0aWNreSFpbXBvcnRhbnQ7CiAgbGVmdDowIWltcG9ydGFudDsKICB6LWluZGV4OjI0MCFpbXBvcnRhbnQ7CiAgaXNvbGF0aW9uOmlzb2xhdGUhaW1wb3J0YW50OwogIGJhY2tncm91bmQ6dmFyKC0tcGFuZWwsI2ZmZikhbXBvcnRhbnQ7CiAgYmFja2dyb3VuZC1jbGlwOnBhZGRpbmctYm94IWltcG9ydGFudDsKICBib3gtc2hhZG93OjEwcHggMCAxNHB4IC0xNHB4IHJnYmEoMTUsMjMsNDIsLjU1KSFpbXBvcnRhbnQ7Cn0KaHRtbFtkYXRhLXVpPSJ2MjMiXSAjYXBwIC52MjUwLW1hdHJpeC13cmFwIHRib2R5IHRkOmZpcnN0LWNoaWxkewogIHBvc2l0aW9uOnN0aWNreSFpbXBvcnRhbnQ7CiAgbGVmdDowIWltcG9ydGFudDsKICB6LWluZGV4OjYwIWltcG9ydGFudDsKICBiYWNrZ3JvdW5kOnZhcigtLXBhbmVsLCNmZmYpIWltcG9ydGFudDsKfQpodG1sW2RhdGEtdWk9InYyMyJdICNhcHAgLnZpZXctZGVzcGVzYXMgLnYyMTUtc3ViY2F0ZWdvcnktdGFibGUtd3JhcHsKICBoZWlnaHQ6YXV0byFpbXBvcnRhbnQ7CiAgbWluLWhlaWdodDowIWltcG9ydGFudDsKICBtYXgtaGVpZ2h0Om5vbmUhaW1wb3J0YW50OwogIG92ZXJmbG93LXg6YXV0byFpbXBvcnRhbnQ7CiAgb3ZlcmZsb3cteTp2aXNpYmxlIWltcG9ydGFudDsKICBzY3JvbGxiYXItZ3V0dGVyOmF1dG8haW1wb3J0YW50Owp9Cmh0bWxbZGF0YS11aT0idjIzIl0gI2FwcCAudmlldy1kZXNwZXNhcyAudjIxNS1wbGFubmluZy1zZWN0aW9uOmhhcygudjIxNS1zdWJjYXRlZ29yeS10YWJsZS13cmFwKXsKICBoZWlnaHQ6YXV0byFpbXBvcnRhbnQ7CiAgbWluLWhlaWdodDowIWltcG9ydGFudDsKICBtYXgtaGVpZ2h0Om5vbmUhaW1wb3J0YW50OwogIG92ZXJmbG93OnZpc2libGUhaW1wb3J0YW50Owp9CkBtZWRpYShtYXgtd2lkdGg6NzYwcHgpewogIGh0bWxbZGF0YS11aT0idjIzIl0gI2FwcCAudmlldy1kZXNwZXNhcyAudjIxNS1wbGFubmluZy1zZWN0aW9uOmhhcygudjIxNS1zdWJjYXRlZ29yeS10YWJsZS13cmFwKXsKICAgIHBhZGRpbmctbGVmdDo2cHghaW1wb3J0YW50OwogICAgcGFkZGluZy1yaWdodDo2cHghaW1wb3J0YW50OwogIH0KfQo8L3N0eWxlPgo8IS0tIFYyLjkzIOKAlCBwcmltZWlyYSBjb2x1bmEgZSBzZXUgY2FiZcOnYWxobyBjb25nZWxhZG9zOyBjb25zb2xpZGFkbyBwb3Igc3ViY2F0ZWdvcmlhIGV4cGFuZGUgY29tIGEgcMOhZ2luYS4gLS0+') .decode('utf-8')
+          if 'v293-sticky-corner-subcategory-height-style' not in t:
+              t=t.replace('</body>',block+'\n</body>',1)
+          t=t.replace(old,'<!-- Despesas Casal - Controle Financeiro | versão 2.93 -->',1)
+          p.write_text(t,encoding='utf-8')
+          sw=Path('sw.js'); s=sw.read_text(encoding='utf-8')
+          if 'financas-cn-v255' not in s: raise SystemExit('cache v255 não encontrado')
+          sw.write_text(s.replace('financas-cn-v255','financas-cn-v256',1),encoding='utf-8')
+          Path('.github/workflows/apply-v293-sticky-corner.yml').unlink()
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html sw.js .github/workflows/apply-v293-sticky-corner.yml
+          git commit -m "V2.93: corrige cabeçalho congelado e amplia subcategorias"
+          git push origin main
