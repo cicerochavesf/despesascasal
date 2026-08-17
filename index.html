@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.91 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.92 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -10504,4 +10504,103 @@ setTimeout(()=>window.v290EnsurePlanningColumns(document.getElementById('app')),
 @media(max-width:430px){.v215-annual-table{--desc:164px;--month:70px;--total:84px}}
 </style>
 <script id="v291-planning-space-optimization-script">(function(){function f(){const r=document.getElementById('app');if(!r)return;r.querySelectorAll('.view-despesas .v215-subcategory-table-wrap .v215-row-copy small:not([data-v291])').forEach(e=>{const p=(e.textContent||'').split('·').map(x=>x.trim()).filter(Boolean);if(!p.length)return;e.textContent='';e.classList.add('v291-meta');const a=document.createElement('span');a.className='v291-cat';a.textContent=p[0];e.appendChild(a);if(p.length>1){const b=document.createElement('span');b.className='v291-owner';b.textContent=p.slice(1).join(' · ');e.appendChild(b)}e.dataset.v291='1'});const s=[...r.querySelectorAll('.view-despesas .v215-planning-section')].find(x=>x.querySelector('.v215-subcategory-table-wrap')),p=s?.querySelector('.v23-panel-head p');if(p)p.textContent='Toque no nome para editar o ano; toque em um mês para editar somente aquele mês.'}const q=postRenderV75;postRenderV75=function(){q();requestAnimationFrame(f)};setTimeout(f,900)})();</script>
+<style id="v292-planning-sticky-mobile-abbrev-style">
+/* V2.92 — primeira coluna fixa e abreviações visuais no mobile */
+.v215-table-wrap,.v250-matrix-wrap{position:relative!important}
+.v215-annual-table,.v250-matrix-wrap table{border-collapse:separate!important;border-spacing:0!important}
+.v215-annual-table th:first-child,
+.v215-annual-table td:first-child{
+  position:sticky!important;
+  left:0!important;
+  z-index:6!important;
+  background:var(--panel,#fff)!mportant;
+  box-shadow:8px 0 12px -12px rgba(15,23,42,.34)!important;
+}
+.v215-annual-table thead th:first-child{
+  z-index:14!important;
+  background:color-mix(in srgb,var(--soft,#f8fafc) 84%,var(--panel,#fff))!important;
+}
+.v215-annual-table tfoot td:first-child{
+  z-index:10!important;
+  background:color-mix(in srgb,var(--soft,#f8fafc) 72%,var(--panel,#fff))!important;
+}
+.v250-matrix-wrap th:first-child,
+.v250-matrix-wrap td:first-child{
+  position:sticky!important;
+  left:0!important;
+}
+@media(max-width:760px){
+  .view-despesas .v215-subcategory-table-wrap .v215-annual-table{--desc:194px!important}
+  .view-despesas .v215-subcategory-table-wrap .v215-row-copy strong[data-v292-short],
+  .view-despesas .v215-subcategory-table-wrap [data-v292-meta-short]{
+    font-size:0!important;
+  }
+  .view-despesas .v215-subcategory-table-wrap .v215-row-copy strong[data-v292-short]::after{
+    content:attr(data-v292-short);
+    font-size:10.3px!important;
+    line-height:1.15!important;
+    font-weight:900!important;
+  }
+  .view-despesas .v215-subcategory-table-wrap [data-v292-meta-short]::after{
+    content:attr(data-v292-meta-short);
+    font-size:8px!important;
+    line-height:1.12!important;
+    font-weight:750!important;
+  }
+}
+@media(max-width:430px){
+  .view-despesas .v215-subcategory-table-wrap .v215-annual-table{--desc:186px!important}
+}
+</style>
+<script id="v292-planning-sticky-mobile-abbrev-script">
+(function(){
+  const rules=[
+    [/\bRestaurantes\b/gi,'Rest.'],
+    [/\bDelivery\b/gi,'Deliv.'],
+    [/\bDespesas\b/gi,'Desp.'],
+    [/\bdespesas\b/gi,'desp.'],
+    [/\bAssinatura\b/gi,'Assin.'],
+    [/\bSupermercado\b/gi,'Superm.'],
+    [/\bCombustível\b/gi,'Comb.'],
+    [/\bCombustivel\b/gi,'Comb.'],
+    [/\bPassagens\b/gi,'Pass.'],
+    [/\bManutenção\b/gi,'Manut.'],
+    [/\bManutencao\b/gi,'Manut.'],
+    [/\bTransporte\b/gi,'Transp.'],
+    [/\bInvestimentos\b/gi,'Invest.'],
+    [/\bCompartilhado\b/gi,'Comp.'],
+    [/\bFortaleza\b/gi,'Fort.'],
+    [/\bBrasília\b/gi,'BSB'],
+    [/\bBrasilia\b/gi,'BSB'],
+    [/\bDiversos\b/gi,'Div.'],
+    [/\bdiversos\b/gi,'div.']
+  ];
+  function shortText(value){
+    let s=String(value||'').trim();
+    if(!ss)return s;
+    rules.forEach(([a,b])=>s=s.replace(a,b));
+    return s;
+  }
+  function mark(){
+    const root=document.getElementById('app');if(!root)return;
+    root.querySelectorAll('.view-despesas .v215-subcategory-table-wrap .v215-row-copy strong').forEach(el=>{
+      const full=(el.textContent||'').trim();if(!full)return;
+      el.title=full;
+      const short=shortText(full);
+      if(short!==full)el.dataset.v292Short=short;else delete el.dataset.v292Short;
+    });
+    root.querySelectorAll('.view-despesas .v215-subcategory-table-wrap .v291-cat,.view-despesas .v215-subcategory-table-wrap .v291-owner').forEach(el=>{
+      const full=(el.textContent||'').trim();if(!full)return;
+      el.title=full;
+      const short=shortText(full);
+      if(short!==full)el.dataset.v292MetaShort=short;else delete el.dataset.v292MetaShort;
+    });
+  }
+  const prev=postRenderV75;
+  postRenderV75=function(){prev();requestAnimationFrame(mark)};
+  window.addEventListener('resize',()=>requestAnimationFrame(mark),{passive:true});
+  setTimeout(mark,900);
+})();
+</script>
+<!-- V2.92 — primeira coluna congelada no Planejamento/Início e abreviações mobile na tabela de subcategorias. -->
 </body></html>
