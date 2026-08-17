@@ -1,0 +1,37 @@
+name: Apply V292 sticky abbrev
+"on":
+  push:
+    branches: [main]
+    paths: ['.github/workflows/apply-v292-sticky-abbrev.yml']
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Apply V2.92
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import base64,zlib,re
+          p=Path('index.html'); t=p.read_text(encoding='utf-8')
+          old='<!-- Despesas Casal - Controle Financeiro | versão 2.91 -->'
+          if old not in t: raise SystemExit('V2.91 não encontrada')
+          block=zlib.decompress(base64.b64decode('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' )).decode()
+          if 'v292-planning-sticky-mobile-abbrev-style' not in t:
+              t=t.replace('</body>',block+'\n</body>',1)
+          t=t.replace(old,'<!-- Despesas Casal - Controle Financeiro | versão 2.92 -->',1)
+          p.write_text(t,encoding='utf-8')
+          sw=Path('sw.js'); s=sw.read_text(encoding='utf-8')
+          if 'financas-cn-v254' not in s: raise SystemExit('cache v254 não encontrado')
+          sw.write_text(s.replace('financas-cn-v254','financas-cn-v255',1),encoding='utf-8')
+          Path('.github/workflows/apply-v292-sticky-abbrev.yml').unlink()
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html sw.js .github/workflows/apply-v292-sticky-abbrev.yml
+          git commit -m "V2.92: congela primeira coluna e abrevia subcategorias no mobile"
+          git push origin main
