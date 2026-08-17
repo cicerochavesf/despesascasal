@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.90 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.91 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -10482,4 +10482,26 @@ setTimeout(()=>window.v290EnsurePlanningColumns(document.getElementById('app')),
 })();
 </script>
 <!-- V2.90 — ajuste de colunas nas tabelas consolidadas do Planejamento. -->
+<style id="v291-planning-space-optimization-style">
+.view-despesas .v215-table-wrap,.view-receitas .v215-table-wrap{height:auto!important;min-height:0!important;max-height:none!important;overflow-x:auto!important;overflow-y:visible!important;scrollbar-gutter:auto!important}
+.v215-annual-table{--desc:220px;--month:86px;--total:100px;border-spacing:0!important}
+.v215-annual-table th,.v215-annual-table td{padding:7px 6px!important;font-size:10.5px!important;line-height:1.15!important}
+.v215-annual-table th:first-child,.v215-annual-table td:first-child{min-width:var(--desc)!important;width:var(--desc)!important;max-width:var(--desc)!important}
+.v215-annual-table th:not(:first-child):not(:last-child),.v215-annual-table td:not(:first-child):not(:last-child){min-width:var(--month)!important;width:var(--month)!important;max-width:var(--month)!important}
+.v215-annual-table th:last-child,.v215-annual-table td:last-child{min-width:var(--total)!important;width:var(--total)!important;max-width:var(--total)!important}
+.v215-annual-table tfoot td{position:static!important}
+.v215-row-copy{align-items:flex-start!important;gap:6px!important}.v215-row-copy i{width:4px!important;flex:0 0 4px!important;height:35px!important}.v215-row-copy>div{min-width:0!important}
+.v215-row-copy strong{font-size:10.8px!important;line-height:1.15!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+.v215-row-copy small.v291-meta{display:grid!important;gap:1px!important;margin-top:2px!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important}
+.v291-cat,.v291-owner{display:block!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}.v291-cat{font-size:8.6px!important;font-weight:850!important}.v291-owner{font-size:8.1px!important;font-weight:750!important;color:#98A2B3!important}
+.v215-cell-button{padding:3px 2px!important;font-size:10.2px!important}
+.v215-planning-section>.v23-panel-head{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:start!important;gap:6px!important}
+.column-width-button,.v290-planning-width-btn{width:28px!important;min-width:28px!important;max-width:28px!important;height:28px!important;min-height:28px!important;padding:0!important;border:1px solid transparent!important;border-radius:8px!important;background:transparent!important;box-shadow:none!important;color:#98A2B3!important;font-size:0!important;opacity:.65!important}
+.column-width-button:hover,.column-width-button:focus-visible,.v290-planning-width-btn:hover,.v290-planning-width-btn:focus-visible{opacity:1!important;background:#F5F7FA!important;border-color:#E4E7EC!important;color:#475467!important}
+.column-width-button svg{width:14px!important;height:14px!important}.v290-planning-width-btn:before{content:"↔";font-size:15px!important;line-height:1!important}
+@media(min-width:761px) and (max-width:1120px){.v215-annual-table{--desc:200px;--month:80px;--total:94px}}
+@media(max-width:760px){.v215-annual-table{--desc:178px;--month:74px;--total:88px}.v215-planning-section{padding-left:10px!important;padding-right:10px!important}.v215-annual-table th,.v215-annual-table td{padding:7px 5px!important;font-size:10px!important}.v215-row-copy strong{font-size:10.3px!important}.v291-cat{font-size:8.2px!important}.v291-owner{font-size:7.9px!important}}
+@media(max-width:430px){.v215-annual-table{--desc:164px;--month:70px;--total:84px}}
+</style>
+<script id="v291-planning-space-optimization-script">(function(){function f(){const r=document.getElementById('app');if(!r)return;r.querySelectorAll('.view-despesas .v215-subcategory-table-wrap .v215-row-copy small:not([data-v291])').forEach(e=>{const p=(e.textContent||'').split('·').map(x=>x.trim()).filter(Boolean);if(!p.length)return;e.textContent='';e.classList.add('v291-meta');const a=document.createElement('span');a.className='v291-cat';a.textContent=p[0];e.appendChild(a);if(p.length>1){const b=document.createElement('span');b.className='v291-owner';b.textContent=p.slice(1).join(' · ');e.appendChild(b)}e.dataset.v291='1'});const s=[...r.querySelectorAll('.view-despesas .v215-planning-section')].find(x=>x.querySelector('.v215-subcategory-table-wrap')),p=s?.querySelector('.v23-panel-head p');if(p)p.textContent='Toque no nome para editar o ano; toque em um mês para editar somente aquele mês.'}const q=postRenderV75;postRenderV75=function(){q();requestAnimationFrame(f)};setTimeout(f,900)})();</script>
 </body></html>
