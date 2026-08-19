@@ -1,0 +1,37 @@
+name: Apply V294 remove duplicate period
+"on":
+  push:
+    branches: [main]
+    paths: ['.github/workflows/apply-v294-remove-duplicate-period.yml']
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Apply V2.94
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import base64
+          p=Path('index.html'); t=p.read_text(encoding='utf-8')
+          old='<!-- Despesas Casal - Controle Financeiro | versão 2.93 -->'
+          if old not in t: raise SystemExit('V2.93 não encontrada')
+          block=base64.b64decode('PHN0eWxlIGlkPSJ2Mjk0LXJlbW92ZS1kdXBsaWNhdGUtcGVyaW9kLXRvb2xiYXIiPgovKiBWMi45NCDigJQgTW92aW1lbnRhw6fDtWVzOiBtYW50ZXIgc29tZW50ZSBvIHNlbGV0b3IgQW5vL03DqnMgZG8gY2FiZcOnYWxobyAoQSkgZW0gdG9kYXMgYXMgdmlzw7Vlcy4gKi8KaHRtbFtkYXRhLXVpPSJ2MjMiXSAudmlldy1sYW5jYW1lbnRvcyAudjI2NC1tb3ZlbWVudC1oZXJvIC52MjYtbW92ZW1lbnQtdG9vbGJhciwKaHRtbFtkYXRhLXVpPSJ2MjMiXSAudmlldy1sYW5jYW1lbnRvcyAudjI2NC1tb3ZlbWVudC1oZXJvIC52MjctbW92ZW1lbnQtdG9vbGJhcnsKICBkaXNwbGF5Om5vbmUhaW1wb3J0YW50Owp9Cjwvc3R5bGU+CjwhLS0gVjIuOTQg4oCUIHJlbW92aWRvIHNlbGV0b3IgZGUgcGVyw61vZG8gZHVwbGljYWRvIChCKSBubyBjb21wdXRhZG9yLCB0YWJsZXQgZSBjZWx1bGFyLiAtLT4=').decode('utf-8')
+          if 'v294-remove-duplicate-period-toolbar' not in t:
+              t=t.replace('</body>',block+'\n</body>',1)
+          t=t.replace(old,'<!-- Despesas Casal - Controle Financeiro | versão 2.94 -->',1)
+          p.write_text(t,encoding='utf-8')
+          sw=Path('sw.js'); s=sw.read_text(encoding='utf-8')
+          if 'financas-cn-v256' not in s: raise SystemExit('cache v256 não encontrado')
+          sw.write_text(s.replace('financas-cn-v256','financas-cn-v257',1),encoding='utf-8')
+          Path('.github/workflows/apply-v294-remove-duplicate-period.yml').unlink()
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html sw.js .github/workflows/apply-v294-remove-duplicate-period.yml
+          git commit -m "V2.94: remove filtro de período duplicado"
+          git push origin main
