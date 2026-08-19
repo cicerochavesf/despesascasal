@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.93 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.94 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -10674,4 +10674,12 @@ html[data-ui="v23"] #app .view-despesas .v215-planning-section:has(.v215-subcate
 }
 </style>
 <!-- V2.93 — primeira coluna e seu cabeçalho congelados; consolidado por subcategoria expande com a página. -->
+<style id="v294-remove-duplicate-period-toolbar">
+/* V2.94 — Movimentações: manter somente o seletor Ano/Mês do cabeçalho (A) em todas as visões. */
+html[data-ui="v23"] .view-lancamentos .v264-movement-hero .v26-movement-toolbar,
+html[data-ui="v23"] .view-lancamentos .v264-movement-hero .v27-movement-toolbar{
+  display:none!important;
+}
+</style>
+<!-- V2.94 — removido seletor de período duplicado (B) no computador, tablet e celular. -->
 </body></html>
