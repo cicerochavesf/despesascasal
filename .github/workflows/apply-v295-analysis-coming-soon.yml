@@ -1,0 +1,37 @@
+name: Apply V295 analysis coming soon
+"on":
+  push:
+    branches: [main]
+    paths: ['.github/workflows/apply-v295-analysis-coming-soon.yml']
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Apply V2.95
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import base64
+          p=Path('index.html'); t=p.read_text(encoding='utf-8')
+          old='<!-- Despesas Casal - Controle Financeiro | versão 2.94 -->'
+          if old not in t: raise SystemExit('V2.94 não encontrada')
+          block=base64.b64decode('PHN0eWxlIGlkPSJ2Mjk1LWFuYWx5c2lzLWNvbWluZy1zb29uLXN0eWxlIj4KLnYyOTUtYW5hbHlzaXMtY29taW5nLXNvb257CiAgbWluLWhlaWdodDpjbGFtcCgzNjBweCw2MnZoLDY4MHB4KTsKICBkaXNwbGF5OmZsZXg7CiAgYWxpZ24taXRlbXM6Y2VudGVyOwogIGp1c3RpZnktY29udGVudDpjZW50ZXI7CiAgcGFkZGluZzozNnB4IDE2cHggNzJweDsKICB0ZXh0LWFsaWduOmNlbnRlcjsKfQoudjI5NS1hbmFseXNpcy1jb21pbmctc29vbiBzdHJvbmd7CiAgZGlzcGxheTpibG9jazsKICBmb250LXNpemU6Y2xhbXAoMzBweCw1dncsNTJweCk7CiAgbGluZS1oZWlnaHQ6MTsKICBmb250LXdlaWdodDo5NTA7CiAgbGV0dGVyLXNwYWNpbmc6LS4wNGVtOwogIGNvbG9yOnZhcigtLXRleHQsIzBmMTcyYSk7Cn0KQG1lZGlhKG1heC13aWR0aDo3NjBweCl7CiAgLnYyOTUtYW5hbHlzaXMtY29taW5nLXNvb257bWluLWhlaWdodDo1OHZoO3BhZGRpbmc6MjhweCAxMnB4IDkycHh9CiAgLnYyOTUtYW5hbHlzaXMtY29taW5nLXNvb24gc3Ryb25ne2ZvbnQtc2l6ZTozNnB4fQp9Cjwvc3R5bGU+CjxzY3JpcHQgaWQ9InYyOTUtYW5hbHlzaXMtY29taW5nLXNvb24tc2NyaXB0Ij4KKGZ1bmN0aW9uKCl7CiAgcmVuZGVyUnhEPWZ1bmN0aW9uKCl7CiAgICBsYXlvdXQoJzxkaXYgY2xhc3M9InYyOTUtYW5hbHlzaXMtY29taW5nLXNvb24iPjxzdHJvbmc+RW0gYnJldmU8L3N0cm9uZz48L2Rpdj4nKTsKICB9Owp9KSgpOwo8L3NjcmlwdD4KPCEtLSBWMi45NSDigJQgQW7DoWxpc2VzIHRlbXBvcmFyaWFtZW50ZSBzdWJzdGl0dcOtZGFzIHBvciDigJxFbSBicmV2ZeKAnS4gLS0+').decode('utf-8')
+          if 'v295-analysis-coming-soon-script' not in t:
+              t=t.replace('</body>',block+'\n</body>',1)
+          t=t.replace(old,'<!-- Despesas Casal - Controle Financeiro | versão 2.95 -->',1)
+          p.write_text(t,encoding='utf-8')
+          sw=Path('sw.js'); s=sw.read_text(encoding='utf-8')
+          if 'financas-cn-v257' not in s: raise SystemExit('cache v257 não encontrado')
+          sw.write_text(s.replace('financas-cn-v257','financas-cn-v258',1),encoding='utf-8')
+          Path('.github/workflows/apply-v295-analysis-coming-soon.yml').unlink()
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "V2.95: substitui Análises por Em breve"
+          git push origin main
