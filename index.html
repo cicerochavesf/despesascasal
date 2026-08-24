@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.94 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.95 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -10682,4 +10682,34 @@ html[data-ui="v23"] .view-lancamentos .v264-movement-hero .v27-movement-toolbar{
 }
 </style>
 <!-- V2.94 — removido seletor de período duplicado (B) no computador, tablet e celular. -->
+<style id="v295-analysis-coming-soon-style">
+.v295-analysis-coming-soon{
+  min-height:clamp(360px,62vh,680px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:36px 16px 72px;
+  text-align:center;
+}
+.v295-analysis-coming-soon strong{
+  display:block;
+  font-size:clamp(30px,5vw,52px);
+  line-height:1;
+  font-weight:950;
+  letter-spacing:-.04em;
+  color:var(--text,#0f172a);
+}
+@media(max-width:760px){
+  .v295-analysis-coming-soon{min-height:58vh;padding:28px 12px 92px}
+  .v295-analysis-coming-soon strong{font-size:36px}
+}
+</style>
+<script id="v295-analysis-coming-soon-script">
+(function(){
+  renderRxD=function(){
+    layout('<div class="v295-analysis-coming-soon"><strong>Em breve</strong></div>');
+  };
+})();
+</script>
+<!-- V2.95 — Análises temporariamente substituídas por “Em breve”. -->
 </body></html>
