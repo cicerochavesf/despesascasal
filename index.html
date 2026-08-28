@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.95 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.96 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -10712,4 +10712,56 @@ html[data-ui="v23"] .view-lancamentos .v264-movement-hero .v27-movement-toolbar{
 })();
 </script>
 <!-- V2.95 — Análises temporariamente substituídas por “Em breve”. -->
+<style id="v296-analysis-coming-soon-card-style">
+/* V2.96 — placeholder visual de Análises em desenvolvimento. */
+.v296-analysis-coming{
+  min-height:clamp(420px,68vh,760px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:clamp(18px,4vw,42px);
+}
+.v296-analysis-card{
+  width:min(760px,100%);
+  border:1px solid color-mix(in srgb,var(--line,#dbe2ea) 78%,transparent);
+  background:color-mix(in srgb,var(--panel,#fff) 96%,transparent);
+  border-radius:28px;
+  box-shadow:0 18px 50px rgba(15,23,42,.08);
+  padding:clamp(30px,6vw,58px) clamp(22px,6vw,54px);
+  text-align:center;
+  overflow:hidden;
+  position:relative;
+}
+.v296-analysis-card::before{
+  content:"";
+  position:absolute;
+  width:280px;height:280px;
+  border-radius:50%;
+  left:50%;top:34px;
+  transform:translateX(-50%);
+  background:radial-gradient(circle,rgba(99,102,193,.12) 0,rgba(139,92,246,.06) 45%,transparent 70%);
+  pointer-events:none;
+}
+.v296-analysis-icon{
+  position:relative;
+  width:190px;
+  height:168px;
+  margin:0 auto 24px;
+}
+.v296-analysis-icon svg{width:100%;height:100%;display:block;overflow:visible}
+.v296-analysis-card h2{position:relative;margin:0;font-size:clamp(26px,4vw,38px);line-height:1.08;letter-spacing:-.035em;color:var(--text,#0f172a)}
+.v296-analysis-card p{position:relative;margin:14px auto 0;max-width:560px;font-size:clamp(14px,2vw,17px);line-height:1.55;color:var(--muted,#64748b)}
+.v296-analysis-badge{position:relative;display:inline-flex;align-items:center;gap:7px;margin-top:18px;padding:8px 12px;border-radius:999px;background:color-mix(in srgb,#6366f1 10%,var(--panel,#fff));color:#6366f1;font-size:12px;font-weight:800;letter-spacing:.02em}
+.v296-analysis-badge i{width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 0 5px color-mix(in srgb,currentColor 13%,transparent)}
+@media(max-width:760px){.v296-analysis-coming{min-height:calc(100vh - 170px);padding:18px 14px 110px}.v296-analysis-card{border-radius:24px;padding:34px 20px}.v296-analysis-icon{width:158px;height:140px;margin-bottom:20px}}
+</style>
+<script id="v296-analysis-coming-soon-card-script">
+(function(){
+  const icon=`<div class="v296-analysis-icon" aria-hidden="true"><svg viewBox="0 0 220 190" role="img"><defs><linearGradient id="v296g1" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#93c5fd"/><stop offset="1" stop-color="#60a5fa"/></linearGradient><linearGradient id="v296g2" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#6366f1"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient><filter id="v296shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="8" stdDeviation="7" flood-color="#4338ca" flood-opacity=".18"/></filter></defs><circle cx="110" cy="89" r="74" fill="#eef2ff"/><path d="M43 113h132" stroke="#c7d2fe" stroke-width="7" stroke-linecap="round"/><rect x="51" y="87" width="24" height="26" rx="8" fill="url(#v296g1)"/><rect x="83" y="65" width="24" height="48" rx="8" fill="#818cf8"/><rect x="115" y="42" width="24" height="71" rx="8" fill="#6366f1"/><rect x="147" y="22" width="24" height="91" rx="8" fill="url(#v296g2)"/><path d="M47 68c20-31 52-45 92-43" fill="none" stroke="#a5b4fc" stroke-width="4" stroke-linecap="round" stroke-dasharray="4 9"/><g filter="url(#v296shadow)" transform="translate(139 92)"><circle cx="31" cy="31" r="28" fill="#a78bfa"/><circle cx="31" cy="31" r="11" fill="#eef2ff"/><g fill="#a78bfa"><rect x="27" y="-2" width="8" height="13" rx="3"/><rect x="27" y="51" width="8" height="13" rx="3"/><rect x="-2" y="27" width="13" height="8" rx="3"/><rect x="51" y="27" width="13" height="8" rx="3"/><rect x="5" y="6" width="10" height="8" rx="3" transform="rotate(-45 10 10)"/><rect x="47" y="48" width="10" height="8" rx="3" transform="rotate(-45 52 52)"/><rect x="47" y="6" width="10" height="8" rx="3" transform="rotate(45 52 10)"/><rect x="5" y="48" width="10" height="8" rx="3" transform="rotate(45 10 52)"/></g></g><path d="M35 30l4 9 9 4-9 4-4 9-4-9-9-4 9-4 4-9z" fill="#8b5cf6"/><path d="M185 54l3 7 7 3-7 3-3 7-3-7-7-3 7-3 3-7z" fill="#60a5fa"/><circle cx="184" cy="28" r="4" fill="#6366f1"/><circle cx="29" cy="83" r="4" fill="#c084fc"/></svg></div>`;
+  window.renderRxD=function(){
+    layout(`<div class="v296-analysis-coming"><section class="v296-analysis-card">${icon}<h2>Análises em desenvolvimento</h2><p>Estamos preparando uma área mais completa para transformar os dados do orçamento em comparativos e insights financeiros mais úteis.</p><div class="v296-analysis-badge"><i></i>Em breve</div></section></div>`);
+  };
+})();
+</script>
+<!-- V2.96 — Análises em desenvolvimento com ilustração inline responsiva. -->
 </body></html>
