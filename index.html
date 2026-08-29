@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.96 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.97 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -3839,6 +3839,76 @@ form.mobile-filter-sheet[onsubmit*="expense"]>.mobile-filter-actions{grid-column
 </style>
 <!-- V2.85 — filtros de despesas compactados. -->
 
+
+<style id="v297-column-toolbar-containment">
+/* V2.97 — mantém os controles de largura/colunas contidos no card em todas as visões. */
+html[data-ui="v23"] .table-view-toolbar.v289-column-toolbar,
+html[data-ui="v23"] .view-lancamentos .table-view-toolbar,
+html[data-ui="v23"] .view-despesas .table-view-toolbar{
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+  overflow:hidden!important;
+}
+html[data-ui="v23"] .table-view-toolbar .table-view-toolbar-copy{
+  min-width:0!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+html[data-ui="v23"] .table-view-toolbar .table-view-toolbar-actions{
+  min-width:0!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+}
+html[data-ui="v23"] .table-view-toolbar .table-view-toolbar-actions > *,
+html[data-ui="v23"] .table-view-toolbar .column-width-toolbar,
+html[data-ui="v23"] .table-view-toolbar .column-width-button{
+  box-sizing:border-box!important;
+  max-width:100%!important;
+}
+@media (max-width:1120px){
+  html[data-ui="v23"] .view-lancamentos .table-view-toolbar.v289-column-toolbar,
+  html[data-ui="v23"] .view-despesas .table-view-toolbar.v289-column-toolbar{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-end!important;
+    padding:6px!important;
+    margin-left:0!important;
+    margin-right:0!important;
+    transform:none!important;
+  }
+  html[data-ui="v23"] .view-lancamentos .v289-column-toolbar .table-view-toolbar-copy,
+  html[data-ui="v23"] .view-despesas .v289-column-toolbar .table-view-toolbar-copy{
+    display:none!important;
+  }
+  html[data-ui="v23"] .view-lancamentos .v289-column-toolbar .table-view-toolbar-actions,
+  html[data-ui="v23"] .view-despesas .v289-column-toolbar .table-view-toolbar-actions{
+    position:static!important;
+    inset:auto!important;
+    transform:none!important;
+    width:100%!important;
+    min-width:0!important;
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:6px!important;
+    margin:0!important;
+  }
+  html[data-ui="v23"] .view-lancamentos .v289-column-toolbar .table-view-toolbar-actions > *,
+  html[data-ui="v23"] .view-despesas .v289-column-toolbar .table-view-toolbar-actions > *{
+    width:100%!important;
+    min-width:0!important;
+    max-width:100%!important;
+    margin:0!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+  }
+}
+</style>
+<!-- V2.97 — controles de colunas contidos e abertura padrão em Movimentações > Extrato. -->
+
 </head><body><div id="app"></div><div id="modal" class="modal"></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 const storeKey='despesas-casal-profissional-v12';
 const SUPABASE_URL='https://fpcwnjlneaaarzeevgpl.supabase.co';
@@ -4028,7 +4098,7 @@ function prepareDefaultOpening(){
   periodMode='mes';
   state.month=validMonth(typeof v223FinancialMonthForDate==='function'?v223FinancialMonthForDate(localDateId()):currentMonthId());
   txScope='mes';
-  txPanel='acompanhamento';
+  txPanel='realizados';
   txForecastFilters={cat:[],owner:[],city:[],balance:[],payments:[]};
   txRealizedFilters={cat:[],sub:[],owner:[],city:[],payments:[]};
   if(typeof viewSearchTerms!=='undefined')viewSearchTerms.lancamentos='';
