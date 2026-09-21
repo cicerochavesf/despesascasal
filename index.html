@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.115 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.116 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -11396,4 +11396,136 @@ html[data-theme="dark"] .v2106-card-options label:hover{background:#1B2638!impor
 </style>
 
 <!-- V2.115 — filtro de Ano destacado no início de Análises e aplicado a todos os blocos da tela. -->
+
+<style id="v2116-active-analysis-year-filter-style">
+/* V2.116 — filtro de ano no renderizador realmente ativo de Análises. */
+.v2116-analysis-year-filter{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  width:100%;
+  padding:13px 15px;
+  border:1px solid var(--line,#e2e8f0);
+  border-radius:17px;
+  background:var(--panel,#fff);
+  box-shadow:0 8px 22px rgba(15,23,42,.045);
+}
+.v2116-analysis-year-copy{min-width:0}
+.v2116-analysis-year-copy strong{
+  display:block;
+  color:var(--text,#0f172a);
+  font-size:12px;
+  line-height:1.2;
+  font-weight:950;
+}
+.v2116-analysis-year-copy small{
+  display:block;
+  margin-top:3px;
+  color:var(--muted,#64748b);
+  font-size:9.5px;
+  line-height:1.35;
+  font-weight:700;
+}
+.v2116-analysis-year-control{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex:0 0 auto;
+}
+.v2116-analysis-year-control label{
+  color:var(--muted,#64748b);
+  font-size:9px;
+  font-weight:950;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+}
+.v2116-analysis-year-control select{
+  min-width:112px;
+  min-height:38px;
+  padding:7px 32px 7px 11px;
+  border:1px solid var(--line,#dbe3ed);
+  border-radius:11px;
+  background:var(--soft,#f8fafc);
+  color:var(--text,#0f172a);
+  font:inherit;
+  font-size:12px;
+  font-weight:900;
+  outline:none;
+}
+.v2116-analysis-year-control select:focus{
+  border-color:#2854E8;
+  box-shadow:0 0 0 3px rgba(40,84,232,.10);
+}
+@media(max-width:620px){
+  .v2116-analysis-year-filter{
+    align-items:stretch;
+    flex-direction:column;
+    gap:9px;
+    padding:11px 12px;
+  }
+  .v2116-analysis-year-control{
+    width:100%;
+    justify-content:space-between;
+  }
+  .v2116-analysis-year-control select{
+    flex:1 1 auto;
+    max-width:180px;
+  }
+}
+</style>
+<script id="v2116-active-analysis-year-filter-script">
+(function(){
+  function years(){
+    const set=new Set();
+    (state.months||[]).forEach(x=>{
+      const id=typeof x==='string'?x:x?.id;
+      if(/^\d{4}-\d{2}$/.test(String(id||'')))set.add(String(id).slice(0,4));
+    });
+    [state.budgets,state.revenues,state.transactions,state.reallocations].forEach(obj=>{
+      Object.keys(obj||{}).forEach(m=>{if(/^\d{4}-\d{2}$/.test(String(m)))set.add(String(m).slice(0,4));});
+    });
+    const current=String(state.month||currentMonthId()).slice(0,4);
+    if(/^\d{4}$/.test(current))set.add(current);
+    return [...set].sort((a,b)=>Number(b)-Number(a));
+  }
+  function selectedYear(){
+    const raw=Array.isArray(window.v258HomeMulti?.year)?window.v258HomeMulti.year:[];
+    const one=raw.find(y=>/^\d{4}$/.test(String(y||'')));
+    return one||String(state.month||currentMonthId()).slice(0,4);
+  }
+  function markup(){
+    const current=selectedYear(),opts=years().map(y=>'<option value="'+escapeHtml(y)+'" '+(y===current?'selected':'')+'>'+escapeHtml(y)+'</option>').join('');
+    return '<section class="v2116-analysis-year-filter"><div class="v2116-analysis-year-copy"><strong>Filtro de exibição</strong><small>O ano selecionado controla os quadros, categorias e subcategorias abaixo.</small></div><div class="v2116-analysis-year-control"><label for="v2116AnalysisYear">Ano</label><select id="v2116AnalysisYear" onchange="v2116SetAnalysisYear(this.value)">'+opts+'</select></div></section>';
+  }
+  window.v2116SetAnalysisYear=function(year){
+    year=String(year||'');
+    if(!/^\d{4}$/.test(year))return;
+    if(!window.v258HomeMulti||typeof window.v258HomeMulti!=='object')window.v258HomeMulti={};
+    window.v258HomeMulti.year=[year];
+    window.v258HomeMulti.month=['todos'];
+    const all=(state.months||[]).map(x=>typeof x==='string'?x:x?.id).filter(m=>String(m||'').startsWith(year+'-')).sort();
+    const mm=String(state.month||'').slice(5,7);
+    const target=all.find(m=>String(m).slice(5,7)===mm)||all[0];
+    if(target)state.month=target;
+    render();
+  };
+  function inject(){
+    if(view!=='rxd')return;
+    const dashboard=document.querySelector('.v246-home-dashboard.v298-analysis-relocated')||document.querySelector('.v246-home-dashboard');
+    if(!dashboard||dashboard.querySelector('.v2116-analysis-year-filter'))return;
+    const html=markup();
+    const launcher=dashboard.querySelector(':scope > .v2104-transfer-launcher');
+    if(launcher)launcher.insertAdjacentHTML('afterend',html);
+    else dashboard.insertAdjacentHTML('afterbegin',html);
+  }
+  const prev=window.renderRxD;
+  window.renderRxD=function(){prev();inject();};
+  const prevPost=postRenderV75;
+  postRenderV75=function(){prevPost();requestAnimationFrame(inject);};
+  setTimeout(inject,700);
+})();
+</script>
+<!-- V2.116 — filtro de ano visível no renderizador ativo de Análises, abaixo da calculadora de transferência. -->
+
 </body></html>
