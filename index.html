@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.97 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.98 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -10834,4 +10834,39 @@ html[data-ui="v23"] .view-lancamentos .v264-movement-hero .v27-movement-toolbar{
 })();
 </script>
 <!-- V2.96 — Análises em desenvolvimento com ilustração inline responsiva. -->
+
+
+<!-- V2.98 — Início mantém apenas o painel-resumo; demais blocos foram realocados, sem alteração, para Análises. -->
+<style id="v298-home-analysis-relocation-style">
+.v298-analysis-relocated{display:grid;gap:16px;min-width:0}
+</style>
+<script id="v298-home-analysis-relocation-script">
+(function(){
+  const v298FullHomeRender=renderEstrategia;
+  function v298Dashboard(){
+    return document.querySelector('.v246-home-dashboard');
+  }
+  function v298KeepOnlySummary(){
+    const dashboard=v298Dashboard();
+    if(!dashboard)return;
+    const summary=dashboard.querySelector(':scope > .v254-home-panel')||dashboard.firstElementChild;
+    [...dashboard.children].forEach(el=>{if(el!==summary)el.remove()});
+  }
+  function v298KeepOnlyDetails(){
+    const dashboard=v298Dashboard();
+    if(!dashboard)return;
+    const summary=dashboard.querySelector(':scope > .v254-home-panel');
+    if(summary)summary.remove();
+    dashboard.classList.add('v298-analysis-relocated');
+  }
+  renderEstrategia=function(){
+    v298FullHomeRender();
+    v298KeepOnlySummary();
+  };
+  window.renderRxD=function(){
+    v298FullHomeRender();
+    v298KeepOnlyDetails();
+  };
+})();
+</script>
 </body></html>
