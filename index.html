@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.99 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.100 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -10875,6 +10875,141 @@ html[data-ui="v23"] .view-lancamentos .v264-movement-hero .v27-movement-toolbar{
     v298FullHomeRender();
     v298KeepOnlyDetails();
   };
+})();
+</script>
+
+
+<!-- V2.100 — barra horizontal superior + cabeçalho mensal congelado nas matrizes de Análises. -->
+<style id="v2100-matrix-top-scroll-style">
+.v300-matrix-top-scroll{
+  width:100%!important;
+  height:18px!important;
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  margin:0!important;
+  padding:0!important;
+  border-top:1px solid var(--line,#e2e8f0)!important;
+  border-bottom:1px solid var(--line,#e2e8f0)!important;
+  background:color-mix(in srgb,var(--soft,#f8fafc) 88%,var(--panel,#fff))!important;
+  scrollbar-gutter:stable both-edges;
+  -webkit-overflow-scrolling:touch;
+}
+.v300-matrix-top-scroll-inner{
+  height:1px!important;
+  min-height:1px!important;
+}
+.v250-matrix-wrap.table-wrap{
+  position:relative!important;
+  max-height:min(68vh,720px)!important;
+  overflow:auto!important;
+  overscroll-behavior:contain!important;
+  scrollbar-gutter:stable!important;
+}
+.v250-matrix-wrap.table-wrap thead th{
+  position:sticky!important;
+  top:0!important;
+  z-index:60!important;
+  background:color-mix(in srgb,var(--soft,#f8fafc) 88%,var(--panel,#fff))!important;
+  box-shadow:0 2px 0 color-mix(in srgb,var(--line,#e2e8f0) 90%,transparent),0 7px 12px rgba(15,23,42,.06)!important;
+}
+.v250-matrix-wrap.table-wrap thead th:first-child{
+  left:0!important;
+  z-index:80!important;
+}
+.v250-matrix-wrap.table-wrap tbody td:first-child,
+.v250-matrix-wrap.table-wrap tfoot td:first-child{
+  position:sticky!important;
+  left:0!important;
+  z-index:30!important;
+}
+.v250-matrix-wrap.table-wrap tfoot td{
+  position:sticky!important;
+  bottom:0!important;
+  z-index:40!important;
+}
+.v250-matrix-wrap.table-wrap tfoot td:first-child{
+  z-index:50!important;
+}
+html[data-theme="dark"] .v300-matrix-top-scroll{
+  background:#172033!important;
+  border-color:#344054!important;
+}
+html[data-theme="dark"] .v250-matrix-wrap.table-wrap thead th{
+  background:#1B2638!important;
+  border-color:#3A4659!important;
+}
+@media(max-width:760px){
+  .v300-matrix-top-scroll{height:17px!important}
+  .v250-matrix-wrap.table-wrap{max-height:min(62dvh,560px)!important}
+}
+</style>
+<script id="v2100-matrix-top-scroll-script">
+(function(){
+  function v2100SyncTopScroll(wrap,top,inner){
+    const table=wrap?.querySelector('table');
+    if(!table||!top||!inner)return;
+    const width=Math.max(table.scrollWidth,wrap.scrollWidth,wrap.clientWidth);
+    inner.style.width=width+'px';
+    if(Math.abs(top.scrollLeft-wrap.scrollLeft)>1)top.scrollLeft=wrap.scrollLeft;
+  }
+  function v2100BindMatrix(wrap){
+    if(!wrap||wrap.dataset.v2100TopScroll==='1')return;
+    const table=wrap.querySelector('table');
+    if(!table)return;
+    wrap.dataset.v2100TopScroll='1';
+    let top=document.createElement('div');
+    top.className='v300-matrix-top-scroll';
+    top.setAttribute('aria-label','Rolagem horizontal da tabela');
+    top.innerHTML='<div class="v300-matrix-top-scroll-inner"></div>';
+    wrap.parentNode.insertBefore(top,wrap);
+    const inner=top.firstElementChild;
+    let syncing=false;
+    top.addEventListener('scroll',()=>{
+      if(syncing)return;
+      syncing=true;
+      wrap.scrollLeft=top.scrollLeft;
+      requestAnimationFrame(()=>{syncing=false});
+    },{passive:true});
+    wrap.addEventListener('scroll',()=>{
+      if(syncing)return;
+      syncing=true;
+      top.scrollLeft=wrap.scrollLeft;
+      requestAnimationFrame(()=>{syncing=false});
+    },{passive:true});
+    const refresh=()=>v2100SyncTopScroll(wrap,top,inner);
+    refresh();
+    if('ResizeObserver' in window){
+      const ro=new ResizeObserver(refresh);
+      ro.observe(wrap);
+      ro.observe(table);
+      wrap._v2100ResizeObserver=ro;
+    }
+    requestAnimationFrame(refresh);
+    setTimeout(refresh,120);
+  }
+  window.v2100InitMatrixTopScroll=function(root=document.getElementById('app')){
+    if(!root)return;
+    root.querySelectorAll('.v250-cat-matrix,.v250-sub-matrix').forEach(v2100BindMatrix);
+  };
+  const previousPostRenderV2100=postRenderV75;
+  postRenderV75=function(){
+    previousPostRenderV2100();
+    requestAnimationFrame(()=>window.v2100InitMatrixTopScroll(document.getElementById('app')));
+  };
+  const previousApplyColumnWidthsV2100=applyColumnWidthsToTable;
+  applyColumnWidthsToTable=function(table,widths){
+    previousApplyColumnWidthsV2100(table,widths);
+    const wrap=table?.closest?.('.v250-cat-matrix,.v250-sub-matrix');
+    if(wrap){
+      requestAnimationFrame(()=>{
+        const top=wrap.previousElementSibling?.classList?.contains('v300-matrix-top-scroll')
+          ? wrap.previousElementSibling
+          : null;
+        if(top)v2100SyncTopScroll(wrap,top,top.firstElementChild);
+      });
+    }
+  };
+  setTimeout(()=>window.v2100InitMatrixTopScroll(document.getElementById('app')),900);
 })();
 </script>
 </body></html>
