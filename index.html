@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.100 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.101 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -11012,4 +11012,32 @@ html[data-theme="dark"] .v250-matrix-wrap.table-wrap thead th{
   setTimeout(()=>window.v2100InitMatrixTopScroll(document.getElementById('app')),900);
 })();
 </script>
+
+
+<!-- V2.101 — Total planejado deixa de ficar congelado; matriz de subcategorias ganha mais altura. -->
+<style id="v2101-matrix-height-tfoot-fix-style">
+/* A última linha deve acompanhar normalmente a rolagem vertical. */
+.v250-matrix-wrap.table-wrap tfoot td{
+  position:static!important;
+  bottom:auto!important;
+  z-index:auto!important;
+}
+/* Mantém apenas a primeira célula do rodapé acompanhando a coluna fixa na horizontal. */
+.v250-matrix-wrap.table-wrap tfoot td:first-child{
+  position:sticky!important;
+  left:0!important;
+  bottom:auto!important;
+  z-index:31!important;
+}
+
+/* A visão por subcategorias precisa comportar muito mais linhas antes de rolar. */
+.v250-sub-matrix.table-wrap{
+  max-height:min(190vh,1900px)!important;
+}
+@media(max-width:760px){
+  .v250-sub-matrix.table-wrap{
+    max-height:min(180dvh,1500px)!important;
+  }
+}
+</style>
 </body></html>
