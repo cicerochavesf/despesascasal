@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.98 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.99 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -8509,12 +8509,14 @@ requestAnimationFrame(v240EnhanceMobileAuthorBadge);
     if(!items.length)return '<div class="v250-empty">Nenhum valor planejado encontrado neste recorte.</div>';
     const body=items.map(item=>`<tr><td><div class="v250-matrix-name" style="--v250-color:${escapeHtml(item.color)}"><i></i><div><strong>${escapeHtml(item.name)}</strong>${isSub?`<small>${escapeHtml(item.category)}</small>`:''}</div></div></td>${months.map(m=>`<td>${Math.abs(item.values.get(m)||0)>.005?fmt(item.values.get(m)||0):'<span class="v212-zero">—</span>'}</td>`).join('')}<td class="v250-total">${fmt(item.total)}</td></tr>`).join('');
     const monthTotals=months.map(m=>items.reduce((s,item)=>s+Number(item.values.get(m)||0),0)),grand=monthTotals.reduce((a,b)=>a+b,0);
-    return `<div class="v250-matrix-wrap v250-${kind}-matrix"><table><thead><tr><th>${isSub?'Subcategoria':'Categoria'}</th>${months.map(m=>`<th>${escapeHtml(v250MonthLabel(m))}</th>`).join('')}<th>Total</th></tr></thead><tbody>${body}</tbody><tfoot><tr><td>Total planejado</td>${monthTotals.map(v=>`<td>${fmt(v)}</td>`).join('')}<td>${fmt(grand)}</td></tr></tfoot></table></div>`;
+    return `<div class="v250-matrix-wrap table-wrap v250-${kind}-matrix"><table><thead><tr><th>${isSub?'Subcategoria':'Categoria'}</th>${months.map(m=>`<th>${escapeHtml(v250MonthLabel(m))}</th>`).join('')}<th>Total</th></tr></thead><tbody>${body}</tbody><tfoot><tr><td>Total planejado</td>${monthTotals.map(v=>`<td>${fmt(v)}</td>`).join('')}<td>${fmt(grand)}</td></tr></tfoot></table></div>`;
   }
   function v250OpenWidth(kind){
     const root=document.getElementById('app'),wrap=root?.querySelector(kind==='sub'?'.v250-sub-matrix':'.v250-cat-matrix'),table=wrap?.querySelector('table');
     if(!table)return alert('Esta tabela não está disponível no recorte atual.');
+    wrap.classList.add('table-wrap');
     if(!table.dataset.columnKey&&typeof initColumnWidthEditors==='function')initColumnWidthEditors(root);
+    if(typeof installColumnDragResizers==='function')installColumnDragResizers(root);
     const key=table.dataset.columnKey;if(!key)return alert('Não foi possível abrir a configuração das colunas.');
     openColumnWidthEditor(encodeURIComponent(key));
   }
@@ -8535,8 +8537,8 @@ requestAnimationFrame(v240EnhanceMobileAuthorBadge);
   window.v250HomeMatrices=v250HomeMatrices;
   const legacyTitle=tableTitleFromContext;
   tableTitleFromContext=function(wrap){
-    if(wrap?.classList?.contains('v250-cat-matrix'))return 'Início — visão mensal por categorias';
-    if(wrap?.classList?.contains('v250-sub-matrix'))return 'Início — visão mensal por subcategorias';
+    if(wrap?.classList?.contains('v250-cat-matrix'))return 'Análises — visão mensal por categorias';
+    if(wrap?.classList?.contains('v250-sub-matrix'))return 'Análises — visão mensal por subcategorias';
     return legacyTitle(wrap);
   };
   renderEstrategia=function(){
@@ -8579,7 +8581,7 @@ requestAnimationFrame(v240EnhanceMobileAuthorBadge);
   postRenderV75=function(){
     legacyPostRenderV75();
     const app=document.getElementById('app');
-    if(view==='estrategia'&&app){
+    if((view==='estrategia'||view==='rxd')&&app){
       requestAnimationFrame(()=>{
         if(typeof initColumnWidthEditors==='function')initColumnWidthEditors(app);
         if(typeof installColumnDragResizers==='function'&&(!window.matchMedia||window.matchMedia('(min-width:761px)').matches))installColumnDragResizers(app);
@@ -10835,6 +10837,12 @@ html[data-ui="v23"] .view-lancamentos .v264-movement-hero .v27-movement-toolbar{
 </script>
 <!-- V2.96 — Análises em desenvolvimento com ilustração inline responsiva. -->
 
+
+<!-- V2.99 — correção do ajuste de largura nas matrizes de categorias e subcategorias em Análises. -->
+<style id="v299-analysis-column-width-fix-style">
+.v250-matrix-panel>.column-width-toolbar{display:none!important}
+.v250-matrix-wrap.table-wrap .column-resize-handle{display:block!important}
+</style>
 
 <!-- V2.98 — Início mantém apenas o painel-resumo; demais blocos foram realocados, sem alteração, para Análises. -->
 <style id="v298-home-analysis-relocation-style">
