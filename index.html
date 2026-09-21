@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.110 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.111 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -11240,7 +11240,7 @@ function store(){if(!Array.isArray(state.transferCalculations))state.transferCal
 function defaultPerson(){const m=authUser?.user_metadata||{},id=norm([authUser?.email||'',m.full_name||'',m.name||''].join(' '));return id.includes('nilce')?'Nilce':'Cícero'}
 function yearsList(){const a=[...new Set((state.months||[]).map(x=>String(x.id||'').slice(0,4)).filter(Boolean))].sort();return a.length?a:[String(new Date().getFullYear())]}
 function monthsOf(y){const a=(state.months||[]).map(x=>x.id).filter(id=>String(id).startsWith(String(y)+'-')).sort();return a.length?a:(typeof v213MonthsForYear==='function'?v213MonthsForYear(String(y)):[])}
-function planned(person,month){return (state.budgets?.[month]||[]).reduce((s,b)=>{const o=typeof budgetOwner==='function'?budgetOwner(b):(b.owner||b.responsible||ownerOf(b.city||cityOf(b.sub||'')));if(norm(o)!==norm(person))return s;return s+Number(typeof budgetLineAdjusted==='function'?budgetLineAdjusted(month,b):b.planned||0)},0)}
+function planned(person,month){const r=revObj(month);return norm(person)==='nilce'?Number(r.nilce||0):Number(r.cicero||0)}
 function txItems(month){return (state.transactions?.[month]||[]).map((t,i)=>{const city=t.city||cityOf(t.sub||t.description||t.desc||''),resp=String(t.responsible||ownerOf(city)||''),payer=String(t.payer||resp||'');return{id:String(t.id||('tx_'+month+'_'+i)),date:String(t.date||month+'-01'),description:cleanName(t.description||t.desc||'Lançamento'),sub:cleanName(t.sub||''),catId:String(t.cat||''),category:cat(t.cat||'').name||String(t.cat||''),city,responsible:resp,payer,card:typeof paymentDisplayName==='function'?paymentDisplayName(t.card):String(t.card||'-'),amount:Number(t.amount||0)}}).sort((a,b)=>a.date.localeCompare(b.date)||textCmp(a.description,b.description))}
 function history(person,month){return store().filter(x=>norm(x.person)===norm(person)&&x.month===month).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')))}
 function latest(month){return store().filter(x=>x.month===month).sort((a,b)=>String(b.createdAt||'').localeCompare(String(a.createdAt||'')))[0]||null}
@@ -11331,4 +11331,6 @@ html[data-theme="dark"] .v2106-card-options label:hover{background:#1B2638!impor
 })();
 </script>
 
+
+<!-- V2.111 — valor previsto da calculadora usa exatamente a receita prevista da pessoa na tabela Origem da receita. -->
 </body></html>
