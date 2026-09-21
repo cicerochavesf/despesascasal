@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.107 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.108 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -11264,10 +11264,10 @@ function refresh(){const s=document.querySelector('#modal .sheet');if(!s||!draft
 function restore(){const x=history(draft.person,draft.month)[0];draft.selected=new Set((x?.selectedIds||[]).map(String))}
 function launcher(){const m=state.month||currentMonthId(),x=latest(m);return'<button type="button" class="v2104-transfer-launcher" onclick="v2104OpenTransfer()"><div><div class="v2104-eyebrow"><i></i>Calculadora de transferência</div><h2>Quanto eu devo transferir?</h2><p>Escolha Cícero ou Nilce, veja o valor previsto do mês e selecione os lançamentos que já devem ser abatidos.</p></div><div class="v2104-launch-result"><span>'+(x?'Último cálculo deste mês':'Calcular agora')+'</span><strong>'+(x?money(x.transfer):'Abrir →')+'</strong><small>'+(x?escapeHtml(x.person)+' · '+escapeHtml(labelMonth(x.month))+'/'+escapeHtml(x.month.slice(0,4)):'Cícero ou Nilce · mês e ano')+'</small></div></button>'}
 function inject(){if(view!=='rxd')return;const d=document.querySelector('.v246-home-dashboard.v298-analysis-relocated')||document.querySelector('.v246-home-dashboard');if(d&&!d.querySelector('.v2104-transfer-launcher'))d.insertAdjacentHTML('afterbegin',launcher())}
-window.v2104OpenTransfer=function(){const person=defaultPerson(),month=state.month||validMonth(currentMonthId());draft={person,month,filters:{search:'',payer:person,cat:'todos',city:'todos',cards:[]},selected:new Set,cardPickerOpen:false};restore();modal(modalHtml())}
-window.v2104Person=function(v){draft.person=v==='Nilce'?'Nilce':'Cícero';draft.filters.payer=draft.person;restore();refresh()}
-window.v2104Year=function(y){const a=monthsOf(y),mm=draft.month.slice(5,7);draft.month=a.find(x=>x.slice(5,7)===mm)||a[0]||draft.month;draft.filters={search:'',payer:draft.person,cat:'todos',city:'todos',cards:[]};draft.cardPickerOpen=false;restore();refresh()}
-window.v2104Month=function(m){draft.month=m;draft.filters={search:'',payer:draft.person,cat:'todos',city:'todos',cards:[]};draft.cardPickerOpen=false;restore();refresh()}
+window.v2104OpenTransfer=function(){const person=defaultPerson(),month=state.month||validMonth(currentMonthId());draft={person,month,filters:{search:'',payer:'todos',cat:'todos',city:'todos',cards:[]},selected:new Set,cardPickerOpen:false};restore();modal(modalHtml())}
+window.v2104Person=function(v){draft.person=v==='Nilce'?'Nilce':'Cícero';restore();refresh()}
+window.v2104Year=function(y){const a=monthsOf(y),mm=draft.month.slice(5,7);draft.month=a.find(x=>x.slice(5,7)===mm)||a[0]||draft.month;draft.filters={search:'',payer:'todos',cat:'todos',city:'todos',cards:[]};draft.cardPickerOpen=false;restore();refresh()}
+window.v2104Month=function(m){draft.month=m;draft.filters={search:'',payer:'todos',cat:'todos',city:'todos',cards:[]};draft.cardPickerOpen=false;restore();refresh()}
 window.v2104Filter=function(k,v){draft.filters[k]=String(v||'');refresh();if(k==='search')requestAnimationFrame(()=>{const el=document.querySelector('#modal .v2104-filter.search input');if(el){el.focus();const n=el.value.length;try{el.setSelectionRange(n,n)}catch(e){}}})}
 window.v2106ToggleCardPicker=function(){if(!draft)return;draft.cardPickerOpen=!draft.cardPickerOpen;refresh()}
 window.v2106ToggleCard=function(value,checked){if(!draft)return;const a=cardSelection(),key=norm(value);draft.filters.cards=checked?[...a.filter(x=>norm(x)!==key),value]:a.filter(x=>norm(x)!==key);draft.filters.card='todos';draft.cardPickerOpen=true;refresh()}
@@ -11278,7 +11278,7 @@ window.v2104SelectPaid=function(){txItems(draft.month).filter(x=>norm(x.payer)==
 window.v2104Clear=function(){draft.selected.clear();refresh()}
 window.v2104Copy=async function(btn){const v=money(sums().transfer);try{await navigator.clipboard.writeText(v);const t=btn.textContent;btn.textContent='Copiado ✓';setTimeout(()=>btn.textContent=t,1200)}catch(e){alert('Valor a transferir: '+v)}}
 window.v2104Save=function(){const s=sums(),items=chosen(),a=store(),x={id:'transfer_calc_'+Date.now()+'_'+Math.random().toString(36).slice(2),person:draft.person,month:draft.month,planned:s.planned,deducted:s.deducted,balance:s.raw,transfer:s.transfer,credit:s.credit,selectedIds:items.map(i=>i.id),selectedCount:items.length,items:items.map(i=>({id:i.id,date:i.date,description:i.description,category:i.category,city:i.city,payer:i.payer,amount:i.amount})),createdBy:typeof columnWidthUserLabel==='function'?columnWidthUserLabel():'',createdAt:new Date().toISOString()};const previous=a.filter(i=>norm(i.person)===norm(draft.person)&&i.month===draft.month);state.transferCalculations=a.filter(i=>!(norm(i.person)===norm(draft.person)&&i.month===draft.month));state.transferCalculations.push(x);if(!save()){state.transferCalculations=a;return}closeModal();render()}
-window.v2104LoadTransfer=function(id){const x=store().find(i=>String(i.id)===decodeURIComponent(id));if(!x)return;draft.person=x.person==='Nilce'?'Nilce':'Cícero';draft.month=x.month;draft.filters={search:'',payer:draft.person,cat:'todos',city:'todos',cards:[]};draft.cardPickerOpen=false;draft.selected=new Set((x.selectedIds||[]).map(String));refresh()}
+window.v2104LoadTransfer=function(id){const x=store().find(i=>String(i.id)===decodeURIComponent(id));if(!x)return;draft.person=x.person==='Nilce'?'Nilce':'Cícero';draft.month=x.month;draft.filters={search:'',payer:'todos',cat:'todos',city:'todos',cards:[]};draft.cardPickerOpen=false;draft.selected=new Set((x.selectedIds||[]).map(String));refresh()}
 const prev=window.renderRxD;window.renderRxD=function(){prev();inject()};
 const prevPost=postRenderV75;postRenderV75=function(){prevPost();requestAnimationFrame(inject)};
 setTimeout(inject,700);
@@ -11304,4 +11304,6 @@ html[data-theme="dark"] .v2106-card-options label:hover{background:#1B2638!impor
 </style>
 
 <!-- V2.107 — mantém somente o último cálculo salvo por pessoa e mês na calculadora de transferência. -->
+
+<!-- V2.108 — calculadora mostra todos os lançamentos do mês, independentemente de Cícero, Nilce ou Compartilhado. -->
 </body></html>
