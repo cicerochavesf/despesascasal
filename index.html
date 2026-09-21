@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.101 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.102 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -11037,6 +11037,55 @@ html[data-theme="dark"] .v250-matrix-wrap.table-wrap thead th{
 @media(max-width:760px){
   .v250-sub-matrix.table-wrap{
     max-height:min(180dvh,1500px)!important;
+  }
+}
+</style>
+
+
+<!-- V2.102 — fixa cabeçalho Subcategoria, aumenta altura de Categorias e restaura Total planejado congelado. -->
+<style id="v2102-matrix-freeze-height-style">
+/* A primeira célula do cabeçalho da matriz de subcategorias deve ficar fixa nos dois eixos. */
+.v250-sub-matrix.table-wrap thead th:first-child{
+  position:sticky!important;
+  top:0!important;
+  left:0!important;
+  z-index:140!important;
+  background:color-mix(in srgb,var(--soft,#f8fafc) 90%,var(--panel,#fff))!important;
+  box-shadow:8px 0 12px -12px rgba(15,23,42,.32),0 2px 0 color-mix(in srgb,var(--line,#e2e8f0) 90%,transparent)!important;
+}
+
+/* A visão mensal por categorias ganha cerca de 30% mais altura útil. */
+.v250-cat-matrix.table-wrap{
+  max-height:min(88vh,936px)!important;
+}
+
+/* Total planejado volta a permanecer congelado no rodapé. */
+.v250-matrix-wrap.table-wrap tfoot td{
+  position:sticky!important;
+  bottom:0!important;
+  z-index:55!important;
+  background:color-mix(in srgb,var(--soft,#f8fafc) 78%,var(--panel,#fff))!important;
+  box-shadow:0 -2px 0 color-mix(in srgb,var(--line,#e2e8f0) 90%,transparent),0 -7px 12px rgba(15,23,42,.05)!important;
+}
+.v250-matrix-wrap.table-wrap tfoot td:first-child{
+  position:sticky!important;
+  left:0!important;
+  bottom:0!important;
+  z-index:75!important;
+}
+
+html[data-theme="dark"] .v250-sub-matrix.table-wrap thead th:first-child{
+  background:#1B2638!important;
+  border-color:#3A4659!important;
+}
+html[data-theme="dark"] .v250-matrix-wrap.table-wrap tfoot td{
+  background:#172033!important;
+  border-color:#344054!important;
+}
+
+@media(max-width:760px){
+  .v250-cat-matrix.table-wrap{
+    max-height:min(81dvh,728px)!important;
   }
 }
 </style>
