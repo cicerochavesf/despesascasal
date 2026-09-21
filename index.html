@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.117 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.118 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -11574,5 +11574,96 @@ html[data-theme="dark"] .v2106-card-options label:hover{background:#1B2638!impor
 }
 </style>
 <!-- V2.117 — calculadora de transferência centralizada; rolagem horizontal fica restrita à tabela interna. -->
+
+
+<style id="v2118-backup-collapse-style">
+/* V2.118 — lista de backups automáticos recolhida por padrão. */
+.v2118-backup-actions{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:7px;
+  flex-wrap:wrap;
+}
+.v2118-backup-toggle{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+}
+.v2118-backup-toggle i{
+  display:inline-block;
+  width:7px;
+  height:7px;
+  border-right:2px solid currentColor;
+  border-bottom:2px solid currentColor;
+  transform:rotate(45deg) translateY(-1px);
+  transition:transform .16s ease;
+}
+.v2118-backup-toggle.is-open i{
+  transform:rotate(225deg) translate(-1px,-1px);
+}
+.v2118-backup-list-wrap{
+  display:none;
+  margin-top:12px;
+}
+.v2118-backup-list-wrap.is-open{
+  display:block;
+}
+@media(max-width:620px){
+  .backup-card>.section-title{
+    align-items:flex-start;
+  }
+  .v2118-backup-actions{
+    width:100%;
+    justify-content:stretch;
+  }
+  .v2118-backup-actions .tiny{
+    flex:1 1 130px;
+  }
+}
+</style>
+<script id="v2118-backup-collapse-script">
+(function(){
+  window.v2118BackupsExpanded=window.v2118BackupsExpanded===true;
+
+  window.v2118ToggleBackups=function(){
+    window.v2118BackupsExpanded=!window.v2118BackupsExpanded;
+    if(view==='config')render();
+  };
+
+  backupManagerCard=function(){
+    const latest=cloudBackups[0];
+    const latestInfo=latest?backupDisplayDate(latest.id,latest.updated_at):null;
+    const rows=cloudBackups.slice(0,BACKUP_RETENTION_DAYS).map(b=>{
+      const d=backupDisplayDate(b.id,b.updated_at);
+      return `<div class="backup-row"><div class="backup-row-main"><strong>${d.day}</strong><small>Snapshot salvo em ${d.time||'horário não informado'} · ${b.id}</small></div><button class="tiny" onclick="restoreCloudBackup('${b.id}')">Restaurar este dia</button></div>`;
+    }).join('');
+    const expanded=window.v2118BackupsExpanded===true;
+    return `<div class="card backup-card">
+      <div class="section-title">
+        <div>
+          <h3>Backups automáticos da nuvem</h3>
+          <span>Um snapshot a cada 24 horas · retenção dos últimos ${BACKUP_RETENTION_DAYS}</span>
+        </div>
+        <div class="v2118-backup-actions">
+          <button class="tiny v2118-backup-toggle ${expanded?'is-open':''}" type="button" onclick="v2118ToggleBackups()"><i></i>${expanded?'Recolher backups':'Expandir backups'}${cloudBackups.length?' ('+cloudBackups.length+')':''}</button>
+          <button class="tiny" type="button" onclick="refreshBackupList()">Atualizar lista</button>
+        </div>
+      </div>
+      <div class="backup-summary">
+        <div class="backup-stat"><span>Backups disponíveis</span><strong>${cloudBackups.length}</strong></div>
+        <div class="backup-stat"><span>Backup mais recente</span><strong>${latestInfo?latestInfo.day:'Ainda não criado'}</strong></div>
+        <div class="backup-stat"><span>Fonte ativa</span><strong>Nuvem Supabase</strong></div>
+      </div>
+      ${cloudBackupError?`<div class="backup-warning">O estado principal sincronizou, mas os backups versionados apresentaram erro: ${escapeHtml(cloudBackupError)}</div>`:`<div class="backup-ok">O app abre bloqueado, baixa primeiro o estado principal da nuvem e só então libera as edições.</div>`}
+      <div class="v2118-backup-list-wrap ${expanded?'is-open':''}">
+        <div class="backup-list">${rows||'<div class="empty">Nenhum snapshot disponível ainda. O primeiro será criado automaticamente.</div>'}</div>
+      </div>
+    </div>`;
+  };
+})();
+</script>
+<!-- V2.118 — Backups automáticos recolhidos por padrão, com opção Expandir/Recolher. -->
 
 </body></html>
