@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.102 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.103 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -11089,4 +11089,102 @@ html[data-theme="dark"] .v250-matrix-wrap.table-wrap tfoot td{
   }
 }
 </style>
+
+
+<!-- V2.103 — reforço visual para manter "Subcategoria" congelado no canto superior esquerdo. -->
+<style id="v2103-subcategory-corner-fix-style">
+.v2103-subcategory-sticky-corner{
+  position:sticky!important;
+  top:0!important;
+  left:0!important;
+  z-index:500!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  box-sizing:border-box!important;
+  padding:11px 12px!important;
+  margin:0!important;
+  margin-bottom:var(--v2103-corner-negative-height,-44px)!important;
+  min-height:var(--v2103-corner-height,44px)!important;
+  height:var(--v2103-corner-height,44px)!important;
+  width:var(--v2103-corner-width,220px)!important;
+  min-width:var(--v2103-corner-width,220px)!important;
+  max-width:var(--v2103-corner-width,220px)!important;
+  background:color-mix(in srgb,var(--soft,#f8fafc) 90%,var(--panel,#fff))!important;
+  color:#344054!important;
+  border-top:1px solid #D9E1EB!important;
+  border-bottom:1px solid #C9D4E1!important;
+  border-left:1px solid #D9E1EB!important;
+  font-size:11px!important;
+  line-height:1.15!important;
+  font-weight:950!important;
+  letter-spacing:.06em!important;
+  text-transform:uppercase!important;
+  white-space:nowrap!important;
+  pointer-events:none!important;
+  box-shadow:8px 0 12px -12px rgba(15,23,42,.34),0 3px 8px rgba(15,23,42,.06)!important;
+}
+html[data-theme="dark"] .v2103-subcategory-sticky-corner{
+  background:#1B2638!important;
+  color:#D7DFEA!important;
+  border-color:#3A4659!important;
+}
+@media(max-width:760px){
+  .v2103-subcategory-sticky-corner{
+    padding:9px!important;
+    font-size:9.5px!important;
+  }
+}
+</style>
+<script id="v2103-subcategory-corner-fix-script">
+(function(){
+  function v2103RefreshCorner(wrap,corner){
+    const th=wrap?.querySelector('thead th:first-child');
+    if(!th||!corner)return;
+    const rect=th.getBoundingClientRect();
+    const width=Math.max(1,Math.round(rect.width||th.offsetWidth||220));
+    const height=Math.max(1,Math.round(rect.height||th.offsetHeight||44));
+    corner.style.setProperty('--v2103-corner-width',width+'px');
+    corner.style.setProperty('--v2103-corner-height',height+'px');
+    corner.style.setProperty('--v2103-corner-negative-height',(-height)+'px');
+  }
+  function v2103InstallCorner(wrap){
+    if(!wrap)return;
+    let corner=wrap.querySelector(':scope > .v2103-subcategory-sticky-corner');
+    if(!corner){
+      corner=document.createElement('div');
+      corner.className='v2103-subcategory-sticky-corner';
+      corner.textContent='Subcategoria';
+      wrap.insertBefore(corner,wrap.firstChild);
+    }
+    const refresh=()=>v2103RefreshCorner(wrap,corner);
+    refresh();
+    requestAnimationFrame(refresh);
+    setTimeout(refresh,120);
+    if(!wrap._v2103CornerObserver&&'ResizeObserver' in window){
+      const ro=new ResizeObserver(refresh);
+      const table=wrap.querySelector('table');
+      if(table)ro.observe(table);
+      ro.observe(wrap);
+      wrap._v2103CornerObserver=ro;
+    }
+  }
+  window.v2103EnsureSubcategoryCorner=function(root=document.getElementById('app')){
+    if(!root)return;
+    root.querySelectorAll('.v250-sub-matrix.table-wrap').forEach(v2103InstallCorner);
+  };
+  const previousPostRenderV2103=postRenderV75;
+  postRenderV75=function(){
+    previousPostRenderV2103();
+    requestAnimationFrame(()=>window.v2103EnsureSubcategoryCorner(document.getElementById('app')));
+  };
+  const previousApplyColumnWidthsV2103=applyColumnWidthsToTable;
+  applyColumnWidthsToTable=function(table,widths){
+    previousApplyColumnWidthsV2103(table,widths);
+    const wrap=table?.closest?.('.v250-sub-matrix.table-wrap');
+    if(wrap)requestAnimationFrame(()=>window.v2103EnsureSubcategoryCorner(document.getElementById('app')));
+  };
+  setTimeout(()=>window.v2103EnsureSubcategoryCorner(document.getElementById('app')),900);
+})();
+</script>
 </body></html>
