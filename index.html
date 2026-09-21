@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.111 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.112 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -8498,16 +8498,18 @@ requestAnimationFrame(v240EnhanceMobileAuthorBadge);
     const months=v250Months(monthIds),map=new Map();
     (rows||[]).forEach(row=>{
       const catId=row.b?.cat||row.catId||'',name=cleanName(row.b?.sub||row.name||row.sub||''); if(!catId||!name)return;
-      const key=[catId,norm(name)].join('|');
-      if(!map.has(key))map.set(key,{key,catId,name,category:cat(catId)?.name||catId,color:cat(catId)?.color||'#64748b',values:new Map(months.map(m=>[m,0]))});
+      const city=row.city||row.b?.city||cityOf(row.b?.sub||row.sub||'');
+      const owner=row.owner||((row.b&&typeof budgetOwner==='function')?budgetOwner(row.b):ownerOf(city));
+      const key=[catId,norm(name),norm(city),norm(owner)].join('|');
+      if(!map.has(key))map.set(key,{key,catId,name,category:cat(catId)?.name||catId,city,owner,color:cat(catId)?.color||'#64748b',values:new Map(months.map(m=>[m,0]))});
       const item=map.get(key); item.values.set(row.month,(item.values.get(row.month)||0)+Number(row.planned||0));
     });
-    return [...map.values()].map(item=>({...item,total:months.reduce((s,m)=>s+(item.values.get(m)||0),0)})).filter(item=>Math.abs(item.total)>.005).sort((a,b)=>textCmp(a.category,b.category)||textCmp(a.name,b.name));
+    return [...map.values()].map(item=>({...item,total:months.reduce((s,m)=>s+(item.values.get(m)||0),0)})).filter(item=>Math.abs(item.total)>.005).sort((a,b)=>textCmp(a.category,b.category)||textCmp(a.name,b.name)||textCmp(a.city,b.city)||textCmp(a.owner,b.owner));
   }
   function v250MatrixTable(kind,monthIds,items){
     const months=v250Months(monthIds),isSub=kind==='sub';
     if(!items.length)return '<div class="v250-empty">Nenhum valor planejado encontrado neste recorte.</div>';
-    const body=items.map(item=>`<tr><td><div class="v250-matrix-name" style="--v250-color:${escapeHtml(item.color)}"><i></i><div><strong>${escapeHtml(item.name)}</strong>${isSub?`<small>${escapeHtml(item.category)}</small>`:''}</div></div></td>${months.map(m=>`<td>${Math.abs(item.values.get(m)||0)>.005?fmt(item.values.get(m)||0):'<span class="v212-zero">—</span>'}</td>`).join('')}<td class="v250-total">${fmt(item.total)}</td></tr>`).join('');
+    const body=items.map(item=>`<tr><td><div class="v250-matrix-name" style="--v250-color:${escapeHtml(item.color)}"><i></i><div><strong>${escapeHtml(item.name)}</strong>${isSub?`<small>${escapeHtml(item.category)} · ${escapeHtml(item.city||'')} · ${escapeHtml(item.owner||'')}</small>`:''}</div></div></td>${months.map(m=>`<td>${Math.abs(item.values.get(m)||0)>.005?fmt(item.values.get(m)||0):'<span class="v212-zero">—</span>'}</td>`).join('')}<td class="v250-total">${fmt(item.total)}</td></tr>`).join('');
     const monthTotals=months.map(m=>items.reduce((s,item)=>s+Number(item.values.get(m)||0),0)),grand=monthTotals.reduce((a,b)=>a+b,0);
     return `<div class="v250-matrix-wrap table-wrap v250-${kind}-matrix"><table><thead><tr><th>${isSub?'Subcategoria':'Categoria'}</th>${months.map(m=>`<th>${escapeHtml(v250MonthLabel(m))}</th>`).join('')}<th>Total</th></tr></thead><tbody>${body}</tbody><tfoot><tr><td>Total planejado</td>${monthTotals.map(v=>`<td>${fmt(v)}</td>`).join('')}<td>${fmt(grand)}</td></tr></tfoot></table></div>`;
   }
@@ -11333,4 +11335,6 @@ html[data-theme="dark"] .v2106-card-options label:hover{background:#1B2638!impor
 
 
 <!-- V2.111 — valor previsto da calculadora usa exatamente a receita prevista da pessoa na tabela Origem da receita. -->
+
+<!-- V2.112 — subcategorias em Análises seguem a mesma granularidade do Planejamento (categoria + subcategoria + local + responsável). -->
 </body></html>
