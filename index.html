@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.116 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.117 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -11527,5 +11527,52 @@ html[data-theme="dark"] .v2106-card-options label:hover{background:#1B2638!impor
 })();
 </script>
 <!-- V2.116 — filtro de ano visível no renderizador ativo de Análises, abaixo da calculadora de transferência. -->
+
+
+<style id="v2117-transfer-modal-center-style">
+/* V2.117 — calculadora de transferência volta a abrir centralizada e sem empurrar a página lateralmente. */
+#modal.open:has(.v2104-control-grid){
+  align-items:center!important;
+  justify-content:center!important;
+  padding:18px!important;
+  overflow:hidden!important;
+}
+#modal.open:has(.v2104-control-grid)>.sheet{
+  width:min(900px,calc(100vw - 36px))!important;
+  max-width:min(900px,calc(100vw - 36px))!important;
+  min-width:0!important;
+  height:auto!important;
+  max-height:calc(100dvh - 36px)!important;
+  margin:auto!important;
+  box-sizing:border-box!important;
+  border-radius:24px!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  box-shadow:0 24px 70px rgba(15,23,42,.26)!important;
+}
+#modal.open:has(.v2104-control-grid) .v2104-table-shell{
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  overflow-x:auto!important;
+  overflow-y:auto!important;
+}
+#modal.open:has(.v2104-control-grid) .v2104-table{
+  width:100%!important;
+  max-width:none!important;
+}
+@media(max-width:760px){
+  #modal.open:has(.v2104-control-grid){
+    padding:12px!important;
+  }
+  #modal.open:has(.v2104-control-grid)>.sheet{
+    width:calc(100vw - 24px)!important;
+    max-width:calc(100vw - 24px)!important;
+    max-height:calc(100dvh - 24px)!important;
+    border-radius:20px!important;
+  }
+}
+</style>
+<!-- V2.117 — calculadora de transferência centralizada; rolagem horizontal fica restrita à tabela interna. -->
 
 </body></html>
