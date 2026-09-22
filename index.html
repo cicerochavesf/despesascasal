@@ -1,4 +1,4 @@
-<!-- Despesas Casal - Controle Financeiro | versão 2.118 -->
+<!-- Despesas Casal - Controle Financeiro | versão 2.119 -->
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
@@ -11665,5 +11665,110 @@ html[data-theme="dark"] .v2106-card-options label:hover{background:#1B2638!impor
 })();
 </script>
 <!-- V2.118 — Backups automáticos recolhidos por padrão, com opção Expandir/Recolher. -->
+
+
+<style id="v2119-mobile-analysis-matrix-scroll-style">
+/* V2.119 — Análises mobile: página controla o eixo vertical; matriz controla apenas o horizontal. */
+@media(max-width:760px){
+  .v250-matrix-panel{
+    overflow:hidden!important;
+  }
+
+  /* Remove a segunda barra horizontal superior no celular. */
+  .v250-matrix-panel>.v300-matrix-top-scroll{
+    display:none!important;
+  }
+
+  /* A matriz deixa de ser uma "janela" com rolagem vertical própria. */
+  .v250-matrix-wrap.table-wrap,
+  .v250-cat-matrix.table-wrap,
+  .v250-sub-matrix.table-wrap{
+    width:100%!important;
+    max-width:100%!important;
+    height:auto!important;
+    max-height:none!important;
+    min-height:0!important;
+    overflow-x:auto!important;
+    overflow-y:visible!important;
+    overscroll-behavior:auto!important;
+    -webkit-overflow-scrolling:touch!important;
+    touch-action:pan-x pan-y!important;
+    scrollbar-gutter:auto!important;
+    padding-top:5px!important;
+  }
+
+  /* Nada fica congelado vertical ou horizontalmente no celular. */
+  .v250-matrix-wrap.table-wrap thead th,
+  .v250-matrix-wrap.table-wrap thead th:first-child,
+  .v250-matrix-wrap.table-wrap tbody td:first-child,
+  .v250-matrix-wrap.table-wrap tfoot td,
+  .v250-matrix-wrap.table-wrap tfoot td:first-child,
+  .v250-cat-matrix.table-wrap thead th,
+  .v250-cat-matrix.table-wrap thead th:first-child,
+  .v250-cat-matrix.table-wrap tbody td:first-child,
+  .v250-cat-matrix.table-wrap tfoot td,
+  .v250-cat-matrix.table-wrap tfoot td:first-child,
+  .v250-sub-matrix.table-wrap thead th,
+  .v250-sub-matrix.table-wrap thead th:first-child,
+  .v250-sub-matrix.table-wrap tbody td:first-child,
+  .v250-sub-matrix.table-wrap tfoot td,
+  .v250-sub-matrix.table-wrap tfoot td:first-child{
+    position:static!important;
+    top:auto!important;
+    left:auto!important;
+    bottom:auto!important;
+    z-index:auto!important;
+    box-shadow:none!important;
+  }
+
+  /* O reforço artificial do canto "Subcategoria" também sai no mobile. */
+  .v2103-subcategory-sticky-corner{
+    display:none!important;
+  }
+
+  /* Tabela um pouco mais compacta para exigir menos arraste lateral. */
+  .v250-matrix-wrap table{
+    min-width:680px!important;
+    table-layout:fixed!important;
+  }
+  .v250-matrix-wrap th,
+  .v250-matrix-wrap td{
+    padding:8px 9px!important;
+    font-size:9.3px!important;
+  }
+  .v250-matrix-wrap th{
+    font-size:8.5px!important;
+  }
+  .v250-matrix-name strong{
+    max-width:145px!important;
+  }
+  .v250-matrix-name small{
+    max-width:145px!important;
+  }
+
+  .v250-mobile-hint{
+    display:block!important;
+    padding:8px 12px 2px!important;
+    line-height:1.4!important;
+  }
+}
+</style>
+<script id="v2119-mobile-analysis-matrix-scroll-script">
+(function(){
+  function improveHint(){
+    if(!window.matchMedia||!window.matchMedia('(max-width:760px)').matches)return;
+    document.querySelectorAll('.v250-matrix-panel .v250-mobile-hint').forEach(el=>{
+      el.textContent='Arraste para os lados para ver os meses. Para subir e descer, role a página normalmente.';
+    });
+  }
+  const prevPost=postRenderV75;
+  postRenderV75=function(){
+    prevPost();
+    requestAnimationFrame(improveHint);
+  };
+  setTimeout(improveHint,700);
+})();
+</script>
+<!-- V2.119 — tabelas mensais de Análises no celular sem congelamentos nem rolagem vertical interna. -->
 
 </body></html>
