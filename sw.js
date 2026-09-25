@@ -1,4 +1,4 @@
-const CACHE_NAME='financas-cn-v2119';
+const CACHE_NAME='financas-cn-v2121';
 const APP_SHELL=['./','./index.html','./icon-192.png','./icon-512.png','./maskable-512.png'];
 
 self.addEventListener('install',event=>{
@@ -43,7 +43,7 @@ self.addEventListener('fetch',event=>{
 
   if(request.mode==='navigate'){
     event.respondWith(
-      fetch(request)
+      fetch(request,{cache:'no-store'})
         .then(response=>{
           const copy=response.clone();
           caches.open(CACHE_NAME).then(cache=>cache.put('./',copy));
