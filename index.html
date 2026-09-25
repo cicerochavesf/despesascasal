@@ -3917,7 +3917,7 @@ const SUPABASE_TABLE='app_state';
 const SUPABASE_ROW_ID='despesas-casal';
 const AUTH_STORAGE_KEY='despesas-casal-auth-v1';
 const THEME_STORAGE_KEY='despesas-casal-theme-v1';
-const PWA_SW_URL='./sw.js';
+const PWA_SW_URL='./sw.js?v=2121';
 const PUBLIC_SIGNUP_ENABLED=false;
 const APP_MOBILE_DEVICE=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent||'')||((navigator.maxTouchPoints||0)>1&&Math.min(window.screen?.width||9999,window.screen?.height||9999)<=1024);
 document.documentElement.classList.toggle('device-mobile',APP_MOBILE_DEVICE);
@@ -11966,5 +11966,175 @@ html[data-theme="dark"] .v2106-card-options label:hover{background:#1B2638!impor
 })();
 </script>
 <!-- V2.120 — 2027 criado como ano operacional completo em todas as áreas do app. -->
+
+
+<script id="v2121-period-engine-script">
+/* =========================================================
+   V2.121 — MOTOR DE PERÍODOS MULTIANO
+   Corrige definitivamente a navegação 2026/2027:
+   - mês é sempre identificado por AAAA-MM;
+   - validMonth nunca cai silenciosamente em outro ano;
+   - filtros de mês materializam o ano antes de selecionar;
+   - extrato usa exatamente o mês/ano escolhido;
+   - recupera lançamentos futuros que versões antigas tenham
+     deixado guardados no ano errado.
+   ========================================================= */
+(function(){
+  const MONTH_RE=/^\d{4}-(0[1-9]|1[0-2])$/;
+  const YEAR_RE=/^\d{4}$/;
+  let repairSaved=false;
+
+  function ensureYear(year){
+    const y=String(year||'');
+    if(!YEAR_RE.test(y))return false;
+    if(typeof window.v2120EnsureYear==='function')return !!window.v2120EnsureYear(y);
+    if(typeof ensureYearMonths==='function'){ensureYearMonths(y);return true}
+    return false;
+  }
+
+  function idsForYear(year){
+    const y=String(year||'');
+    if(!YEAR_RE.test(y))return[];
+    ensureYear(y);
+    const configured=(state.months||[])
+      .map(m=>typeof m==='string'?m:m?.id)
+      .filter(id=>MONTH_RE.test(String(id||''))&&String(id).startsWith(y+'-'))
+      .sort();
+    if(configured.length===12)return configured;
+    return Array.from({length:12},(_,i)=>y+'-'+String(i+1).padStart(2,'0'));
+  }
+
+  /* Ponto central: uma referência válida AAAA-MM nunca pode virar
+     dezembro do ano anterior ou outro mês por fallback. */
+  validMonth=function(value){
+    const id=String(value||'');
+    if(MONTH_RE.test(id)){
+      ensureYear(id.slice(0,4));
+      return id;
+    }
+    const ordered=(typeof months==='function'?months():[]).filter(m=>MONTH_RE.test(String(m||''))).sort();
+    return ordered[ordered.length-1]||id;
+  };
+
+  monthYearList=function(scope){
+    const selected=MONTH_RE.test(String(state.month||''))?String(state.month):validMonth(currentMonthId());
+    const year=selected.slice(0,4);
+    const all=idsForYear(year);
+    return scope==='mes'?[selected]:all;
+  };
+
+  setMonth=function(value){
+    const id=validMonth(value);
+    state.month=id;
+    save();
+    render();
+  };
+
+  setPeriodSelection=function(scopeVar,value){
+    const annual=value==='ano';
+    if(!annual&&MONTH_RE.test(String(value||'')))state.month=validMonth(value);
+
+    if(scopeVar==='revenueScope')revenueScope=annual?'ano':'mes';
+    else if(scopeVar==='expenseScope')expenseScope=annual?'ano':'mes';
+    else if(scopeVar==='rxdScope')rxdScope=annual?'ano':'mes';
+    else if(scopeVar==='txScope')txScope=annual?'ano':'mes';
+    else if(scopeVar==='periodMode')periodMode=annual?'ano':'mes';
+
+    save();
+    render();
+  };
+
+  yearSelectHTML=function(){
+    const selected=String(state.month||'').slice(0,4);
+    const values=typeof years==='function'?years():[];
+    return `<select class="select period-select" aria-label="Ano" title="Ano" onchange="setYear(this.value)">${values.map(y=>`<option value="${y}" ${String(y)===selected?'selected':''}>${y}</option>`).join('')}</select>`;
+  };
+
+  monthPeriodSelectHTML=function(scopeVar,scope){
+    const current=MONTH_RE.test(String(state.month||''))?String(state.month):validMonth(currentMonthId());
+    const year=current.slice(0,4),options=idsForYear(year).map(id=>`<option value="${id}" ${scope==='mes'&&id===current?'selected':''}>${labelMonth(id)}</option>`).join('');
+    return `<select class="select period-select" aria-label="Mês" title="Mês" onchange="setPeriodSelection('${scopeVar}',this.value)"><option value="ano" ${scope==='ano'?'selected':''}>Todos os meses</option>${options}</select>`;
+  };
+
+  envelopeMonthSelectHTML=function(){
+    const current=MONTH_RE.test(String(state.month||''))?String(state.month):validMonth(currentMonthId());
+    const year=current.slice(0,4);
+    return `<select class="select period-select" aria-label="Mês" title="Mês" onchange="state.month=validMonth(this.value);txScope='mes';save();render()">${idsForYear(year).map(id=>`<option value="${id}" ${id===current?'selected':''}>${labelMonth(id)}</option>`).join('')}</select>`;
+  };
+  envelopeMonthSelectHTMLBase=envelopeMonthSelectHTML;
+
+  /* Repara dados futuros que possam ter sido armazenados em 2026 por
+     versões antigas. A data original preservada pela migração é usada
+     como fonte quando existir. */
+  function repairFutureTransactions(){
+    if(!cloudSynced||!state?.transactions)return false;
+    let changed=false;
+    const moves=[];
+
+    Object.entries(state.transactions).forEach(([storedMonth,list])=>{
+      if(!Array.isArray(list))return;
+      list.forEach((tx,index)=>{
+        const original=String(tx.financialDateAdjustedFrom||'');
+        const currentDate=String(tx.date||'');
+        let sourceDate='';
+
+        if(/^202[7-9]-\d{2}-\d{2}$/.test(original)||/^20[3-9]\d-\d{2}-\d{2}$/.test(original))sourceDate=original;
+        else if(/^202[7-9]-\d{2}-\d{2}$/.test(currentDate)||/^20[3-9]\d-\d{2}-\d{2}$/.test(currentDate))sourceDate=currentDate;
+        if(!sourceDate)return;
+
+        const target=typeof v223FinancialMonthForDate==='function'?v223FinancialMonthForDate(sourceDate):sourceDate.slice(0,7);
+        if(!MONTH_RE.test(target)||target===storedMonth)return;
+
+        moves.push({storedMonth,index,tx,target,sourceDate});
+      });
+    });
+
+    moves.sort((a,b)=>a.storedMonth===b.storedMonth?b.index-a.index:0).forEach(move=>{
+      ensureYear(move.target.slice(0,4));
+      if(!Array.isArray(state.transactions[move.target]))state.transactions[move.target]=[];
+
+      const source=state.transactions[move.storedMonth];
+      const pos=source?.findIndex(x=>x===move.tx);
+      if(pos<0)return;
+
+      source.splice(pos,1);
+      move.tx.date=move.sourceDate;
+      move.tx.recoveredFinancialMonthFrom=move.storedMonth;
+      move.tx.recoveredFinancialMonthAt=new Date().toISOString();
+      move.tx.updatedAt=new Date().toISOString();
+
+      if(!state.transactions[move.target].some(x=>x.id===move.tx.id))state.transactions[move.target].push(move.tx);
+      changed=true;
+    });
+
+    return changed;
+  }
+
+  /* Extrato: se a tela estiver em modo mensal, ela só pode consultar
+     exatamente state.month. Isso evita qualquer vazamento de 2026 em 2027. */
+  const legacyMonthYearList=monthYearList;
+  monthYearList=function(scope){
+    const current=MONTH_RE.test(String(state.month||''))?String(state.month):validMonth(currentMonthId());
+    ensureYear(current.slice(0,4));
+    if(scope==='mes')return[current];
+    return idsForYear(current.slice(0,4));
+  };
+
+  const legacyRender=render;
+  render=function(){
+    if(cloudSynced&&state){
+      ensureYear('2027');
+      const repaired=repairFutureTransactions();
+      if(repaired&&!repairSaved){
+        repairSaved=true;
+        try{cacheCloudState();scheduleCloudSave(0)}catch(e){console.error('V2.121: falha ao salvar reparo de 2027',e)}
+        setTimeout(()=>{repairSaved=false},1800);
+      }
+    }
+    return legacyRender.apply(this,arguments);
+  };
+})();
+</script>
+<!-- V2.121 — seleção exata AAAA-MM e reparo de lançamentos futuros. -->
 
 </body></html>
