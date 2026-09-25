@@ -6598,21 +6598,43 @@ function v223FinancialPeriodLabel(monthId){
   const bounds=v223FinancialBounds(monthId);
   return `${fmtDate(v223DateId(bounds.start))} a ${fmtDate(v223DateId(bounds.last))}`;
 }
+function v223MonthYearLabel(monthId){
+  const id=String(monthId||'');
+  const year=id.slice(0,4),month=Number(id.slice(5,7));
+  const name=month>=1&&month<=12?monthNameFull(month):labelMonth(id);
+  return year?`${name}/${year}`:name;
+}
 function v223ResolveFinancialDate(dateId,intendedMonth){
   const date=parseDateLocal(dateId);
   if(!date)return null;
   const monthId=String(intendedMonth||state.month),bounds=v223FinancialBounds(monthId);
   if(date>=bounds.start&&date<bounds.endExclusive)return{date:v223DateId(date),month:monthId,adjusted:false};
-  const belongsTo=v223FinancialMonthForDate(dateId),before=date<bounds.start,adjustedDate=v223DateId(before?bounds.start:bounds.last),canUseBelongs=months().includes(belongsTo);
-  const relation=before?'ainda pertence ao mês financeiro anterior':'já pertence ao mês financeiro seguinte';
-  if(!canUseBelongs){
-    const accept=confirm(`A data ${fmtDate(dateId)} ${relation}.\n\n${labelMonth(monthId)} está configurado para o período de ${v223FinancialPeriodLabel(monthId)}. O mês financeiro correspondente à data não está cadastrado no app.\n\nPressione OK para ajustar a data para ${fmtDate(adjustedDate)} e manter o lançamento em ${labelMonth(monthId)}. Pressione Cancelar para voltar ao formulário.`);
-    return accept?{date:adjustedDate,month:monthId,adjusted:true}:null;
+
+  const belongsTo=v223FinancialMonthForDate(dateId),before=date<bounds.start,adjustedDate=v223DateId(before?bounds.start:bounds.last);
+
+  /* Datas futuras devem acompanhar a própria data.
+     Isso permite lançar 2027 (e anos seguintes) mesmo estando visualizando 2026. */
+  if(belongsTo>monthId){
+    if(!months().includes(belongsTo))ensureYearMonths(belongsTo.slice(0,4));
+    if(belongsTo.slice(0,4)!==monthId.slice(0,4)){
+      alert(`A data ${fmtDate(dateId)} pertence a ${v223MonthYearLabel(belongsTo)} (${v223FinancialPeriodLabel(belongsTo)}).\n\nO lançamento será salvo automaticamente nesse mês financeiro.`);
+    }
+    return{date:v223DateId(date),month:belongsTo,adjusted:false};
   }
-  const answer=prompt(`A data ${fmtDate(dateId)} ${relation}.\n\n${labelMonth(monthId)} está configurado para o período de ${v223FinancialPeriodLabel(monthId)}.\n\nDigite 1 para ajustar a data para ${fmtDate(adjustedDate)} e manter o lançamento em ${labelMonth(monthId)}.\nDigite 2 para manter a data ${fmtDate(dateId)} e lançar no mês financeiro de ${labelMonth(belongsTo)}.\n\nDeixe em branco para cancelar.`,`1`);
+
+  /* Para datas anteriores, mantém a escolha manual para não deslocar
+     silenciosamente lançamentos históricos/consolidados. */
+  const relation=belongsTo===v223PreviousMonthId(monthId)
+    ?'pertence ao mês financeiro anterior'
+    :`pertence ao mês financeiro de ${v223MonthYearLabel(belongsTo)}`;
+
+  const answer=prompt(`A data ${fmtDate(dateId)} ${relation}.\n\nVocê está lançando em ${v223MonthYearLabel(monthId)}, período de ${v223FinancialPeriodLabel(monthId)}.\nA data informada pertence a ${v223MonthYearLabel(belongsTo)}, período de ${v223FinancialPeriodLabel(belongsTo)}.\n\nDigite 1 para ajustar a data para ${fmtDate(adjustedDate)} e manter em ${v223MonthYearLabel(monthId)}.\nDigite 2 para manter a data ${fmtDate(dateId)} e lançar em ${v223MonthYearLabel(belongsTo)}.\n\nDeixe em branco para cancelar.`,`1`);
   if(answer===null||String(answer).trim()==='')return null;
   if(String(answer).trim()==='1')return{date:adjustedDate,month:monthId,adjusted:true};
-  if(String(answer).trim()==='2')return{date:v223DateId(date),month:belongsTo,adjusted:false};
+  if(String(answer).trim()==='2'){
+    if(!months().includes(belongsTo))ensureYearMonths(belongsTo.slice(0,4));
+    return{date:v223DateId(date),month:belongsTo,adjusted:false};
+  }
   alert('Escolha 1 para ajustar a data ou 2 para usar o mês financeiro correspondente.');
   return null;
 }
