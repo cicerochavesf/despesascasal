@@ -3917,7 +3917,7 @@ const SUPABASE_TABLE='app_state';
 const SUPABASE_ROW_ID='despesas-casal';
 const AUTH_STORAGE_KEY='despesas-casal-auth-v1';
 const THEME_STORAGE_KEY='despesas-casal-theme-v1';
-const PWA_SW_URL='./sw.js?v=2122';
+const PWA_SW_URL='./sw.js?v=2123';
 const PUBLIC_SIGNUP_ENABLED=false;
 const APP_MOBILE_DEVICE=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent||'')||((navigator.maxTouchPoints||0)>1&&Math.min(window.screen?.width||9999,window.screen?.height||9999)<=1024);
 document.documentElement.classList.toggle('device-mobile',APP_MOBILE_DEVICE);
@@ -12284,5 +12284,137 @@ html[data-theme="dark"] .v2106-card-options label:hover{background:#1B2638!impor
 })();
 </script>
 <!-- V2.122 — correção aplicada no seletor V2.81/V2.84 realmente exibido. -->
+
+
+<style id="v2123-subcategory-dual-scroll-style">
+/* V2.123 — Consolidado por subcategoria: barra horizontal em cima e embaixo. */
+.v2123-subcategory-top-scroll{
+  width:100%!important;
+  height:18px!important;
+  overflow-x:auto!important;
+  overflow-y:hidden!important;
+  margin:0 0 4px!important;
+  padding:0!important;
+  border-top:1px solid var(--line,#e2e8f0)!important;
+  border-bottom:1px solid var(--line,#e2e8f0)!important;
+  background:color-mix(in srgb,var(--soft,#f8fafc) 88%,var(--panel,#fff))!important;
+  scrollbar-gutter:stable both-edges!important;
+  -webkit-overflow-scrolling:touch!important;
+}
+.v2123-subcategory-top-scroll-inner{
+  height:1px!important;
+  min-height:1px!important;
+}
+html[data-theme="dark"] .v2123-subcategory-top-scroll{
+  background:#172033!important;
+  border-color:#344054!important;
+}
+/* Garante que a barra nativa inferior continue disponível. */
+.view-despesas .v215-subcategory-table-wrap,
+.v250-sub-matrix.table-wrap{
+  overflow-x:auto!important;
+  scrollbar-width:auto!important;
+}
+.view-despesas .v215-subcategory-table-wrap::-webkit-scrollbar,
+.v250-sub-matrix.table-wrap::-webkit-scrollbar{
+  height:13px!important;
+}
+@media(max-width:760px){
+  .v2123-subcategory-top-scroll{
+    display:block!important;
+    height:17px!important;
+    margin-bottom:3px!important;
+  }
+}
+</style>
+
+<script id="v2123-subcategory-dual-scroll-script">
+(function(){
+  function tableWidth(wrap){
+    const table=wrap?.querySelector('table');
+    if(!table)return 0;
+    return Math.max(table.scrollWidth,wrap.scrollWidth,wrap.clientWidth);
+  }
+
+  function syncTopWidth(wrap,top){
+    if(!wrap||!top)return;
+    const inner=top.firstElementChild;
+    if(!inner)return;
+    inner.style.width=tableWidth(wrap)+'px';
+    if(Math.abs(top.scrollLeft-wrap.scrollLeft)>1)top.scrollLeft=wrap.scrollLeft;
+  }
+
+  function bind(wrap){
+    if(!wrap||wrap.dataset.v2123DualScroll==='1')return;
+    const table=wrap.querySelector('table');
+    if(!table)return;
+
+    wrap.dataset.v2123DualScroll='1';
+
+    /* Nas matrizes de Análises já existia uma barra superior antiga.
+       Ela é substituída somente na matriz de subcategorias para não duplicar. */
+    const previous=wrap.previousElementSibling;
+    if(previous?.classList?.contains('v300-matrix-top-scroll'))previous.remove();
+
+    const top=document.createElement('div');
+    top.className='v2123-subcategory-top-scroll';
+    top.setAttribute('aria-label','Rolagem horizontal superior do consolidado por subcategoria');
+    top.innerHTML='<div class="v2123-subcategory-top-scroll-inner"></div>';
+    wrap.parentNode.insertBefore(top,wrap);
+
+    let syncing=false;
+    top.addEventListener('scroll',()=>{
+      if(syncing)return;
+      syncing=true;
+      wrap.scrollLeft=top.scrollLeft;
+      requestAnimationFrame(()=>{syncing=false});
+    },{passive:true});
+
+    wrap.addEventListener('scroll',()=>{
+      if(syncing)return;
+      syncing=true;
+      top.scrollLeft=wrap.scrollLeft;
+      requestAnimationFrame(()=>{syncing=false});
+    },{passive:true});
+
+    const refresh=()=>syncTopWidth(wrap,top);
+    refresh();
+    requestAnimationFrame(refresh);
+    setTimeout(refresh,120);
+
+    if('ResizeObserver' in window){
+      const ro=new ResizeObserver(refresh);
+      ro.observe(wrap);
+      ro.observe(table);
+      wrap._v2123ResizeObserver=ro;
+    }
+  }
+
+  function init(root=document.getElementById('app')){
+    if(!root)return;
+    root.querySelectorAll(
+      '.view-despesas .v215-subcategory-table-wrap, .v250-sub-matrix.table-wrap'
+    ).forEach(bind);
+  }
+
+  window.v2123InitSubcategoryDualScroll=init;
+
+  const previousPost=postRenderV75;
+  postRenderV75=function(){
+    previousPost();
+    requestAnimationFrame(()=>init(document.getElementById('app')));
+  };
+
+  const previousRender=render;
+  render=function(){
+    const result=previousRender.apply(this,arguments);
+    requestAnimationFrame(()=>init(document.getElementById('app')));
+    return result;
+  };
+
+  setTimeout(()=>init(document.getElementById('app')),700);
+})();
+</script>
+<!-- V2.123 — barras horizontais sincronizadas acima e abaixo do Consolidado por subcategoria. -->
 
 </body></html>
