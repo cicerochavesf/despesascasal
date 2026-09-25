@@ -3917,7 +3917,7 @@ const SUPABASE_TABLE='app_state';
 const SUPABASE_ROW_ID='despesas-casal';
 const AUTH_STORAGE_KEY='despesas-casal-auth-v1';
 const THEME_STORAGE_KEY='despesas-casal-theme-v1';
-const PWA_SW_URL='./sw.js?v=2121';
+const PWA_SW_URL='./sw.js?v=2122';
 const PUBLIC_SIGNUP_ENABLED=false;
 const APP_MOBILE_DEVICE=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent||'')||((navigator.maxTouchPoints||0)>1&&Math.min(window.screen?.width||9999,window.screen?.height||9999)<=1024);
 document.documentElement.classList.toggle('device-mobile',APP_MOBILE_DEVICE);
@@ -12136,5 +12136,153 @@ html[data-theme="dark"] .v2106-card-options label:hover{background:#1B2638!impor
 })();
 </script>
 <!-- V2.121 — seleção exata AAAA-MM e reparo de lançamentos futuros. -->
+
+
+<style id="v2122-build-badge-style">
+.v2122-build-badge{display:inline-flex;align-items:center;justify-content:center;margin-left:7px;padding:2px 6px;border:1px solid rgba(255,255,255,.22);border-radius:999px;background:rgba(255,255,255,.09);color:#dbeafe;font-size:7.5px;font-weight:900;letter-spacing:.04em;vertical-align:middle}
+</style>
+<script id="v2122-period-selector-hard-fix">
+/* V2.122 — corrige o seletor REAL de Movimentações (V2.81/V2.84)
+   e isola qualquer histórico 2026 que tenha contaminado meses de 2027. */
+(function(){
+  const BUILD='2.122';
+  const MONTH_RE=/^\d{4}-(0[1-9]|1[0-2])$/;
+  let saveQueued=false;
+
+  document.documentElement.dataset.appBuild=BUILD;
+  document.title='Finanças Cícero & Nilce · v'+BUILD;
+
+  function ensureYear(year){
+    const y=String(year||'');
+    if(!/^\d{4}$/.test(y))return [];
+    if(typeof window.v2120EnsureYear==='function')window.v2120EnsureYear(y);
+    else if(typeof ensureYearMonths==='function')ensureYearMonths(y);
+    return Array.from({length:12},(_,i)=>y+'-'+String(i+1).padStart(2,'0'));
+  }
+
+  function persistOnce(){
+    if(!cloudSynced||saveQueued)return;
+    saveQueued=true;
+    try{cacheCloudState();scheduleCloudSave(0)}catch(e){console.error('V2.122 persistência',e)}
+    setTimeout(()=>{saveQueued=false},1800);
+  }
+
+  /* Remove somente registros inequivocamente históricos de 2026 que,
+     por qualquer versão anterior, tenham ido parar em chaves de 2027. */
+  function clean2027Contamination(){
+    if(!state)return false;
+    let changed=false;
+    ensureYear('2027');
+
+    for(let mm=1;mm<=12;mm++){
+      const id='2027-'+String(mm).padStart(2,'0');
+
+      if(Array.isArray(state.transactions?.[id])){
+        const before=state.transactions[id].length;
+        state.transactions[id]=state.transactions[id].filter(t=>{
+          const d=String(t?.date||''),src=String(t?.historicalSource||''),tid=String(t?.id||'');
+          const historical2026=t?.historical===true||src.includes('Jan-Jun/2026')||tid.startsWith('tx_hist_2026-');
+          const dated2026=/^2026-\d{2}-\d{2}$/.test(d);
+          return !(historical2026||dated2026);
+        });
+        if(state.transactions[id].length!==before)changed=true;
+      }
+
+      if(Array.isArray(state.budgets?.[id])){
+        const before=state.budgets[id].length;
+        state.budgets[id]=state.budgets[id].filter(b=>{
+          const src=String(b?.historicalSource||''),bid=String(b?.id||'');
+          const historical2026=b?.historical===true||src.includes('Jan-Jun/2026')||bid.startsWith('b_hist_2026-');
+          return !historical2026;
+        });
+        if(state.budgets[id].length!==before)changed=true;
+      }
+    }
+
+    if(changed)persistOnce();
+    return changed;
+  }
+
+  /* Estes são os handlers dos seletores que aparecem de fato no print:
+     .v281-period-controls. Antes eles usavam uma rotina própria e havia
+     inclusive um erro "m>>" no find do ano. */
+  window.v281SetMovementYear=function(year){
+    const y=String(year||'');
+    if(!/^\d{4}$/.test(y))return;
+    const list=ensureYear(y);
+    const mm=String(state.month||'').slice(5,7);
+    state.month=list.find(m=>m.slice(5,7)===mm)||list[0];
+    txScope='mes';
+    selectedRealizedIds.clear();
+    selectedForecastKeys.clear();
+    save();
+    render();
+  };
+
+  window.v281SetMovementMonth=function(value){
+    const raw=String(value||'');
+    if(raw==='todos'){
+      if(txPanel==='envelopes')return;
+      txScope='ano';
+    }else if(MONTH_RE.test(raw)){
+      ensureYear(raw.slice(0,4));
+      state.month=raw;              // sem fallback para outro ano
+      txScope='mes';
+    }else return;
+    selectedRealizedIds.clear();
+    selectedForecastKeys.clear();
+    save();
+    render();
+  };
+
+  /* Compatibilidade com o seletor compacto antigo, caso apareça em algum aparelho. */
+  window.v272ApplyPeriod=function(value){
+    const raw=String(value||'');
+    if(raw.startsWith('ano:')){
+      const y=raw.slice(4);
+      const list=ensureYear(y);
+      const mm=String(state.month||'').slice(5,7);
+      state.month=list.find(m=>m.slice(5,7)===mm)||list[0];
+      txScope='ano';
+    }else if(MONTH_RE.test(raw)){
+      ensureYear(raw.slice(0,4));
+      state.month=raw;
+      txScope='mes';
+    }else return;
+    save();
+    render();
+  };
+
+  /* Blindagem do extrato: modo mensal consulta exclusivamente AAAA-MM selecionado. */
+  monthYearList=function(scope){
+    const current=MONTH_RE.test(String(state.month||''))?String(state.month):currentMonthId();
+    ensureYear(current.slice(0,4));
+    return scope==='mes'?[current]:Array.from({length:12},(_,i)=>current.slice(0,4)+'-'+String(i+1).padStart(2,'0'));
+  };
+
+  const previousRenderLancamentos=renderLancamentos;
+  renderLancamentos=function(){
+    clean2027Contamination();
+    previousRenderLancamentos();
+
+    const hero=document.querySelector('.v264-movement-hero-head>div:first-child');
+    if(hero&&!hero.querySelector('.v2122-build-badge')){
+      const badge=document.createElement('span');
+      badge.className='v2122-build-badge';
+      badge.textContent='v'+BUILD;
+      badge.title='Versão publicada do app';
+      const title=hero.querySelector('h2');
+      if(title)title.appendChild(badge);
+    }
+  };
+
+  const previousRender=render;
+  render=function(){
+    if(cloudSynced&&state)clean2027Contamination();
+    return previousRender.apply(this,arguments);
+  };
+})();
+</script>
+<!-- V2.122 — correção aplicada no seletor V2.81/V2.84 realmente exibido. -->
 
 </body></html>
