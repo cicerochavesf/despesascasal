@@ -11793,4 +11793,178 @@ html[data-theme="dark"] .v2106-card-options label:hover{background:#1B2638!impor
 </script>
 <!-- V2.119 — tabelas mensais de Análises no celular sem congelamentos nem rolagem vertical interna. -->
 
+
+<script id="v2120-2027-ecosystem-script">
+/* =========================================================
+   V2.120 — ECOSSISTEMA ANUAL COMPLETO / 2027
+   - 2027 passa a existir de janeiro a dezembro em todo o app
+   - cria os contêineres mensais de receitas, planejamento,
+     extrato e remanejamentos mesmo antes do primeiro lançamento
+   - seleção de ano passa a materializar e persistir o ano
+   - anos futuros informados pela data também são persistidos
+   - ao navegar entre telas, o mês/ano escolhido não volta
+     silenciosamente para o ano corrente
+   ========================================================= */
+(function(){
+  const REQUIRED_YEAR='2027';
+  let saveQueued=false;
+
+  function yearMonthIds(year){
+    const y=String(year||'');
+    if(!/^\d{4}$/.test(y))return[];
+    return Array.from({length:12},(_,i)=>y+'-'+String(i+1).padStart(2,'0'));
+  }
+
+  function ensureYearEcosystem(year){
+    const y=String(year||'');
+    if(!/^\d{4}$/.test(y)||!state)return false;
+
+    const ids=yearMonthIds(y);
+    let changed=false;
+
+    ids.forEach(id=>{
+      if(!(state.months||[]).some(m=>(typeof m==='string'?m:m?.id)===id))changed=true;
+      if(!state.revenues?.[id]||typeof state.revenues[id]!=='object')changed=true;
+      if(!Array.isArray(state.budgets?.[id]))changed=true;
+      if(!Array.isArray(state.transactions?.[id]))changed=true;
+      if(!Array.isArray(state.reallocations?.[id]))changed=true;
+    });
+
+    if(typeof ensureYearMonths==='function')ensureYearMonths(y);
+
+    if(!Array.isArray(state.months))state.months=[];
+    if(!state.revenues||typeof state.revenues!=='object')state.revenues={};
+    if(!state.budgets||typeof state.budgets!=='object')state.budgets={};
+    if(!state.transactions||typeof state.transactions!=='object')state.transactions={};
+    if(!state.reallocations||typeof state.reallocations!=='object')state.reallocations={};
+
+    ids.forEach(id=>{
+      if(!state.months.some(m=>(typeof m==='string'?m:m?.id)===id)){
+        const n=Number(id.slice(5,7));
+        state.months.push({id,label:monthNameFull(n),short:monthShort(n)});
+        changed=true;
+      }
+      if(!state.revenues[id]||typeof state.revenues[id]!=='object'){
+        state.revenues[id]={cicero:0,nilce:0,reserva:0,outrasOrigem:''};
+        changed=true;
+      }
+      if(!Array.isArray(state.budgets[id])){state.budgets[id]=[];changed=true}
+      if(!Array.isArray(state.transactions[id])){state.transactions[id]=[];changed=true}
+      if(!Array.isArray(state.reallocations[id])){state.reallocations[id]=[];changed=true}
+    });
+
+    state.months.sort((a,b)=>String(a?.id||a).localeCompare(String(b?.id||b)));
+    return changed;
+  }
+
+  function ensureOperatingYears(){
+    const current=String(new Date().getFullYear());
+    const next=String(Number(current)+1);
+    const selected=String(state?.month||'').slice(0,4);
+    return [...new Set([current,next,REQUIRED_YEAR,selected].filter(y=>/^\d{4}$/.test(y)))]
+      .reduce((changed,y)=>ensureYearEcosystem(y)||changed,false);
+  }
+
+  function persistEcosystem(){
+    if(!cloudSynced||!state)return;
+    try{if(typeof cacheCloudState==='function')cacheCloudState()}catch(e){}
+    if(saveQueued)return;
+    saveQueued=true;
+    try{
+      if(typeof scheduleCloudSave==='function')scheduleCloudSave(0);
+      else if(typeof save==='function')save();
+    }catch(e){console.error('V2.120: não foi possível persistir o ano.',e)}
+    setTimeout(()=>{saveQueued=false},1800);
+  }
+
+  window.v2120EnsureYear=function(year){
+    const changed=ensureYearEcosystem(year);
+    if(changed)persistEcosystem();
+    return changed;
+  };
+  window.v2120Ensure2027=function(){return window.v2120EnsureYear(REQUIRED_YEAR)};
+
+  /* O seletor de anos sempre conhece o ano seguinte e 2027. */
+  years=function(){
+    const set=new Set();
+    (state?.months||[]).forEach(m=>{
+      const id=typeof m==='string'?m:m?.id;
+      const y=String(id||'').slice(0,4);
+      if(/^\d{4}$/.test(y))set.add(y);
+    });
+    const current=String(new Date().getFullYear());
+    set.add(current);
+    set.add(String(Number(current)+1));
+    set.add(REQUIRED_YEAR);
+    return [...set].sort((a,b)=>Number(a)-Number(b));
+  };
+
+  /* Trocar o ano cria primeiro os 12 meses e seus contêineres.
+     Assim Janeiro/2027 nunca cai por fallback em Janeiro/2026. */
+  setYear=function(year){
+    const y=String(year||'');
+    if(!/^\d{4}$/.test(y))return;
+    const changed=ensureYearEcosystem(y);
+    const sameMonth=String(state.month||'').slice(5,7)||'01';
+    const available=(state.months||[])
+      .map(m=>typeof m==='string'?m:m?.id)
+      .filter(id=>String(id||'').startsWith(y+'-'))
+      .sort();
+    state.month=available.find(m=>String(m).slice(5,7)===sameMonth)||available[0]||state.month;
+    if(changed)persistEcosystem();
+    save();
+    render();
+  };
+
+  /* Ao entrar em Movimentações, preservar o ano/mês que o usuário
+     acabou de selecionar. O mês corrente continua sendo aplicado
+     normalmente na abertura inicial do app por prepareDefaultOpening(). */
+  setView=function(v){
+    view=v;
+    selectedExpenseCat=null;
+    revenueScope='ano';
+    expenseScope='ano';
+    rxdScope='ano';
+    periodMode='ano';
+
+    if(v==='lancamentos'){
+      if(!months().includes(state.month))state.month=validMonth(currentMonthId());
+      txScope='mes';
+      if(!['acompanhamento','realizados','envelopes','remanejamentos'].includes(txPanel))txPanel='acompanhamento';
+      save();
+    }else{
+      txScope='ano';
+    }
+    render();
+  };
+
+  /* Materializa o ano da própria data ANTES das demais validações.
+     Mesmo se um lançamento futuro for cancelado por outro motivo,
+     o ano já passa a existir nos filtros e telas. */
+  if(typeof v223ResolveFinancialDate==='function'){
+    const legacyResolve=v223ResolveFinancialDate;
+    v223ResolveFinancialDate=function(dateId,intendedMonth){
+      const target=typeof v223FinancialMonthForDate==='function'?v223FinancialMonthForDate(dateId):String(dateId||'').slice(0,7);
+      const y=String(target||'').slice(0,4);
+      if(/^\d{4}$/.test(y)){
+        const changed=ensureYearEcosystem(y);
+        if(changed)persistEcosystem();
+      }
+      return legacyResolve(dateId,intendedMonth);
+    };
+  }
+
+  /* Executa depois que o estado real veio da nuvem e salva uma única vez. */
+  const legacyRender=render;
+  render=function(){
+    if(cloudSynced&&state){
+      const changed=ensureOperatingYears();
+      if(changed)persistEcosystem();
+    }
+    return legacyRender.apply(this,arguments);
+  };
+})();
+</script>
+<!-- V2.120 — 2027 criado como ano operacional completo em todas as áreas do app. -->
+
 </body></html>
