@@ -1,4 +1,4 @@
-const CACHE_NAME='financas-cn-v20261102';
+const CACHE_NAME='financas-cn-v2123';
 const APP_SHELL=['./','./index.html','./icon-192.png','./icon-512.png','./maskable-512.png'];
 
 self.addEventListener('install',event=>{
@@ -24,7 +24,8 @@ self.addEventListener('fetch',event=>{
   const url=new URL(request.url);
   if(url.hostname.includes('supabase.co')||url.hostname.includes('jsdelivr.net'))return;
 
-  // O manifesto sempre tenta buscar a versão publicada mais recente.
+  // O manifesto precisa vir da rede para que o WebAPK instalado receba
+  // mudanças de orientação e demais metadados, sem ficar preso ao cache antigo.
   if(url.origin===self.location.origin&&url.pathname.endsWith('/manifest.webmanifest')){
     event.respondWith(
       fetch(request,{cache:'no-store'})
@@ -40,18 +41,12 @@ self.addEventListener('fetch',event=>{
     return;
   }
 
-  // Navegações usam a rede primeiro para evitar abrir uma versão antiga do app.
   if(request.mode==='navigate'){
     event.respondWith(
       fetch(request,{cache:'no-store'})
         .then(response=>{
-          if(response&&response.ok){
-            const copy=response.clone();
-            const cachePromise=caches.open(CACHE_NAME).then(cache=>
-              Promise.all([cache.put('./',copy.clone()),cache.put('./index.html',copy.clone())])
-            );
-            event.waitUntil(cachePromise);
-          }
+          const copy=response.clone();
+          caches.open(CACHE_NAME).then(cache=>cache.put('./',copy));
           return response;
         })
         .catch(()=>caches.match('./').then(r=>r||caches.match('./index.html')))
@@ -59,22 +54,16 @@ self.addEventListener('fetch',event=>{
     return;
   }
 
-  // Recursos locais usam cache, com atualização em segundo plano quando possível.
   if(url.origin===self.location.origin){
     event.respondWith(
-      caches.match(request).then(cached=>{
-        const network=fetch(request).then(response=>{
+      caches.match(request)
+        .then(cached=>cached||fetch(request).then(response=>{
           if(response&&response.ok){
             const copy=response.clone();
             caches.open(CACHE_NAME).then(cache=>cache.put(request,copy));
           }
           return response;
-        }).catch(error=>{
-          if(cached)return cached;
-          throw error;
-        });
-        return cached||network;
-      })
+        }))
     );
   }
 });
